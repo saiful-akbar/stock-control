@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MenuItem;
 use Illuminate\Support\Facades\Route;
 
 Route::any('/', function () {
