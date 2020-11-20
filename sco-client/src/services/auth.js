@@ -1,0 +1,70 @@
+import api from './api';
+import {
+  reduxAction
+} from 'src/config/redux/state';
+import csrf from './csrf';
+
+
+/**
+ * Fungsi untuk login user
+ * @param {username & password} data 
+ */
+export const login = (data) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    csrf().then(() => {
+      api({
+        method: 'POST',
+        url: '/login',
+        data
+      }).then((res) => {
+        resolve(res);
+        dispatch({
+          type: reduxAction.userLogin,
+          value: res.data
+        });
+      }).catch((err) => {
+        reject(err.response);
+      });
+    }).catch((err) => {
+      console.log(err.response);
+    })
+  });
+};
+
+// ambil data user yang sedang login
+export const userLogin = () => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    csrf().then(() => {
+      api({
+        method: 'GET',
+        url: '/login/user',
+      }).then(res => {
+        resolve(res);
+        dispatch({
+          type: reduxAction.userLogin,
+          value: res.data
+        });
+        dispatch({
+          type: reduxAction.loading,
+          value: false
+        });
+      }).catch((err) => {
+        reject(err.response);
+      });
+    });
+  });
+};
+
+// logout
+export const logout = () => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'get',
+      url: '/logout',
+    }).then((res) => {
+      resolve(res);
+    }).catch((err) => {
+      reject(err.response);
+    });
+  });
+};

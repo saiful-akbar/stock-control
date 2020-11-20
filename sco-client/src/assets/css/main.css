@@ -1,0 +1,60 @@
+/* .MuiDrawer-root .MuiPaper-root {
+  overflow-y: hidden;
+}
+
+.MuiDrawer-root .MuiPaper-root:hover {
+  overflow-y: auto;
+} */
+
+.row-table-click table tbody tr:hover {
+  cursor: pointer;
+}
+
+table thead tr th,
+table tbody tr td {
+  white-space: nowrap !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  font-size: 13px !important;
+}
+
+
+/* start scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(168, 168, 168, 0.3);
+  border-radius: 15px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(168, 168, 168, 0.6);
+}
+
+/* end scrollbar */
+
+
+/* start react-perfect-scrollbar */
+.ps__rail-y {
+  background-color: transparent !important;
+}
+
+.ps__thumb-y {
+  width: 7px !important;
+}
+
+.ps__rail-y:hover>.ps__thumb-y,
+.ps__rail-y:focus>.ps__thumb-y,
+.ps__rail-y.ps--clicking .ps__thumb-y {
+  width: 7px !important;
+}
+
+/* end react-perfect-scrollbar */
