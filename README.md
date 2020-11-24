@@ -13,4 +13,5 @@ Aplikasi web untuk mengontrol data stok barang
 - Autentikasi pengguna
 - Manajemen menu (CRUD)
 - Mengelola data pengguna (CRUD)
-- Mengelola akses menu pada setiap pengguna
+  - Menambahkan pengguna baru
+  - Merubah akses menu pada setiap pengguna 
