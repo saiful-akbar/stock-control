@@ -262,7 +262,7 @@ const UserTable = (props) => {
 
   // render component utaman
   return (
-    <Card>
+    <Card elevation={3}>
       {loading
         ? <LinearProgress className={classes.progress} />
         : <div className={classes.progress} />

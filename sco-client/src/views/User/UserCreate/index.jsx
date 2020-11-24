@@ -296,7 +296,7 @@ const UserCreate = (props) => {
 
       <Grid container spacing={3} >
         <Grid item xs={12} >
-          <Stepper activeStep={activeStep} alternativeLabel elevation={1}>
+          <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
             {steps.map((label) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
@@ -306,7 +306,7 @@ const UserCreate = (props) => {
         </Grid>
 
         <Grid item xs={12}>
-          <Card>
+          <Card elevation={3}>
             <Progress type='linear' show={loading} />
             {stepComponent(activeStep)}
           </Card>

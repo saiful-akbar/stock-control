@@ -23,6 +23,7 @@ import {
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CustomTooltip from 'src/components/CustomTooltip';
 import UserMenuItems from './UserMenuItems';
+import UserMenuSubItems from './UserMenuSubItems';
 
 
 // Style
@@ -105,8 +106,8 @@ function UserEditMenuAccess(props) {
   // Render komponen utama
   return (
     <Page
-      title='Access the user menu'
-      pageTitle='Access the user menu'
+      title='User access menu'
+      pageTitle='User access menu'
       pb={true}
     >
       <Box mb={3}>
@@ -126,7 +127,10 @@ function UserEditMenuAccess(props) {
       <TabPanel id={id} value={value} index={0} dir={theme.direction} >
         <UserMenuItems userId={id} />
       </TabPanel>
-      <TabPanel value={value} index={1} dir={theme.direction} >Menu Sub Items</TabPanel>
+
+      <TabPanel value={value} index={1} dir={theme.direction} >
+        <UserMenuSubItems userId={id} />
+      </TabPanel>
 
       <div className={classes.fab}>
         <CustomTooltip

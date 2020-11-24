@@ -125,3 +125,14 @@ export const apiDeleteUser = (id) => {
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
+
+
+// Mengambil data menu berdasarkan user id
+export const apiGetUserMenuItems = (id) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'GET',
+      url: `/user/${id}/menuItems`
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+}

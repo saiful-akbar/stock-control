@@ -102,14 +102,21 @@ function LoginView({ cookies, loginUser }) {
       window.location.href = '/dashboard';
     }
     catch (err) {
-      console.log(err);
       setLoading(false);
-      err.status === 422 && setErrors(err.data.errors);
-      setToast({
-        show: true,
-        type: 'error',
-        message: err.data.errors.username
-      });
+      if (err.status === 422) {
+        setErrors(err.data.errors);
+        setToast({
+          show: true,
+          type: 'error',
+          message: err.data.errors.username
+        });
+      } else {
+        setToast({
+          show: true,
+          type: 'error',
+          message: `(#${err.status}) ${err.statusText}`
+        });
+      }
     }
   };
 
@@ -250,7 +257,7 @@ function LoginView({ cookies, loginUser }) {
                                 size={20}
                                 style={{ marginRight: '10px' }}
                               />
-                              {'Loading...'}
+                              {'Logged in...'}
                             </>
                           ) : 'Login'
                         }

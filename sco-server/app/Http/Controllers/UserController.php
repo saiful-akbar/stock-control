@@ -330,12 +330,37 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Mengosongkan token semua user
+     */
     public function truncateTokens()
     {
         if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_create == 1 && $this->userAccess()->user_m_i_read == 1 && $this->userAccess()->user_m_i_update == 1 && $this->userAccess()->user_m_i_delete == 1) {
             DB::table('personal_access_tokens')->truncate();
             return response()->json([
                 'message' => 'Truncate successfully'
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Access denied',
+            ], 403);
+        }
+    }
+
+
+    /**
+     * Mengambil akses data menu item berdasarkan id user
+     * Mengambil semua data menu items
+     */
+    public function getMenuItems($id)
+    {
+        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+            $menu_items = DB::table('menu_items')
+                ->select('id', 'menu_i_title')
+                ->get();
+
+            return response()->json([
+                'menu_items' => $menu_items,
             ], 200);
         } else {
             return response()->json([

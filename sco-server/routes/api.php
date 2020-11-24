@@ -44,5 +44,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/{id}/edit', [UserController::class, 'edit']);
         Route::delete('/truncate-tokens', [UserController::class, 'truncateTokens']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
+
+        // Route edit user menu item akses
+        Route::get('/{id}/menuItems', [UserController::class, 'getMenuItems']);
     });
 });
