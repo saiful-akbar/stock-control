@@ -11,7 +11,7 @@ const Progress = ({ show, type, color, ...props }) => {
         <CircularProgress color={color} {...props} />
       )
     } else {
-      return;
+      return <div />;
     }
   };
 
@@ -29,7 +29,7 @@ const Progress = ({ show, type, color, ...props }) => {
   return type === 'linear' ? linear() : circular();
 };
 
-Progress.defautProps = {
+Progress.defaultProps = {
   show: false,
   type: 'linear',
   color: 'primary'

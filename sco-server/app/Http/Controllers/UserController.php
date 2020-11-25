@@ -359,8 +359,13 @@ class UserController extends Controller
                 ->select('id', 'menu_i_title')
                 ->get();
 
+            $user = User::find($id);
+
+            $user_menu_items = $user->menuItem()->get();
+
             return response()->json([
                 'menu_items' => $menu_items,
+                'user_menu_items' => $user_menu_items,
             ], 200);
         } else {
             return response()->json([

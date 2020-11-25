@@ -207,7 +207,7 @@ const AddMenuItems = (props) => {
                         control={
                           <Checkbox
                             name='user_m_i_read'
-                            color='secondary'
+                            color='primary'
                             disabled={values.menu_item_id === '' ? true : false}
                             checked={values.user_m_i_read}
                             onChange={handleChange}
@@ -220,7 +220,7 @@ const AddMenuItems = (props) => {
                         control={
                           <Checkbox
                             name='user_m_i_create'
-                            color='secondary'
+                            color='primary'
                             disabled={values.menu_item_id === '' ? true : false}
                             checked={values.user_m_i_create}
                             onChange={handleChange}
@@ -233,7 +233,7 @@ const AddMenuItems = (props) => {
                         control={
                           <Checkbox
                             name='user_m_i_update'
-                            color='secondary'
+                            color='primary'
                             disabled={values.menu_item_id === '' ? true : false}
                             checked={values.user_m_i_update}
                             onChange={handleChange}
@@ -246,7 +246,7 @@ const AddMenuItems = (props) => {
                         control={
                           <Checkbox
                             name='user_m_i_delete'
-                            color='secondary'
+                            color='primary'
                             disabled={values.menu_item_id === '' ? true : false}
                             checked={values.user_m_i_delete}
                             onChange={handleChange}
