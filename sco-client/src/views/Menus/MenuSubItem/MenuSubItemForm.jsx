@@ -74,13 +74,16 @@ const MenuSubItemForm = (props) => {
       props.closeDialog();
     }
     catch (err) {
-      err.status === 401 && logout();
-      err.status === 422 && setErrors(err.data.errors);
-      setToast({
-        show: true,
-        type: 'error',
-        message: `#${err.status} ${err.statusText}`
-      });
+      if (err.status === 401) {
+        logout();
+      } else {
+        err.status === 422 && setErrors(err.data.errors);
+        setToast({
+          show: true,
+          type: 'error',
+          message: `#${err.status} ${err.statusText}`
+        });
+      }
     }
     setLoading(false);
   };

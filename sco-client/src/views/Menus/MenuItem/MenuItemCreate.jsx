@@ -117,7 +117,7 @@ const MenuItemCreate = (props) => {
         setToast({
           show: true,
           type: 'error',
-          message: `#${err.status} ${err.statusText}`
+          message: `(#${err.status}) ${err.statusText}`
         });
         if (err.status === 422) {
           const { errors } = err.data;

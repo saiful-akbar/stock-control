@@ -92,7 +92,7 @@ class UserDelete extends Component {
         <DialogActions>
           <BtnSubmit
             title='Delete'
-            color='secondary'
+            color='primary'
             loading={this.state.loading}
             handleSubmit={this.handleSubmit}
             handleCancel={() => closeDialog()}

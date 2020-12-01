@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
   profile: {
     padding: theme.spacing(2)
   },
+  mainMenu: {
+    width: 245
+  },
   menu: {
     paddingRight: '5px',
     height: 'calc(100% - 206px)',
@@ -160,21 +163,23 @@ const NavBar = ({
           ? (
             <Skeleton variant='rect' className={classes.skeletonMenu} />
           ) : (
-            <List>
-              <NavItem
-                collapse={collapseIsActive}
-                collapseActive={(url) => setCollapseIsActive(url)}
-                data={menuDashboard}
-              />
-              {reduxUserLogin.menu_items.map((item, key) => (
+            <Box className={classes.mainMenu}>
+              <List>
                 <NavItem
-                  key={key}
-                  data={item}
                   collapse={collapseIsActive}
                   collapseActive={(url) => setCollapseIsActive(url)}
+                  data={menuDashboard}
                 />
-              ))}
-            </List>
+                {reduxUserLogin.menu_items.map((item, key) => (
+                  <NavItem
+                    key={key}
+                    data={item}
+                    collapse={collapseIsActive}
+                    collapseActive={(url) => setCollapseIsActive(url)}
+                  />
+                ))}
+              </List>
+            </Box>
           )
         }
       </Box>

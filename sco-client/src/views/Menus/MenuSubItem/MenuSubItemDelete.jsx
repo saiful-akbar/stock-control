@@ -36,11 +36,22 @@ const MenuItemDelete = (props) => {
     try {
       const res = await apiDeleteMenuSubItem(props.id);
       props.reloadTable();
-      setToast({ show: true, type: 'success', message: res.data.message });
+      setToast({
+        show: true,
+        type: 'success',
+        message: res.data.message
+      });
     }
     catch (err) {
-      err.status === 401 && logout();
-      setToast({ show: true, type: 'error', message: `#${err.status} ${err.statusText}` });
+      if (err.status === 401) {
+        logout();
+      } else {
+        setToast({
+          show: true,
+          type: 'error',
+          message: `(#${err.status}) ${err.statusText}`
+        });
+      }
     }
     setLoading(false);
     props.closeDialog();

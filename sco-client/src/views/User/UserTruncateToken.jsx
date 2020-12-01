@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Zoom,
   IconButton
@@ -29,7 +28,8 @@ function UserTruncateToken(props) {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState({
     type: 'error',
-    message: 'Truncate all user tokens?'
+    message: `Delete all user tokens?.
+    After deleting all tokens requires all users to re-login`
   });
 
 
@@ -90,9 +90,7 @@ function UserTruncateToken(props) {
 
         <DialogContent>
           <Alert severity={alert.type}>
-            <DialogContentText id='dialog-truncate-description'>
-              {alert.message}
-            </DialogContentText>
+            {alert.message}
           </Alert>
         </DialogContent>
 
@@ -109,7 +107,7 @@ function UserTruncateToken(props) {
             ) : (
               <BtnSubmit
                 title='Truncate'
-                color='secondary'
+                color='primary'
                 variant='contained'
                 size='small'
                 loading={loading}

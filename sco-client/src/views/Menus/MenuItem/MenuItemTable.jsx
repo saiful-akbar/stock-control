@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   progress: {
     width: '100%',
-    height: 3,
+    height: 4,
     margin: 0,
     padding: 0,
   },

@@ -146,6 +146,8 @@ const UserTable = (props) => {
         setLoading(false);
         if (err.status === 401) {
           window.location.href = '/logout';
+        } else {
+          alert(`(#${err.status}) ${err.statusText}`)
         }
       }
     }
@@ -375,8 +377,8 @@ const UserTable = (props) => {
                           <TableCell align='center'>
                             <Chip
                               variant="outlined"
-                              label={Boolean(row.token) ? 'Login' : 'Logout'}
-                              color={Boolean(row.token) ? 'primary' : 'secondary'}
+                              label={Boolean(row.token) ? 'Logged in' : 'Logged out'}
+                              color={Boolean(row.token) ? 'primary' : 'default'}
                               avatar={
                                 <Avatar
                                   alt={row.profile_name}

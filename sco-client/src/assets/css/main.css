@@ -32,7 +32,7 @@ table tbody tr td {
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(168, 168, 168, 0.3);
-  border-radius: 15px;
+  /* border-radius: 15px; */
 }
 
 ::-webkit-scrollbar-thumb:hover {
