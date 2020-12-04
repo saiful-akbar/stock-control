@@ -278,7 +278,7 @@ const UserTable = (props) => {
           justify='space-between'
           alignItems='center'
         >
-          <Grid item md={6} xs={12}>
+          <Grid item lg={4} md={6} xs={12}>
             {props.state !== null && (
               props.state.create === 1 && (
                 <Button
@@ -306,12 +306,12 @@ const UserTable = (props) => {
             </CustomTooltip>
           </Grid>
 
-          <Grid item md={6} xs={12}>
+          <Grid item lg={8} md={6} xs={12}>
             <form autoComplete='off' onSubmit={handleSubmitSearch}>
               <TextField
                 fullWidth
-                placeholder='Search users'
                 variant='outlined'
+                label='Search users'
                 margin='dense'
                 name='search'
                 type='search'
@@ -320,8 +320,8 @@ const UserTable = (props) => {
                 onChange={e => setSearch(e.target.value)}
                 onBlur={handleBlur}
                 InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
+                  endAdornment: (
+                    <InputAdornment>
                       <SearchIcon />
                     </InputAdornment>
                   ),
@@ -369,7 +369,7 @@ const UserTable = (props) => {
                         <TableRow hover key={key}>
                           <TableCell align='center'>
                             <UserTableOptions
-                              userId={row.id}
+                              userData={row}
                               state={props.state}
                               openDialogDelete={() => props.openDialogDelete(row.id)}
                             />

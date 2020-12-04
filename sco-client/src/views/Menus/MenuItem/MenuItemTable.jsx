@@ -301,7 +301,7 @@ const MenuItemTable = (props) => {
             justify='space-between'
             alignItems='center'
           >
-            <Grid item md={4} sm={6} xs={12}>
+            <Grid item lg={4} md={6} xs={12}>
               {props.state !== null && (
                 props.state.create === 1 && (
                   <Button
@@ -323,11 +323,11 @@ const MenuItemTable = (props) => {
               </CustomTooltip>
             </Grid>
 
-            <Grid item md={8} sm={6} xs={12}>
+            <Grid item lg={8} md={6} xs={12}>
               <form autoComplete='off' onSubmit={handleSubmitSearch}>
                 <TextField
                   fullWidth
-                  placeholder='Search by title, url, created at or updated at'
+                  label='Search menu items'
                   variant='outlined'
                   margin='dense'
                   name='search'
@@ -337,8 +337,8 @@ const MenuItemTable = (props) => {
                   onChange={e => setSearch(e.target.value)}
                   onBlur={handleBlur}
                   InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>
+                    endAdornment: (
+                      <InputAdornment position='end'>
                         <SearchIcon />
                       </InputAdornment>
                     ),

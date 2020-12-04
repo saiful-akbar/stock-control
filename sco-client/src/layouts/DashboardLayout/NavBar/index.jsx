@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2)
   },
   mainMenu: {
-    width: 245
+    width: 'calc(255px - 15px)',
   },
   menu: {
     paddingRight: '5px',

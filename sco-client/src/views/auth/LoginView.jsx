@@ -36,7 +36,7 @@ function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
-      <Link color='inherit' href='/'>scofeelbuy.com</Link>
+      <Link color='inherit' href='http://localhost:3000'>sco.feelbuy.com</Link>
       {' '}{new Date().getFullYear()}{'.'}
     </Typography>
   );

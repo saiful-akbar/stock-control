@@ -127,12 +127,24 @@ export const apiDeleteUser = (id) => {
 };
 
 
-// Mengambil data menu berdasarkan user id
+// Mengambil data menu item berdasarkan user id
 export const apiGetUserMenuItems = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/${id}/menuItems`
+      url: `/user/menu-items/${id}`
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
-}
+};
+
+
+// Update data menu item pada user
+export const apiUpdateUserMenuItems = (id, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'PUT',
+      data: data,
+      url: `/user/menu-items/${id}`,
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};

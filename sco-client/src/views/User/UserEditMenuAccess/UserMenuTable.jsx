@@ -42,13 +42,16 @@ function UserMenuTable({ columns, rows, action, loading, ...props }) {
   return (
     <Card className={classes.root} elevation={3}>
       <Progress show={loading} />
-
       <CardContent>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
               <TableRow>
-                <TableCell />
+                <TableCell>
+                  <IconButton disabled>
+                    <DeleteIcon fontSize='small' />
+                  </IconButton>
+                </TableCell>
                 {columns.map((column, key) => (
                   <TableCell
                     key={key}
@@ -60,7 +63,6 @@ function UserMenuTable({ columns, rows, action, loading, ...props }) {
                 ))}
               </TableRow>
             </TableHead>
-
             <TableBody>
               {rows.length === 0
                 ? (
@@ -91,7 +93,6 @@ function UserMenuTable({ columns, rows, action, loading, ...props }) {
             </TableBody>
           </Table>
         </TableContainer>
-
         <TablePagination
           rowsPerPageOptions={[10, 25, 50, 100]}
           component='div'

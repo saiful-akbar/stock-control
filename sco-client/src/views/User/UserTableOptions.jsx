@@ -15,7 +15,7 @@ const UserTableOptions = (props) => {
 
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const { state, userId } = props;
+  const { state, userData } = props;
 
 
   /**
@@ -34,16 +34,30 @@ const UserTableOptions = (props) => {
 
 
   // menu akses
-  const handleChangeMenuAccess = () => {
+  const handleChangeUserMenus = () => {
     handleCloseMenu();
-    navigate(`/user/${userId}/menuAccess`, { state: state });
+    navigate(`/user/menus/${userData.id}`, {
+      state: {
+        ...state,
+        profile: {
+          ...userData
+        }
+      }
+    });
   }
 
 
   // handle edit user
   const handleEdit = () => {
     handleCloseMenu();
-    navigate(`/user/${userId}/edit`, { state: state });
+    navigate(`/user/${userData.id}/edit`, {
+      state: {
+        ...state,
+        profile: {
+          ...userData
+        }
+      }
+    });
   }
 
 
@@ -68,7 +82,7 @@ const UserTableOptions = (props) => {
         onClose={handleCloseMenu}
       >
         {props.state !== null && props.state.update === 1 && (
-          <MenuItem onClick={handleChangeMenuAccess}>
+          <MenuItem onClick={handleChangeUserMenus}>
             <Typography variant='inherit'>Change menu access</Typography>
           </MenuItem>
         )}

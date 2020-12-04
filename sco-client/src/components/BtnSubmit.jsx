@@ -12,6 +12,7 @@ const BtnSubmit = ({
     titleCancel,
     size,
     color,
+    singleButton,
     ...props
 }) => {
 
@@ -41,11 +42,13 @@ const BtnSubmit = ({
     const btnActive = () => {
         return (
             <>
-                <Button
-                    onClick={handleCancel}
-                    color={color}
-                    size={size}
-                >{titleCancel}</Button>
+                {!singleButton && (
+                    <Button
+                        onClick={handleCancel}
+                        color={color}
+                        size={size}
+                    >{titleCancel}</Button>
+                )}
 
                 <Button
                     onClick={handleSubmit}
@@ -69,6 +72,7 @@ BtnSubmit.defaultProps = {
     size: 'medium',
     color: 'primary',
     loading: false,
+    singleButton: false,
 };
 
 export default BtnSubmit;

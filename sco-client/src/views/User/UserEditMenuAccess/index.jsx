@@ -14,7 +14,8 @@ import {
   Tabs,
   Tab,
   Divider,
-  Fab
+  Fab,
+  Grid,
 } from '@material-ui/core';
 import {
   useTheme,
@@ -24,6 +25,7 @@ import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CustomTooltip from 'src/components/CustomTooltip';
 import UserMenuItems from './UserMenuItems';
 import UserMenuSubItems from './UserMenuSubItems';
+import UserProfile from './UserProfile';
 
 
 // Style
@@ -33,7 +35,7 @@ const useStyle = makeStyles(theme => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
     zIndex: theme.zIndex.drawer + 1
-  }
+  },
 }));
 
 /**
@@ -81,8 +83,10 @@ function UserEditMenuAccess(props) {
   const classes = useStyle();
   const theme = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
   const { id } = useParams();
+
+  const location = useLocation();
+  const { state } = location;
 
   const [value, setValue] = useState(0);
 
@@ -91,10 +95,10 @@ function UserEditMenuAccess(props) {
    * Jika tidak arahkan ke halaman 404
    */
   useEffect(() => {
-    if (location.state === null || location.state.update !== 1) {
+    if (state === null || state.update !== 1) {
       navigate('/404');
     }
-  }, [location.state, navigate]);
+  }, [state, navigate]);
 
 
   // Fungsi untuk menghandle Tab
@@ -106,31 +110,41 @@ function UserEditMenuAccess(props) {
   // Render komponen utama
   return (
     <Page
-      title='User access menu'
-      pageTitle='User access menu'
+      title='User Menus'
+      pageTitle='User Menus'
       pb={true}
     >
-      <Box mb={3}>
-        <Tabs
-          value={value}
-          onChange={handleChangeTabs}
-          indicatorColor='primary'
-          textColor='primary'
-          aria-label='Access the user menu'
-        >
-          <Tab label='Menu Items' {...a11yProps(0)} />
-          <Tab label='Menu Sub Items' {...a11yProps(1)} />
-        </Tabs>
-        <Divider />
-      </Box>
+      <UserProfile data={state} />
 
-      <TabPanel id={id} value={value} index={0} dir={theme.direction} >
-        <UserMenuItems userId={id} />
-      </TabPanel>
-
-      <TabPanel value={value} index={1} dir={theme.direction} >
-        <UserMenuSubItems userId={id} />
-      </TabPanel>
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        spacing={3}
+      >
+        <Grid item xs={12}>
+          <Box mb={3}>
+            <Tabs
+              value={value}
+              onChange={handleChangeTabs}
+              indicatorColor='primary'
+              textColor='primary'
+              aria-label='Access the user menu'
+            >
+              <Tab label='Menu Items' {...a11yProps(0)} />
+              <Tab label='Menu Sub Items' {...a11yProps(1)} />
+            </Tabs>
+            <Divider />
+          </Box>
+          <TabPanel id={id} value={value} index={0} dir={theme.direction} >
+            <UserMenuItems userId={id} />
+          </TabPanel>
+          <TabPanel value={value} index={1} dir={theme.direction} >
+            <UserMenuSubItems userId={id} />
+          </TabPanel>
+        </Grid>
+      </Grid>
 
       <div className={classes.fab}>
         <CustomTooltip
@@ -141,13 +155,13 @@ function UserEditMenuAccess(props) {
             color='secondary'
             arial-label='Return to the user page'
             disabled={false}
-            onClick={() => navigate('/user', { state: location.state })}
+            onClick={() => navigate('/user', { state: state })}
           >
             <RotateLeftIcon />
           </Fab>
         </CustomTooltip>
       </div>
-    </Page>
+    </Page >
   )
 }
 

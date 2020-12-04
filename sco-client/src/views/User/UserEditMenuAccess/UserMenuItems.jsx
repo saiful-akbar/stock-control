@@ -7,7 +7,6 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
   Box,
-  Button,
   Grid,
   Select,
   MenuItem,
@@ -16,11 +15,17 @@ import {
   InputLabel,
   FormControl,
   Paper,
+  FormHelperText,
 } from '@material-ui/core';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import UserMenuTable from './UserMenuTable';
-import { apiGetUserMenuItems } from 'src/services/user';
+import {
+  apiGetUserMenuItems,
+  apiUpdateUserMenuItems,
+} from 'src/services/user';
 import { Skeleton } from '@material-ui/lab';
+import { connect } from 'react-redux';
+import { reduxAction } from 'src/config/redux/state';
+import BtnSubmit from 'src/components/BtnSubmit';
 
 const UserMenuItems = (props) => {
   const { userId } = props;
@@ -28,7 +33,7 @@ const UserMenuItems = (props) => {
   const columns = [
     { label: 'Title', field: 'menu_i_title' },
     { label: 'Read', field: 'user_m_i_read' },
-    { label: 'Cread', field: 'user_m_i_create' },
+    { label: 'Create', field: 'user_m_i_create' },
     { label: 'Update', field: 'user_m_i_update' },
     { label: 'Delete', field: 'user_m_i_delete' },
   ]
@@ -78,10 +83,53 @@ const UserMenuItems = (props) => {
     } catch (err) {
       if (isMounted.current) {
         setLoading(false);
-        console.log(err);
+        props.setReduxToast({
+          show: true,
+          type: 'error',
+          message: `(#${err.status}) ${err.statusText}`
+        });
       }
     }
   }
+
+
+  // Fungsi submit form
+  const handleSubmiForm = async (data, { resetForm }) => {
+    let newData = {
+      user_id: userId,
+      menu_item_id: data.menu_item_id,
+      user_m_i_read: data.user_m_i_read ? 1 : 0,
+      user_m_i_create: data.user_m_i_create ? 1 : 0,
+      user_m_i_update: data.user_m_i_update ? 1 : 0,
+      user_m_i_delete: data.user_m_i_delete ? 1 : 0,
+    }
+    try {
+      let res = await apiUpdateUserMenuItems(userId, newData);
+      if (isMounted.current) {
+        getData();
+        resetForm({});
+        props.setReduxToast({
+          show: true,
+          type: 'success',
+          message: res.data.message,
+        });
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        setLoading(false);
+        if (err.status === 401) {
+          window.location.href = '/logout';
+        }
+        else {
+          props.setReduxToast({
+            show: true,
+            type: 'error',
+            message: `(#${err.status}) ${err.status === 422 ? err.data.message : err.statusText}`
+          });
+        }
+      }
+    }
+  };
 
 
   return (
@@ -98,19 +146,21 @@ const UserMenuItems = (props) => {
                 user_m_i_delete: false,
               }}
               validationSchema={Yup.object().shape({
-                menu_item_id: Yup.string().required(),
+                menu_item_id: Yup.string().required('Menu Item is a required field'),
                 user_m_i_create: Yup.boolean(),
                 user_m_i_read: Yup.boolean(),
                 user_m_i_update: Yup.boolean(),
                 user_m_i_delete: Yup.boolean(),
               })}
-              onSubmit={() => alert('submitting')}
+              onSubmit={handleSubmiForm}
             >
               {({
                 handleBlur,
                 handleChange,
                 handleSubmit,
                 values,
+                errors,
+                isSubmitting
               }) => (
                   <form onSubmit={handleSubmit} noValidate autoComplete='off' >
                     <Grid
@@ -126,25 +176,26 @@ const UserMenuItems = (props) => {
                             <FormControl
                               fullWidth
                               variant='outlined'
+                              error={Boolean(errors.menu_item_id)}
                             >
-                              <InputLabel id='menu-items'>Menu Items</InputLabel>
+                              <InputLabel id='menu-items' margin='dense'>Menu Items</InputLabel>
                               <Select
                                 label='Menu Items'
                                 labelId='menu-items'
                                 name='menu_item_id'
+                                margin='dense'
                                 value={values.menu_item_id}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               >
                                 <MenuItem value=''><em>none</em></MenuItem>
-                                {menuItems.map((data, key) => (
-                                  <MenuItem key={key} value={data.id}>{data.menu_i_title}</MenuItem>
-                                ))}
+                                {menuItems.map((data, key) => <MenuItem key={key} value={data.id}>{data.menu_i_title}</MenuItem>)}
                               </Select>
+                              <FormHelperText>{errors.menu_item_id}</FormHelperText>
                             </FormControl>
 
                           ) : (
-                            <Skeleton variant='rect' height={55} />
+                            <Skeleton variant='rect' height={38} />
                           )}
                       </Grid>
 
@@ -164,7 +215,6 @@ const UserMenuItems = (props) => {
                                   />
                                 }
                               />
-
                               <FormControlLabel
                                 label='Create'
                                 control={
@@ -177,7 +227,6 @@ const UserMenuItems = (props) => {
                                   />
                                 }
                               />
-
                               <FormControlLabel
                                 label='Update'
                                 control={
@@ -190,7 +239,6 @@ const UserMenuItems = (props) => {
                                   />
                                 }
                               />
-
                               <FormControlLabel
                                 label='Delete'
                                 control={
@@ -207,27 +255,21 @@ const UserMenuItems = (props) => {
                           ) : (
                             <Skeleton variant='rect' height={30} />
                           )}
-
                       </Grid>
 
                       <Grid item lg={2} xs={12} align="center">
                         {menuItems.length > 0
-                          ? (
-                            <Button
-                              color='primary'
-                              variant='contained'
-                              type='submit'
-                              disabled={values.menu_item_id === '' ? true : false}
-                              startIcon={
-                                <AddCircleOutlineIcon />
-                              }
-                            >
-                              Add to list
-                            </Button>
-
-                          ) : (
-                            <Skeleton variant='rect' height={37} />
-                          )}
+                          ? <BtnSubmit
+                            title='Add To List'
+                            color='primary'
+                            variant='contained'
+                            type='submit'
+                            singleButton={true}
+                            onClick={handleSubmit}
+                            loading={isSubmitting}
+                          />
+                          : <Skeleton variant='rect' height={37} />
+                        }
                       </Grid>
                     </Grid>
                   </form>
@@ -248,4 +290,16 @@ const UserMenuItems = (props) => {
   );
 };
 
-export default UserMenuItems;
+
+// Redux dispatch
+function reduxDispatch(dispatch) {
+  return {
+    setReduxToast: (error) => dispatch({
+      type: reduxAction.toast,
+      value: error
+    })
+  }
+}
+
+
+export default connect(null, reduxDispatch)(UserMenuItems);

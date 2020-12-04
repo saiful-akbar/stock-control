@@ -260,11 +260,41 @@ class UserController extends Controller
                 'message' => 'Access denied',
             ], 403);
         } else {
-            $user_menu_item = DB::table('user_menu_item')->insert($request->user_menu_item);
-            $user_menu_sub_item = DB::table('user_menu_sub_item')->insert($request->user_menu_sub_item);
+            $menu_items = [];
+            foreach ($request->user_menu_item as $key => $value) {
+                $menu_items[$key] = [
+                    'id'              => Str::uuid(),
+                    'user_id'         => $value['user_id'],
+                    'menu_item_id'    => $value['menu_item_id'],
+                    'user_m_i_read'   => $value['user_m_i_read'],
+                    'user_m_i_create' => $value['user_m_i_create'],
+                    'user_m_i_update' => $value['user_m_i_update'],
+                    'user_m_i_delete' => $value['user_m_i_delete'],
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ];
+            }
+
+            $menu_sub_items = [];
+            foreach ($request->user_menu_sub_item as $key_sub_item => $sub_item) {
+                $menu_sub_items[$key_sub_item] = [
+                    'id'                => Str::uuid(),
+                    'user_id'           => $sub_item['user_id'],
+                    'menu_sub_item_id'  => $sub_item['menu_sub_item_id'],
+                    'user_m_s_i_read'   => $sub_item['user_m_s_i_read'],
+                    'user_m_s_i_create' => $sub_item['user_m_s_i_create'],
+                    'user_m_s_i_update' => $sub_item['user_m_s_i_update'],
+                    'user_m_s_i_delete' => $sub_item['user_m_s_i_delete'],
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ];
+            }
+
+            DB::table('user_menu_item')->insert($menu_items);
+            DB::table('user_menu_sub_item')->insert($menu_sub_items);
+
             return response()->json([
-                'user_menu_item' => $user_menu_item,
-                'user_menu_sub_item' => $user_menu_sub_item,
+                'message' => 'Created succcessfully',
             ], 200);
         }
     }
@@ -352,22 +382,84 @@ class UserController extends Controller
      * Mengambil akses data menu item berdasarkan id user
      * Mengambil semua data menu items
      */
-    public function getMenuItems($id)
+    public function getUserMenuItems($id)
     {
         if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+            $user_menu_items = User::find($id)->menuItem()->get();
             $menu_items = DB::table('menu_items')
-                ->select('id', 'menu_i_title')
+                ->select('id', 'menu_i_title', 'created_at')
+                ->orderBy('created_at', 'desc')
                 ->get();
-
-            $user = User::find($id);
-
-            $user_menu_items = $user->menuItem()->get();
 
             return response()->json([
                 'menu_items' => $menu_items,
                 'user_menu_items' => $user_menu_items,
             ], 200);
         } else {
+            return response()->json([
+                'message' => 'Access denied',
+            ], 403);
+        }
+    }
+
+
+    public function updateUserMenuItems(Request $request, $id)
+    {
+        // Cek apakan user memeiliki akses update atau tidak
+        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+            $request->validate([
+                'user_id'         => 'required|string|max:36|exists:users,id',
+                'menu_item_id'    => 'required|string|max:36|exists:menu_items,id',
+                'user_m_i_read'   => 'required|boolean',
+                'user_m_i_create' => 'required|boolean',
+                'user_m_i_update' => 'required|boolean',
+                'user_m_i_delete' => 'required|boolean',
+            ]);
+
+            /**
+             * Ambil data menu berdasarkan user id & menu item id
+             * Lalu siman kedalam variabel $user_menu_item
+             */
+            $user_menu_item = DB::table('user_menu_item')->where([
+                ['user_id', $id],
+                ['menu_item_id', $request->menu_item_id],
+            ])->first();
+
+            // cek apakan menu ada atau tidak
+            if (!empty($user_menu_item)) {
+
+                /**
+                 * kondisi jika menu yang dipilih sudah ada pada tabel
+                 * Kembalikan response 422
+                 */
+                return response()->json([
+                    'message' => 'The menu item is already on the list',
+                ], 422);
+            } else {
+
+                /**
+                 * Kondisi jika menu yang dipilih belum ada pada tabel sebelumnya
+                 * tambahkan data ke tabel user_menu_item
+                 */
+                DB::table('user_menu_item')->insert([
+                    'id'              => Str::uuid(),
+                    'user_id'         => htmlspecialchars($id),
+                    'menu_item_id'    => htmlspecialchars($request->menu_item_id),
+                    'user_m_i_read'   => htmlspecialchars($request->user_m_i_read),
+                    'user_m_i_create' => htmlspecialchars($request->user_m_i_create),
+                    'user_m_i_update' => htmlspecialchars($request->user_m_i_update),
+                    'user_m_i_delete' => htmlspecialchars($request->user_m_i_delete),
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ]);
+
+                return response()->json([
+                    'message' => '1 menu item added successfully',
+                ], 201);
+            }
+        } else {
+
+            // Kondisi jika user tidak memiliki akses update
             return response()->json([
                 'message' => 'Access denied',
             ], 403);

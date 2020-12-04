@@ -21,8 +21,8 @@ table tbody tr td {
 
 /* start scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   background-color: transparent;
 }
 
@@ -32,7 +32,6 @@ table tbody tr td {
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(168, 168, 168, 0.3);
-  /* border-radius: 15px; */
 }
 
 ::-webkit-scrollbar-thumb:hover {
