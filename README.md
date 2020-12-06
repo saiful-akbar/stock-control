@@ -17,4 +17,6 @@ Aplikasi web untuk mengontrol data stok barang
   - Menghapus data menu
 - Mengelola data pengguna
   - Menambahkan pengguna baru
-  - Merubah akses menu pada setiap pengguna 
+  - Memperbarui akses menu pada setiap pengguna
+    - Menambah akses menu pada pengguna
+    - menghapus akses menu pada pengguna 
