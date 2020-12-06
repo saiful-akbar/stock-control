@@ -2,9 +2,10 @@ import React from 'react';
 import { Grid, Avatar, Typography } from '@material-ui/core';
 import apiUrl from 'src/apiUrl';
 import { makeStyles } from '@material-ui/core/styles';
-import MailIcon from '@material-ui/icons/Mail';
 
-
+/**
+ * Style
+ */
 const useStyle = makeStyles(theme => ({
   avatar: {
     width: theme.spacing(10),
@@ -13,10 +14,18 @@ const useStyle = makeStyles(theme => ({
 }));
 
 
-const UserProfile = (props) => {
+/**
+ * Komponen utama
+ * @param {*} props 
+ */
+function UserProfile(props) {
   const classes = useStyle();
-  const { profile } = props.data;
+  const { data } = props;
 
+
+  /**
+   * Render komponen utama
+   */
   return (
     <Grid
       container
@@ -29,7 +38,11 @@ const UserProfile = (props) => {
         <Avatar
           className={classes.avatar}
           alt='Avatar'
-          src={profile.profile_avatar ? apiUrl(`/avatar/${profile.profile_avatar}`) : ''}
+          src={
+            data && data.profile_avatar
+              ? apiUrl(`/avatar/${data.profile_avatar}`)
+              : ''
+          }
         />
       </Grid>
 
@@ -39,14 +52,22 @@ const UserProfile = (props) => {
           variant='subtitle1'
           noWrap
         >
-          {profile.profile_name}
+          {
+            data && data.profile_name
+              ? data.profile_name
+              : 'Username does not exist!'
+          }
         </Typography>
         <Typography
           color='textSecondary'
           variant='body2'
           noWrap
         >
-          {profile.profile_division}
+          {
+            data && data.profile_division
+              ? data.profile_division
+              : 'Division does not exist!'
+          }
         </Typography>
       </Grid>
     </Grid>

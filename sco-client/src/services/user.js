@@ -2,11 +2,11 @@ import api from './api';
 
 /**
  * Mengambil semua data user dari api
- * @param {Halaman pada tabel} page 
- * @param {Jumlah baris perhalaman} perPage 
- * @param {Kata yang ingin dicari atau pencarian pada tabel} query 
- * @param {field tabel yang ingin si sortir} sort 
- * @param {Urutan data pada tabel "asc/desc"} orderBy
+ * @param {int} page 
+ * @param {int} perPage 
+ * @param {string} query 
+ * @param {string} sort 
+ * @param {string "asc/desc"} orderBy
  */
 export const apiGetAllUser = (
   page = 1,
@@ -31,7 +31,9 @@ export const apiGetAllUser = (
 };
 
 
-// Ambil semua menu unruk halaman user
+/**
+ * Ambil semua menu untuk halaman user
+ */
 export const apiGetAllMenus = () => {
   return new Promise((resolve, reject) => {
     api({
@@ -75,7 +77,10 @@ export const apiCekProfileFrom = (data) => {
 };
 
 
-// Menambahkan user baru
+/**
+ * Menambahkan user baru
+ * @param {array} formData 
+ */
 export const apiCreateUser = (formData) => {
   return new Promise((resolve, reject) => {
     api({
@@ -90,7 +95,11 @@ export const apiCreateUser = (formData) => {
 };
 
 
-// Menambahkan akses menu pada user
+/**
+ * Menambahkan akses menu pada user
+ * @param {array} menuItems 
+ * @param {array} menuSubItems 
+ */
 export const apiCreateUserMenuAccess = (menuItems, menuSubItems) => {
   return new Promise((resolve, reject) => {
     api({
@@ -105,7 +114,9 @@ export const apiCreateUserMenuAccess = (menuItems, menuSubItems) => {
 };
 
 
-// Mereset ulang table personal_access_tokens
+/**
+ * Mereset ulang table personal_access_tokens
+ */
 export const apiTruncateTokens = () => {
   return new Promise((resolve, reject) => {
     api({
@@ -116,7 +127,10 @@ export const apiTruncateTokens = () => {
 };
 
 
-// Menghapus data user 
+/**
+ * Menghapus user
+ * @param {string} id 
+ */
 export const apiDeleteUser = (id) => {
   return new Promise((resolve, reject) => {
     api({
@@ -127,7 +141,10 @@ export const apiDeleteUser = (id) => {
 };
 
 
-// Mengambil data menu item berdasarkan user id
+/**
+ * Mengambil semua data akses menu item pada user yang dipilih
+ * @param {string} id 
+ */
 export const apiGetUserMenuItems = (id) => {
   return new Promise((resolve, reject) => {
     api({
@@ -138,13 +155,31 @@ export const apiGetUserMenuItems = (id) => {
 };
 
 
-// Update data menu item pada user
-export const apiUpdateUserMenuItems = (id, data) => {
+/**
+ * Menambahkan akses menu item pada user 
+ * @param {String} uuid 
+ * @param {Array} data 
+ */
+export const apiAddUserMenuItem = (uuid, data) => {
   return new Promise((resolve, reject) => {
     api({
-      method: 'PUT',
+      method: 'POST',
       data: data,
-      url: `/user/menu-items/${id}`,
+      url: `/user/menu-items/${uuid}`,
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};
+
+
+/**
+ * Menghapus user menu item
+ * @param {string} uuid 
+ */
+export const apiDeleteUserMenuItem = (uuid) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'DELETE',
+      url: `/user/menu-items/${uuid}`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };

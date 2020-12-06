@@ -10,7 +10,6 @@ import {
 import PropTypes from 'prop-types';
 import Page from 'src/components/Page';
 import {
-  Box,
   Tabs,
   Tab,
   Divider,
@@ -28,7 +27,9 @@ import UserMenuSubItems from './UserMenuSubItems';
 import UserProfile from './UserProfile';
 
 
-// Style
+/**
+ * Style
+ */
 const useStyle = makeStyles(theme => ({
   fab: {
     position: 'absolute',
@@ -58,7 +59,9 @@ function TabPanel(props) {
 }
 
 
-// default value component TabPanel
+/**
+ * default value component TabPanel
+ */
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -78,44 +81,56 @@ function a11yProps(index) {
 }
 
 
-// Komponen utama
+/**
+ * Komponen utama
+ * @param {*} props 
+ */
 function UserEditMenuAccess(props) {
   const classes = useStyle();
   const theme = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { state } = location;
   const { id } = useParams();
 
-  const location = useLocation();
-  const { state } = location;
-
   const [value, setValue] = useState(0);
+  const [profile, setProfile] = useState(null);
+
 
   /**
    * Cek apakah state bernilai null atau tidak & state.update bernilai 1 atau tidak
    * Jika tidak arahkan ke halaman 404
    */
   useEffect(() => {
-    if (state === null || state.update !== 1) {
+    if (state === null || state.update !== 1 || state.profile === null) {
       navigate('/404');
+    } else {
+      setProfile(state.profile)
     }
   }, [state, navigate]);
 
 
-  // Fungsi untuk menghandle Tab
+  /**
+   * Fungsi untuk menghandle Tab
+   * @param {obj} event 
+   * @param {int} newValue 
+   */
   const handleChangeTabs = (event, newValue) => {
     setValue(newValue);
   };
 
 
-  // Render komponen utama
+  /**
+   * Render komponen utama
+   */
   return (
     <Page
       title='User Menus'
       pageTitle='User Menus'
       pb={true}
     >
-      <UserProfile data={state} />
-
+      <UserProfile data={profile} />
       <Grid
         container
         direction="row"
@@ -124,19 +139,20 @@ function UserEditMenuAccess(props) {
         spacing={3}
       >
         <Grid item xs={12}>
-          <Box mb={3}>
-            <Tabs
-              value={value}
-              onChange={handleChangeTabs}
-              indicatorColor='primary'
-              textColor='primary'
-              aria-label='Access the user menu'
-            >
-              <Tab label='Menu Items' {...a11yProps(0)} />
-              <Tab label='Menu Sub Items' {...a11yProps(1)} />
-            </Tabs>
-            <Divider />
-          </Box>
+          <Tabs
+            value={value}
+            onChange={handleChangeTabs}
+            indicatorColor='primary'
+            textColor='primary'
+            aria-label='Access the user menu'
+          >
+            <Tab label='Menu Items' {...a11yProps(0)} />
+            <Tab label='Menu Sub Items' {...a11yProps(1)} />
+          </Tabs>
+          <Divider />
+        </Grid>
+
+        <Grid item xs={12}>
           <TabPanel id={id} value={value} index={0} dir={theme.direction} >
             <UserMenuItems userId={id} />
           </TabPanel>

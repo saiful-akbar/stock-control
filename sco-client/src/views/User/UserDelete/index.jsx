@@ -28,6 +28,7 @@ class UserDelete extends Component {
     };
     this.mounted = true;
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentWillUnmount() {
@@ -36,6 +37,9 @@ class UserDelete extends Component {
 
 
 
+  /**
+   * Fungsi untuk submit form
+   */
   async handleSubmit() {
     this.setState({ loading: true });
     try {
@@ -68,11 +72,24 @@ class UserDelete extends Component {
   }
 
 
+  /**
+   * Fungsi menutup dialog
+   */
+  handleClose() {
+    if (!this.state.loading) {
+      this.props.closeDialog();
+    } else {
+      return;
+    }
+  }
+
+
   render() {
     const { open, closeDialog } = this.props;
     return (
       <Dialog
         open={open}
+        onClose={this.handleClose}
         TransitionComponent={Transition}
         maxWidth='sm'
         fullWidth={true}

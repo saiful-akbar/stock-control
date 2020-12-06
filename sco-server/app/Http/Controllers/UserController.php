@@ -379,16 +379,30 @@ class UserController extends Controller
 
 
     /**
-     * Mengambil akses data menu item berdasarkan id user
-     * Mengambil semua data menu items
+     * @param string $id
+     *
+     * @return \Illuminate\Http\Response
      */
     public function getUserMenuItems($id)
     {
         if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
-            $user_menu_items = User::find($id)->menuItem()->get();
+            $user_menu_items = DB::table('user_menu_item')
+                ->leftJoin('menu_items', 'user_menu_item.menu_item_id', '=', 'menu_items.id')
+                ->select(
+                    'user_menu_item.id',
+                    'user_menu_item.user_m_i_create',
+                    'user_menu_item.user_m_i_read',
+                    'user_menu_item.user_m_i_update',
+                    'user_menu_item.user_m_i_delete',
+                    'menu_items.menu_i_title'
+                )
+                ->where('user_menu_item.user_id', $id)
+                ->orderBy('user_menu_item.created_at', 'desc')
+                ->get();
+
             $menu_items = DB::table('menu_items')
-                ->select('id', 'menu_i_title', 'created_at')
-                ->orderBy('created_at', 'desc')
+                ->select('id', 'menu_i_title')
+                ->orderBy('menu_i_title', 'asc')
                 ->get();
 
             return response()->json([
@@ -403,7 +417,14 @@ class UserController extends Controller
     }
 
 
-    public function updateUserMenuItems(Request $request, $id)
+
+    /**
+     * @param Request $request
+     * @param string $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addUserMenuItem(Request $request, string $id)
     {
         // Cek apakan user memeiliki akses update atau tidak
         if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
@@ -460,6 +481,29 @@ class UserController extends Controller
         } else {
 
             // Kondisi jika user tidak memiliki akses update
+            return response()->json([
+                'message' => 'Access denied',
+            ], 403);
+        }
+    }
+
+
+    /**
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function deleteUserMenuItem(string $id)
+    {
+        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+            $delete = DB::table('user_menu_item')
+                ->where('id', $id)
+                ->delete();
+            return response()->json([
+                'message' => '1 Menu item deleted successfully',
+                'delete'  => $delete
+            ]);
+        } else {
             return response()->json([
                 'message' => 'Access denied',
             ], 403);

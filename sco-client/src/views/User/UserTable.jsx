@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Grid, Button, Avatar, Icon, Chip, Card, CardContent
+  Grid,
+  Button,
+  Avatar,
+  Icon,
+  Chip,
+  Card,
+  CardContent,
 } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,8 +36,9 @@ import UserTableOptions from './UserTableOptions';
 import UserTruncateToken from './UserTruncateToken';
 import { connect } from 'react-redux';
 
-
-// style
+/**
+ * style
+ */
 const useStyles = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
@@ -62,17 +69,28 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginRight: theme.spacing(1),
   },
+  red: {
+    color: theme.palette.error.main,
+  },
+  green: {
+    color: theme.palette.success.main,
+  }
 }));
 
 
-// component utama
+/**
+ * component utama
+ * @param {*} props 
+ */
 const UserTable = (props) => {
   const classes = useStyles();
   const isMounted = useRef(true);
   const navigate = useNavigate();
 
 
-  // state
+  /**
+   * state
+   */
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [rowData, setRowData] = useState({
@@ -89,41 +107,90 @@ const UserTable = (props) => {
   });
 
 
-  // daftar kolom untuk tabel
+  /**
+   * Daftar kolom untuk tabel
+   */
   const columns = [
-    { field: 'username', label: 'Username' },
-    { field: 'is_active', label: 'Active' },
-    { field: 'profile_avatar', label: 'Avatar' },
-    { field: 'profile_name', label: 'Full Name' },
-    { field: 'profile_division', label: 'Division' },
-    { field: 'profile_email', label: 'Email' },
-    { field: 'profile_phone', label: 'Phone Number' },
-    { field: 'profile_address', label: 'Address' },
-    { field: 'created_at', label: 'Created At' },
-    { field: 'updated_at', label: 'Updated At' },
+    {
+      field: 'username',
+      label: 'Username',
+      align: 'left'
+    },
+    {
+      field: 'is_active',
+      label: 'Active',
+      align: 'left'
+    },
+    {
+      field: 'profile_avatar',
+      label: 'Avatar',
+      align: 'left'
+    },
+    {
+      field: 'profile_name',
+      label: 'Full Name',
+      align: 'left'
+    },
+    {
+      field: 'profile_division',
+      label: 'Division',
+      align: 'left'
+    },
+    {
+      field: 'profile_email',
+      label: 'Email',
+      align: 'left'
+    },
+    {
+      field: 'profile_phone',
+      label: 'Phone Number',
+      align: 'left'
+    },
+    {
+      field: 'profile_address',
+      label: 'Address',
+      align: 'left'
+    },
+    {
+      field: 'created_at',
+      label: 'Created At',
+      align: 'left'
+    },
+    {
+      field: 'updated_at',
+      label: 'Updated At',
+      align: 'left'
+    },
   ];
 
 
-  // inisialisasi awal untuk mengambil data dari api
+  /**
+   * inisialisasi awal untuk mengambil data dari api
+   */
   useEffect(() => {
-    if (rowData.users.data.length <= 0) {
-      getData();
-    }
-    return () => {
-      isMounted.current = false;
-    };
+    rowData.users.data.length <= 0 && getData();
+    return () => isMounted.current = false;
     // eslint-disable-next-line
   }, []);
 
 
-  // Reload table dari luar komponen
+  /**
+   * Reload table dari luar komponen
+   */
   useEffect(() => {
     props.reload && getData();
     // eslint-disable-next-line
   }, [props.reload]);
 
 
-  // Fungsi untuk mengambil data dari api
+  /**
+   * Fungsi untuk mengambil data dari api
+   * @param {int} page
+   * @param {int} perPage
+   * @param {string} query
+   * @param {string} sort
+   * @param {string "asc/desc"} orderBy
+   */
   const getData = async (
     page = rowData.users.current_page,
     perPage = rowData.users.per_page,
@@ -154,7 +221,10 @@ const UserTable = (props) => {
   };
 
 
-  // fungsi sortir tabel
+  /**
+   * fungsi sortir tabel
+   * @param {string} sort 
+   */
   const handleSortTable = (sort) => {
     let orderBy = 'asc';
     if (rowData.sort === sort) {
@@ -166,14 +236,20 @@ const UserTable = (props) => {
   }
 
 
-  // fungsi submit form pencarian
+  /**
+   * fungsi submit form pencarian
+   * @param {*} e 
+   */
   const handleSubmitSearch = (e) => {
     e.preventDefault();
     getData(1, rowData.users.per_page, search);
   }
 
 
-  // fungsi handle blur pada form pencarian
+  /**
+   * fungsi handle blur pada form pencarian
+   * @param {obj} e 
+   */
   const handleBlur = (e) => {
     if (rowData.search === '' && search === '') {
       e.preventDefault();
@@ -183,13 +259,18 @@ const UserTable = (props) => {
   }
 
 
-  // fungsi handle refresh pada table
+  /**
+   * fungsi handle refresh pada table
+   */
   const handleRefresh = () => {
     getData();
   }
 
 
-  // fungsi untuk merubah baris perhalaman pada tabel
+  /**
+   * fungsi untuk merubah baris perhalaman pada tabel
+   * @param {obj} event 
+   */
   const handleChangeRowsPerPage = (event) => {
     let newRowData = { ...rowData };
     newRowData.users['per_page'] = event.target.value;
@@ -199,32 +280,46 @@ const UserTable = (props) => {
   };
 
 
-  // fungsi untuk kembali kehalaman pertama pada tabel
+  /**
+   * fungsi untuk kembali kehalaman pertama pada tabel
+   * @param {obj} event 
+   */
   const handleFirstPageButtonClick = (event) => {
     getData(1);
   };
 
 
-  // fungsi untuk kembali 1 halaman pada tabel
+  /**
+   * fungsi untuk kembali 1 halaman pada tabel
+   * @param {obj} event 
+   */
   const handleBackButtonClick = (event) => {
     getData(rowData.users.current_page - 1);
   };
 
 
-  // fungsi untuk maju 1 halamnn pada tabel
+  /**
+   * fungsi untuk maju 1 halamnn pada tabel
+   * @param {obj} event 
+   */
   const handleNextButtonClick = (event) => {
     getData(rowData.users.current_page + 1);
   };
 
 
-  // fungsi untuk maju ke halamn terakhir pada tabel
+  /**
+   * fungsi untuk maju ke halamn terakhir pada tabel
+   * @param {obj} event 
+   */
   const handleLastPageButtonClick = (event) => {
     getData(Math.max(0, Math.ceil(rowData.users.total / rowData.users.per_page)));
   };
 
 
-  // component custom untuk tabel pagination
-  const TablePaginationActions = (props) => {
+  /**
+   * component custom untuk tabel pagination
+   */
+  const TablePaginationActions = () => {
     return (
       <div className={classes.root}>
         <IconButton
@@ -234,7 +329,6 @@ const UserTable = (props) => {
         >
           <FirstPageIcon />
         </IconButton>
-
         <IconButton
           aria-label='previous page'
           disabled={rowData.users.current_page <= 1}
@@ -242,7 +336,6 @@ const UserTable = (props) => {
         >
           <KeyboardArrowLeft />
         </IconButton>
-
         <IconButton
           aria-label='next page'
           disabled={rowData.users.current_page >= Math.ceil(rowData.users.total / rowData.users.per_page)}
@@ -250,7 +343,6 @@ const UserTable = (props) => {
         >
           <KeyboardArrowRight />
         </IconButton>
-
         <IconButton
           aria-label='last page'
           disabled={rowData.users.current_page >= Math.ceil(rowData.users.total / rowData.users.per_page)}
@@ -262,7 +354,9 @@ const UserTable = (props) => {
     );
   }
 
-  // render component utaman
+  /**
+   * render component utaman
+   */
   return (
     <Card elevation={3}>
       {loading
@@ -286,11 +380,9 @@ const UserTable = (props) => {
                   color='primary'
                   className={classes.button}
                   startIcon={<AddCircleIcon />}
-                  onClick={() => {
-                    navigate('/user/create', { state: props.state });
-                  }}
+                  onClick={() => navigate('/user/create', { state: props.state })}
                 >
-                  Create user
+                  {'Create user'}
                 </Button>
               )
             )}
@@ -389,7 +481,13 @@ const UserTable = (props) => {
                           </TableCell>
                           <TableCell>{row.username}</TableCell>
                           <TableCell>
-                            <Icon color={row.is_active === 1 ? 'primary' : 'secondary'}>
+                            <Icon
+                              className={
+                                row.is_active === 1
+                                  ? classes.green
+                                  : classes.red
+                              }
+                            >
                               {row.is_active === 1 ? 'check' : 'close'}
                             </Icon>
                           </TableCell>
@@ -397,7 +495,11 @@ const UserTable = (props) => {
                             <Avatar
                               className={classes.avatar}
                               alt={row.profile_name}
-                              src={Boolean(row.profile_avatar) ? apiUrl(`/avatar/${row.profile_avatar}`) : ''}
+                              src={
+                                Boolean(row.profile_avatar)
+                                  ? apiUrl(`/avatar/${row.profile_avatar}`)
+                                  : ''
+                              }
                             />
                           </TableCell>
                           <TableCell>{row.profile_name}</TableCell>
@@ -428,12 +530,20 @@ const UserTable = (props) => {
           </Grid>
         </Grid>
       </CardContent>
-    </Card>
+    </Card >
   );
 };
 
-const reduxState = (state) => ({
-  reduxUserLogin: state.userLogin
-});
+
+/**
+ * Redux state
+ * @param {obj} state 
+ */
+function reduxState(state) {
+  return {
+    reduxUserLogin: state.userLogin
+  }
+};
+
 
 export default connect(reduxState, null)(UserTable);

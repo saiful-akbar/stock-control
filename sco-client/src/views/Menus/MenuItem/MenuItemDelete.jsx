@@ -3,14 +3,13 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Zoom,
 } from '@material-ui/core';
-import Toast from 'src/components/Toast';
-import { apiDeleteMenuItem } from 'src/services/menuItem';
-import BtnSubmit from 'src/components/BtnSubmit';
 import { Alert } from '@material-ui/lab';
+import Toast from 'src/components/Toast';
+import BtnSubmit from 'src/components/BtnSubmit';
+import { apiDeleteMenuItem } from 'src/services/menuItem';
 
 
 // animasi
@@ -62,24 +61,34 @@ const MenuItemDelete = ({
   }
 
 
+  /**
+   * Handle close dialog
+   */
+  const handleClose = () => {
+    if (loading) {
+      return;
+    } else {
+      closeDialog();
+    }
+  }
+
+
   // main render component
   return (
     <>
       <Dialog
         open={open}
+        onClose={handleClose}
         TransitionComponent={Transition}
         maxWidth='sm'
         fullWidth={true}
         aria-labelledby='dialog-delete'
-        aria-describedby="delete-description"
       >
         <DialogTitle>Delete menu item</DialogTitle>
 
         <DialogContent>
           <Alert severity="error">
-            <DialogContentText id="delete-description">
-              {'Once a menu item is deleted, it is permanently deleted along with all data related to this menu item. Deleting menu items cannot be undone.'}
-            </DialogContentText>
+            {'Once a menu item is deleted, it is permanently deleted along with all data related to this menu item. Deleting menu items cannot be undone.'}
           </Alert>
         </DialogContent>
 

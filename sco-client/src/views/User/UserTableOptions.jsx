@@ -20,20 +20,24 @@ const UserTableOptions = (props) => {
 
   /**
    * handle saat menu di klik
-   * @param {event component} event
+   * @param {obj} event
    */
   const handleClickMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
 
-  // Handle close menu
+  /**
+   * Handle close menu
+   */
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
 
-  // menu akses
+  /**
+   * Link menu akses
+   */
   const handleChangeUserMenus = () => {
     handleCloseMenu();
     navigate(`/user/menus/${userData.id}`, {
@@ -47,7 +51,9 @@ const UserTableOptions = (props) => {
   }
 
 
-  // handle edit user
+  /**
+   * handle edit user
+   */
   const handleEdit = () => {
     handleCloseMenu();
     navigate(`/user/${userData.id}/edit`, {
@@ -61,14 +67,18 @@ const UserTableOptions = (props) => {
   }
 
 
-  // Handle delete
+  /**
+   * Handle delete
+   */
   const handleDelete = () => {
     props.openDialogDelete();
     handleCloseMenu();
   }
 
 
-
+  /**
+   * Render komponen utama
+   */
   return (
     <>
       <IconButton onClick={handleClickMenu}>

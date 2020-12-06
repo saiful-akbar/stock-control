@@ -15,11 +15,11 @@ import { Card, CardContent } from '@material-ui/core';
 
 const useStyles = makeStyles({
   container: {
-    maxHeight: 300,
+    maxHeight: '100%',
   },
 });
 
-function UserMenuTable({ columns, rows, action, loading, ...props }) {
+function UserMenuTable({ columns, rows, onDelete, loading, ...props }) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -63,6 +63,7 @@ function UserMenuTable({ columns, rows, action, loading, ...props }) {
                 ))}
               </TableRow>
             </TableHead>
+
             <TableBody>
               {rows.length === 0
                 ? (
@@ -76,7 +77,7 @@ function UserMenuTable({ columns, rows, action, loading, ...props }) {
                     <TableRow hover tabIndex={-1} key={rowKey}>
                       <TableCell>
                         <CustomTooltip title='Delete' placement='bottom'>
-                          <IconButton onClick={() => action(row.id)} >
+                          <IconButton onClick={() => onDelete(row.id)} >
                             <DeleteIcon fontSize='small' />
                           </IconButton>
                         </CustomTooltip>
@@ -111,7 +112,7 @@ UserMenuTable.defaultProps = {
   columns: [],
   rows: [],
   loading: true,
-  action: () => null,
+  onDelete: () => null,
 }
 
 export default UserMenuTable;

@@ -28,10 +28,11 @@ import CustomTooltip from 'src/components/CustomTooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Toast from 'src/components/Toast';
-import { useNavigate } from 'react-router-dom';
 
 
-// style
+/**
+ * style
+ */
 const useStyles = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
@@ -58,22 +59,26 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   red: {
-    color: theme.palette.error.dark,
+    color: theme.palette.error.main,
   },
   green: {
-    color: theme.palette.success.dark,
+    color: theme.palette.success.main,
   }
 }));
 
 
-// component utama
+/**
+ * component utama
+ * @param {*} props 
+ */
 const MenuItemTable = (props) => {
   const classes = useStyles();
   const isMounted = useRef(true);
-  const navigate = useNavigate();
 
 
-  // state
+  /**
+   * State
+   */
   const [toast, setToast] = React.useState({ show: false, type: null, message: '' });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -99,18 +104,46 @@ const MenuItemTable = (props) => {
   });
 
 
-  // daftar kolom untuk tabel
+  /**
+   * Daftar kolom untuk tabel
+   */
   const columns = [
-    { field: 'menu_i_title', label: 'Title' },
-    { field: 'menu_i_url', label: 'Url / Path' },
-    { field: 'menu_i_icon', label: 'Icon' },
-    { field: 'menu_i_children', label: 'Children' },
-    { field: 'created_at', label: 'Created At' },
-    { field: 'updated_at', label: 'Updated At' },
+    {
+      field: 'menu_i_title',
+      label: 'Title',
+      align: 'left'
+    },
+    {
+      field: 'menu_i_url',
+      label: 'Path',
+      align: 'left'
+    },
+    {
+      field: 'menu_i_icon',
+      label: 'Icon',
+      align: 'left'
+    },
+    {
+      field: 'menu_i_children',
+      label: 'Children',
+      align: 'left'
+    },
+    {
+      field: 'created_at',
+      label: 'Created At',
+      align: 'left'
+    },
+    {
+      field: 'updated_at',
+      label: 'Updated At',
+      align: 'left'
+    },
   ];
 
 
-  // inisialisasi awal untuk mengambil data dari api
+  /**
+   * inisialisasi awal untuk mengambil data dari api
+   */
   useEffect(() => {
     if (rowData.menu_items.data.length <= 0) {
       getData();
@@ -122,7 +155,9 @@ const MenuItemTable = (props) => {
   }, []);
 
 
-  // reload table setelah terjadi aksi
+  /**
+   * reload table setelah terjadi aksi
+   */
   useEffect(() => {
     if (props.reload) {
       getData();
@@ -131,7 +166,14 @@ const MenuItemTable = (props) => {
   }, [props.reload]);
 
 
-  // Fungsi untuk mengambil data dari api
+  /**
+   * Fungsi untuk mengambil data dari api
+   * @param {int} page 
+   * @param {int} perPage 
+   * @param {string} query 
+   * @param {string} sort 
+   * @param {"asc/desc"} orderBy
+   */
   const getData = async (
     page = rowData.menu_items.current_page,
     perPage = rowData.menu_items.per_page,
@@ -151,15 +193,11 @@ const MenuItemTable = (props) => {
         if (err.status === 401) {
           window.location.href = '/logout';
         } else {
-          if (err.status === 403) {
-            navigate('404');
-          } else {
-            setToast({
-              show: true,
-              type: 'error',
-              message: `${err.status} ${err.status === 500 ? 'An error occurred on the server' : err.data.message}`
-            });
-          }
+          setToast({
+            show: true,
+            type: 'error',
+            message: `(#${err.status}) ${err.statusText}`
+          });
         }
       }
     }
@@ -170,7 +208,10 @@ const MenuItemTable = (props) => {
   };
 
 
-  // fungsi sortir tabel
+  /**
+   * fungsi sortir tabel
+   * @param {string "asc/desc"} sort 
+   */
   const handleSortTable = (sort) => {
     let orderBy = 'asc';
     if (rowData.sort === sort) {
@@ -188,14 +229,20 @@ const MenuItemTable = (props) => {
   }
 
 
-  // fungsi submit form pencarian
+  /**
+   * fungsi submit form pencarian
+   * @param {obj} e 
+   */
   const handleSubmitSearch = (e) => {
     e.preventDefault();
     getData(1, rowData.menu_items.per_page, search);
   }
 
 
-  // fungsi handle blur pada form pencarian
+  /**
+   * fungsi handle blur pada form pencarian
+   * @param {obj} e 
+   */
   const handleBlur = (e) => {
     if (rowData.search === '' && search === '') {
       e.preventDefault();
@@ -205,13 +252,18 @@ const MenuItemTable = (props) => {
   }
 
 
-  // fungsi handle refresh pada table
+  /**
+   * fungsi handle refresh pada table
+   */
   const handleRefresh = () => {
     getData();
   }
 
 
-  // fungsi untuk merubah baris perhalaman pada tabel
+  /**
+   * fungsi untuk merubah baris perhalaman pada tabel
+   * @param {obj} event 
+   */
   const handleChangeRowsPerPage = (event) => {
     let newRowData = { ...rowData };
     newRowData.menu_items['per_page'] = event.target.value;
@@ -221,31 +273,46 @@ const MenuItemTable = (props) => {
   };
 
 
-  // fungsi untuk kembali kehalaman pertama pada tabel
+  /**
+   * fungsi untuk kembali kehalaman pertama pada tabel
+   * @param {obj} event 
+   */
   const handleFirstPageButtonClick = (event) => {
     getData(1);
   };
 
 
-  // fungsi untuk kembali 1 halaman pada tabel
+  /**
+   * fungsi untuk kembali 1 halaman sebelumnya
+   * @param {object} event 
+   */
   const handleBackButtonClick = (event) => {
     getData(rowData.menu_items.current_page - 1);
   };
 
 
-  // fungsi untuk maju 1 halamnn pada tabel
+  /**
+   * fungsi untuk maju 1 halamnn berikutnya
+   * @param {obj} event 
+   */
   const handleNextButtonClick = (event) => {
     getData(rowData.menu_items.current_page + 1);
   };
 
 
-  // fungsi untuk maju ke halamn terakhir pada tabel
+  /**
+   * fungsi untuk maju ke halamn terakhir pada tabel
+   * @param {obj} event 
+   */
   const handleLastPageButtonClick = (event) => {
     getData(Math.max(0, Math.ceil(rowData.menu_items.total / rowData.menu_items.per_page)));
   };
 
 
-  // component custom untuk tabel pagination
+  /**
+   * component custom untuk tabel pagination
+   * @param {*} props 
+   */
   const TablePaginationActions = (props) => {
     return (
       <div className={classes.root}>
@@ -284,7 +351,10 @@ const MenuItemTable = (props) => {
     );
   }
 
-  // render component utaman
+
+  /**
+   * render component utaman
+   */
   return (
     <>
       <Card elevation={3}>
@@ -360,22 +430,18 @@ const MenuItemTable = (props) => {
                             onClick={() => handleSortTable(col.field)}
                           >
                             {col.label}
-                            {rowData.sort === col.field ? (
-                              <span className={classes.visuallyHidden}>
-                                {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                              </span>
-                            ) : null}
+                            {rowData.sort === col.field
+                              ? <span className={classes.visuallyHidden}>{rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
+                              : null
+                            }
                           </TableSortLabel>
                         </TableCell>
                       ))}
 
                       {props.state !== null && (
                         props.state.update === 1 || props.state.delete === 1
-                          ? (
-                            <TableCell align='center'>Actions</TableCell>
-                          ) : (
-                            <TableCell />
-                          )
+                          ? <TableCell align='center'>{'Actions'}</TableCell>
+                          : <TableCell />
                       )}
                     </TableRow>
                   </TableHead>
@@ -391,16 +457,24 @@ const MenuItemTable = (props) => {
                       ) : (
                         rowData.menu_items.data.map((row, key) => (
                           <TableRow hover key={key}>
-                            <TableCell >{row.menu_i_title}</TableCell>
-                            <TableCell >{row.menu_i_url}</TableCell>
-                            <TableCell ><Icon>{row.menu_i_icon}</Icon></TableCell>
-                            <TableCell >
-                              <Icon className={row.menu_i_children === 1 ? classes.green : classes.red}>
+                            <TableCell>{row.menu_i_title}</TableCell>
+                            <TableCell>{row.menu_i_url}</TableCell>
+                            <TableCell>
+                              <Icon>{row.menu_i_icon}</Icon>
+                            </TableCell>
+                            <TableCell>
+                              <Icon
+                                className={
+                                  row.menu_i_children === 1
+                                    ? classes.green
+                                    : classes.red
+                                }
+                              >
                                 {row.menu_i_children === 1 ? 'check' : 'close'}
                               </Icon>
                             </TableCell>
-                            <TableCell >{row.created_at}</TableCell>
-                            <TableCell >{row.updated_at}</TableCell>
+                            <TableCell>{row.created_at}</TableCell>
+                            <TableCell>{row.updated_at}</TableCell>
 
                             {props.state !== null && (
                               props.state.update === 1 || props.state.delete === 1

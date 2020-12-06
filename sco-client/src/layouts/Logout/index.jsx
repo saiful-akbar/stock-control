@@ -5,9 +5,11 @@ import {
   Backdrop,
   CircularProgress
 } from '@material-ui/core';
-import { useNavigate } from 'react-router-dom';
 import { logout } from 'src/services/auth';
 
+/**
+ * Style
+ */
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: 1,
@@ -16,31 +18,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Logout = ({ cookies }) => {
+/**
+ * Componen utama
+ * @param {*} param0 
+ */
+function Logout({ cookies }) {
   const classes = useStyles();
-  const navigate = useNavigate();
-
 
   React.useEffect(() => {
     handleLogout();
-
     // eslint-disable-next-line
   }, []);
 
-
+  /**
+   * Request logout
+   */
   const handleLogout = async () => {
-    try {
-      await logout();
-      cookies.remove('auth_token');
-      navigate('/login');
-    }
-    catch (err) {
-      cookies.remove('auth_token');
-      navigate('/login');
-    }
+    await logout();
+    cookies.remove('auth_token');
+    window.location.href = '/login';
   }
 
-
+  /**
+   * Render component utama
+   */
   return (
     <Backdrop className={classes.backdrop} open={true}>
       <CircularProgress color="primary" size={50} />

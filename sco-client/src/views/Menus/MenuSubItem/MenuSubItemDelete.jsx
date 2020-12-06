@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Zoom,
 } from '@material-ui/core';
@@ -58,24 +57,34 @@ const MenuItemDelete = (props) => {
   };
 
 
+  /**
+   * Handle close dialog
+   */
+  const handleClose = () => {
+    if (loading) {
+      return;
+    } else {
+      props.closeDialog();
+    }
+  }
+
+
   // main render component
   return (
     <>
       <Dialog
         open={props.open}
+        onClose={handleClose}
         TransitionComponent={Transition}
         maxWidth='sm'
         fullWidth={true}
         aria-labelledby='dialog-delete'
-        aria-describedby="delete-description"
       >
-        <DialogTitle>Delete menu sub item</DialogTitle>
+        <DialogTitle>{'Delete menu sub item'}</DialogTitle>
 
         <DialogContent>
           <Alert severity="error">
-            <DialogContentText>
-              Once a menu sub item is deleted, it is permanently deleted along with all data related to this menu sub item. Deleting menu sub items cannot be undone.
-            </DialogContentText>
+            {'Once a menu sub item is deleted, it is permanently deleted along with all data related to this menu sub item. Deleting menu sub items cannot be undone.'}
           </Alert>
         </DialogContent>
 
