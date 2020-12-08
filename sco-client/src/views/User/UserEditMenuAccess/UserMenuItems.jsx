@@ -37,21 +37,51 @@ import DialogDelete from 'src/components/DialogDelete';
  * @param {*} props 
  */
 function UserMenuItems(props) {
-  const { userId } = props;
-  const isMounted = useRef(true);
-  const columns = [
-    { label: 'Title', field: 'menu_i_title', align: 'left' },
-    { label: 'Read', field: 'user_m_i_read', align: 'center' },
-    { label: 'Create', field: 'user_m_i_create', align: 'center' },
-    { label: 'Update', field: 'user_m_i_update', align: 'center' },
-    { label: 'Delete', field: 'user_m_i_delete', align: 'center' },
-  ]
-
   const [loading, setLoading] = useState(true);
   const [rowData, setRowData] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [deleteData, setDeleteData] = useState({ show: false, id: null });
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const isMounted = useRef(true);
+
+
+  /**
+   * User id
+   */
+  const { userId } = props;
+
+
+  /**
+   * Kolom pada tabel list
+   */
+  const columns = [
+    {
+      label: 'Title',
+      field: 'menu_i_title',
+      align: 'left'
+    },
+    {
+      label: 'Read',
+      field: 'user_m_i_read',
+      align: 'center'
+    },
+    {
+      label: 'Create',
+      field: 'user_m_i_create',
+      align: 'center'
+    },
+    {
+      label: 'Update',
+      field: 'user_m_i_update',
+      align: 'center'
+    },
+    {
+      label: 'Delete',
+      field: 'user_m_i_delete',
+      align: 'center'
+    },
+  ]
+
 
 
   useEffect(() => {
@@ -75,7 +105,7 @@ function UserMenuItems(props) {
     } else {
       return <CloseIcon style={{ color: colors.red[500] }} />
     }
-  }
+  };
 
 
   /**
@@ -108,12 +138,16 @@ function UserMenuItems(props) {
       }
     } catch (err) {
       if (isMounted.current) {
-        setLoading(false);
-        props.setReduxToast({
-          show: true,
-          type: 'error',
-          message: `(#${err.status}) ${err.statusText}`
-        });
+        if (err.status === 401) {
+          window.location.href = 'logout';
+        } else {
+          setLoading(false);
+          props.setReduxToast({
+            show: true,
+            type: 'error',
+            message: `(#${err.status}) ${err.statusText}`
+          });
+        }
       }
     }
   }
@@ -146,11 +180,11 @@ function UserMenuItems(props) {
       }
     } catch (err) {
       if (isMounted.current) {
-        setLoading(false);
         if (err.status === 401) {
           window.location.href = '/logout';
         }
         else {
+          setLoading(false);
           props.setReduxToast({
             show: true,
             type: 'error',
@@ -181,12 +215,12 @@ function UserMenuItems(props) {
         });
       }
     } catch (err) {
-      setDeleteLoading(false);
-      setDeleteData({ show: false, id: null });
       if (err.status === 401) {
         window.location.href = '/logout';
       }
       else {
+        setDeleteLoading(false);
+        setDeleteData({ show: false, id: null });
         props.setReduxToast({
           show: true,
           type: 'error',

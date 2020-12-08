@@ -183,3 +183,17 @@ export const apiDeleteUserMenuItem = (uuid) => {
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
+
+
+/**
+ * Mengambil semua data akses menu sub item pada user yang dipilih
+ * @param {string} id 
+ */
+export const apiGetUserMenuSubItems = (id) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'GET',
+      url: `/user/menu-sub-items/${id}`
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};
