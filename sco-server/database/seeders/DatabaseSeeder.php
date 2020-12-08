@@ -69,7 +69,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at'      => now()
             ], [
                 'id'              => Str::uuid(),
-                'menu_i_title'    => 'Master',
+                'menu_i_title'    => 'Master Data',
                 'menu_i_url'      => '/master',
                 'menu_i_icon'     => 'account_balance',
                 'menu_i_children' => true,
@@ -144,7 +144,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'             => Str::uuid(),
                 'menu_item_id'   => $this->getMenuItem('/incoming'),
-                'menu_s_i_title' => 'Take In Warehaouse',
+                'menu_s_i_title' => 'Take In Warehouse',
                 'menu_s_i_url'   => '/incoming/takeIn',
                 'created_at'     => now(),
                 'updated_at'     => now()

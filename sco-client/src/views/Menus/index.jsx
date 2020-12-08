@@ -14,6 +14,7 @@ import MenuSubItem from 'src/views/Menus/MenuSubItem';
 import { apiGetAllMenuItem } from 'src/services/menuItem';
 import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
 import { Grid, Box, Divider } from '@material-ui/core';
+import queryString from 'query-string';
 
 /**
  * Component Tabpanel
@@ -62,23 +63,42 @@ function a11yProps(index) {
  */
 function Menus(props) {
   const [value, setValue] = useState(0);
+
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const { state, search } = location;
 
 
 
-  // Cek apakah state bernilai null & state read bernilai 1
+  /**
+   * Cek apakah state bernilai null & state read bernilai 1
+   */
   useEffect(() => {
-    if (location.state === null || location.state.read !== 1) {
+    if (state === null || state.read !== 1) {
       navigate('/404');
     }
   });
 
 
-  // Fungsi untuk menghandle Tab
+  /**
+   * Menangkap nilai query sting "tab" untuk menemtukan tab yang aktif
+   */
+  useEffect(() => {
+    const parsed = queryString.parse(search);
+    setValue(parsed.tab === 'menuSubItems' ? 1 : 0);
+  }, [search]);
+
+
+  /**
+   * Fungsi untuk menghandle Tab
+   * @param {obj} event 
+   * @param {int} newValue 
+   */
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    let tab = newValue === 0 ? 'menuItems' : 'menuSubItems';
+    navigate(`/menu?tab=${tab}`, { state: state });
   };
 
 
@@ -106,11 +126,11 @@ function Menus(props) {
       </Grid>
 
       <TabPanel value={value} index={0} dir={theme.direction}>
-        <MenuItem state={location.state} />
+        <MenuItem state={state} />
       </TabPanel>
 
       <TabPanel value={value} index={1} dir={theme.direction}>
-        <MenuSubItem state={location.state} />
+        <MenuSubItem state={state} />
       </TabPanel>
     </Page>
   );

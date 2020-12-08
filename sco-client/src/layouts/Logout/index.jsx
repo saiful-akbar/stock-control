@@ -34,9 +34,14 @@ function Logout({ cookies }) {
    * Request logout
    */
   const handleLogout = async () => {
-    await logout();
-    cookies.remove('auth_token');
-    window.location.href = '/login';
+    try {
+      await logout();
+      cookies.remove('auth_token');
+      window.location.href = '/login';
+    } catch (error) {
+      cookies.remove('auth_token');
+      window.location.href = '/login';
+    }
   }
 
   /**

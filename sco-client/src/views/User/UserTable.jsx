@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     height: 4,
   },
   container: {
-    maxHeight: 400,
+    maxHeight: 500,
   },
   visuallyHidden: {
     border: 0,
@@ -63,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   avatar: {
-    width: theme.spacing(6),
-    height: theme.spacing(6),
+    width: theme.spacing(7),
+    height: theme.spacing(7),
   },
   button: {
     marginRight: theme.spacing(1),
@@ -260,14 +260,6 @@ const UserTable = (props) => {
 
 
   /**
-   * fungsi handle refresh pada table
-   */
-  const handleRefresh = () => {
-    getData();
-  }
-
-
-  /**
    * fungsi untuk merubah baris perhalaman pada tabel
    * @param {obj} event 
    */
@@ -392,7 +384,7 @@ const UserTable = (props) => {
             )}
 
             <CustomTooltip title='Reload'>
-              <IconButton onClick={handleRefresh}>
+              <IconButton onClick={() => getData()}>
                 <RefreshIcon />
               </IconButton>
             </CustomTooltip>
@@ -409,8 +401,8 @@ const UserTable = (props) => {
                 type='search'
                 value={search}
                 disabled={loading}
-                onChange={e => setSearch(e.target.value)}
                 onBlur={handleBlur}
+                onChange={e => setSearch(e.target.value)}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment>
@@ -430,11 +422,18 @@ const UserTable = (props) => {
                     <TableCell align='center'>Actions</TableCell>
                     <TableCell align='center'>Is Logged In</TableCell>
                     {columns.map((col, i) => (
-                      <TableCell key={i} align={col.align}>
+                      <TableCell
+                        key={i}
+                        align={col.align}
+                      >
                         <TableSortLabel
                           active={rowData.sort === col.field}
-                          direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
                           onClick={() => handleSortTable(col.field)}
+                          direction={
+                            rowData.sort === col.field
+                              ? rowData.order_by
+                              : 'asc'
+                          }
                         >
                           {col.label}
                           {rowData.sort === col.field && (
@@ -469,12 +468,24 @@ const UserTable = (props) => {
                           <TableCell align='center'>
                             <Chip
                               variant="outlined"
-                              label={Boolean(row.token) ? 'Logged in' : 'Logged out'}
-                              color={Boolean(row.token) ? 'primary' : 'default'}
+                              label={
+                                Boolean(row.token)
+                                  ? 'Logged in'
+                                  : 'Logged out'
+                              }
+                              color={
+                                Boolean(row.token)
+                                  ? 'primary'
+                                  : 'default'
+                              }
                               avatar={
                                 <Avatar
                                   alt={row.profile_name}
-                                  src={Boolean(row.profile_avatar) ? apiUrl(`/avatar/${row.profile_avatar}`) : ''}
+                                  src={
+                                    Boolean(row.profile_avatar)
+                                      ? apiUrl(`/avatar/${row.profile_avatar}`)
+                                      : ''
+                                  }
                                 />
                               }
                             />
@@ -503,10 +514,30 @@ const UserTable = (props) => {
                             />
                           </TableCell>
                           <TableCell>{row.profile_name}</TableCell>
-                          <TableCell>{row.profile_division === null ? '...' : row.profile_division}</TableCell>
-                          <TableCell>{row.profile_email === null ? '...' : row.profile_email}</TableCell>
-                          <TableCell>{row.profile_phone === null ? '...' : row.profile_phone}</TableCell>
-                          <TableCell>{row.profile_address === null ? '...' : row.profile_address}</TableCell>
+                          <TableCell>{
+                            row.profile_division === null
+                              ? '...'
+                              : row.profile_division
+                          }
+                          </TableCell>
+                          <TableCell>{
+                            row.profile_email === null
+                              ? '...'
+                              : row.profile_email
+                          }
+                          </TableCell>
+                          <TableCell>{
+                            row.profile_phone === null
+                              ? '...'
+                              : row.profile_phone
+                          }
+                          </TableCell>
+                          <TableCell>{
+                            row.profile_address === null
+                              ? '...'
+                              : row.profile_address
+                          }
+                          </TableCell>
                           <TableCell>{row.created_at}</TableCell>
                           <TableCell>{row.updated_at}</TableCell>
                         </TableRow>

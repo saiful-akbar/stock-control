@@ -25,6 +25,7 @@ import CustomTooltip from 'src/components/CustomTooltip';
 import UserMenuItems from './UserMenuItems';
 import UserMenuSubItems from './UserMenuSubItems';
 import UserProfile from './UserProfile';
+import queryString from 'query-string';
 
 
 /**
@@ -91,7 +92,7 @@ function UserEditMenuAccess(props) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { state } = location;
+  const { state, search } = location;
   const { id } = useParams();
 
   const [value, setValue] = useState(0);
@@ -112,12 +113,23 @@ function UserEditMenuAccess(props) {
 
 
   /**
+   * Menangkap nilai query sting "tab" untuk menemtukan tab yang aktif
+   */
+  useEffect(() => {
+    const parsed = queryString.parse(search);
+    setValue(parsed.tab === 'menuSubItems' ? 1 : 0);
+  }, [search]);
+
+
+  /**
    * Fungsi untuk menghandle Tab
    * @param {obj} event 
    * @param {int} newValue 
    */
   const handleChangeTabs = (event, newValue) => {
     setValue(newValue);
+    let tab = newValue === 0 ? 'menuItems' : 'menuSubItems';
+    navigate(`/user/menus/${id}?tab=${tab}`, { state: state });
   };
 
 
@@ -130,7 +142,6 @@ function UserEditMenuAccess(props) {
       pageTitle='User Menus'
       pb={true}
     >
-      <UserProfile data={profile} />
       <Grid
         container
         direction="row"
@@ -138,7 +149,11 @@ function UserEditMenuAccess(props) {
         alignItems="center"
         spacing={3}
       >
-        <Grid item xs={12}>
+        <Grid item md={4} xs={12}>
+          <UserProfile data={profile} />
+        </Grid>
+
+        <Grid item md={8} xs={12}>
           <Tabs
             value={value}
             onChange={handleChangeTabs}
@@ -153,7 +168,7 @@ function UserEditMenuAccess(props) {
         </Grid>
 
         <Grid item xs={12}>
-          <TabPanel id={id} value={value} index={0} dir={theme.direction} >
+          <TabPanel value={value} index={0} dir={theme.direction} >
             <UserMenuItems userId={id} />
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction} >
