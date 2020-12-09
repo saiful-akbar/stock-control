@@ -123,12 +123,18 @@ function UserMenuTable({
   loading,
   action,
   onDelete,
+  selectedRows,
   ...props
 }) {
   const classes = useStylesUserMenuTable();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [selected, setSelected] = React.useState([]);
+
+
+  React.useEffect(() => {
+    setSelected(selectedRows);
+  }, [selectedRows, setSelected]);
 
 
   /**
@@ -331,6 +337,7 @@ UserMenuTable.defaultProps = {
   columns: [],
   rows: [],
   loading: true,
+  selectedRows: [],
   onDelete: () => null,
 };
 
@@ -342,6 +349,7 @@ UserMenuTable.propTypes = {
   label: PropTypes.string,
   columns: PropTypes.array,
   rows: PropTypes.array,
+  selectedRows: PropTypes.array,
   loading: PropTypes.bool,
   action: PropTypes.bool,
   onDelete: PropTypes.func,

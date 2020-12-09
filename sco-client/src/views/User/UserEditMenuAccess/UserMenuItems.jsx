@@ -16,7 +16,6 @@ import {
   FormControl,
   Paper,
   colors,
-  ListSubheader,
 } from '@material-ui/core';
 import {
   apiGetUserMenuItems,
@@ -41,7 +40,7 @@ function UserMenuItems(props) {
   const [loading, setLoading] = useState(true);
   const [rowData, setRowData] = useState(null);
   const [menuItems, setMenuItems] = useState(null);
-  const [deleteData, setDeleteData] = useState({ show: false, id: null });
+  const [deleteData, setDeleteData] = useState({ show: false, id: [] });
   const [deleteLoading, setDeleteLoading] = useState(false);
   const isMounted = useRef(true);
 
@@ -213,7 +212,7 @@ function UserMenuItems(props) {
       if (isMounted.current) {
         setDeleteLoading(false);
         setValueRowData(res.data.response.original.user_menu_items);
-        setDeleteData({ show: false, id: null });
+        setDeleteData({ show: false, id: [] });
         props.setReduxToast({
           show: true,
           type: 'success',
@@ -227,7 +226,7 @@ function UserMenuItems(props) {
         }
         else {
           setDeleteLoading(false);
-          setDeleteData({ show: false, id: null });
+          setDeleteData({ show: false, id: [] });
           props.setReduxToast({
             show: true,
             type: 'error',
@@ -401,6 +400,7 @@ function UserMenuItems(props) {
             label='List of access rights'
             loading={loading}
             columns={columns}
+            selectedRows={deleteData.id}
             rows={rowData === null ? [] : rowData}
             onDelete={selected => {
               setDeleteData({
@@ -423,7 +423,7 @@ function UserMenuItems(props) {
         onClose={bool => {
           setDeleteData({
             show: bool,
-            id: null,
+            id: [],
           });
         }}
       />
