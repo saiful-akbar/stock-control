@@ -16,7 +16,7 @@ import Logo from 'src/components/Logo';
 import CustomTooltip from 'src/components/CustomTooltip';
 import ThemeMode from './ThemeMode';
 import Clock from 'src/components/Clock';
-import { connect } from 'react-redux';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,7 +44,6 @@ const TopBar = ({
   onMobileNavOpen,
   onDesktopNavOpen,
   openDesktopNav,
-  reduxTheme,
   ...rest
 }) => {
   const classes = useStyles();
@@ -52,7 +51,7 @@ const TopBar = ({
   return (
     <AppBar
       className={clsx(classes.root, className)}
-      elevation={reduxTheme === 'light' ? 5 : 3}
+      elevation={3}
     >
       <Toolbar>
         <Hidden mdDown>
@@ -93,8 +92,4 @@ TopBar.propTypes = {
   openDesktopNav: PropTypes.bool,
 };
 
-const reduxState = (state) => ({
-  reduxTheme: state.theme
-});
-
-export default connect(reduxState, null)(TopBar);
+export default TopBar;

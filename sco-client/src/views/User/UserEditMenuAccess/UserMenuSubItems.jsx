@@ -35,6 +35,7 @@ import BtnSubmit from 'src/components/BtnSubmit';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import DialogDelete from 'src/components/DialogDelete';
+import DataTable from 'src/components/DataTable';
 
 
 /**
@@ -367,6 +368,10 @@ function UserMenuSubItems(props) {
               )}
           </Formik>
         </Card>
+      </Grid>
+
+      <Grid item xs={12}>
+        <DataTable />
       </Grid>
     </Grid>
   );

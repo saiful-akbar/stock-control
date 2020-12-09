@@ -475,7 +475,8 @@ class UserController extends Controller
                 ]);
 
                 return response()->json([
-                    "message" => "1 menu item added successfully",
+                    "message"  => "1 menu item added successfully",
+                    "response" => $this->getUserMenuItems($id),
                 ], 201);
             }
         } else {
@@ -501,7 +502,7 @@ class UserController extends Controller
                 ->delete();
             return response()->json([
                 "message" => "1 Menu item deleted successfully",
-                "delete"  => $delete
+                "delete"  => $delete,
             ]);
         } else {
             return response()->json([

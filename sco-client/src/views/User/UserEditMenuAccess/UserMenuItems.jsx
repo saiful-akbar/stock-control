@@ -108,6 +108,26 @@ function UserMenuItems(props) {
   };
 
 
+  const setValueRowData = (value) => {
+    let result = [];
+    value.map(dt => {
+      result = [
+        ...result,
+        {
+          id: dt.id,
+          menu_i_title: dt.menu_i_title,
+          user_m_i_read: menuAccess(dt.user_m_i_read),
+          user_m_i_create: menuAccess(dt.user_m_i_create),
+          user_m_i_update: menuAccess(dt.user_m_i_update),
+          user_m_i_delete: menuAccess(dt.user_m_i_delete),
+        }
+      ];
+      return result;
+    });
+    setRowData(result);
+  }
+
+
   /**
    * FUngsi mengambil semua data menu item
    * Berdasarkan user yang dipilih
@@ -119,22 +139,7 @@ function UserMenuItems(props) {
       if (isMounted.current) {
         setLoading(false);
         setMenuItems(res.data.menu_items)
-        let result = [];
-        res.data.user_menu_items.map((data, key) => {
-          result = [
-            ...result,
-            {
-              id: data.id,
-              menu_i_title: data.menu_i_title,
-              user_m_i_read: menuAccess(data.user_m_i_read),
-              user_m_i_create: menuAccess(data.user_m_i_create),
-              user_m_i_update: menuAccess(data.user_m_i_update),
-              user_m_i_delete: menuAccess(data.user_m_i_delete),
-            }
-          ];
-          return result;
-        })
-        setRowData(result);
+        setValueRowData(res.data.user_menu_items);
       }
     } catch (err) {
       if (isMounted.current) {
@@ -170,7 +175,7 @@ function UserMenuItems(props) {
     try {
       let res = await apiAddUserMenuItem(userId, newData);
       if (isMounted.current) {
-        getData();
+        setValueRowData(res.data.response.original.user_menu_items);
         resetForm({});
         props.setReduxToast({
           show: true,
@@ -205,7 +210,8 @@ function UserMenuItems(props) {
     try {
       let res = await apiDeleteUserMenuItem(uuid);
       if (isMounted.current) {
-        getData();
+        let newRowData = rowData.filter(value => value.id !== uuid);
+        setRowData(newRowData);
         setDeleteLoading(false);
         setDeleteData({ show: false, id: null });
         props.setReduxToast({
@@ -381,6 +387,8 @@ function UserMenuItems(props) {
 
         <Grid item xs={12}>
           <UserMenuTable
+            action
+            label='List of access rights'
             loading={loading}
             columns={columns}
             rows={rowData === null ? [] : rowData}
@@ -389,8 +397,13 @@ function UserMenuItems(props) {
                 show: true,
                 id: uuid,
               });
-            }
-            }
+            }}
+            onMultipleDelete={selected => {
+              setDeleteData({
+                show: true,
+                id: selected,
+              });
+            }}
           />
         </Grid>
       </Grid>
@@ -398,7 +411,11 @@ function UserMenuItems(props) {
       <DialogDelete
         open={deleteData.show}
         loading={deleteLoading}
-        onDelete={() => handleDelete(deleteData.id)}
+        onDelete={() => {
+          typeof deleteData.id === 'string'
+            ? handleDelete(deleteData.id)
+            : alert('multiple delete');
+        }}
         onClose={bool => {
           setDeleteData({
             show: bool,

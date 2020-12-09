@@ -229,8 +229,11 @@ export default function DataTable() {
   };
 
   const handleClick = (event, name) => {
+
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
+
+    console.log(selectedIndex, name);
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
