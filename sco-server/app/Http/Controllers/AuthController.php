@@ -23,25 +23,31 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-            if (Auth::user()->is_active == 1) {
-                Auth::user()->tokens()->delete();
-                $auth_token = Auth::user()->createToken('auth_token')->plainTextToken;
-                return response()->json([
-                    'auth_token' => $auth_token
-                ], 200);
+        if ($request->isMethod('post')) {
+            if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
+                if (Auth::user()->is_active == 1) {
+                    Auth::user()->tokens()->delete();
+                    $auth_token = Auth::user()->createToken('auth_token')->plainTextToken;
+                    return response()->json([
+                        'auth_token' => $auth_token
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'errors'  => ['username' => ['Your account is inactive']],
+                        'message' => 'Your account is inactive'
+                    ], 422);
+                }
             } else {
                 return response()->json([
-                    'errors'  => ['username' => ['Your account is inactive']],
-                    'message' => 'Your account is inactive'
+                    'errors'  => ['username' => ['Incorrect username or password']],
+                    'message' => 'Incorrect username or password'
                 ], 422);
             }
-        } else {
-            return response()->json([
-                'errors'  => ['username' => ['Incorrect username or password']],
-                'message' => 'Incorrect username or password'
-            ], 422);
         }
+
+        return response()->json([
+            'message' => 'Method not allowed'
+        ], 405);
     }
 
     /**
@@ -58,11 +64,17 @@ class AuthController extends Controller
     /*
     * Get avatar user is login
     */
-    public function userAvatar($avatar)
+    public function userAvatar(Request $request, $avatar)
     {
-        $file     = Storage::get('img/avatars/' . $avatar);
-        $mimeType = Storage::mimeType('img/avatars/' . $avatar);
-        return response($file, 200)->header('Content-Type', $mimeType);
+        if ($request->isMethod('get')) {
+            $file     = Storage::get('img/avatars/' . $avatar);
+            $mimeType = Storage::mimeType('img/avatars/' . $avatar);
+            return response($file, 200)->header('Content-Type', $mimeType);
+        }
+
+        return response()->json([
+            'message' => 'Method not allowed'
+        ]);
     }
 
     // cek apakah token sesuai dengan data user yang ada

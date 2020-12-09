@@ -361,7 +361,7 @@ function UserMenuSubItems(props) {
                       variant='contained'
                       type='submit'
                       singleButton={true}
-                      disabled={!Boolean(values.menu_item_id)}
+                      disabled={!Boolean(values.menu_sub_item_id)}
                       onClick={handleSubmit}
                       loading={isSubmitting}
                     />

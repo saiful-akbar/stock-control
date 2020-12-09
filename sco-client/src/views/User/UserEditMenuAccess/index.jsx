@@ -157,6 +157,7 @@ function UserEditMenuAccess(props) {
           <Tabs
             value={value}
             onChange={handleChangeTabs}
+            variant='fullWidth'
             indicatorColor='primary'
             textColor='primary'
             aria-label='Access the user menu'

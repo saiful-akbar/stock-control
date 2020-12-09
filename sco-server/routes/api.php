@@ -7,10 +7,11 @@ use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MenuSubItemController;
 
 /**
+ * Route yang tidak perlu login
  * Route untuk login user dan mengambil avatar user
  */
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/avatar/{avatar}', [AuthController::class, 'userAvatar']);
+Route::any('/login', [AuthController::class, 'login']);
+Route::any('/avatar/{avatar}', [AuthController::class, 'userAvatar']);
 
 /**
  * Route group middleware untuk user yang sudah login
