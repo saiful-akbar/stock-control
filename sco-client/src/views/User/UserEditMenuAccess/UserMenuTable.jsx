@@ -20,6 +20,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import { connect } from 'react-redux';
 
 
 /**
@@ -45,28 +46,34 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
+
+/**
+ * Komponent toolbar pada tabel
+ * @param {*} props 
+ */
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, label } = props;
-
+  const { numSelected, label, rows } = props;
 
   return (
     <Toolbar
       className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
+        [classes.highlight]: Boolean(numSelected > 0 && numSelected <= rows),
       })}
     >
-      {numSelected > 0 ? (
-        <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
+      {Boolean(numSelected > 0 && numSelected <= rows)
+        ? (
+          <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+            {numSelected} selected
+          </Typography>
+        ) : (
           <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
             {label}
           </Typography>
-        )}
+        )
+      }
 
-      {numSelected > 0 && (
+      {Boolean(numSelected > 0 && numSelected <= rows) && (
         <CustomTooltip title='Delete' placement='bottom'>
           <IconButton
             aria-label="delete"
@@ -86,6 +93,7 @@ const EnhancedTableToolbar = (props) => {
  */
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  rows: PropTypes.number.isRequired,
   label: PropTypes.string,
   onDelete: PropTypes.func
 };
@@ -115,7 +123,6 @@ function UserMenuTable({
   loading,
   action,
   onDelete,
-  onMultipleDelete,
   ...props
 }) {
   const classes = useStylesUserMenuTable();
@@ -199,13 +206,18 @@ function UserMenuTable({
    * Komponen utam untuk di render
    */
   return (
-    <Card className={classes.root} elevation={3}>
+    <Card
+      className={classes.root}
+      variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+      elevation={3}
+    >
       <Progress show={loading} />
       <CardContent>
         <EnhancedTableToolbar
           numSelected={selected.length}
+          rows={rows.length}
           label={label}
-          onDelete={() => onMultipleDelete(selected)}
+          onDelete={() => onDelete(selected)}
         />
 
         <TableContainer className={classes.container}>
@@ -217,13 +229,15 @@ function UserMenuTable({
               <TableRow>
                 {action && (
                   <TableCell padding="checkbox">
-                    <Checkbox
-                      color='primary'
-                      indeterminate={Boolean(selected.length > 0 && selected.length < rows.length)}
-                      checked={Boolean(rows.length > 0 && selected.length === rows.length)}
-                      onChange={handleSelectAllClick}
-                      inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
+                    <CustomTooltip title='Select' placement='bottom'>
+                      <Checkbox
+                        color='primary'
+                        indeterminate={Boolean(selected.length > 0 && selected.length < rows.length)}
+                        checked={Boolean(rows.length > 0 && selected.length === rows.length)}
+                        onChange={handleSelectAllClick}
+                        inputProps={{ 'aria-label': 'select all desserts' }}
+                      />
+                    </CustomTooltip>
                   </TableCell>
                 )}
 
@@ -235,8 +249,6 @@ function UserMenuTable({
                     {column.label}
                   </TableCell>
                 ))}
-
-                {action && <TableCell>{'Action'}</TableCell>}
               </TableRow>
             </TableHead>
 
@@ -270,11 +282,13 @@ function UserMenuTable({
                       >
                         {action && (
                           <TableCell padding="checkbox">
-                            <Checkbox
-                              color='primary'
-                              checked={isItemSelected}
-                              onClick={(event) => handleClick(event, row.id)}
-                            />
+                            <CustomTooltip title='Select' placement='bottom'>
+                              <Checkbox
+                                color='primary'
+                                checked={isItemSelected}
+                                onClick={(event) => handleClick(event, row.id)}
+                              />
+                            </CustomTooltip>
                           </TableCell>
                         )}
 
@@ -286,16 +300,6 @@ function UserMenuTable({
                             {row[column.field]}
                           </TableCell>
                         ))}
-
-                        {action && (
-                          <TableCell>
-                            <CustomTooltip title='Delete' placement='bottom'>
-                              <IconButton onClick={() => onDelete(row.id)} >
-                                <DeleteIcon fontSize='small' />
-                              </IconButton>
-                            </CustomTooltip>
-                          </TableCell>
-                        )}
                       </TableRow>
                     )
                   })
@@ -327,9 +331,7 @@ UserMenuTable.defaultProps = {
   columns: [],
   rows: [],
   loading: true,
-  action: true,
   onDelete: () => null,
-  onMultipleDelete: () => null,
 };
 
 
@@ -343,8 +345,17 @@ UserMenuTable.propTypes = {
   loading: PropTypes.bool,
   action: PropTypes.bool,
   onDelete: PropTypes.func,
-  onMultipleDelete: PropTypes.func,
 }
 
 
-export default UserMenuTable;
+/**
+ * redux state
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
+}
+
+
+export default connect(reduxState, null)(UserMenuTable);

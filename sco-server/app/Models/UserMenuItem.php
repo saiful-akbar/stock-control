@@ -10,7 +10,7 @@ class UserMenuItem extends Model
 {
     use HasFactory, Uuid;
 
-    protected $table = 'user_menu_items';
+    protected $table = 'user_menu_item';
     protected $fillable = [
         'user_id',
         'menu_item_id',

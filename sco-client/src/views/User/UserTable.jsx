@@ -350,7 +350,10 @@ const UserTable = (props) => {
    * render component utaman
    */
   return (
-    <Card elevation={3}>
+    <Card
+      variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+      elevation={3}
+    >
       {loading
         ? <LinearProgress className={classes.progress} />
         : <div className={classes.progress} />
@@ -572,7 +575,8 @@ const UserTable = (props) => {
  */
 function reduxState(state) {
   return {
-    reduxUserLogin: state.userLogin
+    reduxUserLogin: state.userLogin,
+    reduxTheme: state.theme,
   }
 };
 

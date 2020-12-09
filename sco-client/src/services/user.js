@@ -175,11 +175,12 @@ export const apiAddUserMenuItem = (uuid, data) => {
  * Menghapus user menu item
  * @param {string} uuid 
  */
-export const apiDeleteUserMenuItem = (uuid) => {
+export const apiDeleteUserMenuItem = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: `/user/menu-items/${uuid}`,
+      data: data,
+      url: `/user/menu-items/${id}`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };

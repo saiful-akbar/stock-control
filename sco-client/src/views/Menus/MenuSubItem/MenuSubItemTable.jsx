@@ -29,6 +29,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
 import Toast from 'src/components/Toast';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 
 // style
@@ -266,7 +267,10 @@ const MenuSubItemTable = (props) => {
   // render component utaman
   return (
     <>
-      <Card elevation={3}>
+      <Card
+        variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+        elevation={3}
+      >
         {loading
           ? <LinearProgress className={classes.progress} />
           : <div className={classes.progress} />
@@ -444,4 +448,15 @@ const MenuSubItemTable = (props) => {
   );
 };
 
-export default MenuSubItemTable;
+
+/**
+ * Redux state
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
+}
+
+
+export default connect(reduxState, null)(MenuSubItemTable);

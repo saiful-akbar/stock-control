@@ -28,6 +28,7 @@ import CustomTooltip from 'src/components/CustomTooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Toast from 'src/components/Toast';
+import { connect } from 'react-redux';
 
 
 /**
@@ -357,7 +358,10 @@ const MenuItemTable = (props) => {
    */
   return (
     <>
-      <Card elevation={3}>
+      <Card
+        variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+        elevation={3}
+      >
         {loading
           ? <LinearProgress className={classes.progress} />
           : <div className={classes.progress} />
@@ -545,4 +549,15 @@ const MenuItemTable = (props) => {
   );
 };
 
-export default MenuItemTable;
+
+/**
+ * Redux State
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme,
+  }
+}
+
+
+export default connect(reduxState, null)(MenuItemTable);

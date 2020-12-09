@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\MenuItem;
+use App\Models\UserMenuItem;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -494,15 +495,13 @@ class UserController extends Controller
      *
      * @return Response
      */
-    public function deleteUserMenuItem(string $id)
+    public function deleteUserMenuItem(Request $request, string $id)
     {
         if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
-            $delete = DB::table("user_menu_item")
-                ->where("id", $id)
-                ->delete();
+            $delete = UserMenuItem::destroy($request->all());
             return response()->json([
-                "message" => "1 Menu item deleted successfully",
-                "delete"  => $delete,
+                "message"  => "{$delete} Menu item deleted successfully",
+                "response" => $this->getUserMenuItems($id),
             ]);
         } else {
             return response()->json([

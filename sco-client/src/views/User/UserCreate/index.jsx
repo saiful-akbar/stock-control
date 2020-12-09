@@ -296,7 +296,12 @@ const UserCreate = (props) => {
 
       <Grid container spacing={3} >
         <Grid item xs={12} >
-          <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
+          <Stepper
+            alternativeLabel
+            activeStep={activeStep}
+            variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+            elevation={3}
+          >
             {steps.map((label) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
@@ -306,7 +311,10 @@ const UserCreate = (props) => {
         </Grid>
 
         <Grid item xs={12}>
-          <Card elevation={3}>
+          <Card
+            variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+            elevation={3}
+          >
             <Progress type='linear' show={loading} />
             {stepComponent(activeStep)}
           </Card>
@@ -328,4 +336,14 @@ function reduxDispatch(dispatch) {
 }
 
 
-export default connect(null, reduxDispatch)(UserCreate);
+/**
+ * Redux State
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
+}
+
+
+export default connect(reduxState, reduxDispatch)(UserCreate);

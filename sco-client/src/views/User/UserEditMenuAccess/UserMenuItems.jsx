@@ -16,6 +16,7 @@ import {
   FormControl,
   Paper,
   colors,
+  ListSubheader,
 } from '@material-ui/core';
 import {
   apiGetUserMenuItems,
@@ -39,7 +40,7 @@ import DialogDelete from 'src/components/DialogDelete';
 function UserMenuItems(props) {
   const [loading, setLoading] = useState(true);
   const [rowData, setRowData] = useState(null);
-  const [menuItems, setMenuItems] = useState([]);
+  const [menuItems, setMenuItems] = useState(null);
   const [deleteData, setDeleteData] = useState({ show: false, id: null });
   const [deleteLoading, setDeleteLoading] = useState(false);
   const isMounted = useRef(true);
@@ -205,14 +206,13 @@ function UserMenuItems(props) {
    * Fungsi untuk menghapus user menu item
    * @param {string} id 
    */
-  const handleDelete = async (uuid) => {
+  const handleDelete = async (data) => {
     setDeleteLoading(true);
     try {
-      let res = await apiDeleteUserMenuItem(uuid);
+      let res = await apiDeleteUserMenuItem(userId, data);
       if (isMounted.current) {
-        let newRowData = rowData.filter(value => value.id !== uuid);
-        setRowData(newRowData);
         setDeleteLoading(false);
+        setValueRowData(res.data.response.original.user_menu_items);
         setDeleteData({ show: false, id: null });
         props.setReduxToast({
           show: true,
@@ -221,17 +221,19 @@ function UserMenuItems(props) {
         });
       }
     } catch (err) {
-      if (err.status === 401) {
-        window.location.href = '/logout';
-      }
-      else {
-        setDeleteLoading(false);
-        setDeleteData({ show: false, id: null });
-        props.setReduxToast({
-          show: true,
-          type: 'error',
-          message: `(#${err.status}) ${err.statusText}`
-        });
+      if (isMounted.current) {
+        if (err.status === 401) {
+          window.location.href = '/logout';
+        }
+        else {
+          setDeleteLoading(false);
+          setDeleteData({ show: false, id: null });
+          props.setReduxToast({
+            show: true,
+            type: 'error',
+            message: `(#${err.status}) ${err.statusText}`
+          });
+        }
       }
     }
   }
@@ -241,7 +243,10 @@ function UserMenuItems(props) {
     <>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper elevation={3}>
+          <Paper
+            variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+            elevation={3}
+          >
             <Box p={2}>
               <Formik
                 initialValues={{
@@ -265,7 +270,6 @@ function UserMenuItems(props) {
                   handleChange,
                   handleSubmit,
                   values,
-                  errors,
                   isSubmitting
                 }) => (
                     <form onSubmit={handleSubmit} noValidate autoComplete='off' >
@@ -277,7 +281,7 @@ function UserMenuItems(props) {
                         alignItems="center"
                       >
                         <Grid item lg={5} xs={12}>
-                          {menuItems.length > 0
+                          {menuItems !== null
                             ? (
                               <FormControl
                                 fullWidth
@@ -295,17 +299,23 @@ function UserMenuItems(props) {
                                   onBlur={handleBlur}
                                 >
                                   <MenuItem value=''><em>none</em></MenuItem>
-                                  {menuItems.map((data, key) => <MenuItem key={key} value={data.id}>{data.menu_i_title}</MenuItem>)}
+                                  {menuItems.map(menuItem => {
+                                    return (
+                                      <MenuItem key={menuItem.id} value={menuItem.id}>
+                                        {menuItem.menu_i_title}
+                                      </MenuItem>
+                                    )
+                                  })}
                                 </Select>
                               </FormControl>
 
                             ) : (
-                              <Skeleton variant='rect' height={38} />
+                              <Skeleton variant='rect' height={39} />
                             )}
                         </Grid>
 
                         <Grid item lg={5} xs={12} align="center">
-                          {menuItems.length > 0
+                          {menuItems !== null
                             ? (
                               <>
                                 <FormControlLabel
@@ -363,7 +373,7 @@ function UserMenuItems(props) {
                         </Grid>
 
                         <Grid item lg={2} xs={12} align="center">
-                          {menuItems.length > 0
+                          {menuItems !== null
                             ? <BtnSubmit
                               title='Add To List'
                               color='primary'
@@ -392,13 +402,7 @@ function UserMenuItems(props) {
             loading={loading}
             columns={columns}
             rows={rowData === null ? [] : rowData}
-            onDelete={uuid => {
-              setDeleteData({
-                show: true,
-                id: uuid,
-              });
-            }}
-            onMultipleDelete={selected => {
+            onDelete={selected => {
               setDeleteData({
                 show: true,
                 id: selected,
@@ -414,7 +418,7 @@ function UserMenuItems(props) {
         onDelete={() => {
           typeof deleteData.id === 'string'
             ? handleDelete(deleteData.id)
-            : alert('multiple delete');
+            : handleDelete(deleteData.id)
         }}
         onClose={bool => {
           setDeleteData({
@@ -439,7 +443,17 @@ function reduxDispatch(dispatch) {
       value: error
     })
   }
+};
+
+
+/**
+ * redux state
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
 }
 
 
-export default connect(null, reduxDispatch)(UserMenuItems);
+export default connect(reduxState, reduxDispatch)(UserMenuItems);

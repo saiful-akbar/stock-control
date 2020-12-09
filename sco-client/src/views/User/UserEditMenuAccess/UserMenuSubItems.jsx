@@ -2,8 +2,8 @@ import React, {
   useRef,
   useState,
   useEffect,
-  Fragment
 } from 'react';
+import { connect } from 'react-redux';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
@@ -29,7 +29,6 @@ import {
 } from 'src/services/user';
 import UserMenuTable from './UserMenuTable';
 import { Skeleton } from '@material-ui/lab';
-import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import BtnSubmit from 'src/components/BtnSubmit';
 import CheckIcon from '@material-ui/icons/Check';
@@ -45,9 +44,9 @@ import DataTable from 'src/components/DataTable';
 function UserMenuSubItems(props) {
   const [loading, setLoading] = useState(true);
   const [rowData, setRowData] = useState(null);
-  const [menus, setMenus] = useState([]);
-  const [deleteData, setDeleteData] = useState({ show: false, id: null });
-  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [menus, setMenus] = useState(null);
+  // const [deleteData, setDeleteData] = useState({ show: false, id: null });
+  // const [deleteLoading, setDeleteLoading] = useState(false);
   const isMounted = useRef(true);
 
   /**
@@ -172,7 +171,10 @@ function UserMenuSubItems(props) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Card elevation={3}>
+        <Card
+          variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+          elevation={3}
+        >
           <Formik
             initialValues={{
               menu_item_id: '',
@@ -210,7 +212,7 @@ function UserMenuSubItems(props) {
                       alignItems="center"
                     >
                       <Grid item lg={6} xs={12}>
-                        {menus.length > 0
+                        {menus !== null
                           ? (
                             <FormControl
                               fullWidth
@@ -247,7 +249,7 @@ function UserMenuSubItems(props) {
                       </Grid>
 
                       <Grid item lg={6} xs={12}>
-                        {menus.length > 0
+                        {menus !== null
                           ? (
                             <FormControl
                               fullWidth
@@ -276,7 +278,7 @@ function UserMenuSubItems(props) {
                                       </MenuItem>
                                     ))
                                   }
-                                  return;
+                                  return null;
                                 })}
                               </Select>
                             </FormControl>
@@ -287,7 +289,7 @@ function UserMenuSubItems(props) {
                       </Grid>
 
                       <Grid item lg={6} xs={12} align="right">
-                        {menus.length > 0
+                        {menus !== null
                           ? (
                             <>
                               <FormControlLabel
@@ -377,4 +379,15 @@ function UserMenuSubItems(props) {
   );
 };
 
-export default UserMenuSubItems;
+
+/**
+ * redux state
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
+}
+
+
+export default connect(reduxState, null)(UserMenuSubItems);
