@@ -242,7 +242,7 @@ class UserController extends Controller
             $avatar = null;
             if ($request->hasFile("profile_avatar")) {
                 $extension = $request->profile_avatar->extension();
-                $avatar    = "user-" . $user->id . "." . $extension;
+                $avatar    = "{$user->id}.{$extension}";
                 $request->profile_avatar->storeAs("img/avatars", $avatar);
             }
 
@@ -251,10 +251,10 @@ class UserController extends Controller
                 "user_id"          => $user->id,
                 "profile_avatar"   => $avatar,
                 "profile_name"     => htmlspecialchars(ucwords($request->profile_name)),
-                "profile_division" => $request->profile_division == "" ? null : htmlspecialchars(ucwords($request->profile_division)),
-                "profile_email"    => $request->profile_email == "" ? null : htmlspecialchars($request->profile_email),
-                "profile_phone"    => $request->profile_phone == "" ? null : htmlspecialchars($request->profile_phone),
-                "profile_address"  => $request->profile_address == "" ? null : htmlspecialchars($request->profile_address),
+                "profile_division" => empty($request->profile_division) ? null : htmlspecialchars(ucwords($request->profile_division)),
+                "profile_email"    => empty($request->profile_email) ? null : htmlspecialchars($request->profile_email),
+                "profile_phone"    => empty($request->profile_phone) ? null : htmlspecialchars($request->profile_phone),
+                "profile_address"  => empty($request->profile_address) ? null : htmlspecialchars($request->profile_address),
             ]);
 
             // response
