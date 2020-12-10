@@ -12,18 +12,29 @@ class MenuItemController extends Controller
     /**
      * User menu access
      */
-    private function userAccess()
+    private function userAccess(string $accsess_type)
     {
         $user_login = Auth::user();
-        $menu = MenuItem::select('id')->where('menu_i_url', '/menu')->first();
+        $menu = MenuItem::select("id")->where("menu_i_url", "/menu")->first();
+        $user_menu = DB::table("user_menu_item")->where([
+            ["user_id", $user_login->id],
+            ["menu_item_id", $menu->id]
+        ])->first();
 
-        if (!empty($menu)) {
-            return DB::table('user_menu_item')->where([
-                ['user_id', $user_login->id],
-                ['menu_item_id', $menu->id]
-            ])->first();
+        if (!empty($user_menu)) {
+            if ($accsess_type == "read" && $user_menu->user_m_i_read == 1) {
+                return true;
+            } else if ($accsess_type == "create" && $user_menu->user_m_i_create == 1) {
+                return true;
+            } else if ($accsess_type == "update" && $user_menu->user_m_i_update == 1) {
+                return true;
+            } else if ($accsess_type == "delete" && $user_menu->user_m_i_delete == 1) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return;
+            return false;
         }
     }
 
@@ -34,35 +45,35 @@ class MenuItemController extends Controller
      */
     public function index(Request $request)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_read != 1) {
-            return response()->json([
-                'message' => 'Access denied',
-            ], 403);
-        } else {
+        if ($this->userAccess("read")) {
             $data = [];
-            $search = htmlspecialchars($request->search);
-            $per_page = htmlspecialchars($request->per_page);
-            $sort = htmlspecialchars($request->sort);
-            $order_by = htmlspecialchars($request->order_by);
+            $per_page = isset($request->per_page) && !empty($request->per_page) ? htmlspecialchars($request->per_page) : 25;
+            $search   = isset($request->search) && !empty($request->search) ? htmlspecialchars($request->search) : '';
+            $sort     = isset($request->sort) && !empty($request->sort) ? htmlspecialchars($request->sort) : 'menu_i_title';
+            $order_by = isset($request->order_by) && !empty($request->order_by) ? htmlspecialchars($request->order_by) : 'asc';
 
             if (isset($search) && !empty($search)) {
-                $data = DB::table('menu_items')
-                    ->where('menu_i_title', 'like', '%' . $search . '%')
-                    ->orWhere('menu_i_url', 'like', '%' . $search . '%')
-                    ->orWhere('menu_i_icon', 'like', '%' . $search . '%')
-                    ->orWhere('created_at', 'like', '%' . $search . '%')
-                    ->orWhere('updated_at', 'like', '%' . $search . '%')
+                $data = DB::table("menu_items")
+                    ->where("menu_i_title", "like", "%" . $search . "%")
+                    ->orWhere("menu_i_url", "like", "%" . $search . "%")
+                    ->orWhere("menu_i_icon", "like", "%" . $search . "%")
+                    ->orWhere("created_at", "like", "%" . $search . "%")
+                    ->orWhere("updated_at", "like", "%" . $search . "%")
                     ->orderBy($sort, $order_by)
                     ->paginate($per_page);
             } else {
-                $data = DB::table('menu_items')->orderBy($sort, $order_by)->paginate($per_page);
+                $data = DB::table("menu_items")->orderBy($sort, $order_by)->paginate($per_page);
             }
             return response()->json([
-                'menu_items' => $data,
-                'search' => $search,
-                'sort' => $sort,
-                'order_by' => $order_by
+                "menu_items" => $data,
+                "search" => $search,
+                "sort" => $sort,
+                "order_by" => $order_by
             ], 200);
+        } else {
+            return response()->json([
+                "message" => "Access is denied",
+            ], 403);
         }
     }
 
@@ -74,45 +85,45 @@ class MenuItemController extends Controller
      */
     public function store(Request $request)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_create != 1) {
-            return response()->json([
-                'message' => 'Access denied',
-            ], 403);
-        } else {
+        if ($this->userAccess("create")) {
             // validasi form
             $request->validate([
-                'title'    => 'required|max:128|unique:menu_items,menu_i_title',
-                'icon'     => 'required|max:128',
-                'children' => 'required|boolean',
+                "title"    => "required|max:128|unique:menu_items,menu_i_title",
+                "icon"     => "required|max:128",
+                "children" => "required|boolean",
             ]);
 
             // menambahkan "/" pada awal url dan merubah spasi menjadi "/"
-            $url = str_replace(' ', '/', $request->url);
+            $url = str_replace(" ", "/", $request->url);
             $substr_url = substr($url, 0, 1);
-            if ($substr_url != '/') {
-                $url = '/' . $url;
+            if ($substr_url != "/") {
+                $url = "/" . $url;
             }
 
             // cek url
-            if (MenuItem::where('menu_i_url', $url)->count() >= 1) {
+            if (MenuItem::where("menu_i_url", $url)->count() >= 1) {
                 return response()->json([
-                    'errors' => ['url' => ['The url has already been taken.']],
-                    'message' => 'The given data was invalid.'
+                    "errors" => ["url" => ["The url has already been taken."]],
+                    "message" => "The given data was invalid."
                 ], 422);
+            } else {
+                // tambah kan menu item
+                MenuItem::create([
+                    "menu_i_title"    => htmlspecialchars(ucwords($request->title)),
+                    "menu_i_url"      => htmlspecialchars(strtolower($url)),
+                    "menu_i_icon"     => htmlspecialchars($request->icon),
+                    "menu_i_children" => htmlspecialchars($request->children),
+                ]);
+
+                // hasil kembali
+                return response()->json([
+                    "message"    => "Menu item created successfully"
+                ], 200);
             }
-
-            // tambah kan menu item
-            MenuItem::create([
-                'menu_i_title'    => htmlspecialchars(ucwords($request->title)),
-                'menu_i_url'      => htmlspecialchars(strtolower($url)),
-                'menu_i_icon'     => htmlspecialchars($request->icon),
-                'menu_i_children' => htmlspecialchars($request->children),
-            ]);
-
-            // hasil kembali
+        } else {
             return response()->json([
-                'message'    => 'Menu item created successfully'
-            ], 200);
+                "message" => "Access is denied",
+            ], 403);
         }
     }
 
@@ -125,56 +136,58 @@ class MenuItemController extends Controller
      */
     public function update(Request $request, MenuItem $menuItem)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_update != 1) {
-            return response()->json([
-                'message' => 'Access denied',
-            ], 403);
-        } else {
+        if ($this->userAccess("update")) {
             // validasi form
             $request->validate([
-                'title'    => 'required|max:128',
-                'url'      => 'required|max:128',
-                'icon'     => 'required|max:128',
-                'children' => 'required|boolean',
+                "title"    => "required|max:128",
+                "url"      => "required|max:128",
+                "icon"     => "required|max:128",
+                "children" => "required|boolean",
             ]);
 
             // menambahkan "/" pada awal url dan merubah spasi menjadi "/"
-            $url = str_replace(' ', '/', $request->url);
+            $url = str_replace(" ", "/", $request->url);
             $substr_url = substr($url, 0, 1);
-            if ($substr_url != '/') {
-                $url = '/' . $url;
+            if ($substr_url != "/") {
+                $url = "/" . $url;
             }
 
             // Cek url
             if ($url != $menuItem->menu_i_url) {
-                if (MenuItem::where('menu_i_url', $url)->count() >= 1) {
+                if (MenuItem::where("menu_i_url", $url)->count() >= 1) {
                     return response()->json([
-                        'errors' => ['url' => ['The url has already been taken.']],
-                        'message' => 'The given data was invalid.'
+                        "errors" => ["url" => ["The url has already been taken."]],
+                        "message" => "The given data was invalid."
                     ], 422);
                 }
             }
 
             // Cek title
             if ($request->title != $menuItem->menu_i_title) {
-                $title = MenuItem::where('menu_i_title', $request->title)->first();
+                $title = MenuItem::where("menu_i_title", $request->title)->first();
                 if (!empty($title)) {
-                    $request->validate(['title' => 'unique:menu_items,menu_i_title']);
+                    $request->validate([
+                        "title" => "unique:menu_items,menu_i_title"
+                    ]);
                 }
             }
 
             // Update menu item
-            $update = MenuItem::where('id', $menuItem->id)->update([
-                'menu_i_title'    => htmlspecialchars(ucwords($request->title)),
-                'menu_i_url'      => htmlspecialchars(strtolower($url)),
-                'menu_i_icon'     => htmlspecialchars($request->icon),
-                'menu_i_children' => htmlspecialchars($request->children),
+            $update = MenuItem::where("id", $menuItem->id)->update([
+                "menu_i_title"    => htmlspecialchars(ucwords($request->title)),
+                "menu_i_url"      => htmlspecialchars(strtolower($url)),
+                "menu_i_icon"     => htmlspecialchars($request->icon),
+                "menu_i_children" => htmlspecialchars($request->children),
             ]);
 
             // hasil
             return response()->json([
-                'message' => 'Menu Item updated successfully',
+                "message" => "{$update} Menu Item updated successfully",
             ], 200);
+        } else {
+            return response()->json([
+                "message" => "Access is denied",
+            ], 403);
         }
     }
 
@@ -186,15 +199,15 @@ class MenuItemController extends Controller
      */
     public function destroy(MenuItem $menuItem)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_delete != 1) {
+        if ($this->userAccess("delete")) {
+            $delete = MenuItem::destroy($menuItem->id);
             return response()->json([
-                'message' => 'Access denied',
-            ], 403);
-        } else {
-            MenuItem::destroy($menuItem->id);
-            return response()->json([
-                'message' => 'Menu item deleted successfully',
+                "message" => "{$delete} Menu item deleted successfully",
             ], 200);
+        } else {
+            return response()->json([
+                "message" => "Access is denied",
+            ], 403);
         }
     }
 }

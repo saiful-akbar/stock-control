@@ -31,14 +31,14 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: theme.typography.fontWeightMedium,
     justifyContent: 'flex-start',
     letterSpacing: 0,
-    padding: '7px 10px',
+    padding: '5px 10px',
     textTransform: 'none',
     width: '100%',
     borderRadius: '0 25px 25px 0'
   },
   icon: {
     marginRight: theme.spacing(2),
-    fontSize: 22
+    fontSize: 20
   },
   title: {
     marginRight: 'auto',

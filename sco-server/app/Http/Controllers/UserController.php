@@ -17,27 +17,38 @@ class UserController extends Controller
     /**
      * User menu access
      */
-    private function userAccess()
+    private function userAccess(string $accsess_type)
     {
         $user_login = Auth::user();
-        $menu = MenuItem::select("id")->where("menu_i_url", "/user")->first();
+        $menu       = MenuItem::select("id")->where("menu_i_url", "/user")->first();
+        $user_menu  = DB::table("user_menu_item")->where([
+            ["user_id", $user_login->id],
+            ["menu_item_id", $menu->id]
+        ])->first();
 
-        if (!empty($menu)) {
-            return DB::table("user_menu_item")->where([
-                ["user_id", $user_login->id],
-                ["menu_item_id", $menu->id]
-            ])->first();
+        if (!empty($user_menu)) {
+            if ($accsess_type == "read" && $user_menu->user_m_i_read == 1) {
+                return true;
+            } else if ($accsess_type == "create" && $user_menu->user_m_i_create == 1) {
+                return true;
+            } else if ($accsess_type == "update" && $user_menu->user_m_i_update == 1) {
+                return true;
+            } else if ($accsess_type == "delete" && $user_menu->user_m_i_delete == 1) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
-            return;
+            return false;
         }
     }
 
     // Ambil semua menu
     public function getMenus()
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_read != 1) {
+        if (!$this->userAccess("read")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
             $menu_items = DB::table("menu_items")
@@ -70,16 +81,16 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_read != 1) {
+        if (!$this->userAccess("read")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
             $data     = [];
-            $per_page = htmlspecialchars($request->per_page);
-            $search   = htmlspecialchars($request->search);
-            $sort     = htmlspecialchars($request->sort);
-            $order_by = htmlspecialchars($request->order_by);
+            $per_page = isset($request->per_page) && !empty($request->per_page) ? htmlspecialchars($request->per_page) : 25;
+            $search   = isset($request->search) && !empty($request->search) ? htmlspecialchars($request->search) : '';
+            $sort     = isset($request->sort) && !empty($request->sort) ? htmlspecialchars($request->sort) : 'username';
+            $order_by = isset($request->order_by) && !empty($request->order_by) ? htmlspecialchars($request->order_by) : 'asc';
 
             $data = DB::table("users")
                 ->leftJoin("profiles", "users.id", "=", "profiles.user_id")
@@ -126,9 +137,9 @@ class UserController extends Controller
      */
     public function cekUserForm(Request $request)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_create != 1) {
+        if (!$this->userAccess("create")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
             $request->validate([
@@ -143,7 +154,7 @@ class UserController extends Controller
                     "username"  => htmlspecialchars($request->username),
                     "password"  => htmlspecialchars($request->password),
                     "is_active" => $request->is_active ? "1" : "0",
-                    "id"        => Str::uuid(),
+                    "id"        => Str::random(32),
                 ]
             ], 200);
         }
@@ -154,9 +165,9 @@ class UserController extends Controller
      */
     public function cekProfileForm(Request $request)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_create != 1) {
+        if (!$this->userAccess("create")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
             $request->validate([
@@ -197,9 +208,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_create != 1) {
+        if (!$this->userAccess("create")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
             // validasi form
@@ -256,15 +267,15 @@ class UserController extends Controller
 
     public function createUserMenuAccess(Request $request)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_create != 1) {
+        if (!$this->userAccess("create")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
             $menu_items = [];
             foreach ($request->user_menu_item as $key => $value) {
                 $menu_items[$key] = [
-                    "id"              => Str::uuid(),
+                    "id"              => Str::random(32),
                     "user_id"         => $value["user_id"],
                     "menu_item_id"    => $value["menu_item_id"],
                     "user_m_i_read"   => $value["user_m_i_read"],
@@ -279,7 +290,7 @@ class UserController extends Controller
             $menu_sub_items = [];
             foreach ($request->user_menu_sub_item as $key_sub_item => $sub_item) {
                 $menu_sub_items[$key_sub_item] = [
-                    "id"                => Str::uuid(),
+                    "id"                => Str::random(32),
                     "user_id"           => $sub_item["user_id"],
                     "menu_sub_item_id"  => $sub_item["menu_sub_item_id"],
                     "user_m_s_i_read"   => $sub_item["user_m_s_i_read"],
@@ -319,9 +330,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_update != 1) {
+        if (!$this->userAccess("update")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
         }
@@ -347,9 +358,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if (empty($this->userAccess()) || $this->userAccess()->user_m_i_delete != 1) {
+        if (!$this->userAccess("read")) {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         } else {
             $avatar = User::find($id)->profile()->select("profile_avatar")->first();
@@ -366,14 +377,14 @@ class UserController extends Controller
      */
     public function truncateTokens()
     {
-        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_create == 1 && $this->userAccess()->user_m_i_read == 1 && $this->userAccess()->user_m_i_update == 1 && $this->userAccess()->user_m_i_delete == 1) {
+        if ($this->userAccess("create") && $this->userAccess("read") && $this->userAccess("update") && $this->userAccess("delete")) {
             DB::table("personal_access_tokens")->truncate();
             return response()->json([
                 "message" => "Truncate successfully"
             ], 200);
         } else {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         }
     }
@@ -386,7 +397,7 @@ class UserController extends Controller
      */
     public function getUserMenuItems($id)
     {
-        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+        if ($this->userAccess("update")) {
             $user_menu_items = DB::table("user_menu_item")
                 ->leftJoin("menu_items", "user_menu_item.menu_item_id", "=", "menu_items.id")
                 ->select(
@@ -412,7 +423,7 @@ class UserController extends Controller
             ], 200);
         } else {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         }
     }
@@ -428,7 +439,7 @@ class UserController extends Controller
     public function addUserMenuItem(Request $request, string $id)
     {
         // Cek apakan user memeiliki akses update atau tidak
-        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+        if ($this->userAccess("update")) {
             $request->validate([
                 "user_id"         => "required|string|max:36|exists:users,id",
                 "menu_item_id"    => "required|string|max:36|exists:menu_items,id",
@@ -464,7 +475,7 @@ class UserController extends Controller
                  * tambahkan data ke tabel user_menu_item
                  */
                 DB::table("user_menu_item")->insert([
-                    "id"              => Str::uuid(),
+                    "id"              => Str::random(32),
                     "user_id"         => htmlspecialchars($id),
                     "menu_item_id"    => htmlspecialchars($request->menu_item_id),
                     "user_m_i_read"   => htmlspecialchars($request->user_m_i_read),
@@ -484,7 +495,7 @@ class UserController extends Controller
 
             // Kondisi jika user tidak memiliki akses update
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         }
     }
@@ -497,7 +508,7 @@ class UserController extends Controller
      */
     public function deleteUserMenuItem(Request $request, string $id)
     {
-        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+        if ($this->userAccess("update")) {
             $delete = UserMenuItem::destroy($request->all());
             return response()->json([
                 "message"  => "{$delete} Menu item deleted successfully",
@@ -505,7 +516,7 @@ class UserController extends Controller
             ]);
         } else {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         }
     }
@@ -517,7 +528,7 @@ class UserController extends Controller
      */
     public function getUserMenuSUbItems($id)
     {
-        if (!empty($this->userAccess()) && $this->userAccess()->user_m_i_update == 1) {
+        if ($this->userAccess("update")) {
             $user_msi = DB::table("user_menu_sub_item")
                 ->leftJoin("menu_sub_items", "user_menu_sub_item.menu_sub_item_id", "=", "menu_sub_items.id")
                 ->leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
@@ -552,7 +563,7 @@ class UserController extends Controller
                     "menu_i_children" => $value->menu_i_children,
                     "menu_sub_items"  => DB::table("menu_sub_items")
                         ->select("id", "menu_s_i_title")
-                        ->where('menu_item_id', $value->id)
+                        ->where("menu_item_id", $value->id)
                         ->orderBy("menu_s_i_title", "asc")
                         ->get(),
                 ];
@@ -564,7 +575,7 @@ class UserController extends Controller
             ], 200);
         } else {
             return response()->json([
-                "message" => "Access denied",
+                "message" => "Access is denied",
             ], 403);
         }
     }
