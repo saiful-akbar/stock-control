@@ -93,7 +93,7 @@ const MenuItemEdit = (props) => {
         fullWidth={true}
         aria-labelledby='dialog-edit-title'
       >
-        <DialogTitle id='dialog-edit-title'>{'Update menu item'}</DialogTitle>
+        <DialogTitle id='dialog-edit-title'>{'Update menus'}</DialogTitle>
 
         <Formik
           initialValues={{

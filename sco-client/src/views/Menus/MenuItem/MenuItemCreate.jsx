@@ -142,7 +142,7 @@ const MenuItemCreate = (props) => {
         fullWidth={true}
         aria-labelledby='dialog-create-title'
       >
-        <DialogTitle id='dialog-create-title' variant='h5'>Create new menu item</DialogTitle>
+        <DialogTitle id='dialog-create-title' variant='h5'>Create new menus</DialogTitle>
 
         <DialogContent dividers={true}>
           <Alert severity='info'>

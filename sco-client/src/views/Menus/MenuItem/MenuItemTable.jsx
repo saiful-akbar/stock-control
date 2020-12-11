@@ -385,7 +385,7 @@ const MenuItemTable = (props) => {
                     onClick={() => props.openDialogCreate()}
                     style={{ marginRight: 10 }}
                   >
-                    Create menu item
+                    {'Create new menus'}
                   </Button>
                 )
               )}

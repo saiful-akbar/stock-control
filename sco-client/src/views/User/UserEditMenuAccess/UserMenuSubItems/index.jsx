@@ -27,7 +27,7 @@ import {
   apiAddUserMenuItem,
   apiDeleteUserMenuItem,
 } from 'src/services/user';
-import UserMenuTable from './UserMenuTable';
+import UserMenuTable from '../UserMenuTable';
 import { Skeleton } from '@material-ui/lab';
 import { reduxAction } from 'src/config/redux/state';
 import BtnSubmit from 'src/components/BtnSubmit';

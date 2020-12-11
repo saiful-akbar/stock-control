@@ -22,7 +22,6 @@ import {
   apiAddUserMenuItem,
   apiDeleteUserMenuItem,
 } from 'src/services/user';
-import UserMenuTable from './UserMenuTable';
 import { Skeleton } from '@material-ui/lab';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
@@ -30,6 +29,7 @@ import BtnSubmit from 'src/components/BtnSubmit';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import DialogDelete from 'src/components/DialogDelete';
+import UserMenuTable from '../UserMenuTable';
 
 
 /**

@@ -84,7 +84,7 @@ const MenuItemDelete = ({
         fullWidth={true}
         aria-labelledby='dialog-delete'
       >
-        <DialogTitle>Delete menu item</DialogTitle>
+        <DialogTitle>Delete menus</DialogTitle>
 
         <DialogContent>
           <Alert severity="error">

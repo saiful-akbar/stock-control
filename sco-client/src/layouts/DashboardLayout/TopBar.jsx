@@ -62,9 +62,9 @@ const TopBar = ({
           </CustomTooltip>
         </Hidden>
 
-        <RouterLink to='/dashboard' className={classes.logo} >
+        {/* <RouterLink to='/dashboard' className={classes.logo} >
           <Logo height={40} />
-        </RouterLink>
+        </RouterLink> */}
 
         <Box flexGrow={1} />
 

@@ -166,7 +166,7 @@ class MenuSubItemController extends Controller
                 "menu_s_i_url"   => htmlspecialchars(strtolower($url)),
             ]);
 
-            return response()->json(["message" => "Menu sub item created successfuly"], 200);
+            return response()->json(["message" => "Sub menus created successfuly"], 200);
         }
     }
 
@@ -240,7 +240,7 @@ class MenuSubItemController extends Controller
                 "menu_s_i_url"   => htmlspecialchars($url),
             ]);
 
-            return response()->json(["message" => "Menu sub item updated successfuly"], 200);
+            return response()->json(["message" => "Sub menus updated successfuly"], 200);
         }
     }
 
@@ -259,7 +259,7 @@ class MenuSubItemController extends Controller
         } else {
             MenuSubItem::destroy($menuSubItem->id);
             return response()->json([
-                "message" => "Menu sub item deleted successfuly"
+                "message" => "Sub menus deleted successfuly"
             ], 200);
         }
     }

@@ -98,7 +98,7 @@ const MenuSubItemForm = (props) => {
         fullWidth={true}
         aria-labelledby='dialog-form-create'
       >
-        <DialogTitle>{props.type + ' menu sub item'}</DialogTitle>
+        <DialogTitle>{props.type + ' sub menus'}</DialogTitle>
 
         <Formik
           initialValues={{

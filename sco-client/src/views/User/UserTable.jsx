@@ -377,7 +377,7 @@ const UserTable = (props) => {
                   startIcon={<AddCircleIcon />}
                   onClick={() => navigate('/user/create', { state: props.state })}
                 >
-                  {'Create user'}
+                  {'Create a new user'}
                 </Button>
               )
             )}

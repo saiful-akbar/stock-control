@@ -80,7 +80,7 @@ const MenuItemDelete = (props) => {
         fullWidth={true}
         aria-labelledby='dialog-delete'
       >
-        <DialogTitle>{'Delete menu sub item'}</DialogTitle>
+        <DialogTitle>{'Delete sub menus'}</DialogTitle>
 
         <DialogContent>
           <Alert severity="error">

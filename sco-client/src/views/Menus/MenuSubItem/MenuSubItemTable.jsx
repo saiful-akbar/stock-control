@@ -87,9 +87,9 @@ const MenuSubItemTable = (props) => {
 
   // daftar kolom untuk tabel
   const columns = [
-    { field: 'menu_i_title', label: 'Menu Item' },
-    { field: 'menu_s_i_title', label: 'Title' },
-    { field: 'menu_s_i_url', label: 'Url / Path' },
+    { field: 'menu_i_title', label: 'Menus' },
+    { field: 'menu_s_i_title', label: 'Sub Menus Title' },
+    { field: 'menu_s_i_url', label: 'Path' },
     { field: 'created_at', label: 'Created At' },
     { field: 'updated_at', label: 'Updated At' },
   ];
@@ -295,7 +295,7 @@ const MenuSubItemTable = (props) => {
                     onClick={() => props.openDialogForm({ type: 'Create', show: true, data: null })}
                     style={{ marginRight: 10 }}
                   >
-                    Create menu sub item
+                    {'Create a new sub menus'}
                   </Button>
                 )
               )}

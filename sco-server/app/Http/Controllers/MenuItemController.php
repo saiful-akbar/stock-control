@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class MenuItemController extends Controller
 {
     /**
-     * User menu access
+     * @param string $accsess_type
+     *
+     * @return boolean
      */
     private function userAccess(string $accsess_type)
     {
@@ -117,7 +119,7 @@ class MenuItemController extends Controller
 
                 // hasil kembali
                 return response()->json([
-                    "message"    => "Menu item created successfully"
+                    "message"    => "Menus created successfully"
                 ], 200);
             }
         } else {
@@ -182,7 +184,7 @@ class MenuItemController extends Controller
 
             // hasil
             return response()->json([
-                "message" => "{$update} Menu Item updated successfully",
+                "message" => "{$update} Menus updated successfully",
             ], 200);
         } else {
             return response()->json([
@@ -202,7 +204,7 @@ class MenuItemController extends Controller
         if ($this->userAccess("delete")) {
             $delete = MenuItem::destroy($menuItem->id);
             return response()->json([
-                "message" => "{$delete} Menu item deleted successfully",
+                "message" => "{$delete} Menus deleted successfully",
             ], 200);
         } else {
             return response()->json([
