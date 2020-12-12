@@ -6,12 +6,15 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Zoom,
+  Slide,
   MenuItem,
   FormHelperText,
   FormControl,
   Select,
   InputLabel,
+  AppBar,
+  Toolbar,
+  Typography,
 } from '@material-ui/core';
 import {
   apiCreateMenuItem
@@ -19,9 +22,23 @@ import {
 import Toast from 'src/components/Toast';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { Alert } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/styles';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    position: 'relative',
+  },
+  title: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
+}));
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Zoom ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 
@@ -29,6 +46,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
  * main component
  */
 const MenuItemCreate = (props) => {
+  const classes = useStyles();
+
   const [loading, setLoading] = React.useState(false);
   const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [toast, setToast] = React.useState({ show: false, type: null, message: '' });
@@ -135,6 +154,7 @@ const MenuItemCreate = (props) => {
   return (
     <>
       <Dialog
+        fullScreen
         open={props.open}
         TransitionComponent={Transition}
         maxWidth='lg'
@@ -142,13 +162,29 @@ const MenuItemCreate = (props) => {
         fullWidth={true}
         aria-labelledby='dialog-create-title'
       >
-        <DialogTitle id='dialog-create-title' variant='h5'>Create new menus</DialogTitle>
+        <AppBar color='secondary' className={classes.appBar}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="close"
+              onClick={handleCloseDialog}
+              disabled={loading}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            <Typography variant="h6" className={classes.title}>
+              Create new menus
+            </Typography>
+          </Toolbar>
+        </AppBar>
+
+        <Alert severity='info'>
+          {'Fields marked with * are required'}
+        </Alert>
 
         <DialogContent dividers={true}>
-          <Alert severity='info'>
-            Fields marked with * are required
-          </Alert>
-
           <Grid
             style={{ marginTop: 10 }}
             container

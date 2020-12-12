@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 // import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -44,6 +45,7 @@ const TopBar = ({
   onMobileNavOpen,
   onDesktopNavOpen,
   openDesktopNav,
+  reduxTheme,
   ...rest
 }) => {
   const classes = useStyles();
@@ -51,10 +53,10 @@ const TopBar = ({
   return (
     <AppBar
       className={clsx(classes.root, className)}
-      elevation={3}
+      elevation={reduxTheme === 'dark' ? 0 : 5}
     >
       <Toolbar>
-        <Hidden mdDown>
+        <Hidden smDown>
           <CustomTooltip title={openDesktopNav ? 'Close menu' : 'Open menu'} placement='bottom'>
             <IconButton onClick={onDesktopNavOpen} color='inherit' >
               {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
@@ -68,13 +70,13 @@ const TopBar = ({
 
         <Box flexGrow={1} />
 
-        <Hidden mdDown>
+        <Hidden smDown>
           <Clock className={classes.clock} />
         </Hidden>
 
         <ThemeMode color='inherit' />
 
-        <Hidden lgUp>
+        <Hidden mdUp>
           <CustomTooltip title='Open menu' placement='bottom'>
             <IconButton onClick={onMobileNavOpen} color='inherit' >
               <MenuIcon />
@@ -82,7 +84,7 @@ const TopBar = ({
           </CustomTooltip>
         </Hidden>
       </Toolbar>
-    </AppBar>
+    </AppBar >
   );
 };
 
@@ -92,4 +94,14 @@ TopBar.propTypes = {
   openDesktopNav: PropTypes.bool,
 };
 
-export default TopBar;
+
+/**
+ * Redux state
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
+}
+
+export default connect(reduxState, null)(TopBar);

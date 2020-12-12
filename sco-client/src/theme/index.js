@@ -3,7 +3,8 @@ import {
   colors
 } from '@material-ui/core';
 import {
-  darkShadows
+  darkShadows,
+  lightShadows,
 } from './shadows';
 
 const themeLight = createMuiTheme({
@@ -83,7 +84,8 @@ const themeDark = createMuiTheme({
       main: '#ffa000',
       dark: '#b27000',
     },
-  }
+  },
+  shadows: lightShadows
 });
 
 export {

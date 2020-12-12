@@ -43,22 +43,21 @@ function DialogDelete({
       maxWidth='sm'
       fullWidth={true}
       aria-labelledby='dialog-delete'
+      elevation={3}
     >
       <DialogTitle>{title}</DialogTitle>
 
       <DialogContent>
         <Alert severity="error">
-          {
-            contentText === ''
-              ? (
-                <div>
-                  <p>Are you sure you want to permanently delete this data ?</p>
-                  <p>Deleted data cannot be recovered.</p>
-                </div>
-              ) : (
-                contentText
-              )
-          }
+          {contentText === ''
+            ? (
+              <div>
+                <p>Are you sure you want to permanently delete this data ?</p>
+                <p>Deleted data cannot be recovered.</p>
+              </div>
+            ) : (
+              contentText
+            )}
         </Alert>
       </DialogContent>
 
