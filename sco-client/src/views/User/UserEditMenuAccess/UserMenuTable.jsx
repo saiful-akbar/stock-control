@@ -128,7 +128,7 @@ function UserMenuTable({
 }) {
   const classes = useStylesUserMenuTable();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [selected, setSelected] = React.useState([]);
 
 
@@ -235,7 +235,14 @@ function UserMenuTable({
               <TableRow>
                 {action && (
                   <TableCell padding="checkbox">
-                    <CustomTooltip title='Select' placement='bottom'>
+                    <CustomTooltip
+                      placement='bottom'
+                      title={
+                        selected.length === rows.length
+                          ? 'Unselect all'
+                          : 'Select all'
+                      }
+                    >
                       <Checkbox
                         color='primary'
                         indeterminate={Boolean(selected.length > 0 && selected.length < rows.length)}
@@ -315,7 +322,7 @@ function UserMenuTable({
         </TableContainer>
 
         <TablePagination
-          rowsPerPageOptions={[10, 25, 50, 100]}
+          rowsPerPageOptions={[25, 50, 100, 250]}
           component='div'
           count={rows.length}
           rowsPerPage={rowsPerPage}

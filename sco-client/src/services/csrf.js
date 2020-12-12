@@ -1,4 +1,6 @@
-import api from './api';
+import {
+  api
+} from './api';
 
 function csrf() {
   return api({

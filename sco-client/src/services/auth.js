@@ -1,4 +1,6 @@
-import api from './api';
+import {
+  api
+} from './api';
 import {
   reduxAction
 } from 'src/config/redux/state';
@@ -26,7 +28,7 @@ export const login = (data) => (dispatch) => {
         reject(err.response);
       });
     }).catch((err) => {
-      console.log(err.response);
+      reject(err.response);
     })
   });
 };

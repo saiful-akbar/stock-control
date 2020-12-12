@@ -1,4 +1,6 @@
-import api from './api';
+import {
+  api
+} from './api';
 
 // Fungsi api untuk mengambil semua data menu items
 export const apiGetAllMenuItem = (page = 1, perPage = 10, query = '', sort = 'id', orderBy = 'asc') => {

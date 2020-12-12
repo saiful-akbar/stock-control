@@ -162,8 +162,8 @@ function UserEditMenuAccess(props) {
             textColor='primary'
             aria-label='Access the user menu'
           >
-            <Tab label='Menu Items' {...a11yProps(0)} />
-            <Tab label='Menu Sub Items' {...a11yProps(1)} />
+            <Tab label='Menus' {...a11yProps(0)} />
+            <Tab label='Sub Menus' {...a11yProps(1)} />
           </Tabs>
           <Divider />
         </Grid>

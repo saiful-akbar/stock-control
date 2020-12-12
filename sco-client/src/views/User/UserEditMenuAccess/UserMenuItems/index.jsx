@@ -52,7 +52,7 @@ function UserMenuItems(props) {
 
 
   /**
-   * Kolom pada tabel list
+   * Data kolom pada tabel list
    */
   const columns = [
     {
@@ -80,7 +80,7 @@ function UserMenuItems(props) {
       field: 'user_m_i_delete',
       align: 'center'
     },
-  ]
+  ];
 
 
 
@@ -116,10 +116,11 @@ function UserMenuItems(props) {
         {
           id: dt.id,
           menu_i_title: dt.menu_i_title,
-          user_m_i_read: menuAccess(dt.user_m_i_read),
-          user_m_i_create: menuAccess(dt.user_m_i_create),
-          user_m_i_update: menuAccess(dt.user_m_i_update),
-          user_m_i_delete: menuAccess(dt.user_m_i_delete),
+          menu_s_i_title: dt.menu_s_i_title,
+          user_m_s_i_read: menuAccess(dt.user_m_s_i_read),
+          user_m_s_i_create: menuAccess(dt.user_m_s_i_create),
+          user_m_s_i_update: menuAccess(dt.user_m_s_i_update),
+          user_m_s_i_delete: menuAccess(dt.user_m_s_i_delete),
         }
       ];
       return result;
@@ -203,7 +204,7 @@ function UserMenuItems(props) {
 
   /**
    * Fungsi untuk menghapus user menu item
-   * @param {string} id 
+   * @param {array} data
    */
   const handleDelete = async (data) => {
     setDeleteLoading(true);
@@ -309,7 +310,7 @@ function UserMenuItems(props) {
                               </FormControl>
 
                             ) : (
-                              <Skeleton variant='rect' height={39} />
+                              <Skeleton variant='rect' height={41} />
                             )}
                         </Grid>
 
@@ -367,7 +368,7 @@ function UserMenuItems(props) {
                                 />
                               </>
                             ) : (
-                              <Skeleton variant='rect' height={30} />
+                              <Skeleton variant='rect' height={41} />
                             )}
                         </Grid>
 
@@ -383,7 +384,7 @@ function UserMenuItems(props) {
                               onClick={handleSubmit}
                               loading={isSubmitting}
                             />
-                            : <Skeleton variant='rect' height={37} />
+                            : <Skeleton variant='rect' height={41} />
                           }
                         </Grid>
                       </Grid>
@@ -415,11 +416,7 @@ function UserMenuItems(props) {
       <DialogDelete
         open={deleteData.show}
         loading={deleteLoading}
-        onDelete={() => {
-          typeof deleteData.id === 'string'
-            ? handleDelete(deleteData.id)
-            : handleDelete(deleteData.id)
-        }}
+        onDelete={() => handleDelete(deleteData.id)}
         onClose={bool => {
           setDeleteData({
             show: bool,

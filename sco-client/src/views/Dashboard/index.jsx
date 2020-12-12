@@ -1,8 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Page from 'src/components/Page';
 import { Grid, Typography, Paper, Box, Card } from '@material-ui/core';
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   return (
     <Page
       title="Dashboard"
@@ -10,7 +11,7 @@ const Dashboard = () => {
     >
       <Grid container spacing={3}>
         <Grid item xs={3}>
-          <Paper>
+          <Paper variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -20,7 +21,7 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={3}>
-          <Paper elevation={1}>
+          <Paper variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'} elevation={1}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -30,7 +31,7 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={3}>
-          <Paper elevation={2}>
+          <Paper variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'} elevation={2}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -40,7 +41,7 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={3}>
-          <Paper elevation={3}>
+          <Paper variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'} elevation={3}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -52,7 +53,7 @@ const Dashboard = () => {
 
       <Grid container spacing={3}>
         <Grid item xs={3}>
-          <Card>
+          <Card variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -62,7 +63,7 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={3}>
-          <Card elevation={1}>
+          <Card variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'} elevation={1}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -72,7 +73,7 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={3}>
-          <Card elevation={2}>
+          <Card variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'} elevation={2}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -82,7 +83,7 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={3}>
-          <Card elevation={3}>
+          <Card variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'} elevation={3}>
             <Box p={2}>
               <Typography>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus beatae laudantium maxime dignissimos laborum. Doloremque velit obcaecati pariatur deleniti qui recusandae magni ut enim nobis doloribus. Magni architecto pariatur modi.
@@ -95,4 +96,15 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+
+/**
+ * Redux state
+ */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
+}
+
+
+export default connect(reduxState, null)(Dashboard);

@@ -149,6 +149,23 @@ class DatabaseSeeder extends Seeder
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
+            [
+                'id'             => Str::random(32),
+                'menu_item_id'   => $this->getMenuItem('/outgoing'),
+                'menu_s_i_title' => 'Take Out Warehouse',
+                'menu_s_i_url'   => '/outgoing/takeout',
+                'created_at'     => now(),
+                'updated_at'     => now()
+            ],
+            [
+                'id'             => Str::random(32),
+                'menu_item_id'   => $this->getMenuItem('/outgoing'),
+                'menu_s_i_title' => 'Surat Jalan',
+                'menu_s_i_url'   => '/outgoing/sj',
+                'created_at'     => now(),
+                'updated_at'     => now()
+            ],
+
         ]);
     }
 
@@ -276,6 +293,28 @@ class DatabaseSeeder extends Seeder
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
                 'menu_sub_item_id'  => $this->getMenuSubItem('/master/items'),
+                'user_m_s_i_create' => true,
+                'user_m_s_i_read'   => true,
+                'user_m_s_i_update' => true,
+                'user_m_s_i_delete' => true,
+                'created_at'        => now(),
+                'updated_at'        => now()
+            ],
+            [
+                'id'                => Str::random(32),
+                'user_id'           => $this->getUser('admin'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/outgoing/takeout'),
+                'user_m_s_i_create' => true,
+                'user_m_s_i_read'   => true,
+                'user_m_s_i_update' => true,
+                'user_m_s_i_delete' => true,
+                'created_at'        => now(),
+                'updated_at'        => now()
+            ],
+            [
+                'id'                => Str::random(32),
+                'user_id'           => $this->getUser('admin'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/outgoing/sj'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,

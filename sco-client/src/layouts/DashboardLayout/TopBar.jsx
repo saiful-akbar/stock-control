@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+// import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
-import Logo from 'src/components/Logo';
+// import Logo from 'src/components/Logo';
 import CustomTooltip from 'src/components/CustomTooltip';
 import ThemeMode from './ThemeMode';
 import Clock from 'src/components/Clock';
