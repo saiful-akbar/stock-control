@@ -216,7 +216,10 @@ function UserMenuSubItems(props) {
    */
   const handleDelete = async (data = []) => {
     alert('deleted');
-    setDeleteLoading(false);
+    setDeleteLoading(true);
+    setTimeout(() => {
+      setDeleteLoading(false);
+    }, 2000);
   }
 
 
