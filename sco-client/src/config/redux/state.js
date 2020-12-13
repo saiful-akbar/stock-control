@@ -1,5 +1,5 @@
 export const reduxState = {
-  loading: false,
+  loading: true,
   theme: 'light',
   userLogin: null,
   toast: {

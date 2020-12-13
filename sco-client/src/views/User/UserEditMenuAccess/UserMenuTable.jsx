@@ -104,7 +104,7 @@ EnhancedTableToolbar.propTypes = {
  */
 const useStylesUserMenuTable = makeStyles({
   container: {
-    maxHeight: 400,
+    maxHeight: 500,
   },
   tableAction: {
     display: 'none'

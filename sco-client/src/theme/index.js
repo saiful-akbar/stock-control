@@ -54,10 +54,10 @@ const themeDark = createMuiTheme({
   palette: {
     type: 'dark',
     background: {
-      default: '#21262D',
-      paper: '#0D1117',
-      topBar: '#161B22',
-      dark: '#06090F',
+      default: '#262D31',
+      paper: '#131C21',
+      topBar: '#2A2F32',
+      dark: '#0D1317',
     },
     primary: {
       light: '#33abb8',
@@ -65,9 +65,9 @@ const themeDark = createMuiTheme({
       dark: '#006974',
     },
     secondary: {
-      light: '#33877c',
-      main: '#00695c',
-      dark: '#004940',
+      light: '#339388',
+      main: '#00796b',
+      dark: '#00544a',
     },
     error: {
       light: '#db5858',

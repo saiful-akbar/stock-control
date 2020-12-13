@@ -485,9 +485,9 @@ const MenuItemTable = (props) => {
                                 ? (
                                   <TableCell align='center'>
                                     {props.state.update === 1 && (
-                                      <CustomTooltip title='Edit'>
+                                      <CustomTooltip title='Update'>
                                         <IconButton
-                                          aria-label='edit'
+                                          aria-label='Update'
                                           onClick={() => props.openDialogEdit(row)}
                                         >
                                           <EditIcon fontSize='small' />

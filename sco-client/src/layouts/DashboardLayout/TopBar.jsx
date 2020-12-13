@@ -56,10 +56,18 @@ const TopBar = ({
       elevation={reduxTheme === 'dark' ? 0 : 5}
     >
       <Toolbar>
-        <Hidden smDown>
+        <Hidden mdDown>
           <CustomTooltip title={openDesktopNav ? 'Close menu' : 'Open menu'} placement='bottom'>
             <IconButton onClick={onDesktopNavOpen} color='inherit' >
               {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
+            </IconButton>
+          </CustomTooltip>
+        </Hidden>
+
+        <Hidden lgUp>
+          <CustomTooltip title='Open menu' placement='bottom'>
+            <IconButton onClick={onMobileNavOpen} color='inherit' >
+              <MenuIcon />
             </IconButton>
           </CustomTooltip>
         </Hidden>
@@ -70,19 +78,11 @@ const TopBar = ({
 
         <Box flexGrow={1} />
 
-        <Hidden smDown>
+        <Hidden xsDown>
           <Clock className={classes.clock} />
         </Hidden>
 
         <ThemeMode color='inherit' />
-
-        <Hidden mdUp>
-          <CustomTooltip title='Open menu' placement='bottom'>
-            <IconButton onClick={onMobileNavOpen} color='inherit' >
-              <MenuIcon />
-            </IconButton>
-          </CustomTooltip>
-        </Hidden>
       </Toolbar>
     </AppBar >
   );

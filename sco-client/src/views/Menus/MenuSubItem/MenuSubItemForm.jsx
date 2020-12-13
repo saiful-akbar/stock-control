@@ -12,29 +12,50 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  Zoom,
+  Slide,
   MenuItem,
   FormHelperText,
   FormControl,
   Select,
   InputLabel,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Toast from 'src/components/Toast';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiCreateMenuSubItem, apiUpdateMenuSubItem } from 'src/services/menuSubItem';
+import CloseIcon from '@material-ui/icons/Close';
+import { makeStyles } from '@material-ui/styles';
+
+
+/**
+ * Style
+ */
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    position: 'relative',
+  },
+  title: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
+}));
 
 
 // Aminasi transisi
 const Transition = forwardRef(function Transition(props, ref) {
-  return (<Zoom ref={ref} {...props} />);
+  return (<Slide direction='up' ref={ref} {...props} />);
 });
 
 
 // Main component
 const MenuSubItemForm = (props) => {
   const isMounted = useRef(true);
+  const classes = useStyles();
+
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = React.useState({ show: false, type: null, message: '' });
 
@@ -92,14 +113,13 @@ const MenuSubItemForm = (props) => {
   return (
     <>
       <Dialog
+        fullScreen
         open={props.open}
         TransitionComponent={Transition}
         maxWidth='lg'
         fullWidth={true}
         aria-labelledby='dialog-form-create'
       >
-        <DialogTitle>{props.type + ' sub menus'}</DialogTitle>
-
         <Formik
           initialValues={{
             menu_item: props.type === 'Update' ? props.data.menu_item_id : '',
@@ -118,11 +138,30 @@ const MenuSubItemForm = (props) => {
             values
           }) => (
               <>
-                <DialogContent dividers={true}>
-                  <Alert severity='info'>Fields marked with * are required</Alert>
+                <AppBar color='secondary' className={classes.appBar}>
+                  <Toolbar>
+                    <IconButton
+                      edge="start"
+                      color="inherit"
+                      aria-label="close"
+                      onClick={props.closeDialog}
+                      disabled={loading}
+                    >
+                      <CloseIcon />
+                    </IconButton>
 
+                    <Typography variant="h6" className={classes.title}>
+                      {props.type + ' sub menus'}
+                    </Typography>
+                  </Toolbar>
+                </AppBar>
+
+                <Alert severity='info'>
+                  {'Fields marked with * are required'}
+                </Alert>
+
+                <DialogContent dividers={true}>
                   <Grid
-                    style={{ marginTop: 10 }}
                     container
                     direction='row'
                     justify='center'
@@ -133,7 +172,7 @@ const MenuSubItemForm = (props) => {
                       <FormControl
                         required
                         fullWidth
-                        variant='outlined'
+                        variant='filled'
                         disabled={loading}
                         error={Boolean(touched.menu_item && errors.menu_item)}
                       >
@@ -155,7 +194,7 @@ const MenuSubItemForm = (props) => {
                       </FormControl>
                     </Grid>
 
-                    <Grid item md={6} xs={12}>
+                    <Grid item xs={12}>
                       <TextField
                         fullWidth
                         required
@@ -163,7 +202,7 @@ const MenuSubItemForm = (props) => {
                         label='Title'
                         name='title'
                         type='text'
-                        variant='outlined'
+                        variant='filled'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.title}
@@ -172,7 +211,7 @@ const MenuSubItemForm = (props) => {
                       />
                     </Grid>
 
-                    <Grid item md={6} xs={12}>
+                    <Grid item xs={12}>
                       <TextField
                         fullWidth
                         required
@@ -180,7 +219,7 @@ const MenuSubItemForm = (props) => {
                         label='Url'
                         name='url'
                         type='text'
-                        variant='outlined'
+                        variant='filled'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.url}

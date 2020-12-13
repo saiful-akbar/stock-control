@@ -7,29 +7,50 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  Zoom,
+  Slide,
   MenuItem,
   FormHelperText,
   FormControl,
   Select,
   InputLabel,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton
 } from '@material-ui/core';
 import Toast from 'src/components/Toast';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiUpdateMenuItem } from 'src/services/menuItem';
 import { Alert } from '@material-ui/lab';
+import CloseIcon from '@material-ui/icons/Close';
+import { makeStyles } from '@material-ui/styles';
+
+
+/**
+ * Style
+ */
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    position: 'relative',
+  },
+  title: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
+}));
 
 
 // animasi dialog
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Zoom ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 
 // Component utama
 const MenuItemEdit = (props) => {
   const isMounted = useRef(true);
+  const classes = useStyles();
+
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = React.useState({ show: false, type: null, message: '' });
 
@@ -86,6 +107,7 @@ const MenuItemEdit = (props) => {
   return (
     <>
       <Dialog
+        fullScreen
         open={props.open}
         TransitionComponent={Transition}
         maxWidth='lg'
@@ -93,8 +115,6 @@ const MenuItemEdit = (props) => {
         fullWidth={true}
         aria-labelledby='dialog-edit-title'
       >
-        <DialogTitle id='dialog-edit-title'>{'Update menus'}</DialogTitle>
-
         <Formik
           initialValues={{
             title: props.data.menu_i_title,
@@ -114,24 +134,44 @@ const MenuItemEdit = (props) => {
             values
           }) => (
               <>
-                <DialogContent dividers={true}>
-                  <Alert severity='info'>Fields marked with * are required</Alert>
+                <AppBar color='secondary' className={classes.appBar}>
+                  <Toolbar>
+                    <IconButton
+                      edge="start"
+                      color="inherit"
+                      aria-label="close"
+                      onClick={props.closeDialog}
+                      disabled={loading}
+                    >
+                      <CloseIcon />
+                    </IconButton>
 
+                    <Typography variant="h6" className={classes.title}>
+                      {'Update menus'}
+                    </Typography>
+                  </Toolbar>
+                </AppBar>
+
+                <Alert severity='info'>
+                  {'Fields marked with * are required'}
+                </Alert>
+
+                <DialogContent dividers={true}>
                   <Grid
-                    style={{ marginTop: 10 }}
                     container
                     direction='row'
                     justify='center'
                     alignItems='center'
                     spacing={3}
+                    mt={10}
                   >
-                    <Grid item md={6} xs={12} >
+                    <Grid item xs={12} >
                       <TextField
                         fullWidth
                         required
                         name='title'
                         type='text'
-                        variant='outlined'
+                        variant='filled'
                         label='Title'
                         disabled={loading}
                         onBlur={handleBlur}
@@ -142,14 +182,14 @@ const MenuItemEdit = (props) => {
                       />
                     </Grid>
 
-                    <Grid item md={6} xs={12} >
+                    <Grid item xs={12} >
                       <TextField
                         fullWidth
                         required
                         disabled={loading}
                         name='url'
                         type='text'
-                        variant='outlined'
+                        variant='filled'
                         label='Url'
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -159,7 +199,7 @@ const MenuItemEdit = (props) => {
                       />
                     </Grid>
 
-                    <Grid item md={6} xs={12} >
+                    <Grid item xs={12} >
                       <TextField
                         fullWidth
                         required
@@ -167,7 +207,7 @@ const MenuItemEdit = (props) => {
                         label='Icon'
                         name='icon'
                         type='text'
-                        variant='outlined'
+                        variant='filled'
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.icon}
@@ -176,11 +216,11 @@ const MenuItemEdit = (props) => {
                       />
                     </Grid>
 
-                    <Grid item md={6} xs={12} >
+                    <Grid item xs={12} >
                       <FormControl
                         required
                         fullWidth
-                        variant='outlined'
+                        variant='filled'
                         disabled={loading}
                         error={Boolean(touched.children && errors.children)}
                       >

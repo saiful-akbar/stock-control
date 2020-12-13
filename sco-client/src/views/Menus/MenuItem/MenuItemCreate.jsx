@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Slide,
   MenuItem,
   FormHelperText,
@@ -26,6 +25,10 @@ import { makeStyles } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
+
+/**
+ * Style
+ */
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
@@ -37,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+/**
+ * Animasi transisi
+ */
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -175,7 +181,7 @@ const MenuItemCreate = (props) => {
             </IconButton>
 
             <Typography variant="h6" className={classes.title}>
-              Create new menus
+              {'Create new menus'}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -186,20 +192,19 @@ const MenuItemCreate = (props) => {
 
         <DialogContent dividers={true}>
           <Grid
-            style={{ marginTop: 10 }}
             container
             direction='row'
             justify='center'
             alignItems='center'
             spacing={3}
           >
-            <Grid item md={6} xs={12} >
+            <Grid item xs={12} >
               <TextField
                 fullWidth
                 required
                 name='title'
                 type='text'
-                variant='outlined'
+                variant='filled'
                 label='Title'
                 disabled={loading}
                 onBlur={handleBlur}
@@ -210,14 +215,14 @@ const MenuItemCreate = (props) => {
               />
             </Grid>
 
-            <Grid item md={6} xs={12} >
+            <Grid item xs={12} >
               <TextField
                 fullWidth
                 required
                 disabled={loading}
                 name='url'
                 type='text'
-                variant='outlined'
+                variant='filled'
                 label='Url'
                 onBlur={handleBlur}
                 helperText={errors.url}
@@ -227,7 +232,7 @@ const MenuItemCreate = (props) => {
               />
             </Grid>
 
-            <Grid item md={6} xs={12} >
+            <Grid item xs={12} >
               <TextField
                 fullWidth
                 required
@@ -235,7 +240,7 @@ const MenuItemCreate = (props) => {
                 label='Icon'
                 name='icon'
                 type='text'
-                variant='outlined'
+                variant='filled'
                 onBlur={handleBlur}
                 helperText={errors.icon}
                 onChange={handleChange}
@@ -244,10 +249,10 @@ const MenuItemCreate = (props) => {
               />
             </Grid>
 
-            <Grid item md={6} xs={12} >
+            <Grid item xs={12} >
               <FormControl
                 fullWidth
-                variant='outlined'
+                variant='filled'
                 disabled={loading}
                 error={Boolean(errors.children)}
               >

@@ -384,9 +384,9 @@ const MenuSubItemTable = (props) => {
                                 ? (
                                   <TableCell align='center'>
                                     {props.state.update === 1 && (
-                                      <CustomTooltip title='Edit'>
+                                      <CustomTooltip title='Update'>
                                         <IconButton
-                                          aria-label='edit'
+                                          aria-label='Update'
                                           onClick={() => props.openDialogForm({ type: 'Update', show: true, data: row })}
                                         >
                                           <EditIcon fontSize='small' />
