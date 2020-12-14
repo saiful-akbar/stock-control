@@ -46,7 +46,7 @@ const routes = [{
       path: '/user/:id/edit',
       element: <UserEdit />
     }, {
-      path: '/user/menus/:id',
+      path: '/user/:id/menus',
       element: <UserEditMenuAccess />
     }, {
       path: '/',

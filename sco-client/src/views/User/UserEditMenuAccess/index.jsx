@@ -129,7 +129,7 @@ function UserEditMenuAccess(props) {
   const handleChangeTabs = (event, newValue) => {
     setValue(newValue);
     let tab = newValue === 0 ? 'menuItems' : 'menuSubItems';
-    navigate(`/user/menus/${id}?tab=${tab}`, { state: state });
+    navigate(`/user/${id}/menus?tab=${tab}`, { state: state });
   };
 
 

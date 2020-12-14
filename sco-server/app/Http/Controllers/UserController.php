@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\MenuItem;
-use App\Models\UserMenuItem;
 use Illuminate\Support\Str;
+use App\Models\UserMenuItem;
 use Illuminate\Http\Request;
+use App\Models\UserMenuSubItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -466,7 +467,7 @@ class UserController extends Controller
                  * Kembalikan response 422
                  */
                 return response()->json([
-                    "message" => "The menu item is already on the list",
+                    "message" => "The menus is already on the list",
                 ], 422);
             } else {
 
@@ -487,7 +488,7 @@ class UserController extends Controller
                 ]);
 
                 return response()->json([
-                    "message"  => "1 menu item added successfully",
+                    "message"  => "1 menus added successfully",
                     "response" => $this->getUserMenuItems($id),
                 ], 201);
             }
@@ -511,7 +512,7 @@ class UserController extends Controller
         if ($this->userAccess("update")) {
             $delete = UserMenuItem::destroy($request->all());
             return response()->json([
-                "message"  => "{$delete} Menu item deleted successfully",
+                "message"  => "{$delete} Menus deleted successfully",
                 "response" => $this->getUserMenuItems($id),
             ]);
         } else {
@@ -577,6 +578,98 @@ class UserController extends Controller
             return response()->json([
                 "message" => "Access is denied",
             ], 403);
+        }
+    }
+
+
+    /**
+     * @param Request $request
+     * @param string $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addUserMenuSubItems(Request $request, string $id)
+    {
+        if ($this->userAccess("update")) {
+
+            // Validasi request
+            $request->validate([
+                "user_id"           => "required|string|max:36|exists:users,id",
+                "menu_sub_item_id"  => "required|string|max:36|exists:menu_sub_items,id",
+                "user_m_s_i_read"   => "required|boolean",
+                "user_m_s_i_create" => "required|boolean",
+                "user_m_s_i_update" => "required|boolean",
+                "user_m_s_i_delete" => "required|boolean",
+            ]);
+
+            /**
+             * Ambil data user menu sub item berdasarakan user id dam menu usb item id dari request
+             */
+            $user_msi = UserMenuSubItem::where([
+                ["user_id", $id],
+                ["menu_sub_item_id", htmlspecialchars($request->menu_sub_item_id)]
+            ])->first();
+
+            /**
+             * Cek apakah menu yang dipilih sudah ada atau belum
+             * Jika meu yang dilih kosong tambahkan data baru
+             * Jika sudah ada kembalkan pesan kesalahan
+             */
+            if (empty($user_msi)) {
+
+                // Tambahkan data baru
+                DB::table("user_menu_sub_item")->insert([
+                    "id"                => Str::random(32),
+                    "user_id"           => htmlspecialchars($id),
+                    "menu_sub_item_id"  => htmlspecialchars($request->menu_sub_item_id),
+                    "user_m_s_i_read"   => htmlspecialchars($request->user_m_s_i_read),
+                    "user_m_s_i_create" => htmlspecialchars($request->user_m_s_i_create),
+                    "user_m_s_i_update" => htmlspecialchars($request->user_m_s_i_update),
+                    "user_m_s_i_delete" => htmlspecialchars($request->user_m_s_i_delete),
+                    "created_at"        => now(),
+                    "updated_at"        => now(),
+                ]);
+
+                return response()->json([
+                    "message"  => "1 sub menus added successfully",
+                    "response" => $this->getUserMenuSubItems($id),
+                ], 200);
+            } else {
+                return response()->json([
+                    "message" => "The sub menus is already on the list",
+                ], 422);
+            }
+        } else {
+            return response()->json([
+                "message" => 'Access is denied'
+            ], 403);
+        }
+    }
+
+
+    /**
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function deleteUserMenuSubItems(Request $request, string $id)
+    {
+        if ($request->isMethod('delete')) {
+            if ($this->userAccess("update")) {
+                $delete = UserMenuSubItem::destroy($request->all());
+                return response()->json([
+                    "message"  => "{$delete} Sub menus deleted successfully",
+                    "response" => $this->getUserMenuSubItems($id),
+                ]);
+            } else {
+                return response()->json([
+                    "message" => "Access is denied",
+                ], 403);
+            }
+        } else {
+            return response()->json([
+                'message' => 'Method not allowed'
+            ], 405);
         }
     }
 }

@@ -69,5 +69,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
          * Route edit user menu sub item akses
          */
         Route::get('/menu-sub-items/{id}', [UserController::class, 'getUserMenuSubItems']);
+        Route::post('/menu-sub-items/{id}', [UserController::class, 'addUserMenuSubItems']);
+        Route::delete('/menu-sub-items/{id}', [UserController::class, 'deleteUserMenuSubItems']);
     });
 });

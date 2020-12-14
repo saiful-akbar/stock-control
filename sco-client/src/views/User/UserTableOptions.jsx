@@ -40,7 +40,7 @@ const UserTableOptions = (props) => {
    */
   const handleChangeUserMenus = () => {
     handleCloseMenu();
-    navigate(`/user/menus/${userData.id}`, {
+    navigate(`/user/${userData.id}/menus`, {
       state: {
         ...state,
         profile: {

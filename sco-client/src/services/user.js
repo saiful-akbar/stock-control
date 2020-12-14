@@ -200,3 +200,34 @@ export const apiGetUserMenuSubItems = (id) => {
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
+
+
+/**
+ * Menambahkan akses menu sub item pada user 
+ * @param {String} uuid 
+ * @param {Array} data 
+ */
+export const apiAddUserMenuSubItem = (uuid, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'POST',
+      data: data,
+      url: `/user/menu-sub-items/${uuid}`,
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};
+
+
+/**
+ * Menghapus user menu item
+ * @param {string} uuid 
+ */
+export const apiDeleteUserMenuSubItems = (id, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'DELETE',
+      data: data,
+      url: `/user/menu-sub-items/${id}`,
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};

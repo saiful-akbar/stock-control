@@ -21,7 +21,9 @@ import {
   Card,
 } from '@material-ui/core';
 import {
+  apiAddUserMenuSubItem,
   apiGetUserMenuSubItems,
+  apiDeleteUserMenuSubItems,
 } from 'src/services/user';
 import UserMenuTable from '../UserMenuTable';
 import { Skeleton } from '@material-ui/lab';
@@ -172,41 +174,43 @@ function UserMenuSubItems(props) {
    * @param {object} data 
    * @param {function} param1 
    */
-  const handleSubmiForm = async (data, { resetForm }) => {
-    // let newData = {
-    //   user_id: userId,
-    //   menu_item_id: data.menu_item_id,
-    //   user_m_i_read: data.user_m_i_read ? 1 : 0,
-    //   user_m_i_create: data.user_m_i_create ? 1 : 0,
-    //   user_m_i_update: data.user_m_i_update ? 1 : 0,
-    //   user_m_i_delete: data.user_m_i_delete ? 1 : 0,
-    // }
-    // try {
-    //   let res = await apiAddUserMenuItem(userId, newData);
-    //   if (isMounted.current) {
-    //     getData();
-    //     resetForm({});
-    //     props.setReduxToast({
-    //       show: true,
-    //       type: 'success',
-    //       message: res.data.message,
-    //     });
-    //   }
-    // } catch (err) {
-    //   if (isMounted.current) {
-    //     if (err.status === 401) {
-    //       window.location.href = '/logout';
-    //     }
-    //     else {
-    //       setLoading(false);
-    //       props.setReduxToast({
-    //         show: true,
-    //         type: 'error',
-    //         message: `(#${err.status}) ${err.status === 422 ? err.data.message : err.statusText}`
-    //       });
-    //     }
-    //   }
-    // }
+  const handleSubmiForm = async (data, { resetForm, setFieldValue }) => {
+    let newData = {
+      user_id: userId,
+      menu_sub_item_id: data.menu_sub_item_id,
+      user_m_s_i_read: data.user_m_s_i_read ? 1 : 0,
+      user_m_s_i_create: data.user_m_s_i_create ? 1 : 0,
+      user_m_s_i_update: data.user_m_s_i_update ? 1 : 0,
+      user_m_s_i_delete: data.user_m_s_i_delete ? 1 : 0,
+    };
+
+    try {
+      let res = await apiAddUserMenuSubItem(userId, newData);
+      if (isMounted.current) {
+        resetForm();
+        setFieldValue('menu_item_id', data.menu_item_id);
+        setValueRowData(res.data.response.original.user_menu_sub_items);
+        props.setReduxToast({
+          show: true,
+          type: 'success',
+          message: res.data.message,
+        });
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        if (err.status === 401) {
+          window.location.href = '/logout';
+        }
+        else {
+          setLoading(false);
+          props.setReduxToast({
+            show: true,
+            type: 'error',
+            message: `(#${err.status}) ${err.status === 422 ? err.data.message : err.statusText}`
+          });
+        }
+      }
+    }
   };
 
 
@@ -215,11 +219,36 @@ function UserMenuSubItems(props) {
    * @param {arrya} data 
    */
   const handleDelete = async (data = []) => {
-    alert('deleted');
     setDeleteLoading(true);
-    setTimeout(() => {
-      setDeleteLoading(false);
-    }, 2000);
+    try {
+      let res = await apiDeleteUserMenuSubItems(userId, data);
+      if (isMounted.current) {
+        setDeleteLoading(false);
+        setValueRowData(res.data.response.original.user_menu_sub_items);
+        setDeleteData({ show: false, id: [] });
+        props.setReduxToast({
+          show: true,
+          type: 'success',
+          message: res.data.message,
+        });
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        console.log(err);
+        if (err.status === 401) {
+          window.location.href = '/logout';
+        }
+        else {
+          setDeleteLoading(false);
+          setDeleteData({ show: false, id: deleteData.id });
+          props.setReduxToast({
+            show: true,
+            type: 'error',
+            message: `(#${err.status}) ${err.statusText}`
+          });
+        }
+      }
+    }
   }
 
 
@@ -437,16 +466,8 @@ function UserMenuSubItems(props) {
             label='List of access rights'
             loading={loading}
             columns={columns}
-            rows={
-              rowData === null
-                ? []
-                : rowData
-            }
-            selectedRows={
-              deleteData.id === null
-                ? []
-                : deleteData.id
-            }
+            rows={rowData === null ? [] : rowData}
+            selectedRows={deleteData.id === null ? [] : deleteData.id}
             onDelete={selected => {
               setDeleteData({
                 show: true,
