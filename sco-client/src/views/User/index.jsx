@@ -9,6 +9,7 @@ import {
   useNavigate
 } from 'react-router-dom';
 import UserDelete from './UserDelete';
+import UserChangePassword from './UserChangePassword';
 
 
 // Componen utama
@@ -18,6 +19,7 @@ const User = (props) => {
 
   const [reloadTable, setReloadTable] = useState(false);
   const [dialogDelete, setDialogDelete] = useState({ open: false, userId: null });
+  const [changePassword, setChangePassword] = useState({ open: false, userId: null });
 
 
   /**
@@ -37,8 +39,9 @@ const User = (props) => {
       <UserTable
         state={location.state}
         reload={reloadTable}
-        setReload={(bool) => setReloadTable(bool)}
-        openDialogDelete={(userId) => setDialogDelete({ open: true, userId: userId })}
+        setReload={bool => setReloadTable(bool)}
+        onDelete={userId => setDialogDelete({ open: true, userId: userId })}
+        onChangePassword={userId => setChangePassword({ open: true, userId: userId })}
       />
 
       <UserDelete
@@ -46,6 +49,13 @@ const User = (props) => {
         userId={dialogDelete.userId}
         reloadTable={() => setReloadTable(true)}
         closeDialog={() => setDialogDelete({ open: false, userId: null })}
+      />
+
+      <UserChangePassword
+        open={changePassword.open}
+        userId={changePassword.userId}
+        onClose={() => setChangePassword({ open: false, userId: null })}
+        onReloadTable={() => setReloadTable(true)}
       />
     </Page>
   )

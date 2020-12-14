@@ -33,7 +33,10 @@ export const login = (data) => (dispatch) => {
   });
 };
 
-// ambil data user yang sedang login
+
+/**
+ * ambil data user yang sedang login
+ */
 export const userLogin = () => (dispatch) => {
   return new Promise((resolve, reject) => {
     csrf().then(() => {
@@ -57,7 +60,10 @@ export const userLogin = () => (dispatch) => {
   });
 };
 
-// logout
+
+/**
+ * logout
+ */
 export const logout = () => {
   return new Promise((resolve, reject) => {
     api({

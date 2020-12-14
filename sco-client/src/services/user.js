@@ -3,7 +3,7 @@ import {
 } from './api';
 
 /**
- * Mengambil semua data user dari api
+ * Fungsi api untuk mengambil semua data user dari api
  * @param {int} page 
  * @param {int} perPage 
  * @param {string} query 
@@ -34,7 +34,7 @@ export const apiGetAllUser = (
 
 
 /**
- * Ambil semua menu untuk halaman user
+ * Fungsi api untuk mengambil semua menu untuk halaman user
  */
 export const apiGetAllMenus = () => {
   return new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ export const apiGetAllMenus = () => {
 
 
 /**
- * Cek form user dengan server
+ * Fungsi api untuk cek form user dengan server
  * @param {value dari form user} data 
  */
 export const apiCekUserFrom = (data) => {
@@ -62,7 +62,7 @@ export const apiCekUserFrom = (data) => {
 
 
 /**
- * Cek form profile dengan server
+ * Fungsi api untuk cek form profile dengan server
  * @param {value dari form profile} data 
  */
 export const apiCekProfileFrom = (data) => {
@@ -80,7 +80,7 @@ export const apiCekProfileFrom = (data) => {
 
 
 /**
- * Menambahkan user baru
+ * Fungsi api untuk menambahkan user baru
  * @param {array} formData 
  */
 export const apiCreateUser = (formData) => {
@@ -98,7 +98,7 @@ export const apiCreateUser = (formData) => {
 
 
 /**
- * Menambahkan akses menu pada user
+ * Fungsi api untuk menambahkan akses menu pada user
  * @param {array} menuItems 
  * @param {array} menuSubItems 
  */
@@ -117,7 +117,7 @@ export const apiCreateUserMenuAccess = (menuItems, menuSubItems) => {
 
 
 /**
- * Mereset ulang table personal_access_tokens
+ * Fungsi api untuk mereset ulang table personal_access_tokens
  */
 export const apiTruncateTokens = () => {
   return new Promise((resolve, reject) => {
@@ -130,7 +130,7 @@ export const apiTruncateTokens = () => {
 
 
 /**
- * Menghapus user
+ * Fungsi api untuk menghapus user
  * @param {string} id 
  */
 export const apiDeleteUser = (id) => {
@@ -144,7 +144,7 @@ export const apiDeleteUser = (id) => {
 
 
 /**
- * Mengambil semua data akses menu item pada user yang dipilih
+ * Fungsi api untuk mengambil semua data akses menu item pada user yang dipilih
  * @param {string} id 
  */
 export const apiGetUserMenuItems = (id) => {
@@ -158,7 +158,7 @@ export const apiGetUserMenuItems = (id) => {
 
 
 /**
- * Menambahkan akses menu item pada user 
+ * Fungsi api untuk menambahkan akses menu item pada user
  * @param {String} uuid 
  * @param {Array} data 
  */
@@ -174,7 +174,7 @@ export const apiAddUserMenuItem = (uuid, data) => {
 
 
 /**
- * Menghapus user menu item
+ * Fungsi api untuk menghapus user menu item
  * @param {string} uuid 
  */
 export const apiDeleteUserMenuItem = (id, data) => {
@@ -189,7 +189,7 @@ export const apiDeleteUserMenuItem = (id, data) => {
 
 
 /**
- * Mengambil semua data akses menu sub item pada user yang dipilih
+ * Fungsi api untuk mengambil semua data akses menu sub item pada user yang dipilih
  * @param {string} id 
  */
 export const apiGetUserMenuSubItems = (id) => {
@@ -203,7 +203,7 @@ export const apiGetUserMenuSubItems = (id) => {
 
 
 /**
- * Menambahkan akses menu sub item pada user 
+ * Fungsi api untuk menambahkan akses menu sub item pada user
  * @param {String} uuid 
  * @param {Array} data 
  */
@@ -219,7 +219,7 @@ export const apiAddUserMenuSubItem = (uuid, data) => {
 
 
 /**
- * Menghapus user menu item
+ * Fungsi api untuk menghapus user menu item
  * @param {string} uuid 
  */
 export const apiDeleteUserMenuSubItems = (id, data) => {
@@ -228,6 +228,22 @@ export const apiDeleteUserMenuSubItems = (id, data) => {
       method: 'DELETE',
       data: data,
       url: `/user/menu-sub-items/${id}`,
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};
+
+
+/**
+ * Fungsi api untuk merubah password user
+ * @param {string} id 
+ * @param {obj} data 
+ */
+export const apiUpdateUserPassword = (id, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'PATCH',
+      data: data,
+      url: `/user/password/${id}`
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };

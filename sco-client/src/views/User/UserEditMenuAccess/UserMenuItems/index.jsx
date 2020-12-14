@@ -116,11 +116,10 @@ function UserMenuItems(props) {
         {
           id: dt.id,
           menu_i_title: dt.menu_i_title,
-          menu_s_i_title: dt.menu_s_i_title,
-          user_m_s_i_read: menuAccess(dt.user_m_s_i_read),
-          user_m_s_i_create: menuAccess(dt.user_m_s_i_create),
-          user_m_s_i_update: menuAccess(dt.user_m_s_i_update),
-          user_m_s_i_delete: menuAccess(dt.user_m_s_i_delete),
+          user_m_i_read: menuAccess(dt.user_m_i_read),
+          user_m_i_create: menuAccess(dt.user_m_i_create),
+          user_m_i_update: menuAccess(dt.user_m_i_update),
+          user_m_i_delete: menuAccess(dt.user_m_i_delete),
         }
       ];
       return result;
@@ -298,7 +297,7 @@ function UserMenuItems(props) {
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                 >
-                                  <MenuItem value=''><em>none</em></MenuItem>
+                                  <MenuItem value=''>{'none'}</MenuItem>
                                   {menuItems.map(menuItem => {
                                     return (
                                       <MenuItem key={menuItem.id} value={menuItem.id}>

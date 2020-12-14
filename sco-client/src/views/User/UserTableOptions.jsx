@@ -71,7 +71,13 @@ const UserTableOptions = (props) => {
    * Handle delete
    */
   const handleDelete = () => {
-    props.openDialogDelete();
+    props.onDelete();
+    handleCloseMenu();
+  }
+
+
+  const handleChangePassword = () => {
+    props.onChangePassword();
     handleCloseMenu();
   }
 
@@ -98,7 +104,7 @@ const UserTableOptions = (props) => {
         )}
 
         {props.state !== null && props.state.update === 1 && (
-          <MenuItem onClick={handleCloseMenu}>
+          <MenuItem onClick={handleChangePassword}>
             <Typography variant='inherit'>Change password</Typography>
           </MenuItem>
         )}

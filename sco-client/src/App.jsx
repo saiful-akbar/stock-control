@@ -20,7 +20,7 @@ const App = (props) => {
 
   React.useEffect(() => {
     const date = new Date();
-    date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+    date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
     if (cookies.theme === undefined) {
       setCookie('theme', 'light', {
         expires: date,

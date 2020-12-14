@@ -672,4 +672,49 @@ class UserController extends Controller
             ], 405);
         }
     }
+
+
+    /**
+     * @param Request $request
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function updatePassword(Request $request, string $id)
+    {
+        // Cek akses user
+        if ($this->userAccess("update")) {
+
+            // cek method yang dikirim
+            if ($request->isMethod("patch")) {
+
+                // validasi request
+                $request->validate([
+                    'password' => 'required|string|max:128'
+                ]);
+
+                // update password
+                User::where("id", htmlspecialchars($id))->update([
+                    'password' => bcrypt(htmlspecialchars($request->password))
+                ]);
+
+                // response password berhasil di update
+                return response()->json([
+                    "message" => "Password updated successfully"
+                ], 200);
+            } else {
+
+                // response method tidak sesuai permintaan
+                return response()->json([
+                    'message' => 'Method not allowed'
+                ], 405);
+            }
+        } else {
+
+            // response akses user ditolak
+            return response()->json([
+                "message" => "Access is denied",
+            ], 403);
+        }
+    }
 }

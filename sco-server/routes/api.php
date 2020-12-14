@@ -71,5 +71,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/menu-sub-items/{id}', [UserController::class, 'getUserMenuSubItems']);
         Route::post('/menu-sub-items/{id}', [UserController::class, 'addUserMenuSubItems']);
         Route::delete('/menu-sub-items/{id}', [UserController::class, 'deleteUserMenuSubItems']);
+
+        /**
+         * Route untuk merubah password user
+         */
+        Route::patch('/password/{id}', [UserController::class, 'updatePassword']);
     });
 });

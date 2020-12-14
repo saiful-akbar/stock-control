@@ -13,7 +13,7 @@ const ThemeMode = ({ setReduxTheme, reduxTheme, ...props }) => {
   const [cookies, setCookie] = useCookies();
   const [darkMode, setDarkMode] = React.useState(false);
   const date = new Date();
-  date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+  date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
 
   React.useEffect(() => {
     cookies.theme === 'dark' ? setDarkMode(true) : setDarkMode(false);

@@ -465,7 +465,9 @@ const UserTable = (props) => {
                             <UserTableOptions
                               userData={row}
                               state={props.state}
-                              openDialogDelete={() => props.openDialogDelete(row.id)}
+                              onDelete={() => props.onDelete(row.id)}
+                              onChangePassword={() => props.onChangePassword(row.id)}
+
                             />
                           </TableCell>
                           <TableCell align='center'>

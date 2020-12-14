@@ -6,6 +6,7 @@ import {
   Typography,
   Backdrop,
   CircularProgress,
+  Divider,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -55,11 +56,11 @@ const Page = forwardRef(({
       <Container maxWidth={false}>
         {pageTitle !== null && (
           <>
-            <Grid container >
+            <Grid container spacing={3}>
               <Grid item xs={12} >
                 <Typography
                   className={classes.page}
-                  variant='h6'
+                  variant='h5'
                 >
                   {pageTitle}
                 </Typography>

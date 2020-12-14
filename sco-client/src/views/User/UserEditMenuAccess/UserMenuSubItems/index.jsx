@@ -234,7 +234,6 @@ function UserMenuSubItems(props) {
       }
     } catch (err) {
       if (isMounted.current) {
-        console.log(err);
         if (err.status === 401) {
           window.location.href = '/logout';
         }
@@ -314,10 +313,7 @@ function UserMenuSubItems(props) {
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                 >
-                                  <MenuItem value=''>
-                                    <em>{'none'}</em>
-                                  </MenuItem>
-
+                                  <MenuItem value=''>{'none'}</MenuItem>
                                   {menus.map(item => {
                                     return (
                                       <MenuItem
@@ -354,7 +350,7 @@ function UserMenuSubItems(props) {
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                 >
-                                  <MenuItem value=''><em>none</em></MenuItem>
+                                  <MenuItem value=''>{'none'}</MenuItem>
                                   {menus.map(item => {
                                     if (values.menu_item_id === item.id) {
                                       return item.menu_sub_items.map(subItem => (
