@@ -6,7 +6,6 @@ import {
   Typography,
   Backdrop,
   CircularProgress,
-  Divider,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -88,11 +87,13 @@ Page.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   pageTitle: PropTypes.string,
+  pb: PropTypes.bool,
 };
 
 Page.defaultProps = {
   title: null,
   pageTitle: null,
+  pb: false,
 }
 
 const reduxState = (state) => ({

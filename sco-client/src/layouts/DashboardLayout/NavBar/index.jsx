@@ -26,7 +26,8 @@ import NavItem from './NavItem';
 const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
     width: 256,
-    backgroundColor: theme.palette.background.dark
+    backgroundColor: theme.palette.background.dark,
+    overflow: 'hidden',
   },
   desktopDrawer: {
     width: 256,
@@ -34,25 +35,26 @@ const useStyles = makeStyles((theme) => ({
     height: 'calc(100% - 64px)',
     backgroundColor: theme.palette.background.dark,
     borderRight: 'none',
+    overflow: 'hidden',
   },
   avatar: {
     cursor: 'pointer',
-    width: 64,
-    height: 64
+    width: theme.spacing(10),
+    height: theme.spacing(10)
   },
   profile: {
     padding: theme.spacing(2)
   },
-  mainMenu: {
-    width: 'calc(255px - 10px)',
-  },
   menu: {
     paddingRight: '5px',
-    height: 'calc(100% - 206px)',
+    height: 'calc(100% - 174px)',
     overflow: 'hidden',
     '&:hover': {
       overflowY: 'auto'
     }
+  },
+  mainMenu: {
+    width: 'calc(256px - 10px)',
   },
   skeletonMenu: {
     marginRight: '-5px',
@@ -99,61 +101,68 @@ const NavBar = ({
       display='flex'
       flexDirection='column'
     >
-      {reduxUserLogin !== null
-        ? (
-          <Grid
-            container
-            direction='column'
-            justify='center'
-            alignItems='center'
-            wrap='nowrap'
-            className={classes.profile}
-          >
-            <Grid item xs={12}>
-              <Avatar
-                className={classes.avatar}
-                component={RouterLink}
-                src={reduxUserLogin.profile.profile_avatar === null ? '' : apiUrl(`/avatar/${reduxUserLogin.profile.profile_avatar}`)}
-                to='/account'
-              />
-            </Grid>
+      <Grid
+        container
+        direction='row'
+        justify='center'
+        alignItems='center'
+        wrap='nowrap'
+        spacing={2}
+        className={classes.profile}
+      >
+        {reduxUserLogin !== null
+          ? (
+            <>
+              <Grid item>
+                <Avatar
+                  to='/account'
+                  className={classes.avatar}
+                  component={RouterLink}
+                  src={
+                    reduxUserLogin.profile.profile_avatar === null
+                      ? ''
+                      : apiUrl(`/avatar/${reduxUserLogin.profile.profile_avatar}`)
+                  }
+                />
+              </Grid>
 
-            <Grid item xs={12} zeroMinWidth>
-              <Typography color='textPrimary'
-                variant='subtitle1'
-                noWrap
-              >
-                {reduxUserLogin.profile.profile_name}
-              </Typography>
-            </Grid>
+              <Grid item xs zeroMinWidth>
+                <Typography
+                  color='textPrimary'
+                  variant='h6'
+                  noWrap
+                >
+                  {reduxUserLogin.profile.profile_name}
+                </Typography>
 
-            <Grid item xs={12} zeroMinWidth>
-              <Typography
-                color='textSecondary'
-                variant='body2'
-                noWrap
-              >
-                {reduxUserLogin.profile.profile_division}
-              </Typography>
-            </Grid>
-          </Grid>
-        ) : (
-          <Box
-            alignItems='center'
-            display='flex'
-            flexDirection='column'
-            p={2}
-          >
-            <Skeleton variant='circle' className={classes.avatar} />
-            <Skeleton variant='text' width='80%' >
-              <Typography variant='subtitle1'>...</Typography>
-            </Skeleton>
-            <Skeleton variant='text' width='60%' >
-              <Typography variant='body2'>...</Typography>
-            </Skeleton>
-          </Box>
-        )
-      }
+                <Typography
+                  color='textSecondary'
+                  variant='body2'
+                  noWrap
+                >
+                  {reduxUserLogin.profile.profile_division}
+                </Typography>
+              </Grid>
+            </>
+          ) : (
+            <>
+              <Grid item>
+                <Skeleton variant='circle' className={classes.avatar} />
+              </Grid>
+
+              <Grid item xs zeroMinWidth>
+                <Skeleton variant='text' width='100%' >
+                  <Typography variant='h6'>{'...'}</Typography>
+                </Skeleton>
+
+                <Skeleton variant='text' width='90%' >
+                  <Typography variant='body2'>{'...'}</Typography>
+                </Skeleton>
+              </Grid>
+            </>
+          )
+        }
+      </Grid>
 
       <Divider />
       <Box flexGrow={1} />

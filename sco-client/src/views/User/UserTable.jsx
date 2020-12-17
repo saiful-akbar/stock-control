@@ -423,7 +423,7 @@ const UserTable = (props) => {
                 <TableHead>
                   <TableRow>
                     <TableCell align='center'>Actions</TableCell>
-                    <TableCell align='center'>Is Logged In</TableCell>
+                    <TableCell align='center'>Is Loggin</TableCell>
                     {columns.map((col, i) => (
                       <TableCell
                         key={i}
@@ -475,8 +475,8 @@ const UserTable = (props) => {
                               variant="outlined"
                               label={
                                 Boolean(row.token)
-                                  ? 'Logged in'
-                                  : 'Logged out'
+                                  ? 'Login'
+                                  : 'Logout'
                               }
                               color={
                                 Boolean(row.token)
