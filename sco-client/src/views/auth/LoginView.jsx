@@ -98,7 +98,6 @@ function LoginView({ cookies, loginUser }) {
     try {
       const res = await loginUser(data);
       cookies.set('auth_token', res.data.auth_token, { path: '/', expires: date });
-      setLoading(false);
       window.location.href = '/dashboard';
     }
     catch (err) {

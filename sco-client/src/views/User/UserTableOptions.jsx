@@ -98,31 +98,31 @@ const UserTableOptions = (props) => {
         onClose={handleCloseMenu}
       >
         {props.state !== null && props.state.update === 1 && (
-          <MenuItem onClick={handleChangeUserMenus}>
-            <Typography variant='inherit'>Change menu access</Typography>
-          </MenuItem>
-        )}
-
-        {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleChangePassword}>
-            <Typography variant='inherit'>Change password</Typography>
+            <Typography variant='inherit'>{'Change password'}</Typography>
           </MenuItem>
         )}
 
         {props.state !== null && props.state.delete === 1 && (
           <MenuItem onClick={handleDelete}>
-            <Typography variant='inherit'>Delete</Typography>
+            <Typography variant='inherit'>{'Delete'}</Typography>
           </MenuItem>
         )}
 
         {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleEdit}>
-            <Typography variant='inherit'>Edit</Typography>
+            <Typography variant='inherit'>{'Edit profile'}</Typography>
+          </MenuItem>
+        )}
+
+        {props.state !== null && props.state.update === 1 && (
+          <MenuItem onClick={handleChangeUserMenus}>
+            <Typography variant='inherit'>{'User access menu'}</Typography>
           </MenuItem>
         )}
 
         <MenuItem onClick={handleCloseMenu}>
-          <Typography variant='inherit'>View detail</Typography>
+          <Typography variant='inherit'>{'View detail'}</Typography>
         </MenuItem>
       </Menu>
     </>

@@ -84,6 +84,10 @@ const themeDark = createMuiTheme({
       main: '#ffa000',
       dark: '#b27000',
     },
+    text: {
+      primary: colors.grey[200],
+      secondary: colors.grey[500]
+    },
   },
   shadows: lightShadows
 });

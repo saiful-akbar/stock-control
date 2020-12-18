@@ -3,7 +3,8 @@ import { withCookies } from 'react-cookie';
 import {
   makeStyles,
   Backdrop,
-  CircularProgress
+  CircularProgress,
+  Typography
 } from '@material-ui/core';
 import { logout } from 'src/services/auth';
 
@@ -49,7 +50,17 @@ function Logout({ cookies }) {
    */
   return (
     <Backdrop className={classes.backdrop} open={true}>
-      <CircularProgress color="primary" size={50} />
+      <CircularProgress />
+      <Typography
+        noWrap
+        color='textSecondary'
+        variant='subtitle1'
+        style={{
+          marginLeft: 20
+        }}
+      >
+        {'Loading, please wait...'}
+      </Typography>
     </Backdrop>
   );
 };

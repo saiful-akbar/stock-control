@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import UserDelete from './UserDelete';
 import UserChangePassword from './UserChangePassword';
+import { Grid } from '@material-ui/core';
 
 
 // Componen utama
@@ -36,13 +37,17 @@ const User = (props) => {
   // render component utama
   return (
     <Page title='Users' pageTitle='Users'>
-      <UserTable
-        state={location.state}
-        reload={reloadTable}
-        setReload={bool => setReloadTable(bool)}
-        onDelete={userId => setDialogDelete({ open: true, userId: userId })}
-        onChangePassword={userId => setChangePassword({ open: true, userId: userId })}
-      />
+      <Grid container spacing={3}>
+        <Grid item xs >
+          <UserTable
+            state={location.state}
+            reload={reloadTable}
+            setReload={bool => setReloadTable(bool)}
+            onDelete={userId => setDialogDelete({ open: true, userId: userId })}
+            onChangePassword={userId => setChangePassword({ open: true, userId: userId })}
+          />
+        </Grid>
+      </Grid>
 
       <UserDelete
         open={dialogDelete.open}

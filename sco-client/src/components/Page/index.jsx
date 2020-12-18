@@ -21,11 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
   page: {
     color: theme.palette.text.secondary,
-    paddingBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1000,
-    backgroundColor: theme.palette.type === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: theme.palette.type === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)',
   },
 }));
 
@@ -49,7 +50,17 @@ const Page = forwardRef(({
       </Helmet>
 
       <Backdrop className={classes.backdrop} open={reduxLoading}>
-        <CircularProgress color='primary' size={50} />
+        <CircularProgress />
+        <Typography
+          noWrap
+          color='textSecondary'
+          variant='subtitle1'
+          style={{
+            marginLeft: 20
+          }}
+        >
+          {'Loading, please wait...'}
+        </Typography>
       </Backdrop>
 
       <Container maxWidth={false}>
