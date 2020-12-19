@@ -16,7 +16,10 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton
+  IconButton,
+  Card,
+  CardHeader,
+  CardContent
 } from '@material-ui/core';
 import Toast from 'src/components/Toast';
 import BtnSubmit from 'src/components/BtnSubmit';
@@ -147,7 +150,7 @@ const MenuItemEdit = (props) => {
                     </IconButton>
 
                     <Typography variant="h6" className={classes.title}>
-                      {'Update menus'}
+                      {'Menus'}
                     </Typography>
                   </Toolbar>
                 </AppBar>
@@ -159,86 +162,103 @@ const MenuItemEdit = (props) => {
                 <DialogContent dividers={true}>
                   <Grid
                     container
-                    direction='row'
-                    justify='center'
-                    alignItems='center'
-                    spacing={3}
-                    mt={10}
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
                   >
-                    <Grid item xs={12} >
-                      <TextField
-                        fullWidth
-                        required
-                        name='title'
-                        type='text'
-                        variant='filled'
-                        label='Title'
-                        disabled={loading}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.title}
-                        helperText={touched.title && errors.title}
-                        error={Boolean(touched.title && errors.title)}
-                      />
-                    </Grid>
+                    <Grid item md={8} sm={10} xs={12}>
+                      <Card variant='outlined'>
+                        <CardHeader
+                          title='Update menus'
+                        />
 
-                    <Grid item xs={12} >
-                      <TextField
-                        fullWidth
-                        required
-                        disabled={loading}
-                        name='url'
-                        type='text'
-                        variant='filled'
-                        label='Url'
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.url}
-                        helperText={touched.url && errors.url}
-                        error={Boolean(touched.url && errors.url)}
-                      />
-                    </Grid>
+                        <CardContent>
+                          <Grid
+                            container
+                            direction='row'
+                            justify='center'
+                            alignItems='center'
+                            spacing={3}
+                            mt={10}
+                          >
+                            <Grid item xs={12} >
+                              <TextField
+                                fullWidth
+                                required
+                                name='title'
+                                type='text'
+                                variant='outlined'
+                                label='Title'
+                                disabled={loading}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.title}
+                                helperText={touched.title && errors.title}
+                                error={Boolean(touched.title && errors.title)}
+                              />
+                            </Grid>
 
-                    <Grid item xs={12} >
-                      <TextField
-                        fullWidth
-                        required
-                        disabled={loading}
-                        label='Icon'
-                        name='icon'
-                        type='text'
-                        variant='filled'
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.icon}
-                        helperText={touched.icon && errors.icon}
-                        error={Boolean(touched.icon && errors.icon)}
-                      />
-                    </Grid>
+                            <Grid item xs={12} >
+                              <TextField
+                                fullWidth
+                                required
+                                disabled={loading}
+                                name='url'
+                                type='text'
+                                variant='outlined'
+                                label='Url'
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.url}
+                                helperText={touched.url && errors.url}
+                                error={Boolean(touched.url && errors.url)}
+                              />
+                            </Grid>
 
-                    <Grid item xs={12} >
-                      <FormControl
-                        required
-                        fullWidth
-                        variant='filled'
-                        disabled={loading}
-                        error={Boolean(touched.children && errors.children)}
-                      >
-                        <InputLabel id='children'>Children</InputLabel>
-                        <Select
-                          labelId='children'
-                          name='children'
-                          value={values.children}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          label='Children *'
-                          required
-                        >
-                          <MenuItem value='1' checked={values.children === 1 ? true : false}>Yes</MenuItem>
-                          <MenuItem value='0' checked={values.children === 0 ? true : false} >No</MenuItem>
-                        </Select>
-                        <FormHelperText>{touched.children && errors.children}</FormHelperText>
-                      </FormControl>
+                            <Grid item xs={12} >
+                              <TextField
+                                fullWidth
+                                required
+                                disabled={loading}
+                                label='Icon'
+                                name='icon'
+                                type='text'
+                                variant='outlined'
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.icon}
+                                helperText={touched.icon && errors.icon}
+                                error={Boolean(touched.icon && errors.icon)}
+                              />
+                            </Grid>
+
+                            <Grid item xs={12} >
+                              <FormControl
+                                required
+                                fullWidth
+                                variant='outlined'
+                                disabled={loading}
+                                error={Boolean(touched.children && errors.children)}
+                              >
+                                <InputLabel id='children'>Children</InputLabel>
+                                <Select
+                                  labelId='children'
+                                  name='children'
+                                  value={values.children}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  label='Children *'
+                                  required
+                                >
+                                  <MenuItem value='1' checked={values.children === 1 ? true : false}>Yes</MenuItem>
+                                  <MenuItem value='0' checked={values.children === 0 ? true : false} >No</MenuItem>
+                                </Select>
+                                <FormHelperText>{touched.children && errors.children}</FormHelperText>
+                              </FormControl>
+                            </Grid>
+                          </Grid>
+                        </CardContent>
+                      </Card>
                     </Grid>
                   </Grid>
                 </DialogContent>

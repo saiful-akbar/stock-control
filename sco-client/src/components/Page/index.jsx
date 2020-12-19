@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1000,
-    backgroundColor: theme.palette.type === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: theme.palette.type === 'dark' ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)',
   },
 }));
 

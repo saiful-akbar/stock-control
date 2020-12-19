@@ -14,6 +14,9 @@ import {
   AppBar,
   Toolbar,
   Typography,
+  Card,
+  CardContent,
+  CardHeader,
 } from '@material-ui/core';
 import {
   apiCreateMenuItem
@@ -180,8 +183,11 @@ const MenuItemCreate = (props) => {
               <CloseIcon />
             </IconButton>
 
-            <Typography variant="h6" className={classes.title}>
-              {'Create new menus'}
+            <Typography
+              variant="h6"
+              className={classes.title}
+            >
+              {'Menus'}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -193,84 +199,99 @@ const MenuItemCreate = (props) => {
         <DialogContent dividers={true}>
           <Grid
             container
-            direction='row'
-            justify='center'
-            alignItems='center'
-            spacing={3}
+            direction="row"
+            justify="center"
+            alignItems="center"
           >
-            <Grid item xs={12} >
-              <TextField
-                fullWidth
-                required
-                name='title'
-                type='text'
-                variant='filled'
-                label='Title'
-                disabled={loading}
-                onBlur={handleBlur}
-                helperText={errors.title}
-                onChange={handleChange}
-                value={values.title}
-                error={Boolean(errors.title)}
-              />
-            </Grid>
+            <Grid item md={8} sm={10} xs={12}>
+              <Card variant='outlined'>
+                <CardHeader title="Create new menus" />
 
-            <Grid item xs={12} >
-              <TextField
-                fullWidth
-                required
-                disabled={loading}
-                name='url'
-                type='text'
-                variant='filled'
-                label='Url'
-                onBlur={handleBlur}
-                helperText={errors.url}
-                onChange={handleChange}
-                value={values.url}
-                error={Boolean(errors.url)}
-              />
-            </Grid>
+                <CardContent>
+                  <Grid
+                    container
+                    direction='row'
+                    justify='center'
+                    alignItems='center'
+                    spacing={3}
+                  >
+                    <Grid item xs={12} >
+                      <TextField
+                        fullWidth
+                        required
+                        name='title'
+                        type='text'
+                        variant='outlined'
+                        label='Title'
+                        disabled={loading}
+                        onBlur={handleBlur}
+                        helperText={errors.title}
+                        onChange={handleChange}
+                        value={values.title}
+                        error={Boolean(errors.title)}
+                      />
+                    </Grid>
 
-            <Grid item xs={12} >
-              <TextField
-                fullWidth
-                required
-                disabled={loading}
-                label='Icon'
-                name='icon'
-                type='text'
-                variant='filled'
-                onBlur={handleBlur}
-                helperText={errors.icon}
-                onChange={handleChange}
-                value={values.icon}
-                error={Boolean(errors.icon)}
-              />
-            </Grid>
+                    <Grid item xs={12} >
+                      <TextField
+                        fullWidth
+                        required
+                        disabled={loading}
+                        name='url'
+                        type='text'
+                        variant='outlined'
+                        label='Url'
+                        onBlur={handleBlur}
+                        helperText={errors.url}
+                        onChange={handleChange}
+                        value={values.url}
+                        error={Boolean(errors.url)}
+                      />
+                    </Grid>
 
-            <Grid item xs={12} >
-              <FormControl
-                fullWidth
-                variant='filled'
-                disabled={loading}
-                error={Boolean(errors.children)}
-              >
-                <InputLabel id='children'>Children</InputLabel>
-                <Select
-                  labelId='children'
-                  name='children'
-                  value={values.children}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  label='Children *'
-                  required
-                >
-                  <MenuItem value='1' >Yes</MenuItem>
-                  <MenuItem value='0' >No</MenuItem>
-                </Select>
-                <FormHelperText>{errors.children}</FormHelperText>
-              </FormControl>
+                    <Grid item xs={12} >
+                      <TextField
+                        fullWidth
+                        required
+                        disabled={loading}
+                        label='Icon'
+                        name='icon'
+                        type='text'
+                        variant='outlined'
+                        onBlur={handleBlur}
+                        helperText={errors.icon}
+                        onChange={handleChange}
+                        value={values.icon}
+                        error={Boolean(errors.icon)}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} >
+                      <FormControl
+                        fullWidth
+                        variant='outlined'
+                        disabled={loading}
+                        error={Boolean(errors.children)}
+                      >
+                        <InputLabel id='children'>Children</InputLabel>
+                        <Select
+                          labelId='children'
+                          name='children'
+                          value={values.children}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          label='Children *'
+                          required
+                        >
+                          <MenuItem value='1' >Yes</MenuItem>
+                          <MenuItem value='0' >No</MenuItem>
+                        </Select>
+                        <FormHelperText>{errors.children}</FormHelperText>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
         </DialogContent>

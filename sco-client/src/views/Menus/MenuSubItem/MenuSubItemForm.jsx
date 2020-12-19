@@ -22,6 +22,9 @@ import {
   Toolbar,
   Typography,
   IconButton,
+  Card,
+  CardHeader,
+  CardContent,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Toast from 'src/components/Toast';
@@ -151,7 +154,7 @@ const MenuSubItemForm = (props) => {
                     </IconButton>
 
                     <Typography variant="h6" className={classes.title}>
-                      {props.type + ' sub menus'}
+                      {'Sub Menus'}
                     </Typography>
                   </Toolbar>
                 </AppBar>
@@ -163,72 +166,95 @@ const MenuSubItemForm = (props) => {
                 <DialogContent dividers={true}>
                   <Grid
                     container
-                    direction='row'
-                    justify='center'
-                    alignItems='center'
-                    spacing={3}
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
                   >
-                    <Grid item xs={12} >
-                      <FormControl
-                        required
-                        fullWidth
-                        variant='filled'
-                        disabled={loading}
-                        error={Boolean(touched.menu_item && errors.menu_item)}
-                      >
-                        <InputLabel id='menu-item'>Menu Item</InputLabel>
-                        <Select
-                          labelId='menu-item'
-                          name='menu_item'
-                          label='Menu Item *'
-                          value={values.menu_item}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        >
-                          <MenuItem value='' disabled><em>None</em></MenuItem>
-                          {props.menuItems.map((data, key) => (
-                            <MenuItem key={key} value={data.id}>{data.menu_i_title}</MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText>{touched.menu_item && errors.menu_item}</FormHelperText>
-                      </FormControl>
-                    </Grid>
+                    <Grid item md={8} sm={10} xs={12}>
+                      <Card variant='outlined'>
+                        <CardHeader title={props.type + ' sub menus'} />
 
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        disabled={loading}
-                        label='Title'
-                        name='title'
-                        type='text'
-                        variant='filled'
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.title}
-                        helperText={touched.title && errors.title}
-                        error={Boolean(touched.title && errors.title)}
-                      />
-                    </Grid>
+                        <CardContent>
+                          <Grid
+                            container
+                            direction='row'
+                            justify='center'
+                            alignItems='center'
+                            spacing={3}
+                          >
+                            <Grid item xs={12} >
+                              <FormControl
+                                required
+                                fullWidth
+                                variant='outlined'
+                                disabled={loading}
+                                error={Boolean(touched.menu_item && errors.menu_item)}
+                              >
+                                <InputLabel id='menu-item'>{'Menu Item'}</InputLabel>
+                                <Select
+                                  labelId='menu-item'
+                                  name='menu_item'
+                                  label='Menu Item *'
+                                  value={values.menu_item}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                >
+                                  <MenuItem value='' disabled >{'None'}</MenuItem>
 
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        disabled={loading}
-                        label='Url'
-                        name='url'
-                        type='text'
-                        variant='filled'
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.url}
-                        helperText={touched.url && errors.url}
-                        error={Boolean(touched.url && errors.url)}
-                      />
+                                  {props.menuItems.map((data, key) => (
+                                    <MenuItem
+                                      key={key}
+                                      value={data.id}
+                                    >
+                                      {data.menu_i_title}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+
+                                <FormHelperText>
+                                  {touched.menu_item && errors.menu_item}
+                                </FormHelperText>
+                              </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                              <TextField
+                                fullWidth
+                                required
+                                disabled={loading}
+                                label='Title'
+                                name='title'
+                                type='text'
+                                variant='outlined'
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.title}
+                                helperText={touched.title && errors.title}
+                                error={Boolean(touched.title && errors.title)}
+                              />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                              <TextField
+                                fullWidth
+                                required
+                                disabled={loading}
+                                label='Url'
+                                name='url'
+                                type='text'
+                                variant='outlined'
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                value={values.url}
+                                helperText={touched.url && errors.url}
+                                error={Boolean(touched.url && errors.url)}
+                              />
+                            </Grid>
+                          </Grid>
+                        </CardContent>
+                      </Card>
                     </Grid>
                   </Grid>
-
                 </DialogContent>
 
                 <DialogActions>
