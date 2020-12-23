@@ -18,6 +18,7 @@ import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CustomTooltip from 'src/components/CustomTooltip';
 import UserEditAccount from './UserEditAccount';
 import { connect } from 'react-redux';
+import UserEditProfile from './UserEditProfile';
 
 
 // Style
@@ -60,6 +61,12 @@ function UserEdit(props) {
       pb={true}
     >
       <Grid container spacing={3} >
+        <Grid item xs >
+          <UserEditProfile
+            userId={id}
+          />
+        </Grid>
+
         <Grid item xs={12}>
           <UserEditAccount
             userId={id}

@@ -14,6 +14,7 @@ const BtnSubmit = ({
   size,
   color,
   singleButton,
+  disabled,
   ...props
 }) => {
 
@@ -48,6 +49,7 @@ const BtnSubmit = ({
             onClick={handleCancel}
             color={color}
             size={size}
+            disabled={disabled}
           >{titleCancel}</Button>
         )}
 
@@ -55,6 +57,7 @@ const BtnSubmit = ({
           onClick={handleSubmit}
           size={size}
           color={color}
+          disabled={disabled}
           {...props}
         > {title} </Button>
       </>
@@ -74,6 +77,7 @@ BtnSubmit.defaultProps = {
   color: 'primary',
   loading: false,
   singleButton: false,
+  disabled: false,
   handleCancel: () => null,
   handleSubmit: () => null,
 };
@@ -85,6 +89,7 @@ BtnSubmit.propsTypes = {
   size: PropTypes.string,
   color: PropTypes.string,
   loading: PropTypes.bool,
+  disabled: PropTypes.bool,
   singleButton: PropTypes.bool,
   handleCancel: PropTypes.func,
   handleSubmit: PropTypes.func,

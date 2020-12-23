@@ -89,9 +89,9 @@ class UserController extends Controller
         } else {
             $data     = [];
             $per_page = isset($request->per_page) && !empty($request->per_page) ? htmlspecialchars($request->per_page) : 25;
-            $search   = isset($request->search) && !empty($request->search) ? htmlspecialchars($request->search) : '';
-            $sort     = isset($request->sort) && !empty($request->sort) ? htmlspecialchars($request->sort) : 'username';
-            $order_by = isset($request->order_by) && !empty($request->order_by) ? htmlspecialchars($request->order_by) : 'asc';
+            $search   = isset($request->search) && !empty($request->search) ? htmlspecialchars($request->search) : "";
+            $sort     = isset($request->sort) && !empty($request->sort) ? htmlspecialchars($request->sort) : "username";
+            $order_by = isset($request->order_by) && !empty($request->order_by) ? htmlspecialchars($request->order_by) : "asc";
 
             $data = DB::table("users")
                 ->leftJoin("profiles", "users.id", "=", "profiles.user_id")
@@ -331,11 +331,19 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if (!$this->userAccess("update")) {
+        if ($this->userAccess("update")) {
+            $data = DB::table("profiles")
+                ->select('profile_avatar', 'profile_name', 'profile_division', 'profile_email', 'profile_phone', 'profile_address')
+                ->where("user_id", $id)
+                ->first();
+
+            return response()->json([
+                "user_data" => $data,
+            ], 200);
+        } else {
             return response()->json([
                 "message" => "Access is denied",
             ], 403);
-        } else {
         }
     }
 
@@ -641,7 +649,7 @@ class UserController extends Controller
             }
         } else {
             return response()->json([
-                "message" => 'Access is denied'
+                "message" => "Access is denied"
             ], 403);
         }
     }
@@ -654,7 +662,7 @@ class UserController extends Controller
      */
     public function deleteUserMenuSubItems(Request $request, string $id)
     {
-        if ($request->isMethod('delete')) {
+        if ($request->isMethod("delete")) {
             if ($this->userAccess("update")) {
                 $delete = UserMenuSubItem::destroy($request->all());
                 return response()->json([
@@ -668,7 +676,7 @@ class UserController extends Controller
             }
         } else {
             return response()->json([
-                'message' => 'Method not allowed'
+                "message" => "Method not allowed"
             ], 405);
         }
     }
@@ -690,12 +698,12 @@ class UserController extends Controller
 
                 // validasi request
                 $request->validate([
-                    'password' => 'required|string|max:128'
+                    "password" => "required|string|max:128"
                 ]);
 
                 // update password
                 User::where("id", htmlspecialchars($id))->update([
-                    'password' => bcrypt(htmlspecialchars($request->password))
+                    "password" => bcrypt(htmlspecialchars($request->password))
                 ]);
 
                 // response password berhasil di update
@@ -706,7 +714,7 @@ class UserController extends Controller
 
                 // response method tidak sesuai permintaan
                 return response()->json([
-                    'message' => 'Method not allowed'
+                    "message" => "Method not allowed"
                 ], 405);
             }
         } else {
