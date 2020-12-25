@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\MenuItem;
-use Illuminate\Support\Str;
 use App\Models\UserMenuItem;
-use Illuminate\Http\Request;
 use App\Models\UserMenuSubItem;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -144,8 +144,8 @@ class UserController extends Controller
             ], 403);
         } else {
             $request->validate([
-                "username"  => "required|string|unique:users,username|max:255",
-                "password"  => "required|string|min:4|max:255",
+                "username"  => "required|string|unique:users,username|max:200",
+                "password"  => "required|string|min:4|max:200",
                 "is_active" => "required|boolean"
             ]);
 
@@ -329,11 +329,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function editProfile($id)
     {
         if ($this->userAccess("update")) {
             $data = DB::table("profiles")
-                ->select('profile_avatar', 'profile_name', 'profile_division', 'profile_email', 'profile_phone', 'profile_address')
+                ->select("profile_avatar", "profile_name", "profile_division", "profile_email", "profile_phone", "profile_address")
                 ->where("user_id", $id)
                 ->first();
 
@@ -354,9 +354,151 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateProfile(Request $request, $id)
     {
-        //
+        if ($this->userAccess("update")) {
+
+            //  validasi request
+            $request->validate([
+                "profile_avatar"   => "nullable|image|mimes:jpeg,jpg,png|max:1000",
+                "profile_name"     => "required|string|max:128",
+                "profile_division" => "nullable|string|max:128",
+                "profile_email"    => "nullable|email:rfc,dns,filter|max:128",
+                "profile_phone"    => "nullable|string|max:15",
+                "profile_address"  => "nullable|string",
+            ]);
+
+
+            // Ambil data awal user yang ingin dirubah
+            $user = DB::table("profiles")->where("user_id", $id)->first();
+
+
+            // Cek apakah avatar dirubah atau tidak
+            $avatar = $user->profile_avatar;
+            if ($request->hasFile("profile_avatar")) {
+                if ($avatar != null) {
+                    Storage::delete("img/avatars/{$avatar}");
+                }
+
+                $extension = $request->profile_avatar->extension();
+                $avatar    = "{$id}.{$extension}";
+                $request->profile_avatar->storeAs("img/avatars", $avatar);
+            }
+
+
+            // Validasi jika email dirubah
+            if ($request->profile_email != $user->profile_email) {
+                $email = DB::table("profiles")
+                    ->select("profile_email")
+                    ->where([["user_id", "!=", $id], ["profile_email", "=", $request->profile_email]])
+                    ->first();
+
+                if (!empty($email->profile_email)) {
+                    $request->validate([
+                        "profile_email" => "unique:profiles,profile_email"
+                    ]);
+                }
+            }
+
+            // Simpan data perubahannya
+            DB::table("profiles")
+                ->where("user_id", $id)
+                ->update([
+                    "profile_avatar"   => htmlspecialchars($avatar),
+                    "profile_name"     => htmlspecialchars(ucwords($request->profile_name)),
+                    "profile_email"    => htmlspecialchars(strtolower($request->profile_email)),
+                    "profile_division" => htmlspecialchars(ucwords($request->profile_division)),
+                    "profile_phone"    => htmlspecialchars(strtolower($request->profile_phone)),
+                    "profile_address"  => htmlspecialchars($request->profile_address),
+                    "updated_at"       => now(),
+                ]);
+
+            return response()->json([
+                "message"   => "User profile updated successfully",
+                "user_data" => DB::table("profiles")
+                    ->select("profile_avatar", "profile_name", "profile_division", "profile_email", "profile_phone", "profile_address")
+                    ->where("user_id", $id)
+                    ->first(),
+            ], 200);
+        } else {
+            return response()->json([
+                "message" => "Access is denied",
+            ], 403);
+        }
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return [type]
+     */
+    public function editAccount(User $user)
+    {
+        if ($this->userAccess("update")) {
+            return response()->json([
+                "user_data" => $user
+            ]);
+        } else {
+            return response()->json([
+                "message" => "Access is denied",
+            ], 403);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @param User $user
+     *
+     * @return [type]
+     */
+    public function updateAccount(Request $request, User $user)
+    {
+        if ($this->userAccess("update")) {
+
+            // Validasi request
+            $request->validate([
+                "username"  => "required|string|max:200",
+                "password"  => "nullable|string|min:4|max:200",
+                "is_active" => "required|boolean"
+            ]);
+
+            /**
+             * Cek request username
+             * Cek apakah username diubah atau tidak
+             */
+            if ($request->username != $user->username) {
+                $username = User::where([["username", "=", $request->username], ["id", '!=', $user->id]])->first();
+                if (!empty($username)) {
+                    $request->validate([
+                        "username"  => "unique:users,username",
+                    ]);
+                }
+            }
+
+            // Cek request password
+            $password = $user->password;
+            if (!empty($request->password)) {
+                $password = bcrypt(htmlspecialchars($request->password));
+            }
+
+            // Simpan perubahan
+            User::where("id", $user->id)->update([
+                "username"   => htmlspecialchars($request->username),
+                "password"   => $password,
+                "is_active"  => $request->is_active,
+                "updated_at" => now(),
+            ]);
+
+            // Response
+            return response()->json([
+                "message"   => "User account updated successfully",
+                "user_data" => User::find($user->id),
+            ], 200);
+        } else {
+            return response()->json([
+                "message" => "Access is denied",
+            ], 403);
+        }
     }
 
     /**

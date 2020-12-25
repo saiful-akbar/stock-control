@@ -250,14 +250,63 @@ export const apiUpdateUserPassword = (id, data) => {
 
 
 /**
- * Fungsi api untuk mengambil data user yang akan diedit
+ * Fungsi api untuk mengambil data profile user yang akan diedit
  * @param {string} id 
  */
-export const apiEditUser = (id) => {
+export const apiEditUserProfile = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
       url: `/user/${id}/edit`
-    }).then(res => resolve(res)).catch(err => reject(err));
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};
+
+
+/**
+ * Fungsi api untuk update user profile
+ * @param {string|uuid} id 
+ * @param {obj|request form} data 
+ */
+export const apiUpdateUserProfile = (id, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      data: data,
+      method: 'POST',
+      url: `/user/${id}`,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};
+
+
+/**
+ * Fungsi api untuk mengambil data account user yang akan diedit
+ * @param {string} id 
+ */
+export const apiEditUserAccount = (id) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'GET',
+      url: `/user/${id}/account`
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};
+
+
+/**
+ * Fungsi api untuk update user account
+ * @param {string|uuid} id 
+ * @param {obj|request form} data 
+ */
+export const apiUpdateUserAccount = (id, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      data: data,
+      method: 'PATCH',
+      url: `/user/${id}/account`,
+    }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };

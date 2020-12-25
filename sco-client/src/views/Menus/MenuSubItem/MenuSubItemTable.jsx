@@ -25,7 +25,6 @@ import TextField from '@material-ui/core/TextField';
 import CustomTooltip from 'src/components/CustomTooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
 import Toast from 'src/components/Toast';
 import { useNavigate } from 'react-router-dom';
@@ -291,11 +290,10 @@ const MenuSubItemTable = (props) => {
                     color='primary'
                     variant='contained'
                     disabled={loading}
-                    startIcon={<AddCircleIcon />}
                     onClick={() => props.openDialogForm({ type: 'Create', show: true, data: null })}
                     style={{ marginRight: 10 }}
                   >
-                    {'Create a new sub menus'}
+                    {'Create a new sub menu'}
                   </Button>
                 )
               )}

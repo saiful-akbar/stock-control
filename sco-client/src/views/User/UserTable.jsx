@@ -29,7 +29,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import CustomTooltip from 'src/components/CustomTooltip';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { apiGetAllUser } from 'src/services/user';
 import apiUrl from 'src/apiUrl';
 import UserTableOptions from './UserTableOptions';
@@ -374,7 +373,6 @@ const UserTable = (props) => {
                   variant='contained'
                   color='primary'
                   className={classes.button}
-                  startIcon={<AddCircleIcon />}
                   onClick={() => navigate('/user/create', { state: props.state })}
                 >
                   {'Create a new user'}

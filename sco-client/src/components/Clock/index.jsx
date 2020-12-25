@@ -26,8 +26,9 @@ class Clock extends Component {
   render() {
     return (
       <Chip
-        label={this.state.date.toLocaleString()}
+        color='default'
         variant='outlined'
+        label={this.state.date.toLocaleString()}
         {...this.props}
       />
     );

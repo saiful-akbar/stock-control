@@ -198,16 +198,21 @@ const NavBar = ({
 
       <Box p={2} >
         <Box display='flex' justifyContent='center' >
-          <Button
-            fullWidth
-            color='secondary'
-            size='small'
-            variant='contained'
-            onClick={() => window.location.href = '/logout'}
-            startIcon={<ExitToAppIcon />}
-          >
-            Logout
-          </Button>
+          {reduxUserLogin === null
+            ? (
+              <Skeleton variant='rect' width={224} height={30} />
+            ) : (
+              <Button
+                fullWidth
+                color='secondary'
+                size='small'
+                variant='contained'
+                onClick={() => window.location.href = '/logout'}
+                startIcon={<ExitToAppIcon />}
+              >
+                {'Logout'}
+              </Button>
+            )}
         </Box>
       </Box>
     </Box>

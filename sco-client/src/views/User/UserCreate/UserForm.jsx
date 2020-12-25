@@ -227,7 +227,9 @@ const UserForm = (props) => {
                     type='submit'
                     disabled={isSubmitting}
                     endIcon={<ArrowForwardIosIcon />}
-                  >Next</Button>
+                  >
+                    {'Next'}
+                  </Button>
                 )
               }
             </Box>

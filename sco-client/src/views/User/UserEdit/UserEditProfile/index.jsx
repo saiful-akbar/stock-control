@@ -14,13 +14,16 @@ import {
   Chip,
   TextField,
   Divider,
+  LinearProgress,
+  FormHelperText,
+  FormControl,
 } from '@material-ui/core';
 import {
   makeStyles,
   withStyles
 } from '@material-ui/core/styles';
 import BtnSubmit from 'src/components/BtnSubmit';
-import { apiEditUser } from 'src/services/user';
+import { apiEditUserProfile, apiUpdateUserProfile } from 'src/services/user';
 import { reduxAction } from 'src/config/redux/state';
 import apiUrl from 'src/apiUrl';
 import { Skeleton } from '@material-ui/lab';
@@ -104,7 +107,11 @@ const userEditProfileStyle = makeStyles((theme) => ({
   },
   input: {
     display: 'none'
-  }
+  },
+  progress: {
+    width: '100%',
+    height: 4,
+  },
 }));
 
 
@@ -120,6 +127,7 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
    * State
    */
   const [userData, setUserData] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
 
 
   React.useEffect(() => {
@@ -134,11 +142,11 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
 
 
   /**
-   * Fungsi untuk mengambil data user
+   * Fungsi untuk mengambil data profile user
    */
   const getUserData = async () => {
     try {
-      let res = await apiEditUser(userId);
+      let res = await apiEditUserProfile(userId);
       if (isMounted.current) {
         setUserData(res.data.user_data);
       }
@@ -154,51 +162,107 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
   }
 
 
+  /**
+   * Fungsi untuk menghandle submit form
+   * @param {obj|request form} data 
+   * @param {obj} param1 
+   */
+  const handleSubmitForm = async (data, { setErrors }) => {
+    setLoading(true);
+
+    let formData = new FormData();
+    formData.set('_method', 'PATCH');
+    formData.set('profile_avatar', data.profile_avatar);
+    formData.set('profile_name', data.profile_name);
+    formData.set('profile_email', data.profile_email);
+    formData.set('profile_division', data.profile_division);
+    formData.set('profile_phone', data.profile_phone);
+    formData.set('profile_address', data.profile_address);
+
+    try {
+      let res = await apiUpdateUserProfile(userId, formData);
+      if (isMounted.current) {
+        setLoading(false);
+        setReduxToast(true, 'success', res.data.message);
+        setUserData(res.data.user_data);
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        setLoading(false);
+        if (err.status === 401) {
+          window.location.href = 'logout';
+        } else {
+          err.status === 422 && setErrors(err.data.errors);
+          setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Fungsi untuk memvalidasi apakah profile avatar terdapat foto atau tidak
+   * @param {obj} thumb 
+   */
+  const viewProfileAvatar = (thumb) => {
+    if (thumb === '') {
+      if (userData !== null && userData.profile_avatar !== null) {
+        return userData.profile_avatar;
+      }
+    }
+    return thumb;
+  }
+
+
 
   return (
-    <Card
-      variant={
-        reduxTheme === 'dark'
-          ? 'outlined'
-          : 'elevation'
-      }
-      elevation={3}
+    <Formik
+      enableReinitialize={true}
+
+      initialValues={{
+        profile_avatar: '',
+        profile_name: userData !== null ? userData.profile_name : '',
+        profile_email: userData !== null ? userData.profile_email : '',
+        profile_division: userData !== null ? userData.profile_division : '',
+        profile_phone: userData !== null ? userData.profile_phone : '',
+        profile_address: userData !== null ? userData.profile_address : '',
+      }}
+
+      validationSchema={Yup.object().shape({
+        profile_avatar: Yup.mixed(),
+        profile_name: Yup.string().required('Full name is required').max(128, 'Too Long!'),
+        profile_email: Yup.string().email('Invalid email').max(128, 'Too Long!'),
+        profile_division: Yup.string().max(128, 'Too Long!'),
+        profile_phone: Yup.string().max(15, 'Too Long!'),
+        profile_address: Yup.string(),
+      })}
+
+      onSubmit={handleSubmitForm}
     >
-      <Formik
-        enableReinitialize={true}
+      {({
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        touched,
+        values,
+        setFieldValue,
+        resetForm
+      }) => (
+          <form encType="multipart/form-data" onSubmit={handleSubmit} noValidate autoComplete='off'>
+            <Card
+              variant={
+                reduxTheme === 'dark'
+                  ? 'outlined'
+                  : 'elevation'
+              }
+              elevation={3}
+            >
+              {loading
+                ? <LinearProgress className={classes.progress} />
+                : <div className={classes.progress} />
+              }
 
-        initialValues={{
-          profile_avatar: userData !== null ? userData.profile_avatar : '',
-          profile_name: userData !== null ? userData.profile_name : '',
-          profile_email: userData !== null ? userData.profile_email : '',
-          profile_division: userData !== null ? userData.profile_division : '',
-          profile_phone: userData !== null ? userData.profile_phone : '',
-          profile_address: userData !== null ? userData.profile_address : '',
-        }}
-
-        validationSchema={Yup.object().shape({
-          profile_avatar: Yup.mixed(),
-          profile_name: Yup.string().required('Full name is required').max(128, 'Too Long!'),
-          profile_email: Yup.string().email('Invalid email').max(128, 'Too Long!'),
-          profile_division: Yup.string().max(128, 'Too Long!'),
-          profile_phone: Yup.string().max(15, 'Too Long!'),
-          profile_address: Yup.string(),
-        })}
-
-        onSubmit={() => alert('Submit')}
-      >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          touched,
-          values,
-          setFieldValue,
-          isSubmitting,
-          resetForm
-        }) => (
-            <form action="">
               <CardHeader
                 title={
                   userData === null
@@ -212,16 +276,8 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                 }
               />
 
-              <Divider />
-
               <CardContent>
-                <Grid
-                  container
-                  spacing={3}
-                  direction='row'
-                  justify='space-around'
-                  alignItems='center'
-                >
+                <Grid container spacing={3} >
                   <Grid item xs={12} >
                     <Box
                       alignItems='center'
@@ -232,14 +288,17 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                         ? (
                           <Skeleton variant="circle" className={classes.avatar} />
                         ) : (
-                          <>
+                          <FormControl
+                            error={Boolean(touched.profile_avatar && errors.profile_avatar)}
+                            style={{ alignItems: 'center', }}
+                          >
                             <input
                               type='file'
                               accept='image/*'
-                              id='profile-avatar'
                               name='profile_avatar'
+                              id='profile-avatar'
                               className={classes.input}
-                              disabled={props.loading}
+                              disabled={loading}
                               onChange={(event) => {
                                 setFieldValue('profile_avatar', event.target.files[0]);
                               }}
@@ -248,11 +307,17 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                             <label htmlFor='profile-avatar' >
                               <ViewAvatar
                                 id='avatar'
-                                file={values.profile_avatar}
+                                file={viewProfileAvatar(values.profile_avatar)}
                                 className={classes.avatar}
                               />
                             </label>
-                          </>
+
+                            <FormHelperText
+                              style={{ textAlign: 'center' }}
+                            >
+                              {touched.profile_avatar && errors.profile_avatar}
+                            </FormHelperText>
+                          </FormControl>
                         )}
                     </Box>
                   </Grid>
@@ -265,11 +330,10 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                         <TextField
                           fullWidth
                           name="profile_name"
-                          id="profile_name"
-                          label="Full Name"
+                          label="Profile Name"
                           type="text"
                           variant="outlined"
-                          disabled={isSubmitting}
+                          disabled={loading}
                           value={values.profile_name}
                           onBlur={handleBlur}
                           onChange={handleChange}
@@ -288,10 +352,10 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                           fullWidth
                           name="profile_email"
                           id="profile_email"
-                          label="Email"
+                          label="Profile Email"
                           type="email"
                           variant="outlined"
-                          disabled={isSubmitting}
+                          disabled={loading}
                           value={values.profile_email}
                           onBlur={handleBlur}
                           onChange={handleChange}
@@ -310,10 +374,10 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                           fullWidth
                           name="profile_division"
                           id="profile_division"
-                          label="Division"
+                          label="Profile Division"
                           type="text"
                           variant="outlined"
-                          disabled={isSubmitting}
+                          disabled={loading}
                           value={values.profile_division}
                           onBlur={handleBlur}
                           onChange={handleChange}
@@ -332,10 +396,10 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                           fullWidth
                           name="profile_phone"
                           id="profile_phone"
-                          label="Phone Number"
+                          label="Profile Phone Number"
                           type="text"
                           variant="outlined"
-                          disabled={isSubmitting}
+                          disabled={loading}
                           value={values.profile_phone}
                           onBlur={handleBlur}
                           onChange={handleChange}
@@ -359,10 +423,10 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                           rows={4}
                           name="profile_address"
                           id="profile_address"
-                          label="Address"
+                          label="Profile Address"
                           type="text"
                           variant="outlined"
-                          disabled={isSubmitting}
+                          disabled={loading}
                           value={values.profile_address}
                           onBlur={handleBlur}
                           onChange={handleChange}
@@ -381,24 +445,28 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                 justifyContent='flex-end'
                 p={2}
               >
-                <BtnSubmit
-                  title='Save'
-                  variant='contained'
-                  handleCancel={resetForm}
-                  disabled={
-                    userData === null
-                      ? true
-                      : false
-                  }
-                  style={{
-                    marginLeft: 10
-                  }}
-                />
+                {userData === null
+                  ? (
+                    <>
+                      <Skeleton variant='rect' height={36} width={86} />
+                      <Skeleton variant='rect' height={36} width={86} style={{ marginLeft: 10 }} />
+                    </>
+                  ) : (
+                    <BtnSubmit
+                      title='Update'
+                      variant='contained'
+                      type='submit'
+                      handleSubmit={handleSubmit}
+                      handleCancel={resetForm}
+                      loading={loading}
+                      style={{ marginLeft: 10 }}
+                    />
+                  )}
               </Box>
-            </form>
-          )}
-      </Formik>
-    </Card>
+            </Card>
+          </form>
+        )}
+    </Formik>
   )
 }
 

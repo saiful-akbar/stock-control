@@ -68,20 +68,18 @@ function UserEdit(props) {
         </Grid>
 
         <Grid item xs={12}>
-          <UserEditAccount
-            userId={id}
-          />
+          {<UserEditAccount userId={id} />}
         </Grid>
       </Grid>
 
       <div className={classes.fab}>
         <CustomTooltip
-          title='Back to the user page'
+          title='Return to the user page'
           placement='left'
         >
           <Fab
             color='secondary'
-            arial-label='Back to the user page'
+            arial-label='Return to the user page'
             disabled={false}
             onClick={() => {
               navigate('/user', { state: location.state });

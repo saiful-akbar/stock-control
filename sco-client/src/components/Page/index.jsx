@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Animation from 'src/components/Animation';
 import { connect } from 'react-redux';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +36,7 @@ const Page = forwardRef(({
   title,
   pageTitle,
   reduxLoading,
+  reduxUserLogin,
   pb,
 }, ref) => {
   const classes = useStyles();
@@ -68,12 +70,21 @@ const Page = forwardRef(({
           <>
             <Grid container spacing={3}>
               <Grid item xs={12} >
-                <Typography
-                  className={classes.page}
-                  variant='h5'
-                >
-                  {pageTitle}
-                </Typography>
+                {reduxUserLogin === null
+                  ? (
+                    <Skeleton variant='text' >
+                      <Typography className={classes.page} variant='h5'>
+                        {pageTitle}
+                      </Typography>
+                    </Skeleton>
+                  ) : (
+                    <Typography
+                      className={classes.page}
+                      variant='h5'
+                    >
+                      {pageTitle}
+                    </Typography>
+                  )}
               </Grid>
             </Grid>
           </>
@@ -108,7 +119,8 @@ Page.defaultProps = {
 }
 
 const reduxState = (state) => ({
-  reduxLoading: state.loading
+  reduxLoading: state.loading,
+  reduxUserLogin: state.userLogin,
 });
 
 export default connect(reduxState, null)(Page);

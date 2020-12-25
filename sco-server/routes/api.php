@@ -50,13 +50,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'user'], function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/menu', [UserController::class, 'getMenus']);
-        Route::get('/{id}/edit', [UserController::class, 'edit']);
+        Route::get('/{id}/edit', [UserController::class, 'editProfile']);
+        Route::get('/{user}/account', [UserController::class, 'editAccount']);
         Route::post('/cek/user-form', [UserController::class, 'cekUserForm']);
         Route::post('/cek/profile-form', [UserController::class, 'cekProfileForm']);
         Route::post('/', [UserController::class, 'store']);
         Route::post('/menu-access', [UserController::class, 'createUserMenuAccess']);
         Route::delete('/truncate-tokens', [UserController::class, 'truncateTokens']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
+        Route::patch('/{id}', [UserController::class, 'updateProfile']);
+        Route::patch('/{user}/account', [UserController::class, 'updateAccount']);
 
         /**
          * Route edit user menu item akses

@@ -17,6 +17,7 @@ import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import CustomTooltip from 'src/components/CustomTooltip';
 import ThemeMode from './ThemeMode';
 import Clock from 'src/components/Clock';
+import { Skeleton } from '@material-ui/lab';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
   },
   clock: {
     color: '#fff',
-    border: '1px solid #fff',
+    border: '1px solid #999999',
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
+  skeletonClock: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   }
@@ -46,6 +51,7 @@ const TopBar = ({
   onDesktopNavOpen,
   openDesktopNav,
   reduxTheme,
+  reduxUserLogin,
   ...rest
 }) => {
   const classes = useStyles();
@@ -57,19 +63,29 @@ const TopBar = ({
     >
       <Toolbar>
         <Hidden mdDown>
-          <CustomTooltip title={openDesktopNav ? 'Close menu' : 'Open menu'} placement='bottom'>
-            <IconButton onClick={onDesktopNavOpen} color='inherit' >
-              {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
-            </IconButton>
-          </CustomTooltip>
+          {reduxUserLogin === null
+            ? (
+              <Skeleton variant='circle' width={50} height={50} />
+            ) : (
+              <CustomTooltip title={openDesktopNav ? 'Close menu' : 'Open menu'} placement='bottom'>
+                <IconButton onClick={onDesktopNavOpen} color='inherit' >
+                  {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
+                </IconButton>
+              </CustomTooltip>
+            )}
         </Hidden>
 
         <Hidden lgUp>
-          <CustomTooltip title='Open menu' placement='bottom'>
-            <IconButton onClick={onMobileNavOpen} color='inherit' >
-              <MenuIcon />
-            </IconButton>
-          </CustomTooltip>
+          {reduxUserLogin === null
+            ? (
+              <Skeleton variant='circle' width={50} height={50} />
+            ) : (
+              <CustomTooltip title='Open menu' placement='bottom'>
+                <IconButton onClick={onMobileNavOpen} color='inherit' >
+                  <MenuIcon />
+                </IconButton>
+              </CustomTooltip>
+            )}
         </Hidden>
 
         {/* <RouterLink to='/dashboard' className={classes.logo} >
@@ -79,10 +95,17 @@ const TopBar = ({
         <Box flexGrow={1} />
 
         <Hidden xsDown>
-          <Clock className={classes.clock} />
+          {reduxUserLogin === null
+            ? <Skeleton variant='rect' className={classes.skeletonClock} width={150} height={30} />
+            : <Clock className={classes.clock} />
+          }
         </Hidden>
 
-        <ThemeMode color='inherit' />
+        {reduxUserLogin === null
+          ? <Skeleton variant='circle' width={50} height={50} />
+          : <ThemeMode color='inherit' />
+        }
+
       </Toolbar>
     </AppBar >
   );
@@ -100,7 +123,8 @@ TopBar.propTypes = {
  */
 function reduxState(state) {
   return {
-    reduxTheme: state.theme
+    reduxTheme: state.theme,
+    reduxUserLogin: state.userLogin,
   }
 }
 

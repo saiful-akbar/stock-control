@@ -20,7 +20,6 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import SearchIcon from '@material-ui/icons/Search';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import { apiGetAllMenuItem } from 'src/services/menuItem';
@@ -381,11 +380,10 @@ const MenuItemTable = (props) => {
                   <Button
                     color='primary'
                     variant='contained'
-                    startIcon={<AddCircleIcon />}
                     onClick={() => props.openDialogCreate()}
                     style={{ marginRight: 10 }}
                   >
-                    {'Create new menus'}
+                    {'Create a new menu'}
                   </Button>
                 )
               )}
