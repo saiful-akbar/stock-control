@@ -2,9 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Grid,
   Button,
-  Avatar,
-  Icon,
-  Chip,
   Card,
   CardContent,
 } from '@material-ui/core';
@@ -30,10 +27,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import CustomTooltip from 'src/components/CustomTooltip';
 import { apiGetAllUser } from 'src/services/user';
-import apiUrl from 'src/apiUrl';
-import UserTableOptions from './UserTableOptions';
-import UserTruncateToken from './UserTruncateToken';
 import { connect } from 'react-redux';
+import UserTruncateToken from '../UserTruncateToken';
+import Row from './Row';
 
 /**
  * style
@@ -48,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     height: 4,
   },
   container: {
-    maxHeight: 400,
+    maxHeight: 450,
   },
   visuallyHidden: {
     border: 0,
@@ -61,19 +57,9 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
-  avatar: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-  },
   button: {
     marginRight: theme.spacing(1),
   },
-  red: {
-    color: theme.palette.error.main,
-  },
-  green: {
-    color: theme.palette.success.main,
-  }
 }));
 
 
@@ -101,7 +87,7 @@ const UserTable = (props) => {
       total: 0
     },
     search: '',
-    sort: 'username',
+    sort: 'profile_name',
     order_by: 'asc'
   });
 
@@ -111,6 +97,11 @@ const UserTable = (props) => {
    */
   const columns = [
     {
+      field: 'profile_name',
+      label: 'Name',
+      align: 'left'
+    },
+    {
       field: 'username',
       label: 'Username',
       align: 'left'
@@ -118,21 +109,6 @@ const UserTable = (props) => {
     {
       field: 'is_active',
       label: 'Active',
-      align: 'left'
-    },
-    {
-      field: 'profile_avatar',
-      label: 'Avatar',
-      align: 'left'
-    },
-    {
-      field: 'profile_name',
-      label: 'Full Name',
-      align: 'left'
-    },
-    {
-      field: 'profile_division',
-      label: 'Division',
       align: 'left'
     },
     {
@@ -417,11 +393,11 @@ const UserTable = (props) => {
 
           <Grid item xs={12}>
             <TableContainer className={classes.container}>
-              <Table stickyHeader aria-label='sticky table'>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell align='center'>Actions</TableCell>
-                    <TableCell align='center'>Is Loggin</TableCell>
+                    <TableCell align='center'>{'Options'}</TableCell>
+
                     {columns.map((col, i) => (
                       <TableCell
                         key={i}
@@ -458,92 +434,13 @@ const UserTable = (props) => {
                       </TableRow>
                     ) : (
                       rowData.users.data.map((row, key) => (
-                        <TableRow hover key={key}>
-                          <TableCell align='center'>
-                            <UserTableOptions
-                              userData={row}
-                              state={props.state}
-                              onDelete={() => props.onDelete(row.id)}
-                              onChangePassword={() => props.onChangePassword(row.id)}
-
-                            />
-                          </TableCell>
-                          <TableCell align='center'>
-                            <Chip
-                              variant="outlined"
-                              label={
-                                Boolean(row.token)
-                                  ? 'Login'
-                                  : 'Logout'
-                              }
-                              color={
-                                Boolean(row.token)
-                                  ? 'primary'
-                                  : 'default'
-                              }
-                              avatar={
-                                <Avatar
-                                  alt={row.profile_name}
-                                  src={
-                                    Boolean(row.profile_avatar)
-                                      ? apiUrl(`/avatar/${row.profile_avatar}`)
-                                      : ''
-                                  }
-                                />
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>{row.username}</TableCell>
-                          <TableCell>
-                            <Icon
-                              className={
-                                row.is_active === 1
-                                  ? classes.green
-                                  : classes.red
-                              }
-                            >
-                              {row.is_active === 1 ? 'check' : 'close'}
-                            </Icon>
-                          </TableCell>
-                          <TableCell>
-                            <Avatar
-                              className={classes.avatar}
-                              alt={row.profile_name}
-                              src={
-                                Boolean(row.profile_avatar)
-                                  ? apiUrl(`/avatar/${row.profile_avatar}`)
-                                  : ''
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>{row.profile_name}</TableCell>
-                          <TableCell>{
-                            row.profile_division === null
-                              ? '...'
-                              : row.profile_division
-                          }
-                          </TableCell>
-                          <TableCell>{
-                            row.profile_email === null
-                              ? '...'
-                              : row.profile_email
-                          }
-                          </TableCell>
-                          <TableCell>{
-                            row.profile_phone === null
-                              ? '...'
-                              : row.profile_phone
-                          }
-                          </TableCell>
-                          <TableCell>{
-                            row.profile_address === null
-                              ? '...'
-                              : row.profile_address
-                          }
-                          </TableCell>
-                          <TableCell>{row.created_at}</TableCell>
-                          <TableCell>{row.updated_at}</TableCell>
-                        </TableRow>
+                        <Row
+                          key={key}
+                          row={row}
+                          state={props.state}
+                          onDelete={() => props.onDelete(row.id)}
+                          onChangePassword={() => props.onChangePassword(row.id)}
+                        />
                       ))
                     )
                   }

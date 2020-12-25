@@ -188,6 +188,7 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
       }
     } catch (err) {
       if (isMounted.current) {
+        console.log(err)
         setLoading(false);
         if (err.status === 401) {
           window.location.href = 'logout';
@@ -221,11 +222,11 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
 
       initialValues={{
         profile_avatar: '',
-        profile_name: userData !== null ? userData.profile_name : '',
-        profile_email: userData !== null ? userData.profile_email : '',
-        profile_division: userData !== null ? userData.profile_division : '',
-        profile_phone: userData !== null ? userData.profile_phone : '',
-        profile_address: userData !== null ? userData.profile_address : '',
+        profile_name: userData !== null && userData.profile_name !== null ? userData.profile_name : '',
+        profile_email: userData !== null && userData.profile_email !== null ? userData.profile_email : '',
+        profile_division: userData !== null && userData.profile_division !== null ? userData.profile_division : '',
+        profile_phone: userData !== null && userData.profile_phone !== null ? userData.profile_phone : '',
+        profile_address: userData !== null && userData.profile_address !== null ? userData.profile_address : '',
       }}
 
       validationSchema={Yup.object().shape({

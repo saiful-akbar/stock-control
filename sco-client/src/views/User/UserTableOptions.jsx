@@ -76,9 +76,21 @@ const UserTableOptions = (props) => {
   }
 
 
+  /**
+   * Handle ubah password
+   */
   const handleChangePassword = () => {
     props.onChangePassword();
     handleCloseMenu();
+  }
+
+
+  /**
+   * handle view user
+   */
+  const handleViewDetail = () => {
+    handleCloseMenu();
+    navigate(`/user/${userData.id}`, { state: state });
   }
 
 
@@ -88,7 +100,7 @@ const UserTableOptions = (props) => {
   return (
     <>
       <IconButton onClick={handleClickMenu}>
-        <MoreVertIcon />
+        <MoreVertIcon fontSize='small' />
       </IconButton>
 
       <Menu
@@ -121,7 +133,7 @@ const UserTableOptions = (props) => {
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={handleViewDetail}>
           <Typography variant='inherit'>{'View detail'}</Typography>
         </MenuItem>
       </Menu>

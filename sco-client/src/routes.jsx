@@ -22,6 +22,7 @@ import User from './views/User';
 import UserCreate from './views/User/UserCreate';
 import UserEdit from './views/User/UserEdit';
 import UserEditMenuAccess from './views/User/UserEditMenuAccess';
+import UserView from './views/User/UserView';
 
 const routes = [{
   path: '/',
@@ -48,6 +49,9 @@ const routes = [{
     }, {
       path: '/user/:id/menus',
       element: <UserEditMenuAccess />
+    }, {
+      path: '/user/:id',
+      element: <UserView />
     }, {
       path: '/',
       element: <Navigate to="/dashboard" />

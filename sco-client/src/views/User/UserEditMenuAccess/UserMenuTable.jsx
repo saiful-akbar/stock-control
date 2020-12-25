@@ -227,10 +227,7 @@ function UserMenuTable({
         />
 
         <TableContainer className={classes.container}>
-          <Table
-            stickyHeader
-            aria-label='sticky table'
-          >
+          <Table >
             <TableHead>
               <TableRow>
                 {action && (

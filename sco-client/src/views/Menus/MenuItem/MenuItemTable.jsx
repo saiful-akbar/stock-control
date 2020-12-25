@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   container: {
-    maxHeight: 400,
+    maxHeight: 450,
   },
   visuallyHidden: {
     border: 0,
@@ -59,10 +59,14 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   red: {
-    color: theme.palette.error.main,
+    color: theme.palette.error.light,
   },
   green: {
-    color: theme.palette.success.main,
+    color: theme.palette.success.light,
+  },
+  tableCell: {
+    paddingBottom: 10,
+    paddingTop: 10
   }
 }));
 
@@ -421,20 +425,23 @@ const MenuItemTable = (props) => {
 
             <Grid item xs={12}>
               <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label='sticky table'>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
                       {columns.map((col, i) => (
-                        <TableCell key={i}>
+                        <TableCell key={i} className={classes.tableCell}>
                           <TableSortLabel
-                            active={rowData.sort === col.field}
+                            active={Boolean(rowData.sort === col.field)}
                             direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
                             onClick={() => handleSortTable(col.field)}
                           >
                             {col.label}
                             {rowData.sort === col.field
-                              ? <span className={classes.visuallyHidden}>{rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}</span>
-                              : null
+                              ? (
+                                <span className={classes.visuallyHidden}>
+                                  {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </span>
+                              ) : null
                             }
                           </TableSortLabel>
                         </TableCell>
@@ -442,8 +449,13 @@ const MenuItemTable = (props) => {
 
                       {props.state !== null && (
                         props.state.update === 1 || props.state.delete === 1
-                          ? <TableCell align='center'>{'Actions'}</TableCell>
-                          : <TableCell />
+                          ? (
+                            <TableCell className={classes.tableCell} align='center'>
+                              {'Actions'}
+                            </TableCell>
+                          ) : (
+                            <TableCell className={classes.tableCell} />
+                          )
                       )}
                     </TableRow>
                   </TableHead>
@@ -452,19 +464,23 @@ const MenuItemTable = (props) => {
                     {rowData.menu_items.data.length <= 0
                       ? (
                         <TableRow hover >
-                          <TableCell colSpan={7} align='center' >
+                          <TableCell
+                            colSpan={7}
+                            align='center'
+                            className={classes.tableCell}
+                          >
                             {loading ? 'Loading, please wait...' : 'No data in table'}
                           </TableCell>
                         </TableRow>
                       ) : (
                         rowData.menu_items.data.map((row, key) => (
                           <TableRow hover key={key}>
-                            <TableCell>{row.menu_i_title}</TableCell>
-                            <TableCell>{row.menu_i_url}</TableCell>
-                            <TableCell>
+                            <TableCell className={classes.tableCell}>{row.menu_i_title}</TableCell>
+                            <TableCell className={classes.tableCell}>{row.menu_i_url}</TableCell>
+                            <TableCell className={classes.tableCell}>
                               <Icon>{row.menu_i_icon}</Icon>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className={classes.tableCell}>
                               <Icon
                                 className={
                                   row.menu_i_children === 1
@@ -475,13 +491,13 @@ const MenuItemTable = (props) => {
                                 {row.menu_i_children === 1 ? 'check' : 'close'}
                               </Icon>
                             </TableCell>
-                            <TableCell>{row.created_at}</TableCell>
-                            <TableCell>{row.updated_at}</TableCell>
+                            <TableCell className={classes.tableCell}>{row.created_at}</TableCell>
+                            <TableCell className={classes.tableCell}>{row.updated_at}</TableCell>
 
                             {props.state !== null && (
                               props.state.update === 1 || props.state.delete === 1
                                 ? (
-                                  <TableCell align='center'>
+                                  <TableCell align='center' className={classes.tableCell}>
                                     {props.state.update === 1 && (
                                       <CustomTooltip title='Update'>
                                         <IconButton

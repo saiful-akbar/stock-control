@@ -2,8 +2,6 @@
 table thead tr th,
 table tbody tr td {
   white-space: nowrap !important;
-  height: 50px !important;
-  padding: 5px 16px !important;
   font-size: 13px !important;
 }
 
@@ -12,8 +10,8 @@ table tbody tr td {
 
 /* start scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   background-color: transparent;
 }
 

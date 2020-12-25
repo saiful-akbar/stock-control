@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     height: 4,
   },
   container: {
-    maxHeight: 400,
+    maxHeight: 450,
   },
   visuallyHidden: {
     border: 0,
@@ -54,7 +54,11 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 20,
     width: 1,
-  }
+  },
+  tableCell: {
+    paddingBottom: 10,
+    paddingTop: 10
+  },
 }));
 
 
@@ -331,11 +335,11 @@ const MenuSubItemTable = (props) => {
 
             <Grid item xs={12}>
               <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label='sticky table'>
+                <Table stickyHeader >
                   <TableHead>
                     <TableRow>
                       {columns.map((col, i) => (
-                        <TableCell key={i}>
+                        <TableCell key={i} className={classes.tableCell}>
                           <TableSortLabel
                             active={rowData.sort === col.field}
                             direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
@@ -354,9 +358,14 @@ const MenuSubItemTable = (props) => {
                       {props.state !== null && (
                         props.state.update === 1 || props.state.delete === 1
                           ? (
-                            <TableCell align='center'>Actions</TableCell>
+                            <TableCell
+                              align='center'
+                              className={classes.tableCell}
+                            >
+                              {'Actions'}
+                            </TableCell>
                           ) : (
-                            <TableCell />
+                            <TableCell className={classes.tableCell} />
                           )
                       )}
                     </TableRow>
@@ -366,7 +375,7 @@ const MenuSubItemTable = (props) => {
                     {rowData.menu_sub_items.data.length <= 0
                       ? (
                         <TableRow hover >
-                          <TableCell colSpan={6} align='center' >
+                          <TableCell colSpan={6} align='center' className={classes.tableCell} >
                             {loading ? 'Loading, please wait...' : 'No data in table'}
                           </TableCell>
                         </TableRow>
@@ -374,18 +383,27 @@ const MenuSubItemTable = (props) => {
                         rowData.menu_sub_items.data.map((row, key) => (
                           <TableRow hover key={key}>
                             {columns.map((col, colKey) => (
-                              <TableCell key={colKey}>{row[col.field]}</TableCell>
+                              <TableCell
+                                key={colKey}
+                                className={classes.tableCell}
+                              >
+                                {row[col.field]}
+                              </TableCell>
                             ))}
 
                             {props.state !== null && (
                               props.state.update === 1 || props.state.delete === 1
                                 ? (
-                                  <TableCell align='center'>
+                                  <TableCell align='center' className={classes.tableCell}>
                                     {props.state.update === 1 && (
                                       <CustomTooltip title='Update'>
                                         <IconButton
                                           aria-label='Update'
-                                          onClick={() => props.openDialogForm({ type: 'Update', show: true, data: row })}
+                                          onClick={() => props.openDialogForm({
+                                            type: 'Update',
+                                            show: true,
+                                            data: row
+                                          })}
                                         >
                                           <EditIcon fontSize='small' />
                                         </IconButton>
