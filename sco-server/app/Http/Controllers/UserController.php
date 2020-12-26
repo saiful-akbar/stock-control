@@ -163,7 +163,7 @@ class UserController extends Controller
                 "profile_avatar"   => "nullable|image|mimes:jpeg,jpg,png|max:1000",
                 "profile_name"     => "required|string|max:200",
                 "profile_division" => "nullable|string|max:128",
-                "profile_email"    => "nullable|email:rfc,dns,filter|unique:profiles,profile_email|max:200",
+                "profile_email"    => "nullable|email:filter|unique:profiles,profile_email|max:200",
                 "profile_phone"    => "nullable|string|max:32",
                 "profile_address"  => "nullable|string",
             ]);
@@ -207,7 +207,7 @@ class UserController extends Controller
                 "profile_name"     => "required|string|max:200",
                 "profile_avatar"   => "nullable|image|mimes:jpeg,jpg,png|max:1000",
                 "profile_division" => "nullable|string|max:128",
-                "profile_email"    => "nullable|email:rfc,dns,filter|unique:profiles,profile_email|max:200",
+                "profile_email"    => "nullable|email:filter|unique:profiles,profile_email|max:200",
                 "profile_phone"    => "nullable|string|max:32",
                 "profile_address"  => "nullable|string",
             ]);
@@ -417,7 +417,7 @@ class UserController extends Controller
                 "profile_avatar"   => "nullable|image|mimes:jpeg,jpg,png|max:1000",
                 "profile_name"     => "required|string|max:128",
                 "profile_division" => "nullable|string|max:128",
-                "profile_email"    => "nullable|email:rfc,dns,filter|max:128",
+                "profile_email"    => "nullable|email:filter|max:128",
                 "profile_phone"    => "nullable|string|max:15",
                 "profile_address"  => "nullable|string",
             ]);

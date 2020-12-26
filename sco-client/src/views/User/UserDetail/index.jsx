@@ -17,6 +17,7 @@ import { apiGetUserDetail } from 'src/services/user';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import CustomTooltip from 'src/components/CustomTooltip';
+import UserDetailAccount from './UserDetailAccount';
 
 
 // Style
@@ -102,7 +103,17 @@ function UserDetail(props) {
       pageTitle='Detailed User Info'
     >
       <Grid container spacing={3}>
-        <Grid item md={6} xs={12}>
+        <Grid item md container direction="column" spacing={3}>
+          <Grid item>
+            <UserDetailAccount data={userData === null ? null : userData.user} />
+          </Grid>
+
+          <Grid item>
+            <UserDetailProfile data={userData === null ? null : userData.profile} />
+          </Grid>
+        </Grid>
+
+        <Grid item md={5} xs>
           <UserDetailProfile data={userData === null ? null : userData.profile} />
         </Grid>
       </Grid>

@@ -17,9 +17,11 @@ import {
   Divider,
   Card,
   CardHeader,
-  CardContent
+  CardContent,
+  Box,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import apiUrl from 'src/apiUrl';
 
 
 /**
@@ -28,7 +30,10 @@ import { Skeleton } from '@material-ui/lab';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    // backgroundColor: theme.palette.background.paper,
+  },
+  avatar: {
+    width: theme.spacing(30),
+    height: theme.spacing(30),
   },
 }));
 
@@ -73,6 +78,26 @@ function UserDetailProfile({ data, ...props }) {
       />
 
       <CardContent>
+        <Box
+          display='flex'
+          justifyContent='center'
+        >
+          {data === null
+            ? (
+              <Skeleton variant='circle' className={classes.avatar} />
+            ) : (
+              <Avatar
+                alt='Avatar'
+                className={classes.avatar}
+                src={
+                  data.profile_avatar === null
+                    ? ''
+                    : apiUrl(`/avatar/${data.profile_avatar}`)
+                }
+              />
+            )}
+        </Box>
+
         <List className={classes.root}>
           <ListItem>
             <ListItemAvatar>
@@ -91,12 +116,12 @@ function UserDetailProfile({ data, ...props }) {
             <ListItemText
               primary={
                 data === null
-                  ? <Skeleton variant='text' width={150} />
+                  ? <Skeleton variant='text' width='50%' />
                   : data.profile_name === null ? "..." : data.profile_name
               }
               secondary={
                 data === null
-                  ? <Skeleton variant='text' width={120} />
+                  ? <Skeleton variant='text' width='30%' />
                   : 'Profile name'
               }
             />
@@ -120,12 +145,12 @@ function UserDetailProfile({ data, ...props }) {
             <ListItemText
               primary={
                 data === null
-                  ? <Skeleton variant='text' width={150} />
+                  ? <Skeleton variant='text' width='50%' />
                   : data.profile_division === null ? "..." : data.profile_division
               }
               secondary={
                 data === null
-                  ? <Skeleton variant='text' width={120} />
+                  ? <Skeleton variant='text' width='30%' />
                   : 'Division'
               }
             />
@@ -149,12 +174,12 @@ function UserDetailProfile({ data, ...props }) {
             <ListItemText
               primary={
                 data === null
-                  ? <Skeleton variant='text' width={150} />
+                  ? <Skeleton variant='text' width='50%' />
                   : data.profile_email === null ? "..." : data.profile_email
               }
               secondary={
                 data === null
-                  ? <Skeleton variant='text' width={120} />
+                  ? <Skeleton variant='text' width='30%' />
                   : 'Email'
               }
             />
@@ -178,12 +203,12 @@ function UserDetailProfile({ data, ...props }) {
             <ListItemText
               primary={
                 data === null
-                  ? <Skeleton variant='text' width={150} />
+                  ? <Skeleton variant='text' width='50%' />
                   : data.profile_phone === null ? "..." : data.profile_phone
               }
               secondary={
                 data === null
-                  ? <Skeleton variant='text' width={120} />
+                  ? <Skeleton variant='text' width='30%' />
                   : 'Phone'
               }
             />
@@ -207,12 +232,12 @@ function UserDetailProfile({ data, ...props }) {
             <ListItemText
               primary={
                 data === null
-                  ? <Skeleton variant='text' width={150} />
+                  ? <Skeleton variant='text' width='50%' />
                   : data.profile_address === null ? "..." : data.profile_address
               }
               secondary={
                 data === null
-                  ? <Skeleton variant='text' width={120} />
+                  ? <Skeleton variant='text' width='30%' />
                   : 'Address'
               }
             />

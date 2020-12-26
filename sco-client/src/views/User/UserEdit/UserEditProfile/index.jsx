@@ -188,7 +188,6 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
       }
     } catch (err) {
       if (isMounted.current) {
-        console.log(err)
         setLoading(false);
         if (err.status === 401) {
           window.location.href = 'logout';
