@@ -138,8 +138,8 @@ function UserEditMenuAccess(props) {
    */
   return (
     <Page
-      title='User Access Menu'
-      pageTitle='User Access Menu'
+      title='User Access'
+      pageTitle='User Access'
       pb={true}
     >
       <Grid

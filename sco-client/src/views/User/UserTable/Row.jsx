@@ -12,9 +12,13 @@ import {
   Avatar,
   Icon,
   Badge,
+  Link,
 } from "@material-ui/core";
 import apiUrl from "src/apiUrl";
 import UserTableOptions from "../UserTableOptions";
+import {
+  useNavigate
+} from 'react-router-dom';
 
 
 /**
@@ -67,6 +71,17 @@ const useRowStyles = makeStyles((theme) => ({
 function Row(props) {
   const { row, onDelete, state, onChangePassword } = props;
   const classes = useRowStyles();
+  const navigate = useNavigate();
+
+
+  /**
+   * FUngsi link ke halaman user view detail
+   * @param {obj} e 
+   */
+  const goto = (e) => {
+    e.preventDefault();
+    navigate(`/user/${row.id}`, { state });
+  }
 
 
   return (
@@ -104,18 +119,20 @@ function Row(props) {
             </StyledBadge>
 
             <div style={{ marginLeft: 10 }}>
-              <Typography
-                color="textPrimary"
-                variant="body2"
-                noWrap
-              >
-                {row.profile_name}
+              <Typography>
+                <Link
+                  color="inherit"
+                  variant="body2"
+                  href={`/user/${row.id}`}
+                  onClick={(e) => goto(e)}
+                >
+                  {row.profile_name}
+                </Link>
               </Typography>
 
               <Typography
                 color="textSecondary"
                 variant="caption"
-                noWrap
               >
                 {
                   row.profile_division === null || row.profile_division === ""
@@ -135,9 +152,6 @@ function Row(props) {
           </Icon>
         </TableCell>
 
-        <TableCell>{row.profile_email === null || row.profile_email === "" ? "..." : row.profile_email}</TableCell>
-        <TableCell>{row.profile_phone === null || row.profile_phone === "" ? "..." : row.profile_phone}</TableCell>
-        <TableCell>{row.profile_address === null || row.profile_address === "" ? "..." : row.profile_address}</TableCell>
         <TableCell>{row.created_at}</TableCell>
         <TableCell>{row.updated_at}</TableCell>
       </TableRow>

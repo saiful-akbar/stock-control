@@ -56,8 +56,8 @@ function UserEdit(props) {
    */
   return (
     <Page
-      title='Edit User Profile'
-      pageTitle='Edit User Profile'
+      title='Edit User'
+      pageTitle='Edit User'
       pb={true}
     >
       <Grid container spacing={3} >

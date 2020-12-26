@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'user'], function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/menu', [UserController::class, 'getMenus']);
+        Route::get('/{user}', [UserController::class, 'show']);
         Route::get('/{id}/edit', [UserController::class, 'editProfile']);
         Route::get('/{user}/account', [UserController::class, 'editAccount']);
         Route::post('/cek/user-form', [UserController::class, 'cekUserForm']);

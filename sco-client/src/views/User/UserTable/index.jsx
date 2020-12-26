@@ -112,21 +112,6 @@ const UserTable = (props) => {
       align: 'left'
     },
     {
-      field: 'profile_email',
-      label: 'Email',
-      align: 'left'
-    },
-    {
-      field: 'profile_phone',
-      label: 'Phone Number',
-      align: 'left'
-    },
-    {
-      field: 'profile_address',
-      label: 'Address',
-      align: 'left'
-    },
-    {
       field: 'created_at',
       label: 'Created At',
       align: 'left'

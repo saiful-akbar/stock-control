@@ -310,3 +310,17 @@ export const apiUpdateUserAccount = (id, data) => {
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
+
+
+/**
+ * Fungsi api untuk mengambil data detail user
+ * @param {string} id 
+ */
+export const apiGetUserDetail = (id) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'GET',
+      url: `/user/${id}`
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+};

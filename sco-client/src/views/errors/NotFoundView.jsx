@@ -12,9 +12,10 @@ import { reduxAction } from 'src/config/redux/state';
 
 const useStyles = makeStyles((theme) => ({
   image: {
-    marginTop: 50,
+    marginTop: '8%',
     display: 'inline-block',
     maxWidth: '100%',
+    height: 400,
     width: 560
   },
 }));
@@ -36,37 +37,26 @@ const NotFoundView = (props) => {
         flexDirection="column"
         height="100%"
         justifyContent="center"
+        alignItems="center"
       >
-        <Typography
-          align="center"
-          color="textPrimary"
-          variant="h3"
-          gutterBottom
-        >
-          404:Page Not Found
-        </Typography>
 
-        <Typography
-          align="center"
-          color="textPrimary"
-          variant="subtitle2"
-        >
-          You either tried some shady route or you came here by mistake.
-          Whichever it is, try using the navigation
-          </Typography>
-
-        <Box textAlign="center">
+        {<Box textAlign="center">
           <img
-            alt="Under development"
+            alt="NOT FOUND"
+            src="/static/images/error-404.svg"
             className={classes.image}
-            src="/static/images/undraw_page_not_found_su7k.svg"
           />
-        </Box>
+          <Typography
+            align="center"
+            color="textPrimary"
+            variant="subtitle2"
+          >
+            {'You either tried some shady route or you came here by mistake. Whichever it is, try using the navigation'}
+          </Typography>
+        </Box>}
 
         <Box textAlign="center" style={{ marginTop: 40 }}>
           <Button
-            variant='contained'
-            color='primary'
             size='large'
             onClick={() => navigate('/')}
           >Go Back</Button>

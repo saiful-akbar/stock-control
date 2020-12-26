@@ -121,21 +121,21 @@ const UserTableOptions = (props) => {
           </MenuItem>
         )}
 
+        <MenuItem onClick={handleViewDetail}>
+          <Typography variant='inherit'>{'Detailed user info'}</Typography>
+        </MenuItem>
+
         {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleEdit}>
-            <Typography variant='inherit'>{'Edit profile'}</Typography>
+            <Typography variant='inherit'>{'Edit'}</Typography>
           </MenuItem>
         )}
 
         {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleChangeUserMenus}>
-            <Typography variant='inherit'>{'User access menu'}</Typography>
+            <Typography variant='inherit'>{'User access'}</Typography>
           </MenuItem>
         )}
-
-        <MenuItem onClick={handleViewDetail}>
-          <Typography variant='inherit'>{'View detail'}</Typography>
-        </MenuItem>
       </Menu>
     </>
   )
