@@ -61,14 +61,12 @@ function UserEdit(props) {
       pb={true}
     >
       <Grid container spacing={3} >
-        <Grid item xs >
-          <UserEditProfile
-            userId={id}
-          />
-        </Grid>
-
         <Grid item xs={12}>
           {<UserEditAccount userId={id} />}
+        </Grid>
+
+        <Grid item xs={12} >
+          <UserEditProfile userId={id} />
         </Grid>
       </Grid>
 

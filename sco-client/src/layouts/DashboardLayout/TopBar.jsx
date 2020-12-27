@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -10,10 +10,10 @@ import {
   IconButton,
   Toolbar,
   makeStyles,
+  Typography,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
-// import Logo from 'src/components/Logo';
 import CustomTooltip from 'src/components/CustomTooltip';
 import ThemeMode from './ThemeMode';
 import Clock from 'src/components/Clock';
@@ -22,6 +22,7 @@ import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    flexGrow: 1,
     backgroundColor: theme.palette.background.topBar,
     zIndex: theme.zIndex.drawer + 1
   },
@@ -42,7 +43,13 @@ const useStyles = makeStyles((theme) => ({
   skeletonClock: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-  }
+  },
+  title: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
 }));
 
 const TopBar = ({
@@ -65,10 +72,17 @@ const TopBar = ({
         <Hidden mdDown>
           {reduxUserLogin === null
             ? (
-              <Skeleton variant='circle' width={50} height={50} />
+              <Skeleton variant='circle' className={classes.menuButton} width={50} height={50} />
             ) : (
-              <CustomTooltip title={openDesktopNav ? 'Close menu' : 'Open menu'} placement='bottom'>
-                <IconButton onClick={onDesktopNavOpen} color='inherit' >
+              <CustomTooltip
+                title={openDesktopNav ? 'Close menu' : 'Open menu'}
+                placement='bottom'
+              >
+                <IconButton
+                  onClick={onDesktopNavOpen}
+                  className={classes.menuButton}
+                  color='inherit'
+                >
                   {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
                 </IconButton>
               </CustomTooltip>
@@ -78,19 +92,37 @@ const TopBar = ({
         <Hidden lgUp>
           {reduxUserLogin === null
             ? (
-              <Skeleton variant='circle' width={50} height={50} />
+              <Skeleton
+                variant='circle'
+                width={50}
+                height={50}
+                className={classes.menuButton}
+              />
             ) : (
-              <CustomTooltip title='Open menu' placement='bottom'>
-                <IconButton onClick={onMobileNavOpen} color='inherit' >
+              <CustomTooltip
+                title='Open menu'
+                placement='bottom'
+              >
+                <IconButton
+                  onClick={onMobileNavOpen}
+                  className={classes.menuButton}
+                  color='inherit'
+                >
                   <MenuIcon />
                 </IconButton>
               </CustomTooltip>
             )}
         </Hidden>
 
-        {/* <RouterLink to='/dashboard' className={classes.logo} >
-          <Logo height={40} />
-        </RouterLink> */}
+        <Typography
+          variant="h6"
+          color='inherit'
+          className={classes.title}
+          component={RouterLink}
+          to='/dashboard'
+        >
+          {'Stock Control'}
+        </Typography>
 
         <Box flexGrow={1} />
 

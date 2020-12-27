@@ -65,6 +65,10 @@ const useRowStyles = makeStyles((theme) => ({
   green: {
     color: theme.palette.success.light,
   },
+  link: {
+    color: '#2196f3',
+    fontWeight: 'bold',
+  }
 }));
 
 
@@ -121,7 +125,7 @@ function Row(props) {
             <div style={{ marginLeft: 10 }}>
               <Typography>
                 <Link
-                  color="inherit"
+                  className={classes.link}
                   variant="body2"
                   href={`/user/${row.id}`}
                   onClick={(e) => goto(e)}

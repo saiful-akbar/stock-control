@@ -57,9 +57,12 @@ const NotFoundView = (props) => {
 
         <Box textAlign="center" style={{ marginTop: 40 }}>
           <Button
+            color='primary'
             size='large'
             onClick={() => navigate('/')}
-          >Go Back</Button>
+          >
+            {'Go Back'}
+          </Button>
         </Box>
       </Box>
     </Page>

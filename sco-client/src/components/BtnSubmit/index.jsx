@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Button,
   CircularProgress,
+  Box,
 } from '@material-ui/core';
 
 const BtnSubmit = ({
@@ -23,18 +24,24 @@ const BtnSubmit = ({
    */
   const btnOnProcess = () => {
     return (
-      <Button
-        disabled={true}
-        color={color}
-        size={size}
+      <Box
+        display='flex'
+        justifyContent='center'
+        alignItems='center'
       >
         <CircularProgress
           size={20}
-          color='inherit'
-          style={{ marginRight: 10 }}
+          color='primary'
+          style={{ marginRight: 5 }}
         />
-        {'Processing...'}
-      </Button>
+        <Button
+          disabled={true}
+          color={color}
+          size={size}
+        >
+          {'Processing...'}
+        </Button>
+      </Box>
     );
   };
 

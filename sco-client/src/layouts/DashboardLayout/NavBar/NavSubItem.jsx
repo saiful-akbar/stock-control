@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: theme.typography.fontWeightMedium,
     justifyContent: 'flex-start',
     letterSpacing: 0,
-    padding: '5px 10px 5px 40px',
+    padding: '5px 10px 5px 38px',
     textTransform: 'none',
     width: '100%',
     borderRadius: '0 25px 25px 0'

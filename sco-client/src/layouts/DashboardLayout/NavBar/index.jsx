@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   mainMenu: {
-    width: 'calc(256px - 10px)',
+    width: 'calc(256px - 11px)',
   },
   skeletonMenu: {
     marginRight: '-5px',
