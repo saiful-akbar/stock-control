@@ -129,7 +129,7 @@ const MenuItemTable = (props) => {
     },
     {
       field: 'menu_i_children',
-      label: 'Children',
+      label: 'Sub Menu',
       align: 'left'
     },
     {
@@ -174,20 +174,20 @@ const MenuItemTable = (props) => {
    * Fungsi untuk mengambil data dari api
    * @param {int} page 
    * @param {int} perPage 
-   * @param {string} query 
+   * @param {string} querySearch 
    * @param {string} sort 
    * @param {"asc/desc"} orderBy
    */
   const getData = async (
     page = rowData.menu_items.current_page,
     perPage = rowData.menu_items.per_page,
-    query = search,
+    querySearch = search,
     sort = rowData.sort,
     orderBy = rowData.order_by
   ) => {
     setLoading(true);
     try {
-      const res = await apiGetAllMenuItem(page, perPage, query, sort, orderBy);
+      const res = await apiGetAllMenuItem(page, perPage, querySearch, sort, orderBy);
       if (isMounted.current) {
         setRowData(res.data);
       }
@@ -429,7 +429,7 @@ const MenuItemTable = (props) => {
                   <TableHead>
                     <TableRow>
                       {columns.map((col, i) => (
-                        <TableCell key={i} className={classes.tableCell}>
+                        <TableCell key={i} className={classes.tableCell} align={col.align}>
                           <TableSortLabel
                             active={Boolean(rowData.sort === col.field)}
                             direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
@@ -477,9 +477,11 @@ const MenuItemTable = (props) => {
                           <TableRow hover key={key}>
                             <TableCell className={classes.tableCell}>{row.menu_i_title}</TableCell>
                             <TableCell className={classes.tableCell}>{row.menu_i_url}</TableCell>
+
                             <TableCell className={classes.tableCell}>
                               <Icon>{row.menu_i_icon}</Icon>
                             </TableCell>
+
                             <TableCell className={classes.tableCell}>
                               <Icon
                                 className={
@@ -491,6 +493,7 @@ const MenuItemTable = (props) => {
                                 {row.menu_i_children === 1 ? 'check' : 'close'}
                               </Icon>
                             </TableCell>
+
                             <TableCell className={classes.tableCell}>{row.created_at}</TableCell>
                             <TableCell className={classes.tableCell}>{row.updated_at}</TableCell>
 

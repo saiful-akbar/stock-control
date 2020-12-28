@@ -30,6 +30,7 @@ import { apiGetAllUser } from 'src/services/user';
 import { connect } from 'react-redux';
 import UserTruncateToken from '../UserTruncateToken';
 import Row from './Row';
+import { reduxAction } from 'src/config/redux/state';
 
 /**
  * style
@@ -174,7 +175,7 @@ const UserTable = (props) => {
         if (err.status === 401) {
           window.location.href = '/logout';
         } else {
-          alert(`(#${err.status}) ${err.statusText}`)
+          props.setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
         }
       }
     }
@@ -463,4 +464,26 @@ function reduxState(state) {
 };
 
 
-export default connect(reduxState, null)(UserTable);
+/**
+ * Redux dispatch
+ * @param {obj} dispatch 
+ */
+function reduxDispatch(dispatch) {
+  return {
+    setReduxToast: (
+      show = false,
+      type = 'success',
+      message = ''
+    ) => dispatch({
+      type: reduxAction.toast,
+      value: {
+        show: show,
+        type: type,
+        message: message
+      }
+    }),
+  }
+}
+
+
+export default connect(reduxState, reduxDispatch)(UserTable);

@@ -60,12 +60,74 @@ class MenuSubItemController extends Controller
                 "message" => "Access is denied",
             ], 403);
         } else {
-            $data = [];
-            $per_page = isset($request->per_page) && !empty($request->per_page) ? htmlspecialchars($request->per_page) : 25;
-            $search   = isset($request->search) && !empty($request->search) ? htmlspecialchars($request->search) : '';
-            $sort     = isset($request->sort) && !empty($request->sort) ? htmlspecialchars($request->sort) : 'menu_i_title';
-            $order_by = isset($request->order_by) && !empty($request->order_by) ? htmlspecialchars($request->order_by) : 'asc';
+            // Cek baris perhalaman
+            $per_page = 25;
+            if (isset($request->perpage) && !empty($request->perpage)) {
+                switch ($request->perpage) {
+                    case 250:
+                        $per_page = 250;
+                        break;
 
+                    case 100:
+                        $per_page = 100;
+                        break;
+
+                    case 50:
+                        $per_page = 50;
+                        break;
+
+                    default:
+                        $per_page = 25;
+                        break;
+                }
+            }
+
+            // Cek sort
+            $sort = "menu_i_title";
+            if (isset($request->sort) && !empty($request->sort)) {
+                switch ($request->sort) {
+                    case 'menu_i_url':
+                        $sort = "menu_i_url";
+                        break;
+
+                    case 'menu_s_i_title':
+                        $sort = "menu_s_i_title";
+                        break;
+
+                    case 'menu_s_i_url':
+                        $sort = "menu_s_i_url";
+                        break;
+
+                    case 'created_at':
+                        $sort = "created_at";
+                        break;
+
+                    case 'updated_at':
+                        $sort = "updated_at";
+                        break;
+
+                    default:
+                        $sort = "menu_i_title";
+                        break;
+                }
+            }
+
+            // Cek orderby
+            $order_by = 'asc';
+            if (isset($request->orderby) && !empty($request->orderby)) {
+                if ($request->orderby === 'asc' || $request->orderby === 'desc') {
+                    $order_by = htmlspecialchars($request->orderby);
+                }
+            }
+
+            // Cek search
+            $search = '';
+            if (isset($request->search) && !empty($request->search)) {
+                $search = htmlspecialchars($request->search);
+            }
+
+            // Ambil data dari database
+            $data = [];
             if (isset($search) && !empty($search)) {
                 $data = DB::table("menu_sub_items")
                     ->leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
@@ -98,6 +160,8 @@ class MenuSubItemController extends Controller
                     )->orderBy($sort, $order_by)
                     ->paginate($per_page);
             }
+
+            // response
             return response()->json([
                 "menu_sub_items" => $data,
                 "menu_items" => $this->getMenuItems(),

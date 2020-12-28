@@ -10,17 +10,17 @@ import {
  * @param {field tabel yang ingin si sortir} sort 
  * @param {Urutan data pada tabel "asc/desc"} orderBy 
  */
-export const apiGetAllMenuSubItem = (page = 1, perPage = 10, query = '', sort = 'id', orderBy = 'asc') => {
+export const apiGetAllMenuSubItem = (page = 1, perpage = 10, query = '', sort = 'id', orderby = 'asc') => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: '/menu/menu-sub-item',
+      url: '/submenu',
       params: {
         page: page,
-        per_page: perPage,
-        search: query,
+        perpage: perpage,
         sort: sort,
-        order_by: orderBy,
+        orderby: orderby,
+        search: query,
       }
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
@@ -35,7 +35,7 @@ export const apiCreateMenuSubItem = (data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
-      url: '/menu/menu-sub-item',
+      url: '/submenu',
       data: data
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
@@ -50,7 +50,7 @@ export const apiDeleteMenuSubItem = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: `/menu/menu-sub-item/${id}`,
+      url: `/submenu/${id}`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -65,7 +65,7 @@ export const apiUpdateMenuSubItem = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'PUT',
-      url: `/menu/menu-sub-item/${id}`,
+      url: `/submenu/${id}`,
       data: data
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });

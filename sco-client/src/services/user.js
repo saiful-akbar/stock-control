@@ -12,10 +12,10 @@ import {
  */
 export const apiGetAllUser = (
   page = 1,
-  perPage = 10,
+  perpage = 10,
   query = '',
   sort = 'id',
-  orderBy = 'asc'
+  orderby = 'asc'
 ) => {
   return new Promise((resolve, reject) => {
     api({
@@ -23,10 +23,10 @@ export const apiGetAllUser = (
       url: '/user',
       params: {
         page: page,
-        per_page: perPage,
-        search: query,
+        perpage: perpage,
         sort: sort,
-        order_by: orderBy,
+        orderby: orderby,
+        search: query,
       }
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
@@ -151,7 +151,7 @@ export const apiGetUserMenuItems = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/menu-items/${id}`
+      url: `/user/menu/${id}`
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -159,15 +159,15 @@ export const apiGetUserMenuItems = (id) => {
 
 /**
  * Fungsi api untuk menambahkan akses menu item pada user
- * @param {String} uuid 
+ * @param {String} id 
  * @param {Array} data 
  */
-export const apiAddUserMenuItem = (uuid, data) => {
+export const apiAddUserMenuItem = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
       data: data,
-      url: `/user/menu-items/${uuid}`,
+      url: `/user/menu/${id}`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -175,14 +175,14 @@ export const apiAddUserMenuItem = (uuid, data) => {
 
 /**
  * Fungsi api untuk menghapus user menu item
- * @param {string} uuid 
+ * @param {string} id 
  */
 export const apiDeleteUserMenuItem = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
       data: data,
-      url: `/user/menu-items/${id}`,
+      url: `/user/menu/${id}`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -196,7 +196,7 @@ export const apiGetUserMenuSubItems = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/menu-sub-items/${id}`
+      url: `/user/submenu/${id}`
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -204,15 +204,15 @@ export const apiGetUserMenuSubItems = (id) => {
 
 /**
  * Fungsi api untuk menambahkan akses menu sub item pada user
- * @param {String} uuid 
+ * @param {String} id 
  * @param {Array} data 
  */
-export const apiAddUserMenuSubItem = (uuid, data) => {
+export const apiAddUserMenuSubItem = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
       data: data,
-      url: `/user/menu-sub-items/${uuid}`,
+      url: `/user/submenu/${id}`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -220,14 +220,14 @@ export const apiAddUserMenuSubItem = (uuid, data) => {
 
 /**
  * Fungsi api untuk menghapus user menu item
- * @param {string} uuid 
+ * @param {string} id 
  */
 export const apiDeleteUserMenuSubItems = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
       data: data,
-      url: `/user/menu-sub-items/${id}`,
+      url: `/user/submenu/${id}`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -265,7 +265,7 @@ export const apiEditUserProfile = (id) => {
 
 /**
  * Fungsi api untuk update user profile
- * @param {string|uuid} id 
+ * @param {string|id} id 
  * @param {obj|request form} data 
  */
 export const apiUpdateUserProfile = (id, data) => {
@@ -298,7 +298,7 @@ export const apiEditUserAccount = (id) => {
 
 /**
  * Fungsi api untuk update user account
- * @param {string|uuid} id 
+ * @param {string|id} id 
  * @param {obj|request form} data 
  */
 export const apiUpdateUserAccount = (id, data) => {

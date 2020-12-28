@@ -48,12 +48,74 @@ class MenuItemController extends Controller
     public function index(Request $request)
     {
         if ($this->userAccess("read")) {
-            $data = [];
-            $per_page = isset($request->per_page) && !empty($request->per_page) ? htmlspecialchars($request->per_page) : 25;
-            $search   = isset($request->search) && !empty($request->search) ? htmlspecialchars($request->search) : '';
-            $sort     = isset($request->sort) && !empty($request->sort) ? htmlspecialchars($request->sort) : 'menu_i_title';
-            $order_by = isset($request->order_by) && !empty($request->order_by) ? htmlspecialchars($request->order_by) : 'asc';
 
+            // Cek baris perhalaman
+            $per_page = 25;
+            if (isset($request->perpage) && !empty($request->perpage)) {
+                switch ($request->perpage) {
+                    case 250:
+                        $per_page = 250;
+                        break;
+
+                    case 100:
+                        $per_page = 100;
+                        break;
+
+                    case 50:
+                        $per_page = 50;
+                        break;
+
+                    default:
+                        $per_page = 25;
+                        break;
+                }
+            }
+
+            // Cek sort
+            $sort = "menu_i_title";
+            if (isset($request->sort) && !empty($request->sort)) {
+                switch ($request->sort) {
+                    case 'menu_i_url':
+                        $sort = "menu_i_url";
+                        break;
+
+                    case 'menu_i_icon':
+                        $sort = "menu_i_icon";
+                        break;
+
+                    case 'menu_i_children':
+                        $sort = "menu_i_children";
+                        break;
+
+                    case 'created_at':
+                        $sort = "created_at";
+                        break;
+
+                    case 'updated_at':
+                        $sort = "updated_at";
+                        break;
+
+                    default:
+                        $sort = "menu_i_title";
+                        break;
+                }
+            }
+
+            // Cek orderby
+            $order_by = 'asc';
+            if (isset($request->orderby) && !empty($request->orderby)) {
+                if ($request->orderby === 'asc' || $request->orderby === 'desc') {
+                    $order_by = htmlspecialchars($request->orderby);
+                }
+            }
+
+            // Cek search
+            $search = '';
+            if (isset($request->search) && !empty($request->search)) {
+                $search = htmlspecialchars($request->search);
+            }
+
+            $data = [];
             if (isset($search) && !empty($search)) {
                 $data = DB::table("menu_items")
                     ->where("menu_i_title", "like", "%" . $search . "%")
@@ -66,6 +128,7 @@ class MenuItemController extends Controller
             } else {
                 $data = DB::table("menu_items")->orderBy($sort, $order_by)->paginate($per_page);
             }
+
             return response()->json([
                 "menu_items" => $data,
                 "search" => $search,

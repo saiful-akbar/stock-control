@@ -3,17 +3,17 @@ import {
 } from './api';
 
 // Fungsi api untuk mengambil semua data menu items
-export const apiGetAllMenuItem = (page = 1, perPage = 10, query = '', sort = 'id', orderBy = 'asc') => {
+export const apiGetAllMenuItem = (page = 1, perpage = 10, search = '', sort = 'id', orderby = 'asc') => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: '/menu/menu-item',
+      url: '/menu',
       params: {
         page: page,
-        per_page: perPage,
-        search: query,
+        perpage: perpage,
         sort: sort,
-        order_by: orderBy,
+        orderby: orderby,
+        search: search,
       }
     }).then((res) => {
       resolve(res);
@@ -29,7 +29,7 @@ export const apiCreateMenuItem = (data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
-      url: '/menu/menu-item',
+      url: '/menu',
       data: data
     }).then((res) => {
       resolve(res);
@@ -45,7 +45,7 @@ export const apiDeleteMenuItem = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: `/menu/menu-item/${id}`,
+      url: `/menu/${id}`,
     }).then((res) => {
       resolve(res);
     }).catch((err) => {
@@ -60,7 +60,7 @@ export const apiUpdateMenuItem = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'PUT',
-      url: `/menu/menu-item/${id}`,
+      url: `/menu/${id}`,
       data: data,
     }).then((res) => {
       resolve(res);

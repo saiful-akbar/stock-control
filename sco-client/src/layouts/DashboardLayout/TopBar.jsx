@@ -114,15 +114,26 @@ const TopBar = ({
             )}
         </Hidden>
 
-        <Typography
-          variant="h6"
-          color='inherit'
-          className={classes.title}
-          component={RouterLink}
-          to='/dashboard'
-        >
-          {'Stock Control'}
-        </Typography>
+        {reduxUserLogin === null
+          ? (
+            <Skeleton variant='text'>
+              <Typography variant="h6" >
+                {'Stock Control'}
+              </Typography>
+            </Skeleton>
+          ) : (
+            <Typography
+              variant="h6"
+              color='inherit'
+              className={classes.title}
+              component={RouterLink}
+              to='/dashboard'
+            >
+              {'Stock Control'}
+            </Typography>
+          )
+        }
+
 
         <Box flexGrow={1} />
 

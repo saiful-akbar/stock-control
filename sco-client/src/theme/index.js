@@ -54,18 +54,23 @@ const themeDark = createMuiTheme({
   palette: {
     type: 'dark',
     background: {
+    	
+      /**
+       * whatsapp dark theme
+       */
+      default: '#262D31',
+      paper: '#131C21',
+      topBar: '#2A2F32',
+      dark: '#0D1418',
 
-      // whatsapp dark theme
-      // default: '#262D31',
-      // paper: '#131C21',
-      // topBar: '#2A2F32',
-      // dark: '#0D1418',
-
-      // github dark theme
-      default: '#21262D',
-      paper: '#0D1117',
-      topBar: '#161B22',
-      dark: '#06090F',
+      
+      /**
+       * github dark theme
+       */
+      // default: '#21262D',
+      // paper: '#0D1117',
+      // topBar: '#161B22',
+      // dark: '#06090F',
     },
     primary: {
       light: '#33abb8',

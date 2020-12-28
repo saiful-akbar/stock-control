@@ -84,12 +84,73 @@ class UserController extends Controller
         if (!$this->userAccess("read")) {
             return response()->json(["message" => "Access is denied"], 403);
         } else {
-            $data     = [];
-            $per_page = isset($request->per_page) && !empty($request->per_page) ? htmlspecialchars($request->per_page) : 25;
-            $search   = isset($request->search) && !empty($request->search) ? htmlspecialchars($request->search) : "";
-            $sort     = isset($request->sort) && !empty($request->sort) ? htmlspecialchars($request->sort) : "username";
-            $order_by = isset($request->order_by) && !empty($request->order_by) ? htmlspecialchars($request->order_by) : "asc";
+            // Cek baris perhalaman
+            $per_page = 25;
+            if (isset($request->perpage) && !empty($request->perpage)) {
+                switch ($request->perpage) {
+                    case 250:
+                        $per_page = 250;
+                        break;
 
+                    case 100:
+                        $per_page = 100;
+                        break;
+
+                    case 50:
+                        $per_page = 50;
+                        break;
+
+                    default:
+                        $per_page = 25;
+                        break;
+                }
+            }
+
+            // Cek sort
+            $sort = "profile_name";
+            if (isset($request->sort) && !empty($request->sort)) {
+                switch ($request->sort) {
+                    case 'profile_name':
+                        $sort = "profile_name";
+                        break;
+
+                    case 'username':
+                        $sort = "username";
+                        break;
+
+                    case 'is_active':
+                        $sort = "is_active";
+                        break;
+
+                    case 'created_at':
+                        $sort = "created_at";
+                        break;
+
+                    case 'updated_at':
+                        $sort = "updated_at";
+                        break;
+
+                    default:
+                        $sort = "profile_name";
+                        break;
+                }
+            }
+
+            // Cek orderby
+            $order_by = 'asc';
+            if (isset($request->orderby) && !empty($request->orderby)) {
+                if ($request->orderby === 'asc' || $request->orderby === 'desc') {
+                    $order_by = htmlspecialchars($request->orderby);
+                }
+            }
+
+            // Cek search
+            $search = '';
+            if (isset($request->search) && !empty($request->search)) {
+                $search = htmlspecialchars($request->search);
+            }
+
+            $data     = [];
             $data = DB::table("users")
                 ->leftJoin("profiles", "users.id", "=", "profiles.user_id")
                 ->leftJoin("personal_access_tokens", "users.id", "=", "personal_access_tokens.tokenable_id")
