@@ -124,75 +124,71 @@ function UserDetail(props) {
       title='Detailed User Info'
       pageTitle='Detailed User Info'
     >
-      <Grid container spacing={3}>
-        <Grid
-          item
-          md={6}
-          xs={12}
-          container
-          direction="row"
-          justify="center"
-          alignItems="flex-start"
-        >
-          <Grid item xs={12}>
-            <Accordion expanded={expanded === 'panel1'} onChange={handleAccordionChange('panel1')}>
-              <AccordionSummary
-                expandIcon={
-                  userData === null
-                    ? <Skeleton variant='circle' width={20} height={20} />
-                    : <ExpandMoreIcon />
-                }
-                aria-controls="panel1a-content"
-                id="panel1a-header"
-              >
-                {userData === null
-                  ? (
-                    <Skeleton variant='text' >
-                      <Typography className={classes.heading}>{'Account Info'}</Typography>
-                    </Skeleton>
-                  )
-                  : (
+      <Grid
+        spacing={3}
+        container
+        direction="row"
+        justify="center"
+        alignItems="flex-start"
+      >
+        <Grid item lg={8} md={10} xs={12}>
+          <Accordion expanded={expanded === 'panel1'} onChange={handleAccordionChange('panel1')}>
+            <AccordionSummary
+              expandIcon={
+                userData === null
+                  ? <Skeleton variant='circle' width={20} height={20} />
+                  : <ExpandMoreIcon />
+              }
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              {userData === null
+                ? (
+                  <Skeleton variant='text' >
                     <Typography className={classes.heading}>{'Account Info'}</Typography>
-                  )
-                }
-              </AccordionSummary>
+                  </Skeleton>
+                )
+                : (
+                  <Typography className={classes.heading}>{'Account Info'}</Typography>
+                )
+              }
+            </AccordionSummary>
 
-              <AccordionDetails>
-                <UserDetailAccount data={userData === null ? null : userData.user} />
-              </AccordionDetails>
-            </Accordion>
+            <AccordionDetails>
+              <UserDetailAccount data={userData === null ? null : userData.user} />
+            </AccordionDetails>
+          </Accordion>
 
-            <Accordion expanded={expanded === 'panel2'} onChange={handleAccordionChange('panel2')}>
-              <AccordionSummary
-                expandIcon={
-                  userData === null
-                    ? <Skeleton variant='circle' width={20} height={20} />
-                    : <ExpandMoreIcon />
-                }
-                aria-controls="panel2a-content"
-                id="panel2a-header"
-              >
-                {userData === null
-                  ? (
-                    <Skeleton variant='text' >
-                      <Typography className={classes.heading}>{'Profile Info'}</Typography>
-                    </Skeleton>
-                  )
-                  : (
+          <Accordion expanded={expanded === 'panel2'} onChange={handleAccordionChange('panel2')}>
+            <AccordionSummary
+              expandIcon={
+                userData === null
+                  ? <Skeleton variant='circle' width={20} height={20} />
+                  : <ExpandMoreIcon />
+              }
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+              {userData === null
+                ? (
+                  <Skeleton variant='text' >
                     <Typography className={classes.heading}>{'Profile Info'}</Typography>
-                  )
-                }
-              </AccordionSummary>
+                  </Skeleton>
+                )
+                : (
+                  <Typography className={classes.heading}>{'Profile Info'}</Typography>
+                )
+              }
+            </AccordionSummary>
 
-              <AccordionDetails>
-                <UserDetailProfile data={userData === null ? null : userData.profile} />
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
+            <AccordionDetails>
+              <UserDetailProfile data={userData === null ? null : userData.profile} />
+            </AccordionDetails>
+          </Accordion>
         </Grid>
 
-        <Grid item md={6} xs={12}>
-          <UserDetailMenu data={userData === null ? null : userData.user} />
+        <Grid item lg={12} md={12} xs={12}>
+          <UserDetailMenu data={userData === null ? null : userData.menus} />
         </Grid>
       </Grid>
 
