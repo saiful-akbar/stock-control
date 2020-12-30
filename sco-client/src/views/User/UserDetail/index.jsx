@@ -6,7 +6,12 @@ import {
 } from 'react-router-dom';
 import Page from 'src/components/Page';
 import {
-  Grid, Fab
+  Grid,
+  Fab,
+  Typography,
+  AccordionDetails,
+  AccordionSummary,
+  Accordion,
 } from '@material-ui/core';
 import {
   makeStyles
@@ -16,8 +21,11 @@ import UserDetailProfile from './UserDetailProfile';
 import { apiGetUserDetail } from 'src/services/user';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CustomTooltip from 'src/components/CustomTooltip';
 import UserDetailAccount from './UserDetailAccount';
+import { Skeleton } from '@material-ui/lab';
+import UserDetailMenu from './UserDetailMenu';
 
 
 // Style
@@ -27,7 +35,11 @@ const useStyle = makeStyles(theme => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
     zIndex: theme.zIndex.drawer + 1
-  }
+  },
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    fontWeight: theme.typography.fontWeightRegular,
+  },
 }));
 
 
@@ -42,6 +54,16 @@ function UserDetail(props) {
 
   const isMounted = React.useRef(true);
   const [userData, setUserData] = React.useState(null);
+  const [expanded, setExpanded] = React.useState('panel1');
+
+
+  /**
+   * Expanded acordion
+   * @param {string} panel 
+   */
+  const handleAccordionChange = (panel) => (e, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
 
   /**
@@ -103,18 +125,74 @@ function UserDetail(props) {
       pageTitle='Detailed User Info'
     >
       <Grid container spacing={3}>
-        <Grid item md container direction="column" spacing={3}>
-          <Grid item>
-            <UserDetailAccount data={userData === null ? null : userData.user} />
-          </Grid>
+        <Grid
+          item
+          md={6}
+          xs={12}
+          container
+          direction="row"
+          justify="center"
+          alignItems="flex-start"
+        >
+          <Grid item xs={12}>
+            <Accordion expanded={expanded === 'panel1'} onChange={handleAccordionChange('panel1')}>
+              <AccordionSummary
+                expandIcon={
+                  userData === null
+                    ? <Skeleton variant='circle' width={20} height={20} />
+                    : <ExpandMoreIcon />
+                }
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                {userData === null
+                  ? (
+                    <Skeleton variant='text' >
+                      <Typography className={classes.heading}>{'Account Info'}</Typography>
+                    </Skeleton>
+                  )
+                  : (
+                    <Typography className={classes.heading}>{'Account Info'}</Typography>
+                  )
+                }
+              </AccordionSummary>
 
-          <Grid item>
-            <UserDetailProfile data={userData === null ? null : userData.profile} />
+              <AccordionDetails>
+                <UserDetailAccount data={userData === null ? null : userData.user} />
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion expanded={expanded === 'panel2'} onChange={handleAccordionChange('panel2')}>
+              <AccordionSummary
+                expandIcon={
+                  userData === null
+                    ? <Skeleton variant='circle' width={20} height={20} />
+                    : <ExpandMoreIcon />
+                }
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                {userData === null
+                  ? (
+                    <Skeleton variant='text' >
+                      <Typography className={classes.heading}>{'Profile Info'}</Typography>
+                    </Skeleton>
+                  )
+                  : (
+                    <Typography className={classes.heading}>{'Profile Info'}</Typography>
+                  )
+                }
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <UserDetailProfile data={userData === null ? null : userData.profile} />
+              </AccordionDetails>
+            </Accordion>
           </Grid>
         </Grid>
 
-        <Grid item md={5} xs>
-          <UserDetailProfile data={userData === null ? null : userData.profile} />
+        <Grid item md={6} xs={12}>
+          <UserDetailMenu data={userData === null ? null : userData.user} />
         </Grid>
       </Grid>
 

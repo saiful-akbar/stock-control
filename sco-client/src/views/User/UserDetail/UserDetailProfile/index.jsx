@@ -15,10 +15,8 @@ import {
   ListItemText,
   ListItemAvatar,
   Divider,
-  Card,
-  CardHeader,
-  CardContent,
   Box,
+  Grid,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import apiUrl from 'src/apiUrl';
@@ -61,23 +59,8 @@ function UserDetailProfile({ data, ...props }) {
    * Render Komponen utama
    */
   return (
-    <Card
-      elevation={3}
-      variant={
-        props.reduxTheme === 'dark'
-          ? 'outlined'
-          : 'elevation'
-      }
-    >
-      <CardHeader
-        title={
-          data === null
-            ? <Skeleton variant='text' width={120} />
-            : 'Profile Info'
-        }
-      />
-
-      <CardContent>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
         <Box
           display='flex'
           justifyContent='center'
@@ -95,9 +78,12 @@ function UserDetailProfile({ data, ...props }) {
                     : apiUrl(`/avatar/${data.profile_avatar}`)
                 }
               />
-            )}
+            )
+          }
         </Box>
+      </Grid>
 
+      <Grid item xs={12}>
         <List className={classes.root}>
           <ListItem>
             <ListItemAvatar>
@@ -243,8 +229,8 @@ function UserDetailProfile({ data, ...props }) {
             />
           </ListItem>
         </List>
-      </CardContent>
-    </Card>
+      </Grid>
+    </Grid>
   );
 }
 

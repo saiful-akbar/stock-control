@@ -12,9 +12,6 @@ import {
   ListItemText,
   ListItemAvatar,
   Divider,
-  Card,
-  CardHeader,
-  CardContent,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -52,83 +49,66 @@ function UserDetailAccount({ data, ...props }) {
    * Render Komponen utama
    */
   return (
-    <Card
-      elevation={3}
-      variant={
-        props.reduxTheme === 'dark'
-          ? 'outlined'
-          : 'elevation'
-      }
-    >
-      <CardHeader
-        title={
-          data === null
-            ? <Skeleton variant='text' width={120} />
-            : 'Account Info'
-        }
-      />
+    <>
+      <List className={classes.root}>
+        <ListItem>
+          <ListItemAvatar>
+            {
+              data === null
+                ? (
+                  <Skeleton variant='circle' width={40} height={40} />
+                ) : (
+                  <Avatar>
+                    <PersonIcon />
+                  </Avatar>
+                )
+            }
+          </ListItemAvatar>
 
-      <CardContent>
-        <List className={classes.root}>
-          <ListItem>
-            <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <PersonIcon />
-                    </Avatar>
-                  )
-              }
-            </ListItemAvatar>
+          <ListItemText
+            primary={
+              data === null
+                ? <Skeleton variant='text' width='50%' />
+                : data.username === null ? "..." : data.username
+            }
+            secondary={
+              data === null
+                ? <Skeleton variant='text' width='30%' />
+                : 'Username'
+            }
+          />
+        </ListItem>
+        <Divider variant="inset" component="li" />
 
-            <ListItemText
-              primary={
-                data === null
-                  ? <Skeleton variant='text' width='50%' />
-                  : data.username === null ? "..." : data.username
-              }
-              secondary={
-                data === null
-                  ? <Skeleton variant='text' width='30%' />
-                  : 'Username'
-              }
-            />
-          </ListItem>
-          <Divider variant="inset" component="li" />
+        <ListItem>
+          <ListItemAvatar>
+            {
+              data === null
+                ? (
+                  <Skeleton variant='circle' width={40} height={40} />
+                ) : (
+                  <Avatar>
+                    <LockIcon />
+                  </Avatar>
+                )
+            }
+          </ListItemAvatar>
 
-          <ListItem>
-            <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <LockIcon />
-                    </Avatar>
-                  )
-              }
-            </ListItemAvatar>
-
-            <ListItemText
-              primary={
-                data === null
-                  ? <Skeleton variant='text' width='50%' />
-                  : "*********"
-              }
-              secondary={
-                data === null
-                  ? <Skeleton variant='text' width='30%' />
-                  : 'Password'
-              }
-            />
-          </ListItem>
-        </List>
-      </CardContent>
-    </Card>
+          <ListItemText
+            primary={
+              data === null
+                ? <Skeleton variant='text' width='50%' />
+                : "*********"
+            }
+            secondary={
+              data === null
+                ? <Skeleton variant='text' width='30%' />
+                : 'Password'
+            }
+          />
+        </ListItem>
+      </List>
+    </>
   );
 }
 

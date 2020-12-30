@@ -66,8 +66,11 @@ const useRowStyles = makeStyles((theme) => ({
     color: theme.palette.success.light,
   },
   link: {
-    color: '#2196f3',
+    color: 'inherit',
     fontWeight: 'bold',
+    '&:hover': {
+      color: '#2196f3',
+    }
   }
 }));
 

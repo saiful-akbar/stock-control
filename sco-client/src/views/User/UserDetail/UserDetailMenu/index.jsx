@@ -64,69 +64,12 @@ function UserDetailMenus({ data, ...props }) {
         title={
           data === null
             ? <Skeleton variant='text' width={120} />
-            : 'Account Info'
+            : 'Menu Access'
         }
       />
 
       <CardContent>
-        <List className={classes.root}>
-          <ListItem>
-            <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <PersonIcon />
-                    </Avatar>
-                  )
-              }
-            </ListItemAvatar>
 
-            <ListItemText
-              primary={
-                data === null
-                  ? <Skeleton variant='text' width={150} />
-                  : data.username === null ? "..." : data.username
-              }
-              secondary={
-                data === null
-                  ? <Skeleton variant='text' width={120} />
-                  : 'Username'
-              }
-            />
-          </ListItem>
-          <Divider variant="inset" component="li" />
-
-          <ListItem>
-            <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <LockIcon />
-                    </Avatar>
-                  )
-              }
-            </ListItemAvatar>
-
-            <ListItemText
-              primary={
-                data === null
-                  ? <Skeleton variant='text' width={150} />
-                  : "*********"
-              }
-              secondary={
-                data === null
-                  ? <Skeleton variant='text' width={120} />
-                  : 'Password'
-              }
-            />
-          </ListItem>
-        </List>
       </CardContent>
     </Card>
   );
