@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use App\Traits\Uuid;
+use App\Models\Profile;
+use App\Models\UserLog;
+use App\Models\MenuItem;
+use App\Models\MenuSubItem;
 use \Laravel\Sanctum\HasApiTokens;
 use \Illuminate\Notifications\Notifiable;
 use \Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -52,18 +56,23 @@ class User extends Authenticatable
 
     public function profile()
     {
-        return $this->hasOne('App\Models\Profile', 'user_id', 'id');
+        return $this->hasOne(Profile::class, 'user_id', 'id');
+    }
+
+    public function userLog()
+    {
+        return $this->hasOne(UserLog::class, 'user_id', 'id');
     }
 
     public function menuItem()
     {
-        return $this->belongsToMany('App\Models\MenuItem', 'user_menu_item', 'user_id', 'menu_item_id')
+        return $this->belongsToMany(MenuItem::class, 'user_menu_item', 'user_id', 'menu_item_id')
             ->withPivot('user_m_i_create', 'user_m_i_read', 'user_m_i_update', 'user_m_i_delete');
     }
 
     public function menuSubItem()
     {
-        return $this->belongsToMany('App\Models\MenuSubItem', 'user_menu_sub_item', 'user_id', 'menu_sub_item_id')
+        return $this->belongsToMany(MenuSubItem::class, 'user_menu_sub_item', 'user_id', 'menu_sub_item_id')
             ->withPivot('user_m_s_i_create', 'user_m_s_i_read', 'user_m_s_i_update', 'user_m_s_i_delete');
     }
 }

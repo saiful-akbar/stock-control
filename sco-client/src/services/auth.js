@@ -27,8 +27,8 @@ export const login = (data) => (dispatch) => {
       }).catch((err) => {
         reject(err.response);
       });
-    }).catch((err) => {
-      reject(err.response);
+    }).catch((csrfErr) => {
+      reject(csrfErr.response);
     })
   });
 };

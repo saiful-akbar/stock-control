@@ -19,9 +19,13 @@ Route::any('/avatar/{avatar}', [AuthController::class, 'userAvatar']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     /**
-     * Route logout dan data user yang sedang login
+     * Route fungsi logout
      */
     Route::get('/logout', [AuthController::class, 'logout']);
+
+    /**
+     * Route untuk fungsi cek apakah user sudah login dengan benar atau belum
+     */
     Route::get('/login/user', [AuthController::class, 'userIsLogin']);
 
     /**
