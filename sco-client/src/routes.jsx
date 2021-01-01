@@ -54,16 +54,11 @@ const routes = [{
       path: '/user/:id',
       element: <UserDetail />
     }, {
+      path: '/master/items',
+      element: <Items />,
+    }, {
       path: '/',
       element: <Navigate to="/dashboard" />
-    }, {
-      path: '/master',
-      children: [
-        {
-          path: '/items',
-          element: <Items />
-        }
-      ]
     }, {
       path: '*',
       element: <Navigate to="/404" />

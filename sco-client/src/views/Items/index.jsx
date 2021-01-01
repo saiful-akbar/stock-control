@@ -10,7 +10,9 @@ function Items() {
     <Page
       title='Items'
       pageTitle='Items'
-    ></Page>
+    >
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia aperiam voluptas reprehenderit, laborum accusamus delectus eum quis porro voluptatem possimus sunt soluta optio, sequi aut dicta necessitatibus numquam magnam esse.</p>
+    </Page>
   )
 }
 

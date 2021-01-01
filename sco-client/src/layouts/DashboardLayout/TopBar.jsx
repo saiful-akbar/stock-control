@@ -118,7 +118,7 @@ const TopBar = ({
           ? (
             <Skeleton variant='text'>
               <Typography variant="h6" >
-                {'Stock Control'}
+                {'SCO'}
               </Typography>
             </Skeleton>
           ) : (
@@ -129,7 +129,7 @@ const TopBar = ({
               component={RouterLink}
               to='/dashboard'
             >
-              {'Stock Control'}
+              {'SCO'}
             </Typography>
           )
         }

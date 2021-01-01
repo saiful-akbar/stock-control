@@ -17,7 +17,6 @@ import {
   Grid,
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { connect } from 'react-redux';
 import apiUrl from 'src/apiUrl';
 import NavItem from './NavItem';
@@ -39,15 +38,15 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     cursor: 'pointer',
-    width: theme.spacing(10),
-    height: theme.spacing(10)
+    width: theme.spacing(7),
+    height: theme.spacing(7)
   },
   profile: {
     padding: theme.spacing(2)
   },
   menu: {
     paddingRight: '5px',
-    height: 'calc(100% - 174px)',
+    height: 'calc(100% - 88px)',
     overflow: 'hidden',
     '&:hover': {
       overflowY: 'auto'
@@ -208,7 +207,6 @@ const NavBar = ({
                 size='small'
                 variant='contained'
                 onClick={() => window.location.href = '/logout'}
-                startIcon={<ExitToAppIcon />}
               >
                 {'Logout'}
               </Button>
