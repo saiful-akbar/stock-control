@@ -65,7 +65,7 @@ const UserCreate = (props) => {
   const location = useLocation();
   const { state } = location;
 
-  const [steps] = useState(['User data', 'Profile', 'Menu Items', 'Menu Sub Items']);
+  const [steps] = useState(['User account', 'Profile', 'Menu Items', 'Menu Sub Items']);
   const [loading, setLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [menus, setMenus] = useState({ menuItems: [], menuSubItems: [] });

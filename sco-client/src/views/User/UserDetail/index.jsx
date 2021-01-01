@@ -26,6 +26,7 @@ import CustomTooltip from 'src/components/CustomTooltip';
 import UserDetailAccount from './UserDetailAccount';
 import { Skeleton } from '@material-ui/lab';
 import UserDetailMenu from './UserDetailMenu';
+import UserSeesion from './UserSession';
 
 
 // Style
@@ -100,7 +101,8 @@ function UserDetail(props) {
         setUserData({
           user: res.data.user,
           profile: res.data.profile,
-          menus: res.data.menus
+          menus: res.data.menus,
+          logs: res.data.logs,
         });
       }
     } catch (err) {
@@ -187,8 +189,12 @@ function UserDetail(props) {
           </Accordion>
         </Grid>
 
-        <Grid item lg={12} md={12} xs={12}>
+        <Grid item xs={12}>
           <UserDetailMenu data={userData === null ? null : userData.menus} />
+        </Grid>
+
+        <Grid item xs={12}>
+          <UserSeesion data={userData === null ? null : userData.logs} />
         </Grid>
       </Grid>
 

@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Profile;
+use App\Models\UserLog;
 use App\Models\MenuItem;
-use App\Models\UserMenuItem;
-use App\Models\UserMenuSubItem;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\UserMenuItem;
+use Illuminate\Http\Request;
+use App\Models\UserMenuSubItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -429,11 +430,14 @@ class UserController extends Controller
                 ];
             }
 
+            $logs = UserLog::where('user_id', $user->id)->limit(10)->orderBy('logged_at', 'desc')->get();
+
             // response
             return response()->json([
                 "user"    => $account,
                 "profile" => $profile,
                 "menus"   => $result_menus,
+                "logs"    => $logs,
             ], 200);
         } else {
             return response()->json(["message" => "Access is denied"], 403);

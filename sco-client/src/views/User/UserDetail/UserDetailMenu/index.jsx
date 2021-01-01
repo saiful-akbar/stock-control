@@ -156,7 +156,7 @@ function UserDetailMenus({ data, ...props }) {
    */
   return (
     <Card
-      elevation={1}
+      elevation={3}
       variant={
         props.reduxTheme === 'dark'
           ? 'outlined'

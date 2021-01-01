@@ -103,7 +103,7 @@ const UserForm = (props) => {
               title={
                 props.menus.menuItems.length === 0
                   ? <Skeleton variant='text' width='20%' />
-                  : <Typography variant='h6'>User data</Typography>
+                  : <Typography variant='h6'>{'User account'}</Typography>
               }
               subheader={
                 props.menus.menuItems.length === 0
