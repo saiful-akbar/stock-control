@@ -64,7 +64,7 @@ class UserDelete extends Component {
           this.props.setReduxToast({
             show: true,
             type: 'error',
-            message: err.data.message
+            message: `(#${err.status}) ${err.statusText}`
           });
         }
       }

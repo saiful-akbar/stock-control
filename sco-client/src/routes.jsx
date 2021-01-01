@@ -23,6 +23,7 @@ import UserCreate from './views/User/UserCreate';
 import UserEdit from './views/User/UserEdit';
 import UserEditMenuAccess from './views/User/UserEditMenuAccess';
 import UserDetail from './views/User/UserDetail';
+import Items from './views/Items';
 
 const routes = [{
   path: '/',
@@ -55,6 +56,14 @@ const routes = [{
     }, {
       path: '/',
       element: <Navigate to="/dashboard" />
+    }, {
+      path: '/master',
+      children: [
+        {
+          path: '/items',
+          element: <Items />
+        }
+      ]
     }, {
       path: '*',
       element: <Navigate to="/404" />

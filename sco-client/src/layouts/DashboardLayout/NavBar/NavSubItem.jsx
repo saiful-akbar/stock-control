@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: theme.typography.fontWeightMedium,
     justifyContent: 'flex-start',
     letterSpacing: 0,
-    padding: '5px 10px 5px 38px',
+    padding: '3px 10px 3px 38px',
     textTransform: 'none',
     width: '100%',
     borderRadius: '0 25px 25px 0'
@@ -35,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 2
   },
   active: {
-    background: theme.palette.action.selected,
-    color: theme.palette.primary.main,
+    // background: theme.palette.action.selected,
+    color: theme.palette.type === 'light' ? theme.palette.primary.main : theme.palette.primary.light,
     '& $title': {
       fontWeight: theme.typography.fontWeightMedium
     },
     '& $icon': {
-      color: theme.palette.primary.main
+      color: theme.palette.type === 'light' ? theme.palette.primary.main : theme.palette.primary.light,
     }
   },
 }));

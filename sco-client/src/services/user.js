@@ -137,7 +137,7 @@ export const apiDeleteUser = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: `/user/${id}`
+      url: `/user/${id}/delete`
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };

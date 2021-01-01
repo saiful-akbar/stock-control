@@ -53,12 +53,13 @@ function UserTruncateToken(props) {
     }
     catch (err) {
       if (isMounted.current) {
+        console.log(err)
         setLoading(false);
         if (err.status === 401) {
           window.location.href = 'logout';
         }
         else {
-          setAlert({ type: 'error', message: err.data.message });
+          setAlert({ type: 'error', message: `(#${err.status}) ${err.statusText}` });
         }
       }
     }

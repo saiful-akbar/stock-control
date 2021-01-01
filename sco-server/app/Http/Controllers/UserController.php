@@ -545,10 +545,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $avatar = User::find($id)->profile()->select("profile_avatar")->first();
+        $avatar = User::find($id)->profile()->first();
         if ($avatar->profile_avatar !== null) {
             Storage::delete("img/avatars/" . $avatar->profile_avatar);
         }
+
         User::destroy($id);
         return response()->json(["message" => "User deleted successfuly",], 200);
     }

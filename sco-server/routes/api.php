@@ -93,8 +93,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
          * Route middleware menu user untuk akses delete
          */
         Route::group(['middleware' => ['access.user:delete']], function () {
-            Route::delete('/{id}', [UserController::class, 'destroy']);
             Route::delete('/truncate-tokens', [UserController::class, 'truncateTokens']);
+            Route::delete('/{id}/delete', [UserController::class, 'destroy']);
         });
     });
 });
