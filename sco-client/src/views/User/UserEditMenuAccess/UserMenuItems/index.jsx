@@ -150,7 +150,7 @@ function UserMenuItems(props) {
           props.setReduxToast({
             show: true,
             type: 'error',
-            message: `(#${err.status}) ${err.statusText}`
+            message: `(#${err.status}) ${err.data.message}`
           });
         }
       }
@@ -193,7 +193,7 @@ function UserMenuItems(props) {
           props.setReduxToast({
             show: true,
             type: 'error',
-            message: `(#${err.status}) ${err.status === 422 ? err.data.message : err.statusText}`
+            message: `(#${err.status}) ${err.status === 422 ? err.data.message : err.data.message}`
           });
         }
       }
@@ -230,7 +230,7 @@ function UserMenuItems(props) {
           props.setReduxToast({
             show: true,
             type: 'error',
-            message: `(#${err.status}) ${err.statusText}`
+            message: `(#${err.status}) ${err.data.message}`
           });
         }
       }

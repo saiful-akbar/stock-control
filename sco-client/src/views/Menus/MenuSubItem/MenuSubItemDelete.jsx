@@ -48,7 +48,7 @@ const MenuItemDelete = (props) => {
         setToast({
           show: true,
           type: 'error',
-          message: `(#${err.status}) ${err.statusText}`
+          message: `(#${err.status}) ${err.data.message}`
         });
       }
     }

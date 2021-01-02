@@ -59,7 +59,7 @@ function UserTruncateToken(props) {
           window.location.href = 'logout';
         }
         else {
-          setAlert({ type: 'error', message: `(#${err.status}) ${err.statusText}` });
+          setAlert({ type: 'error', message: `(#${err.status}) ${err.data.message}` });
         }
       }
     }

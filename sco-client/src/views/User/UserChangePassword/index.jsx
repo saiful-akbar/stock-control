@@ -77,7 +77,7 @@ function UserChangePassword({ open, userId, onClose, onReloadTable, ...props }) 
           window.location.href = '/logout';
         } else {
           setLoading(false);
-          props.setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+          props.setReduxToast(true, 'error', `(#${err.status}) ${err.data.message}`);
         }
       }
     }

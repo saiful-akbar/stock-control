@@ -182,7 +182,7 @@ const UserCreate = (props) => {
             props.setReduxToast({
               show: true,
               type: 'error',
-              message: `(#${error.status}) ${error.statusText}`
+              message: `(#${error.status}) ${error.data.message}`
             });
           }
         }
@@ -194,7 +194,7 @@ const UserCreate = (props) => {
         props.setReduxToast({
           show: true,
           type: 'error',
-          message: `(#${err.status}) ${err.statusText}`
+          message: `(#${err.status}) ${err.data.message}`
         });
       }
     }

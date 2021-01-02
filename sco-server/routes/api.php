@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ItemGroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MenuSubItemController;
@@ -95,6 +96,19 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::group(['middleware' => ['access.user:delete']], function () {
             Route::delete('/truncate-tokens', [UserController::class, 'truncateTokens']);
             Route::delete('/{id}/delete', [UserController::class, 'destroy']);
+        });
+    });
+
+    /**
+     * Route group halaman master
+     */
+    Route::group(['prefix' => 'master'], function () {
+
+        /**
+         * Route group halaman master items
+         */
+        Route::group(['prefix' => 'item-groups'], function () {
+            Route::get('/', [ItemGroupController::class, 'index'])->middleware('access.item:read');
         });
     });
 });

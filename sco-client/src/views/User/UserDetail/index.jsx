@@ -110,7 +110,7 @@ function UserDetail(props) {
         if (err.status === 401) {
           window.location.href = '/logout'
         } else {
-          props.setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+          props.setReduxToast(true, 'error', `(#${err.status}) ${err.data.message}`);
         }
       }
     }

@@ -12,15 +12,16 @@ import { reduxAction } from 'src/config/redux/state';
 
 const useStyles = makeStyles((theme) => ({
   image: {
-    marginTop: '8%',
+    marginTop: '17%',
     display: 'inline-block',
     maxWidth: '100%',
-    height: 400,
-    width: 400
+    height: 350,
+    width: 350,
+    marginBottom: 20,
   },
 }));
 
-const NotFoundView = (props) => {
+const Forbidden = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ const NotFoundView = (props) => {
 
   return (
     <Page
-      title='Not Found'
+      title='Forbidden'
     >
       <Box
         display="flex"
@@ -40,10 +41,10 @@ const NotFoundView = (props) => {
         alignItems="center"
       >
 
-        {<Box textAlign="center">
+        <Box textAlign="center">
           <img
             alt="NOT FOUND"
-            src="/static/images/error-404.svg"
+            src="/static/images/forbidden.svg"
             className={classes.image}
           />
           <Typography
@@ -51,9 +52,9 @@ const NotFoundView = (props) => {
             color="textPrimary"
             variant="h6"
           >
-            {'404 | Not Found'}
+            {'403 | Forbidden'}
           </Typography>
-        </Box>}
+        </Box>
 
         <Box textAlign="center" style={{ marginTop: 40 }}>
           <Button
@@ -74,4 +75,4 @@ const reduxDispatch = (dispatch) => ({
   setReduxLoading: value => dispatch({ type: reduxAction.loading, value: value })
 })
 
-export default connect(null, reduxDispatch)(NotFoundView);
+export default connect(null, reduxDispatch)(Forbidden);

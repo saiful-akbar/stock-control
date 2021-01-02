@@ -24,6 +24,7 @@ import UserEdit from './views/User/UserEdit';
 import UserEditMenuAccess from './views/User/UserEditMenuAccess';
 import UserDetail from './views/User/UserDetail';
 import Items from './views/Items';
+import Forbidden from './views/errors/Forbidden';
 
 const routes = [{
   path: '/',
@@ -61,7 +62,7 @@ const routes = [{
       element: <Navigate to="/dashboard" />
     }, {
       path: '*',
-      element: <Navigate to="/404" />
+      element: <Navigate to="/error/notfound" />
     }
   ]
 }, {
@@ -77,12 +78,15 @@ const routes = [{
     }
   ]
 }, {
-  path: '/404',
+  path: '/error',
   element: <MainLayout />,
   children: [
     {
-      path: '/',
+      path: '/notfound',
       element: <NotFoundView />
+    }, {
+      path: '/forbidden',
+      element: <Forbidden />
     }
   ]
 }, {

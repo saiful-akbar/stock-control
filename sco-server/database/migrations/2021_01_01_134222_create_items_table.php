@@ -25,6 +25,7 @@ class CreateItemsTable extends Migration
             $table->double('item_price_b')->nullable();
             $table->double('item_price_c')->nullable();
             $table->double('item_price_d')->nullable();
+            $table->boolean('item_is_active');
             $table->timestamps();
 
             $table->foreign('item_s_g_code')

@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'item' => \App\Http\Middleware\ItemRead::class,
         'access.user' => \App\Http\Middleware\UserAccess::class,
         'access.menu' => \App\Http\Middleware\MenuAccess::class,
+        'access.item' => \App\Http\Middleware\ItemAccess::class,
     ];
 }

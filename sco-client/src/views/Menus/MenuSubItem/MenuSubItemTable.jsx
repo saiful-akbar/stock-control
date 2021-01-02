@@ -146,7 +146,7 @@ const MenuSubItemTable = (props) => {
             setToast({
               show: true,
               type: 'error',
-              message: `${err.status} ${err.status === 500 ? 'An error occurred on the server' : err.data.message}`
+              message: `(#${err.status}) ${err.data.message}`
             });
           }
         }

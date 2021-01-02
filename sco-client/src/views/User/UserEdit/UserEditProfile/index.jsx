@@ -155,7 +155,7 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
         if (err.status === 401) {
           window.location.href = '/logout';
         } else {
-          setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+          setReduxToast(true, 'error', `(#${err.status}) ${err.data.message}`);
         }
       }
     }
@@ -193,7 +193,7 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
           window.location.href = 'logout';
         } else {
           err.status === 422 && setErrors(err.data.errors);
-          setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+          setReduxToast(true, 'error', `(#${err.status}) ${err.data.message}`);
         }
       }
     }

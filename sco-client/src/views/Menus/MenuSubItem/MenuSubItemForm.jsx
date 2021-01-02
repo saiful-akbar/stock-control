@@ -40,6 +40,7 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
+    backgroundColor: theme.palette.type === 'light' ? theme.palette.background.topBar : theme.palette.background.dark,
   },
   title: {
     marginLeft: theme.spacing(2),
@@ -105,7 +106,7 @@ const MenuSubItemForm = (props) => {
         setToast({
           show: true,
           type: 'error',
-          message: `#${err.status} ${err.statusText}`
+          message: `#${err.status} ${err.data.message}`
         });
       }
     }

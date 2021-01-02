@@ -22,6 +22,7 @@ class Item extends Model
         'item_price_b',
         'item_price_c',
         'item_price_d',
+        'item_is_active',
     ];
 
     /**
