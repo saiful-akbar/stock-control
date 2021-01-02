@@ -45,10 +45,12 @@ const Page = forwardRef(({
     <div
       ref={ref}
       className={classes.root}
-      style={{ paddingBottom: pb ? 90 : 20 }}
+      style={{ paddingBottom: pb ? 90 : 10 }}
     >
       <Helmet>
-        <title>{`${Boolean(title) && `${title} - `}Stock Control`}</title>
+        <title>
+          {`${Boolean(title) && `${title} - `}Stock Control`}
+        </title>
       </Helmet>
 
       <Backdrop className={classes.backdrop} open={reduxLoading}>
@@ -67,32 +69,27 @@ const Page = forwardRef(({
 
       <Container maxWidth={false}>
         {pageTitle !== null && (
-          <>
-            <Grid container spacing={3}>
-              <Grid item xs={12} >
-                {reduxUserLogin === null
-                  ? (
-                    <Skeleton variant='text' >
-                      <Typography className={classes.page} variant='h5'>
-                        {pageTitle}
-                      </Typography>
-                    </Skeleton>
-                  ) : (
-                    <Typography
-                      className={classes.page}
-                      variant='h5'
-                    >
+          <Grid container spacing={3}>
+            <Grid item xs={12} >
+              {reduxUserLogin === null
+                ? (
+                  <Skeleton variant='text' >
+                    <Typography className={classes.page} variant='h5'>
                       {pageTitle}
                     </Typography>
-                  )}
-              </Grid>
+                  </Skeleton>
+                ) : (
+                  <Typography className={classes.page} variant='h5' >
+                    {pageTitle}
+                  </Typography>
+                )}
             </Grid>
-          </>
+          </Grid>
         )}
 
         <Animation
           type='fade'
-          timeout={1000}
+          timeout={500}
           mountOnEnter
           unmountOnExit
         >

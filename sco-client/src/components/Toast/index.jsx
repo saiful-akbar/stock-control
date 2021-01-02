@@ -12,7 +12,7 @@ import {
  * Aniimasi slide
  */
 function SlideTransition(props) {
-  return <Slide {...props} direction="up" timeout={300} />;
+  return <Slide {...props} direction="down" timeout={300} />;
 }
 
 /**
@@ -30,12 +30,12 @@ const Toast = ({ open, handleClose, type, message }) => {
     <Snackbar
       open={open}
       onClose={handleCloseToast}
-      autoHideDuration={10000}
+      autoHideDuration={15000}
       TransitionComponent={SlideTransition}
       key={SlideTransition.name}
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
+        vertical: 'top',
+        horizontal: 'right'
       }}
     >
       <Alert

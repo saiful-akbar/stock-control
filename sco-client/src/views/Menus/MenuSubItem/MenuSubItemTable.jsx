@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     height: 4,
   },
   container: {
-    maxHeight: 450,
+    maxHeight: '60vh',
   },
   visuallyHidden: {
     border: 0,

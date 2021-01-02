@@ -58,6 +58,18 @@ const NavSubItem = ({
   const classes = useStyles();
   const navigate = useNavigate();
 
+  const handleLink = (e) => {
+    e.preventDefault();
+    navigate(href, {
+      state: {
+        create: state.user_m_s_i_create,
+        read: state.user_m_s_i_read,
+        update: state.user_m_s_i_update,
+        delete: state.user_m_s_i_delete,
+      }
+    });
+  }
+
   return (
     <ListItem
       className={clsx(classes.item, className)}
@@ -69,17 +81,7 @@ const NavSubItem = ({
         className={classes.button}
         component={RouterLink}
         to={href}
-        onClick={(e) => {
-          e.preventDefault();
-          navigate(href, {
-            state: {
-              create: state.user_m_s_i_create,
-              read: state.user_m_s_i_read,
-              update: state.user_m_s_i_update,
-              delete: state.user_m_s_i_delete,
-            }
-          });
-        }}
+        onClick={(e) => handleLink(e)}
       >
         <ArrowRightIcon
           className={classes.icon}

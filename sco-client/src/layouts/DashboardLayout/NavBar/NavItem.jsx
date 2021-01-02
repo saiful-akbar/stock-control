@@ -84,10 +84,17 @@ const NavItem = ({
     data.menu_i_url === collapse ? setOpen(true) : setOpen(false);
   }, [data.menu_i_url, collapse]);
 
-  const handleLink = (e, href, state) => {
+  const handleLink = (e) => {
     e.preventDefault();
     collapseActive(null);
-    navigate(href, { state });
+    navigate(data.menu_i_url, {
+      state: {
+        create: data.pivot.user_m_i_create,
+        read: data.pivot.user_m_i_read,
+        update: data.pivot.user_m_i_update,
+        delete: data.pivot.user_m_i_delete,
+      }
+    });
   }
 
   const listDefault = () => {
@@ -101,14 +108,7 @@ const NavItem = ({
           className={classes.button}
           component={RouterLink}
           to={data.menu_i_url}
-          onClick={(e) => {
-            handleLink(e, data.menu_i_url, {
-              create: data.pivot.user_m_i_create,
-              read: data.pivot.user_m_i_read,
-              update: data.pivot.user_m_i_update,
-              delete: data.pivot.user_m_i_delete,
-            });
-          }}
+          onClick={(e) => handleLink(e)}
         >
           {data.menu_i_icon && (
             <Icon className={classes.icon} >

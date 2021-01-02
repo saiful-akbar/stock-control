@@ -13,7 +13,7 @@ import MenuSubItem from 'src/views/Menus/MenuSubItem';
 
 import { apiGetAllMenuItem } from 'src/services/menuItem';
 import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
-import { Grid, Box, Divider } from '@material-ui/core';
+import { Box, Divider } from '@material-ui/core';
 import queryString from 'query-string';
 
 /**
@@ -107,23 +107,19 @@ function Menus(props) {
       title='Menu Managemen'
       pageTitle='Menu Management'
     >
-      <Grid container spacing={3}>
-        <Grid item xs={12} >
-          <Box mb={3}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor='primary'
-              textColor='primary'
-              aria-label='Menus'
-            >
-              <Tab label='Menus' {...a11yProps(0)} />
-              <Tab label='Sub Menus' {...a11yProps(1)} />
-            </Tabs>
-            <Divider />
-          </Box>
-        </Grid>
-      </Grid>
+      <Box mb={3}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor='primary'
+          textColor='primary'
+          aria-label='Menus'
+        >
+          <Tab label='Menus' {...a11yProps(0)} />
+          <Tab label='Sub Menus' {...a11yProps(1)} />
+        </Tabs>
+        <Divider />
+      </Box>
 
       <TabPanel value={value} index={0} dir={theme.direction}>
         <MenuItem state={state} />

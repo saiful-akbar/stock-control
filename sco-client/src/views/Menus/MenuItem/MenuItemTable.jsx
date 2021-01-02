@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   container: {
-    maxHeight: 450,
+    maxHeight: "60vh",
   },
   visuallyHidden: {
     border: 0,

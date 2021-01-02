@@ -7,61 +7,100 @@ use Illuminate\Support\Facades\DB;
 
 class ItemGroupController extends Controller
 {
+    /**
+     * Fungsi untuk membersihkan string
+     *
+     * @param string $type
+     * @param string $string
+     *
+     * @return [type]
+     */
+    private function clearStr(string $string, string $type = null)
+    {
+        switch ($type) {
+            case 'upper':
+                return htmlspecialchars(trim(strtoupper($string)));
+                break;
+
+            case 'proper':
+                return htmlspecialchars(trim(ucwords($string)));
+                break;
+
+            case 'lower':
+                return htmlspecialchars(trim(strtolower($string)));
+                break;
+
+            default:
+                return htmlspecialchars(trim($string));
+                break;
+        }
+    }
+
+    /**
+     * Fungsi unutk mengambil semua data item groups dari database
+     *
+     * @param Request $request
+     *
+     * @return [type]
+     */
     public function index(Request $request)
     {
         // Cek baris perhalaman
         $per_page = 25;
-        if (isset($request->per_page) && !empty($request->per_page)) {
-            switch ($request->per_page) {
-                case 250:
-                    $per_page = 250;
-                    break;
+        switch ($request->per_page) {
+            case $request->per_page >= 250:
+                $per_page = 250;
+                break;
 
-                case 100:
-                    $per_page = 100;
-                    break;
+            case $request->per_page >= 100:
+                $per_page = 100;
+                break;
 
-                case 50:
-                    $per_page = 50;
-                    break;
+            case $request->per_page >= 50:
+                $per_page = 50;
+                break;
 
-                default:
-                    $per_page = 25;
-                    break;
-            }
+            default:
+                $per_page = 25;
+                break;
         }
 
         // Cek sort
         $sort = "item_g_code";
-        if (isset($request->sort) && !empty($request->sort)) {
-            switch ($request->sort) {
-                case 'item_g_name':
-                    $sort = "item_g_name";
-                    break;
+        switch ($this->clearStr($request->sort, "lower")) {
+            case "item_g_name":
+                $sort = "item_g_name";
+                break;
 
-                default:
-                    $sort = "item_g_code";
-                    break;
-            }
+            case "created_at":
+                $sort = "created_at";
+                break;
+
+            case "updated_at":
+                $sort = "updated_at";
+                break;
+
+            default:
+                $sort = "item_g_code";
+                break;
         }
 
         // Cek order_by
-        $order_by = 'asc';
+        $order_by = "asc";
         if (isset($request->order_by) && !empty($request->order_by)) {
-            if ($request->order_by === 'asc' || $request->order_by === 'desc') {
-                $order_by = htmlspecialchars($request->order_by);
+            if ($request->order_by === "asc" || $request->order_by === "desc") {
+                $order_by = $this->clearStr($request->order_by, "lower");
             }
         }
 
         // Cek search
-        $search = '';
+        $search = "";
         if (isset($request->search) && !empty($request->search)) {
-            $search = htmlspecialchars($request->search);
+            $search = $this->clearStr($request->search, "lower");
         }
 
         $data     = [];
         $data = DB::table("item_groups")
-            ->select("id", "item_g_code", "item_g_name", "created_at", "updated_at",)
             ->where("item_g_code", "like", "%" . $search . "%")
             ->orWhere("item_g_name", "like", "%" . $search . "%")
             ->orWhere("created_at", "like", "%" . $search . "%")
@@ -71,9 +110,11 @@ class ItemGroupController extends Controller
 
         return response()->json([
             "item_groups" => $data,
-            "search"      => $search,
+            "page"        => $request->page,
+            "per_page"    => $per_page,
             "sort"        => $sort,
-            "order_by"    => $order_by
+            "order_by"    => $order_by,
+            "search"      => $search,
         ], 200);
     }
 }

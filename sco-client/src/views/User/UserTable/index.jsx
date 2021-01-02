@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     height: 4,
   },
   container: {
-    maxHeight: 450,
+    maxHeight: '60vh',
   },
   visuallyHidden: {
     border: 0,
@@ -193,7 +193,13 @@ const UserTable = (props) => {
         orderBy = 'desc'
       }
     }
-    getData(rowData.users.current_page, rowData.users.per_page, rowData.search, sort, orderBy);
+    getData(
+      rowData.users.current_page,
+      rowData.users.per_page,
+      rowData.search,
+      sort,
+      orderBy
+    );
   }
 
 
@@ -415,7 +421,11 @@ const UserTable = (props) => {
                     ? (
                       <TableRow hover >
                         <TableCell colSpan={12} align='center' >
-                          {loading ? 'Loading, please wait...' : 'No data in table'}
+                          {
+                            loading
+                              ? 'Loading, please wait...'
+                              : 'No data in table'
+                          }
                         </TableCell>
                       </TableRow>
                     ) : (
