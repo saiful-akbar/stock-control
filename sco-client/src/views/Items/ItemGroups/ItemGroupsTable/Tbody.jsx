@@ -1,6 +1,7 @@
 import React from 'react';
-import { TableRow, TableCell } from '@material-ui/core';
+import { TableRow, TableCell, Checkbox } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import CustomTooltip from 'src/components/CustomTooltip';
 
 
 /**
@@ -17,7 +18,14 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Komponne utama
  */
-function Tbody(props) {
+function Tbody({
+  row,
+  columns,
+  userAccess,
+  onUpdate,
+  onSelect,
+  ...props
+}) {
   const classes = useStyles();
 
 
@@ -25,10 +33,27 @@ function Tbody(props) {
    * Render komponen utama
    */
   return (
-    <TableRow>
-      {props.columns.map((col, key) => (
-        <TableCell key={key} className={classes.root} >
-          {props.row[col.field]}
+    <TableRow {...props}>
+      {userAccess !== null && userAccess.user_m_s_i_delete === 1 && (
+        <TableCell padding="checkbox">
+          <CustomTooltip placement='bottom' title='Select' >
+            <Checkbox
+              color='primary'
+              checked={props.selected}
+              onClick={(e) => onSelect(e, row.id)}
+            />
+          </CustomTooltip>
+        </TableCell>
+
+      )}
+
+      {columns.map((col, key) => (
+        <TableCell
+          key={key}
+          className={classes.root}
+          padding="checkbox"
+        >
+          {row[col.field]}
         </TableCell>
       ))}
     </TableRow>
@@ -40,9 +65,11 @@ function Tbody(props) {
  * default props
  */
 Tbody.defaultProps = {
-  rows: [],
+  row: {},
   columns: [],
+  userAccess: null,
   onUpdate: (e) => e.preventDefault(),
+  onSelect: (e) => e.preventDefault(),
 };
 
 

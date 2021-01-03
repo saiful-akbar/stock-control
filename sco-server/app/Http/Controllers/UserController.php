@@ -795,17 +795,11 @@ class UserController extends Controller
      */
     public function deleteUserMenuSubItems(Request $request, string $id)
     {
-        if ($this->userAccess("update")) {
-            $delete = UserMenuSubItem::destroy($request->all());
-            return response()->json([
-                "message"  => "{$delete} Sub menus deleted successfully",
-                "response" => $this->getUserMenuSubItems($id),
-            ]);
-        } else {
-            return response()->json([
-                "message" => "Access is denied",
-            ], 403);
-        }
+        $delete = UserMenuSubItem::destroy($request->all());
+        return response()->json([
+            "message"  => "{$delete} Sub menus deleted successfully",
+            "response" => $this->getUserMenuSubItems($id),
+        ]);
     }
 
 

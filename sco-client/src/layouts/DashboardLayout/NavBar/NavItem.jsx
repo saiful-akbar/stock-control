@@ -132,11 +132,15 @@ const NavItem = ({
           onClick={handleCollapse}
         >
           <Button
-            activeClassName={data.menu_i_url === `/${pathname[1]}` ? classes.active : ''}
             className={classes.button}
             component={RouterLink}
             to={{ hash: `#${data.menu_i_url}` }}
             onClick={(e) => e.preventDefault()}
+            activeClassName={
+              data.menu_i_url === `/${pathname[1]}`
+                ? classes.active
+                : ''
+            }
           >
             {data.menu_i_icon && (
               <Icon className={classes.icon} >

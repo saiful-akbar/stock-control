@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Grid, Button, Icon, Card, CardContent
+  Grid, Button, Icon, Card, CardContent, Box
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -378,28 +378,41 @@ const MenuItemTable = (props) => {
             justify='space-between'
             alignItems='center'
           >
-            <Grid item lg={4} md={6} xs={12}>
-              {props.state !== null && (
-                props.state.create === 1 && (
-                  <Button
-                    color='primary'
-                    variant='contained'
-                    onClick={() => props.openDialogCreate()}
-                    style={{ marginRight: 10 }}
-                  >
-                    {'Create a new menu'}
-                  </Button>
-                )
-              )}
+            <Grid item md={4} sm={6} xs={12}>
+              <Box
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="center"
+              >
+                <Box
+                  mr={1}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CustomTooltip title='Reload'>
+                    <IconButton onClick={handleRefresh}>
+                      <RefreshIcon />
+                    </IconButton>
+                  </CustomTooltip>
+                </Box>
 
-              <CustomTooltip title='Reload'>
-                <IconButton onClick={handleRefresh}>
-                  <RefreshIcon />
-                </IconButton>
-              </CustomTooltip>
+                {props.state !== null && (
+                  props.state.create === 1 && (
+                    <Button
+                      fullWidth
+                      color='primary'
+                      variant='contained'
+                      onClick={() => props.openDialogCreate()}
+                    >
+                      {'Create a new menu'}
+                    </Button>
+                  )
+                )}
+              </Box>
             </Grid>
 
-            <Grid item lg={8} md={6} xs={12}>
+            <Grid item md={8} sm={6} xs={12}>
               <form autoComplete='off' onSubmit={handleSubmitSearch}>
                 <TextField
                   fullWidth

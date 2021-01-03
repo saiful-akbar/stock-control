@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardContent,
+  Box,
 } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -57,9 +58,6 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 20,
     width: 1,
-  },
-  button: {
-    marginRight: theme.spacing(1),
   },
 }));
 
@@ -335,28 +333,41 @@ const UserTable = (props) => {
           alignItems='center'
         >
           <Grid item lg={4} md={6} xs={12}>
-            {props.state !== null && (
-              props.state.create === 1 && (
-                <Button
-                  variant='contained'
-                  color='primary'
-                  className={classes.button}
-                  onClick={() => navigate('/user/create', { state: props.state })}
-                >
-                  {'Create a new user'}
-                </Button>
-              )
-            )}
+            <Box
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+            >
+              <Box
+                mr={1}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                {props.state !== null && props.state.create === 1 && props.state.update === 1 && props.state.delete === 1 && (
+                  <UserTruncateToken />
+                )}
 
-            {props.state !== null && props.state.create === 1 && props.state.update === 1 && props.state.delete === 1 && (
-              <UserTruncateToken />
-            )}
+                <CustomTooltip title='Reload'>
+                  <IconButton onClick={() => getData()}>
+                    <RefreshIcon />
+                  </IconButton>
+                </CustomTooltip>
+              </Box>
 
-            <CustomTooltip title='Reload'>
-              <IconButton onClick={() => getData()}>
-                <RefreshIcon />
-              </IconButton>
-            </CustomTooltip>
+              {props.state !== null && (
+                props.state.create === 1 && (
+                  <Button
+                    fullWidth
+                    variant='contained'
+                    color='primary'
+                    onClick={() => navigate('/user/create', { state: props.state })}
+                  >
+                    {'Create a new user'}
+                  </Button>
+                )
+              )}
+            </Box>
           </Grid>
 
           <Grid item lg={8} md={6} xs={12}>

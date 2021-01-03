@@ -94,19 +94,21 @@ class ItemGroupController extends Controller
         }
 
         // Cek search
+        $data = [];
         $search = "";
         if (isset($request->search) && !empty($request->search)) {
-            $search = $this->clearStr($request->search, "lower");
+            $search = $this->clearStr($request->search);
+            $data = DB::table("item_groups")
+                ->where("item_g_code", "like", "%" . $search . "%")
+                ->orWhere("item_g_name", "like", "%" . $search . "%")
+                ->orWhere("created_at", "like", "%" . $search . "%")
+                ->orWhere("updated_at", "like", "%" . $search . "%")
+                ->orderBy($sort, $order_by)
+                ->paginate($per_page);
+        } else {
+            $data = DB::table("item_groups")->orderBy($sort, $order_by)->paginate($per_page);
         }
 
-        $data     = [];
-        $data = DB::table("item_groups")
-            ->where("item_g_code", "like", "%" . $search . "%")
-            ->orWhere("item_g_name", "like", "%" . $search . "%")
-            ->orWhere("created_at", "like", "%" . $search . "%")
-            ->orWhere("updated_at", "like", "%" . $search . "%")
-            ->orderBy($sort, $order_by)
-            ->paginate($per_page);
 
         return response()->json([
             "item_groups" => $data,

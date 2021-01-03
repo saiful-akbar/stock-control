@@ -18,17 +18,19 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
-  tableCell: {
-    paddingBottom: 10,
-    paddingTop: 10
-  }
 }));
 
 
 /**
  * Komponen utama
  */
-function Thead(props) {
+function Thead({
+  column,
+  selected,
+  data,
+  onSort,
+  ...props
+}) {
   const classes = useStyles();
 
 
@@ -36,21 +38,25 @@ function Thead(props) {
    * Render komponen utama
    */
   return (
-    <TableCell align={props.column.align} className={classes.tableCell} >
+    <TableCell
+      align={column.align}
+      className={classes.tableCell}
+      {...props}
+    >
       <TableSortLabel
-        active={Boolean(props.data.sort === props.column.field)}
-        onClick={() => props.onSort(props.column.field)}
+        active={Boolean(data.sort === column.field)}
+        onClick={() => onSort(column.field)}
         direction={
-          props.data.sort === props.column.field
-            ? props.data.order_by
+          data.sort === column.field
+            ? data.order_by
             : 'asc'
         }
       >
-        {props.column.label}
-        {props.data.sort === props.column.field && (
+        {column.label}
+        {data.sort === column.field && (
           <span className={classes.visuallyHidden}>
             {
-              props.data.order_by === 'desc'
+              data.order_by === 'desc'
                 ? 'sorted descending'
                 : 'sorted ascending'
             }
@@ -71,7 +77,7 @@ Thead.defaultProps = {
     label: '',
     align: 'left',
   },
-  selectted: [],
+  selected: [],
   data: [],
   onSort: () => null,
 };

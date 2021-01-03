@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Grid, Button, Card, CardContent
+  Grid, Button, Card, CardContent, Box
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -287,29 +287,42 @@ const MenuSubItemTable = (props) => {
             justify='space-between'
             alignItems='center'
           >
-            <Grid item lg={4} md={6} xs={12}>
-              {props.state !== null && (
-                props.state.create === 1 && (
-                  <Button
-                    color='primary'
-                    variant='contained'
-                    disabled={loading}
-                    onClick={() => props.openDialogForm({ type: 'Create', show: true, data: null })}
-                    style={{ marginRight: 10 }}
-                  >
-                    {'Create a new sub menu'}
-                  </Button>
-                )
-              )}
+            <Grid item md={4} sm={6} xs={12}>
+              <Box
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="center"
+              >
+                <Box
+                  mr={1}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <CustomTooltip title='Reload'>
+                    <IconButton onClick={handleRefresh}>
+                      <RefreshIcon />
+                    </IconButton>
+                  </CustomTooltip>
+                </Box>
 
-              <CustomTooltip title='Reload'>
-                <IconButton onClick={handleRefresh}>
-                  <RefreshIcon />
-                </IconButton>
-              </CustomTooltip>
+                {props.state !== null && (
+                  props.state.create === 1 && (
+                    <Button
+                      fullWidth
+                      color='primary'
+                      variant='contained'
+                      disabled={loading}
+                      onClick={() => props.openDialogForm({ type: 'Create', show: true, data: null })}
+                    >
+                      {'Create a new sub menu'}
+                    </Button>
+                  )
+                )}
+              </Box>
             </Grid>
 
-            <Grid item lg={8} md={6} xs={12}>
+            <Grid item md={8} sm={6} xs={12}>
               <form autoComplete='off' onSubmit={handleSubmitSearch}>
                 <TextField
                   fullWidth

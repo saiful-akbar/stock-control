@@ -86,6 +86,7 @@ function Items(props) {
             indicatorColor='primary'
             textColor='primary'
             aria-label="tab-items"
+            variant="scrollable"
           >
             <Tab label="Item Groups" value="itemGroups" />
             <Tab label="Item Sub Groups" value="itemSubGroups" />
