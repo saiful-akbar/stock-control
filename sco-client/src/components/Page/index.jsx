@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   backdrop: {
-    zIndex: theme.zIndex.drawer + 1000,
-    backgroundColor: theme.palette.background.default,
+    zIndex: theme.zIndex.drawer + 9999,
+    backgroundColor: theme.palette.background.dark,
     // backgroundColor: theme.palette.type === 'dark' ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)',
   },
 }));
@@ -49,23 +49,11 @@ const Page = forwardRef(({
       style={{ paddingBottom: pb ? 90 : 10 }}
     >
       <Helmet>
-        <title>
-          {`${Boolean(title) && `${title} - `}Stock Control`}
-        </title>
+        <title>{Boolean(title) && `${title} - `}Stock Control</title>
       </Helmet>
 
       <Backdrop className={classes.backdrop} open={reduxLoading}>
-        <CircularProgress />
-        <Typography
-          noWrap
-          color='textSecondary'
-          variant='subtitle1'
-          style={{
-            marginLeft: 20
-          }}
-        >
-          {'Loading, please wait...'}
-        </Typography>
+        <CircularProgress size={70} />
       </Backdrop>
 
       <Container maxWidth={false}>

@@ -18,7 +18,6 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
@@ -29,6 +28,7 @@ import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
 import Toast from 'src/components/Toast';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Loader from 'src/components/Loader';
 
 
 // style
@@ -36,10 +36,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
     marginLeft: theme.spacing(2.5),
-  },
-  progress: {
-    width: '100%',
-    height: 4,
   },
   container: {
     maxHeight: '60vh',
@@ -274,11 +270,6 @@ const MenuSubItemTable = (props) => {
         variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
         elevation={3}
       >
-        {loading
-          ? <LinearProgress className={classes.progress} />
-          : <div className={classes.progress} />
-        }
-
         <CardContent>
           <Grid
             spacing={3}
@@ -326,7 +317,7 @@ const MenuSubItemTable = (props) => {
               <form autoComplete='off' onSubmit={handleSubmitSearch}>
                 <TextField
                   fullWidth
-                  label='Search menu sub items'
+                  label='Search sub menus'
                   variant='outlined'
                   margin='dense'
                   name='search'
@@ -347,115 +338,117 @@ const MenuSubItemTable = (props) => {
             </Grid>
 
             <Grid item xs={12}>
-              <TableContainer className={classes.container}>
-                <Table stickyHeader >
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((col, i) => (
-                        <TableCell key={i} className={classes.tableCell}>
-                          <TableSortLabel
-                            active={rowData.sort === col.field}
-                            direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
-                            onClick={() => handleSortTable(col.field)}
-                          >
-                            {col.label}
-                            {rowData.sort === col.field ? (
-                              <span className={classes.visuallyHidden}>
-                                {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                              </span>
-                            ) : null}
-                          </TableSortLabel>
-                        </TableCell>
-                      ))}
-
-                      {props.state !== null && (
-                        props.state.update === 1 || props.state.delete === 1
-                          ? (
-                            <TableCell
-                              align='center'
-                              className={classes.tableCell}
+              <Loader show={loading} >
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader >
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((col, i) => (
+                          <TableCell key={i} className={classes.tableCell}>
+                            <TableSortLabel
+                              active={rowData.sort === col.field}
+                              direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
+                              onClick={() => handleSortTable(col.field)}
                             >
-                              {'Actions'}
-                            </TableCell>
-                          ) : (
-                            <TableCell className={classes.tableCell} />
-                          )
-                      )}
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {rowData.menu_sub_items.data.length <= 0
-                      ? (
-                        <TableRow hover >
-                          <TableCell colSpan={6} align='center' className={classes.tableCell} >
-                            {loading ? 'Loading, please wait...' : 'No data in table'}
+                              {col.label}
+                              {rowData.sort === col.field ? (
+                                <span className={classes.visuallyHidden}>
+                                  {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </span>
+                              ) : null}
+                            </TableSortLabel>
                           </TableCell>
-                        </TableRow>
-                      ) : (
-                        rowData.menu_sub_items.data.map((row, key) => (
-                          <TableRow hover key={key}>
-                            {columns.map((col, colKey) => (
+                        ))}
+
+                        {props.state !== null && (
+                          props.state.update === 1 || props.state.delete === 1
+                            ? (
                               <TableCell
-                                key={colKey}
+                                align='center'
                                 className={classes.tableCell}
                               >
-                                {row[col.field]}
+                                {'Actions'}
                               </TableCell>
-                            ))}
+                            ) : (
+                              <TableCell className={classes.tableCell} />
+                            )
+                        )}
+                      </TableRow>
+                    </TableHead>
 
-                            {props.state !== null && (
-                              props.state.update === 1 || props.state.delete === 1
-                                ? (
-                                  <TableCell align='center' className={classes.tableCell}>
-                                    {props.state.update === 1 && (
-                                      <CustomTooltip title='Update'>
-                                        <IconButton
-                                          aria-label='Update'
-                                          onClick={() => props.openDialogForm({
-                                            type: 'Update',
-                                            show: true,
-                                            data: row
-                                          })}
-                                        >
-                                          <EditIcon fontSize='small' />
-                                        </IconButton>
-                                      </CustomTooltip>
-                                    )}
-
-                                    {props.state.delete === 1 && (
-                                      <CustomTooltip title='Delete'>
-                                        <IconButton
-                                          aria-label='delete'
-                                          onClick={() => props.openDialogDelete(row.id)}
-                                        >
-                                          <DeleteIcon fontSize='small' />
-                                        </IconButton>
-                                      </CustomTooltip>
-                                    )}
-                                  </TableCell>
-                                ) : (
-                                  <TableCell />
-                                )
-                            )}
+                    <TableBody>
+                      {rowData.menu_sub_items.data.length <= 0
+                        ? (
+                          <TableRow hover >
+                            <TableCell colSpan={6} align='center' className={classes.tableCell} >
+                              {loading ? 'Loading, please wait...' : 'No data in table'}
+                            </TableCell>
                           </TableRow>
-                        ))
-                      )
-                    }
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                        ) : (
+                          rowData.menu_sub_items.data.map((row, key) => (
+                            <TableRow hover key={key}>
+                              {columns.map((col, colKey) => (
+                                <TableCell
+                                  key={colKey}
+                                  className={classes.tableCell}
+                                >
+                                  {row[col.field]}
+                                </TableCell>
+                              ))}
 
-              <TablePagination
-                component='div'
-                rowsPerPageOptions={[25, 50, 100, 250]}
-                count={rowData.menu_sub_items.total}
-                rowsPerPage={Number(rowData.menu_sub_items.per_page)}
-                page={rowData.menu_sub_items.current_page - 1}
-                onChangePage={e => e.preventDefault()}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
+                              {props.state !== null && (
+                                props.state.update === 1 || props.state.delete === 1
+                                  ? (
+                                    <TableCell align='center' className={classes.tableCell}>
+                                      {props.state.update === 1 && (
+                                        <CustomTooltip title='Update'>
+                                          <IconButton
+                                            aria-label='Update'
+                                            onClick={() => props.openDialogForm({
+                                              type: 'Update',
+                                              show: true,
+                                              data: row
+                                            })}
+                                          >
+                                            <EditIcon fontSize='small' />
+                                          </IconButton>
+                                        </CustomTooltip>
+                                      )}
+
+                                      {props.state.delete === 1 && (
+                                        <CustomTooltip title='Delete'>
+                                          <IconButton
+                                            aria-label='delete'
+                                            onClick={() => props.openDialogDelete(row.id)}
+                                          >
+                                            <DeleteIcon fontSize='small' />
+                                          </IconButton>
+                                        </CustomTooltip>
+                                      )}
+                                    </TableCell>
+                                  ) : (
+                                    <TableCell />
+                                  )
+                              )}
+                            </TableRow>
+                          ))
+                        )
+                      }
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <TablePagination
+                  component='div'
+                  rowsPerPageOptions={[25, 50, 100, 250]}
+                  count={rowData.menu_sub_items.total}
+                  rowsPerPage={Number(rowData.menu_sub_items.per_page)}
+                  page={rowData.menu_sub_items.current_page - 1}
+                  onChangePage={e => e.preventDefault()}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </Loader>
             </Grid>
           </Grid>
         </CardContent>

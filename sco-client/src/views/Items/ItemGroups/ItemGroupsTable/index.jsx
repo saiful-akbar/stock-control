@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   makeStyles,
-  LinearProgress,
   TableContainer,
   Table,
   TableHead,
@@ -24,6 +23,7 @@ import Tbody from './Tbody';
 import TpaginationActions from './TpaginationActions';
 import CustomTooltip from 'src/components/CustomTooltip';
 import TheadActions from './TheadActions';
+import Loader from 'src/components/Loader';
 
 
 /**
@@ -54,12 +54,6 @@ const columns = [{
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
-  },
-  progress: {
-    width: '100%',
-    height: 4,
-    margin: 0,
-    padding: 0,
   },
   tableContainer: {
     minWidth: "100%",
@@ -323,11 +317,6 @@ function ItemGroupTable(props) {
           : "outlined"
       }
     >
-      {loading
-        ? <LinearProgress className={classes.progress} />
-        : <div className={classes.progress} />
-      }
-
       <CardContent>
         <TheadActions
           selected={selected}
@@ -337,91 +326,93 @@ function ItemGroupTable(props) {
           loading={loading}
         />
 
-        <TableContainer className={classes.tableContainer}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {user_access !== null && user_access.user_m_s_i_delete === 1 && (
-                  <TableCell
-                    padding="checkbox"
-                  >
-                    <CustomTooltip placement='bottom' title='Select' >
-                      <Checkbox
-                        color='primary'
-                        indeterminate={Boolean(selected.length > 0 && selected.length < row_data.item_groups.data.length)}
-                        checked={Boolean(row_data.item_groups.data.length > 0 && selected.length === row_data.item_groups.data.length)}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                        onChange={handleSelectAllClick}
-                      />
-                    </CustomTooltip>
-                  </TableCell>
-                )}
-
-                {columns.map((col, key) => (
-                  <Thead
-                    key={key}
-                    column={col}
-                    data={row_data}
-                    onSort={field => handleSort(field)}
-                    className={classes.tableCell}
-                    padding="checkbox"
-                  />
-                ))}
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {row_data.item_groups.data.length === 0
-                ? (
-                  <TableRow hover >
+        <Loader show={loading}>
+          <TableContainer className={classes.tableContainer}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {user_access !== null && user_access.user_m_s_i_delete === 1 && (
                     <TableCell
-                      align='center'
-                      colSpan={6}
+                      padding="checkbox"
                     >
-                      {
-                        loading
-                          ? 'Loading, please wait...'
-                          : 'No data in table'
-                      }
+                      <CustomTooltip placement='bottom' title='Select' >
+                        <Checkbox
+                          color='primary'
+                          indeterminate={Boolean(selected.length > 0 && selected.length < row_data.item_groups.data.length)}
+                          checked={Boolean(row_data.item_groups.data.length > 0 && selected.length === row_data.item_groups.data.length)}
+                          inputProps={{ 'aria-label': 'select all desserts' }}
+                          onChange={handleSelectAllClick}
+                        />
+                      </CustomTooltip>
                     </TableCell>
-                  </TableRow>
-                ) : (
-                  row_data.item_groups.data.map((row, key) => {
-                    const isItemSelected = isSelected(row.id);
-                    return (
-                      <Tbody
-                        key={key}
-                        row={row}
-                        columns={columns}
-                        userAccess={user_access}
-                        onUpdate={(e) => e.preventDefault()}
-                        onSelect={(e, id) => handleSelectClick(e, id)}
-                        aria-checked={isItemSelected}
-                        selected={isItemSelected}
-                        tabIndex={-1}
-                        role="checkbox"
-                        color='primary'
-                        hover
-                      />
-                    )
-                  })
-                )
-              }
-            </TableBody>
-          </Table>
-        </TableContainer>
+                  )}
+
+                  {columns.map((col, key) => (
+                    <Thead
+                      key={key}
+                      column={col}
+                      data={row_data}
+                      onSort={field => handleSort(field)}
+                      className={classes.tableCell}
+                      padding="checkbox"
+                    />
+                  ))}
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {row_data.item_groups.data.length === 0
+                  ? (
+                    <TableRow hover >
+                      <TableCell
+                        align='center'
+                        colSpan={6}
+                      >
+                        {
+                          loading
+                            ? 'Loading, please wait...'
+                            : 'No data in table'
+                        }
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    row_data.item_groups.data.map((row, key) => {
+                      const isItemSelected = isSelected(row.id);
+                      return (
+                        <Tbody
+                          key={key}
+                          row={row}
+                          columns={columns}
+                          userAccess={user_access}
+                          onUpdate={(e) => e.preventDefault()}
+                          onSelect={(e, id) => handleSelectClick(e, id)}
+                          aria-checked={isItemSelected}
+                          selected={isItemSelected}
+                          tabIndex={-1}
+                          role="checkbox"
+                          color='primary'
+                          hover
+                        />
+                      )
+                    })
+                  )
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
 
 
-        <TablePagination
-          component='div'
-          rowsPerPageOptions={[25, 50, 100, 250]}
-          count={row_data.item_groups.total}
-          rowsPerPage={Number(row_data.item_groups.per_page)}
-          page={row_data.item_groups.current_page - 1}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-          ActionsComponent={TpaginationActions}
-        />
+          <TablePagination
+            component='div'
+            rowsPerPageOptions={[25, 50, 100, 250]}
+            count={row_data.item_groups.total}
+            rowsPerPage={Number(row_data.item_groups.per_page)}
+            page={row_data.item_groups.current_page - 1}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+            ActionsComponent={TpaginationActions}
+          />
+        </Loader>
       </CardContent>
     </Card>
   );

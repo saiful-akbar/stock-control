@@ -168,7 +168,7 @@ function TheadActions({
                     label="Search item groups"
                     id="search"
                     name="search"
-                    type="text"
+                    type="search"
                     value={search}
                     disabled={loading}
                     onBlur={e => handleBlurSearch(e)}

@@ -22,7 +22,6 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
@@ -32,6 +31,7 @@ import { connect } from 'react-redux';
 import UserTruncateToken from '../UserTruncateToken';
 import Row from './Row';
 import { reduxAction } from 'src/config/redux/state';
+import Loader from 'src/components/Loader';
 
 /**
  * style
@@ -40,10 +40,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
     marginLeft: theme.spacing(2.5),
-  },
-  progress: {
-    width: '100%',
-    height: 4,
   },
   container: {
     maxHeight: '60vh',
@@ -319,11 +315,6 @@ const UserTable = (props) => {
       variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
       elevation={3}
     >
-      {loading
-        ? <LinearProgress className={classes.progress} />
-        : <div className={classes.progress} />
-      }
-
       <CardContent>
         <Grid
           spacing={3}
@@ -395,76 +386,78 @@ const UserTable = (props) => {
           </Grid>
 
           <Grid item xs={12}>
-            <TableContainer className={classes.container}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align='center'>{'Options'}</TableCell>
+            <Loader show={loading}>
+              <TableContainer className={classes.container}>
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align='center'>{'Options'}</TableCell>
 
-                    {columns.map((col, i) => (
-                      <TableCell
-                        key={i}
-                        align={col.align}
-                      >
-                        <TableSortLabel
-                          active={rowData.sort === col.field}
-                          onClick={() => handleSortTable(col.field)}
-                          direction={
-                            rowData.sort === col.field
-                              ? rowData.order_by
-                              : 'asc'
-                          }
+                      {columns.map((col, i) => (
+                        <TableCell
+                          key={i}
+                          align={col.align}
                         >
-                          {col.label}
-                          {rowData.sort === col.field && (
-                            <span className={classes.visuallyHidden}>
-                              {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                            </span>
-                          )}
-                        </TableSortLabel>
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {rowData.users.data.length <= 0
-                    ? (
-                      <TableRow hover >
-                        <TableCell colSpan={12} align='center' >
-                          {
-                            loading
-                              ? 'Loading, please wait...'
-                              : 'No data in table'
-                          }
+                          <TableSortLabel
+                            active={rowData.sort === col.field}
+                            onClick={() => handleSortTable(col.field)}
+                            direction={
+                              rowData.sort === col.field
+                                ? rowData.order_by
+                                : 'asc'
+                            }
+                          >
+                            {col.label}
+                            {rowData.sort === col.field && (
+                              <span className={classes.visuallyHidden}>
+                                {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                              </span>
+                            )}
+                          </TableSortLabel>
                         </TableCell>
-                      </TableRow>
-                    ) : (
-                      rowData.users.data.map((row, key) => (
-                        <Row
-                          key={key}
-                          row={row}
-                          state={props.state}
-                          onDelete={() => props.onDelete(row.id)}
-                          onChangePassword={() => props.onChangePassword(row.id)}
-                        />
-                      ))
-                    )
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
+                      ))}
+                    </TableRow>
+                  </TableHead>
 
-            <TablePagination
-              component='div'
-              rowsPerPageOptions={[25, 50, 100, 250]}
-              count={rowData.users.total}
-              rowsPerPage={Number(rowData.users.per_page)}
-              page={rowData.users.current_page - 1}
-              onChangePage={e => e.preventDefault()}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
+                  <TableBody>
+                    {rowData.users.data.length <= 0
+                      ? (
+                        <TableRow hover >
+                          <TableCell colSpan={12} align='center' >
+                            {
+                              loading
+                                ? 'Loading, please wait...'
+                                : 'No data in table'
+                            }
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        rowData.users.data.map((row, key) => (
+                          <Row
+                            key={key}
+                            row={row}
+                            state={props.state}
+                            onDelete={() => props.onDelete(row.id)}
+                            onChangePassword={() => props.onChangePassword(row.id)}
+                          />
+                        ))
+                      )
+                    }
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <TablePagination
+                component='div'
+                rowsPerPageOptions={[25, 50, 100, 250]}
+                count={rowData.users.total}
+                rowsPerPage={Number(rowData.users.per_page)}
+                page={rowData.users.current_page - 1}
+                onChangePage={e => e.preventDefault()}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </Loader>
           </Grid>
         </Grid>
       </CardContent>

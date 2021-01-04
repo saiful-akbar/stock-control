@@ -18,7 +18,6 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
@@ -28,6 +27,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Toast from 'src/components/Toast';
 import { connect } from 'react-redux';
+import Loader from 'src/components/Loader';
 
 
 /**
@@ -37,12 +37,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
     marginLeft: theme.spacing(2.5),
-  },
-  progress: {
-    width: '100%',
-    height: 4,
-    margin: 0,
-    padding: 0,
   },
   container: {
     maxHeight: "60vh",
@@ -365,11 +359,6 @@ const MenuItemTable = (props) => {
         variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
         elevation={3}
       >
-        {loading
-          ? <LinearProgress className={classes.progress} />
-          : <div className={classes.progress} />
-        }
-
         <CardContent>
           <Grid
             spacing={3}
@@ -416,7 +405,7 @@ const MenuItemTable = (props) => {
               <form autoComplete='off' onSubmit={handleSubmitSearch}>
                 <TextField
                   fullWidth
-                  label='Search menu items'
+                  label='Search menus'
                   variant='outlined'
                   margin='dense'
                   name='search'
@@ -437,127 +426,129 @@ const MenuItemTable = (props) => {
             </Grid>
 
             <Grid item xs={12}>
-              <TableContainer className={classes.container}>
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((col, i) => (
-                        <TableCell key={i} className={classes.tableCell} align={col.align}>
-                          <TableSortLabel
-                            active={Boolean(rowData.sort === col.field)}
-                            direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
-                            onClick={() => handleSortTable(col.field)}
-                          >
-                            {col.label}
-                            {rowData.sort === col.field
-                              ? (
-                                <span className={classes.visuallyHidden}>
-                                  {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </span>
-                              ) : null
-                            }
-                          </TableSortLabel>
-                        </TableCell>
-                      ))}
-
-                      {props.state !== null && (
-                        props.state.update === 1 || props.state.delete === 1
-                          ? (
-                            <TableCell className={classes.tableCell} align='center'>
-                              {'Actions'}
-                            </TableCell>
-                          ) : (
-                            <TableCell className={classes.tableCell} />
-                          )
-                      )}
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {rowData.menu_items.data.length <= 0
-                      ? (
-                        <TableRow hover >
-                          <TableCell
-                            colSpan={7}
-                            align='center'
-                            className={classes.tableCell}
-                          >
-                            {loading ? 'Loading, please wait...' : 'No data in table'}
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        rowData.menu_items.data.map((row, key) => (
-                          <TableRow hover key={key}>
-                            <TableCell className={classes.tableCell}>{row.menu_i_title}</TableCell>
-                            <TableCell className={classes.tableCell}>{row.menu_i_url}</TableCell>
-
-                            <TableCell className={classes.tableCell}>
-                              <Icon>{row.menu_i_icon}</Icon>
-                            </TableCell>
-
-                            <TableCell className={classes.tableCell}>
-                              <Icon
-                                className={
-                                  row.menu_i_children === 1
-                                    ? classes.green
-                                    : classes.red
-                                }
-                              >
-                                {row.menu_i_children === 1 ? 'check' : 'close'}
-                              </Icon>
-                            </TableCell>
-
-                            <TableCell className={classes.tableCell}>{row.created_at}</TableCell>
-                            <TableCell className={classes.tableCell}>{row.updated_at}</TableCell>
-
-                            {props.state !== null && (
-                              props.state.update === 1 || props.state.delete === 1
+              <Loader show={loading}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((col, i) => (
+                          <TableCell key={i} className={classes.tableCell} align={col.align}>
+                            <TableSortLabel
+                              active={Boolean(rowData.sort === col.field)}
+                              direction={rowData.sort === col.field ? rowData.order_by : 'asc'}
+                              onClick={() => handleSortTable(col.field)}
+                            >
+                              {col.label}
+                              {rowData.sort === col.field
                                 ? (
-                                  <TableCell align='center' className={classes.tableCell}>
-                                    {props.state.update === 1 && (
-                                      <CustomTooltip title='Update'>
-                                        <IconButton
-                                          aria-label='Update'
-                                          onClick={() => props.openDialogEdit(row)}
-                                        >
-                                          <EditIcon fontSize='small' />
-                                        </IconButton>
-                                      </CustomTooltip>
-                                    )}
+                                  <span className={classes.visuallyHidden}>
+                                    {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                  </span>
+                                ) : null
+                              }
+                            </TableSortLabel>
+                          </TableCell>
+                        ))}
 
-                                    {props.state.delete === 1 && (
-                                      <CustomTooltip title='Delete'>
-                                        <IconButton
-                                          aria-label='delete'
-                                          onClick={() => props.openDialogDelete(row.id)}
-                                        >
-                                          <DeleteIcon fontSize='small' />
-                                        </IconButton>
-                                      </CustomTooltip>
-                                    )}
-                                  </TableCell>
-                                ) : (
-                                  <TableCell />
-                                )
-                            )}
+                        {props.state !== null && (
+                          props.state.update === 1 || props.state.delete === 1
+                            ? (
+                              <TableCell className={classes.tableCell} align='center'>
+                                {'Actions'}
+                              </TableCell>
+                            ) : (
+                              <TableCell className={classes.tableCell} />
+                            )
+                        )}
+                      </TableRow>
+                    </TableHead>
+
+                    <TableBody>
+                      {rowData.menu_items.data.length <= 0
+                        ? (
+                          <TableRow hover >
+                            <TableCell
+                              colSpan={7}
+                              align='center'
+                              className={classes.tableCell}
+                            >
+                              {loading ? 'Loading, please wait...' : 'No data in table'}
+                            </TableCell>
                           </TableRow>
-                        ))
-                      )
-                    }
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                        ) : (
+                          rowData.menu_items.data.map((row, key) => (
+                            <TableRow hover key={key}>
+                              <TableCell className={classes.tableCell}>{row.menu_i_title}</TableCell>
+                              <TableCell className={classes.tableCell}>{row.menu_i_url}</TableCell>
 
-              <TablePagination
-                component='div'
-                rowsPerPageOptions={[25, 50, 100, 250]}
-                count={rowData.menu_items.total}
-                rowsPerPage={Number(rowData.menu_items.per_page)}
-                page={rowData.menu_items.current_page - 1}
-                onChangePage={e => e.preventDefault()}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
+                              <TableCell className={classes.tableCell}>
+                                <Icon>{row.menu_i_icon}</Icon>
+                              </TableCell>
+
+                              <TableCell className={classes.tableCell}>
+                                <Icon
+                                  className={
+                                    row.menu_i_children === 1
+                                      ? classes.green
+                                      : classes.red
+                                  }
+                                >
+                                  {row.menu_i_children === 1 ? 'check' : 'close'}
+                                </Icon>
+                              </TableCell>
+
+                              <TableCell className={classes.tableCell}>{row.created_at}</TableCell>
+                              <TableCell className={classes.tableCell}>{row.updated_at}</TableCell>
+
+                              {props.state !== null && (
+                                props.state.update === 1 || props.state.delete === 1
+                                  ? (
+                                    <TableCell align='center' className={classes.tableCell}>
+                                      {props.state.update === 1 && (
+                                        <CustomTooltip title='Update'>
+                                          <IconButton
+                                            aria-label='Update'
+                                            onClick={() => props.openDialogEdit(row)}
+                                          >
+                                            <EditIcon fontSize='small' />
+                                          </IconButton>
+                                        </CustomTooltip>
+                                      )}
+
+                                      {props.state.delete === 1 && (
+                                        <CustomTooltip title='Delete'>
+                                          <IconButton
+                                            aria-label='delete'
+                                            onClick={() => props.openDialogDelete(row.id)}
+                                          >
+                                            <DeleteIcon fontSize='small' />
+                                          </IconButton>
+                                        </CustomTooltip>
+                                      )}
+                                    </TableCell>
+                                  ) : (
+                                    <TableCell />
+                                  )
+                              )}
+                            </TableRow>
+                          ))
+                        )
+                      }
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <TablePagination
+                  component='div'
+                  rowsPerPageOptions={[25, 50, 100, 250]}
+                  count={rowData.menu_items.total}
+                  rowsPerPage={Number(rowData.menu_items.per_page)}
+                  page={rowData.menu_items.current_page - 1}
+                  onChangePage={e => e.preventDefault()}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </Loader>
             </Grid>
           </Grid>
         </CardContent>
