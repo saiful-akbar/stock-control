@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
   },
   backdrop: {
-    zIndex: 9999,
+    zIndex: 1000,
     position: 'absolute',
     height: '100%',
     width: '100%',
