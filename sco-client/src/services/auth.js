@@ -1,5 +1,6 @@
 import {
-  api
+  api,
+  cache,
 } from './api';
 import {
   reduxAction
@@ -17,7 +18,7 @@ export const login = (data) => (dispatch) => {
       api({
         method: 'POST',
         url: '/login',
-        data
+        data: data,
       }).then((res) => {
         resolve(res);
         dispatch({
@@ -43,6 +44,7 @@ export const userLogin = () => (dispatch) => {
       api({
         method: 'GET',
         url: '/login/user',
+        adapter: cache.adapter,
       }).then(res => {
         resolve(res);
         dispatch({
@@ -67,8 +69,8 @@ export const userLogin = () => (dispatch) => {
 export const logout = () => {
   return new Promise((resolve, reject) => {
     api({
-      method: 'get',
-      url: '/logout',
+      method: 'GET',
+      url: '/logout/',
     }).then((res) => {
       resolve(res);
     }).catch((err) => {

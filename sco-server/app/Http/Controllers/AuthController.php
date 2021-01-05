@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use \Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Auth;
-use \Illuminate\Support\Facades\Crypt;
-use \Illuminate\Support\Facades\DB;
 use \Illuminate\Support\Facades\Storage;
 use \App\Http\Resources\UserResource;
 use \App\Models\User;
@@ -69,14 +67,12 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout
+     * Method logout
      */
     public function logout()
     {
         // Cek apakah user sudah login sebelumnya atau tidak
         if (!empty(Auth::user())) {
-
-            // Jika user sudah login hapus tokennya
             Auth::user()->tokens()->delete();
         }
 
@@ -115,15 +111,16 @@ class AuthController extends Controller
      */
     public function userIsLogin()
     {
-        /**
-         * Ambil data user yang sedang login
-         * Ambil data profile user,
-         * Ambil data menu items user
-         * Ambil data menu sub items user
-         */
+        // Ambil data user yang sedang login
         $user    = Auth::user();
+
+        // Ambil data profile user,
         $profile = User::find($user->id)->profile()->first();
+
+        // Ambil data menu items user
         $menu_items = User::find($user->id)->menuItem()->orderBy("menu_i_title", "asc")->get();
+
+        // Ambil data menu sub items user
         $menu_sub_items = User::find($user->id)->menuSubItem()->orderBy("menu_s_i_title", "asc")->get();
 
         // Response berhasil
@@ -131,7 +128,6 @@ class AuthController extends Controller
             "profile"        => $profile,
             "menu_items"     => $menu_items,
             "menu_sub_items" => $menu_sub_items,
-            "logs"           => $this->getClientLogs(),
         ]);
     }
 

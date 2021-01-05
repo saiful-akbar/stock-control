@@ -13,7 +13,7 @@ const cookie = new Cookies();
  * Http cache
  */
 const cache = setupCache({
-  maxAge: 12 * 60 * 60 * 1000
+  maxAge: 15 * 60 * 1000
 });
 
 
