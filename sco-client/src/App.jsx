@@ -10,7 +10,6 @@ import routes from './routes';
 import { themeLight, themeDark } from './theme';
 import { reduxAction } from './config/redux/state';
 
-import './mixins/chartjs';
 import './assets/css/main.css';
 
 const App = (props) => {
