@@ -160,8 +160,8 @@ class DatabaseSeeder extends Seeder
             [
                 'id'             => Str::random(32),
                 'menu_item_id'   => $this->getMenuItem('/outgoing'),
-                'menu_s_i_title' => 'Surat Jalan',
-                'menu_s_i_url'   => '/outgoing/sj',
+                'menu_s_i_title' => 'Delivery Note (Surat Jalan)',
+                'menu_s_i_url'   => '/outgoing/delivery-note',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
@@ -314,7 +314,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/outgoing/sj'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/outgoing/delivery-note'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,
