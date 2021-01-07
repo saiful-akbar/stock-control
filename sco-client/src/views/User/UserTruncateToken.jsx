@@ -53,7 +53,6 @@ function UserTruncateToken(props) {
     }
     catch (err) {
       if (isMounted.current) {
-        console.log(err)
         setLoading(false);
         if (err.status === 401) {
           window.location.href = 'logout';
@@ -62,6 +61,19 @@ function UserTruncateToken(props) {
           setAlert({ type: 'error', message: `(#${err.status}) ${err.data.message}` });
         }
       }
+    }
+  }
+
+
+  /**
+   * Fungsi menutup dialog
+   */
+  const handleClose = () => {
+    if (!loading && alert.type !== 'success') {
+      setAlert({ type: 'error', message: 'Truncate all user tokens?' });
+      setOpen(false);
+    } else {
+      return;
     }
   }
 
@@ -79,6 +91,7 @@ function UserTruncateToken(props) {
 
       <Dialog
         open={open}
+        onClose={handleClose}
         TransitionComponent={Transition}
         maxWidth='sm'
         fullWidth={true}
@@ -103,7 +116,7 @@ function UserTruncateToken(props) {
                 color='primary'
                 onClick={() => window.location.href = '/logout'}
               >
-                Please login again
+                {'Please login again'}
               </Button>
             ) : (
               <BtnSubmit
@@ -113,10 +126,7 @@ function UserTruncateToken(props) {
                 size='small'
                 loading={loading}
                 handleSubmit={handleSubmit}
-                handleCancel={() => {
-                  setAlert({ type: 'error', message: 'Truncate all user tokens?' });
-                  setOpen(false)
-                }}
+                handleCancel={handleClose}
               />
             )
           }

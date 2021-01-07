@@ -293,7 +293,6 @@ function UserEditAccount({ userId, setReduxToast, reduxTheme, ...props }) {
                       handleSubmit={handleSubmit}
                       handleCancel={resetForm}
                       loading={loading}
-                      style={{ marginLeft: 10 }}
                     />
                   )}
               </Box>

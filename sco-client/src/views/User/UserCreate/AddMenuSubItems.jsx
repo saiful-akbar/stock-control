@@ -21,7 +21,6 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Animation from 'src/components/Animation';
 import UserCreateTable from './UserCreateTable';
-import { connect } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -102,6 +101,14 @@ const AddMenuSubItems = (props) => {
         message: 'The menu is already on the list'
       });
     }
+  }
+
+
+  /**
+   * Handle save
+   */
+  const handleSave = () => {
+    props.save();
   }
 
 
@@ -295,44 +302,31 @@ const AddMenuSubItems = (props) => {
 
       <Divider />
       <Box display='flex' justifyContent='flex-end' p={2} >
-        {props.reduxLoading
-          ? (
-            <Button
-              disabled
-              variant='contained'
-            >Processing...</Button>
-          ) : (
-            <>
-              <Button
-                color='primary'
-                variant='outlined'
-                type='button'
-                style={{ marginRight: 20 }}
-                disabled={props.reduxLoading}
-                onClick={props.backStep}
-                startIcon={<ArrowBackIosIcon />}
-              >Back</Button>
+        <Button
+          color='primary'
+          variant='outlined'
+          type='button'
+          style={{ marginRight: 20 }}
+          disabled={props.loading}
+          onClick={props.backStep}
+          startIcon={<ArrowBackIosIcon />}
+        >
+          {'Back'}
+        </Button>
 
-              <Button
-                color='primary'
-                variant='contained'
-                onClick={props.save}
-                startIcon={<SaveIcon />}
-              >Save</Button>
-            </>
-          )
-        }
+        <Button
+          color='primary'
+          variant='contained'
+          disabled={props.loading}
+          onClick={handleSave}
+          startIcon={<SaveIcon />}
+        >
+          {'Save'}
+        </Button>
       </Box>
     </>
   );
 };
 
 
-function ReduxState(state) {
-  return {
-    reduxLoading: state.loading,
-  };
-}
-
-
-export default connect(ReduxState, null)(AddMenuSubItems);
+export default AddMenuSubItems;

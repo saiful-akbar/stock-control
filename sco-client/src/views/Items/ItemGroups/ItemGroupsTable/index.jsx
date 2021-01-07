@@ -79,7 +79,6 @@ function ItemGroupTable(props) {
    * State
    */
   const [selected, setSelected] = React.useState([]);
-  const [user_access, setUserAccess] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [row_data, setRowData] = React.useState({
     item_groups: {
@@ -101,18 +100,6 @@ function ItemGroupTable(props) {
     order_by: "asc",
     search: "",
   });
-
-
-  /**
-   * Ambil data user akses pada reduxUserLogin
-   */
-  React.useEffect(() => {
-    if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.map((msi) => {
-        return msi.menu_s_i_url === '/master/items' ? setUserAccess(msi.pivot) : null;
-      });
-    }
-  }, [props.reduxUserLogin]);
 
 
   /**
@@ -331,9 +318,9 @@ function ItemGroupTable(props) {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {user_access !== null && user_access.user_m_s_i_delete === 1 && (
+                  {props.userAccess !== null && props.userAccess.user_m_s_i_delete === 1 && (
                     <TableCell
-                      padding="checkbox"
+                      padding='checkbox'
                     >
                       <CustomTooltip placement='bottom' title='Select' >
                         <Checkbox
@@ -354,7 +341,11 @@ function ItemGroupTable(props) {
                       data={row_data}
                       onSort={field => handleSort(field)}
                       className={classes.tableCell}
-                      padding="checkbox"
+                      padding={
+                        props.userAccess !== null && props.userAccess.user_m_s_i_delete === 1
+                          ? 'checkbox'
+                          : 'default'
+                      }
                     />
                   ))}
                 </TableRow>
@@ -383,7 +374,7 @@ function ItemGroupTable(props) {
                           key={key}
                           row={row}
                           columns={columns}
-                          userAccess={user_access}
+                          userAccess={props.userAccess}
                           onUpdate={(e) => e.preventDefault()}
                           onSelect={(e, id) => handleSelectClick(e, id)}
                           aria-checked={isItemSelected}
@@ -442,7 +433,6 @@ function reduxDispatch(dispatch) {
 function reduxState(state) {
   return {
     reduxTheme: state.theme,
-    reduxUserLogin: state.userLogin,
   }
 }
 

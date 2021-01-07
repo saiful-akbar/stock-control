@@ -5,7 +5,30 @@ import {
   CircularProgress,
   Box,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
+
+/**
+ * Style
+ */
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    position: 'relative',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+}));
+
+
+/**
+ * Komponen utama
+ * @param {*} param0 
+ */
 const BtnSubmit = ({
   title,
   loading,
@@ -18,46 +41,37 @@ const BtnSubmit = ({
   disabled,
   ...props
 }) => {
+  const classes = useStyles();
 
-  /**
-   * button on proccess
-   */
-  const btnOnProcess = () => {
-    return (
+  return loading
+    ? (
+      <div className={classes.wrapper}>
+        <Button
+          disabled={true}
+          color={color}
+          size={size}
+          {...props}
+        >
+          {'Processing...'}
+        </Button>
+        <CircularProgress size={24} className={classes.buttonProgress} />
+      </div>
+    ) : (
       <Box
         display='flex'
         justifyContent='center'
         alignItems='center'
       >
-        <CircularProgress
-          size={20}
-          color='primary'
-          style={{ marginRight: 5 }}
-        />
-        <Button
-          disabled={true}
-          color={color}
-          size={size}
-        >
-          {'Processing...'}
-        </Button>
-      </Box>
-    );
-  };
-
-  /**
-   * button active
-   */
-  const btnActive = () => {
-    return (
-      <>
         {!singleButton && (
           <Button
             onClick={handleCancel}
             color={color}
             size={size}
             disabled={disabled}
-          >{titleCancel}</Button>
+            style={{ marginRight: 10 }}
+          >
+            {titleCancel}
+          </Button>
         )}
 
         <Button
@@ -66,19 +80,18 @@ const BtnSubmit = ({
           color={color}
           disabled={disabled}
           {...props}
-        > {title} </Button>
-      </>
-    );
-  }
-
-  return loading ? btnOnProcess() : btnActive();
+        >
+          {title}
+        </Button>
+      </Box>
+    )
 };
 
 /**
  * Deault props
  */
 BtnSubmit.defaultProps = {
-  title: '',
+  title: 'Submit',
   titleCancel: 'Cancel',
   size: 'medium',
   color: 'primary',

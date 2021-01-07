@@ -184,7 +184,6 @@ function LoginView({ cookies, loginUser }) {
                     noValidate
                     className={classes.form}
                     onSubmit={handleSubmit}
-                    autoComplete='off'
                   >
                     <TextField
                       fullWidth
@@ -207,11 +206,12 @@ function LoginView({ cookies, loginUser }) {
                       variant='outlined'
                       error={Boolean(touched.password && errors.password)}
                     >
-                      <InputLabel htmlFor='password'>Password</InputLabel>
+                      <InputLabel htmlFor='password'>{'Password'}</InputLabel>
                       <OutlinedInput
-                        labelWidth={73}
+                        label='Password'
                         id='password'
                         name='password'
+                        autoComplete='off'
                         disabled={loading}
                         type={showPassword ? 'text' : 'password'}
                         value={values.password}

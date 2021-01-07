@@ -5,10 +5,11 @@ import { connect } from 'react-redux';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
 import { userLogin } from '../../services/auth';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Backdrop } from '@material-ui/core';
 import clsx from 'clsx';
 import Toast from 'src/components/Toast';
 import { reduxAction } from 'src/config/redux/state';
+import Progress from 'src/components/Progress';
 
 const drawerWidth = 256;
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +54,11 @@ const useStyles = makeStyles((theme) => ({
     flex: '1 1 auto',
     height: '100%',
     overflow: 'auto'
-  }
+  },
+  backdrop: {
+    zIndex: 9999,
+    backgroundColor: theme.palette.background.dark
+  },
 }));
 
 const DashboardLayout = ({
@@ -61,7 +66,7 @@ const DashboardLayout = ({
   reduxUserLogin,
   setReduxUserLogin,
   reduxToast,
-  setReduxToast
+  setReduxToast,
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -71,27 +76,29 @@ const DashboardLayout = ({
 
   // Cek apakah user sudah login atau belum
   React.useEffect(() => {
+    getUserIsLogin();
+    // eslint-disable-next-line
+  }, []);
+
+
+
+  const getUserIsLogin = async () => {
     if (cookies.get('auth_token') !== undefined) {
       if (reduxUserLogin === null) {
-        const getUserIsLogin = async () => {
-          try {
-            await setReduxUserLogin();
-          }
-          catch (err) {
-            if (err.status === 401) {
-              cookies.remove('auth_token');
-              window.location.href = '/login';
-            }
+        try {
+          await setReduxUserLogin();
+        }
+        catch (err) {
+          if (err.status === 401) {
+            window.location.href = '/logout';
           }
         }
-        getUserIsLogin();
       }
     }
     else {
       navigate('/login');
     }
-    // eslint-disable-next-line
-  }, []);
+  }
 
 
   return (
@@ -106,6 +113,17 @@ const DashboardLayout = ({
         openMobile={isMobileNavOpen}
         openDesktop={isDesktopNavOpen}
       />
+
+      <Backdrop
+        className={classes.backdrop}
+        open={reduxUserLogin === null ? true : false}
+      >
+        <Progress
+          type='circular'
+          size={70}
+          show={true}
+        />
+      </Backdrop>
 
       <div className={classes.wrapper} >
         <div
@@ -143,7 +161,7 @@ const reduxDispatch = (dispatch) => ({
 
 const reduxState = (state) => ({
   reduxUserLogin: state.userLogin,
-  reduxToast: state.toast
+  reduxToast: state.toast,
 });
 
 export default connect(reduxState, reduxDispatch)(withCookies(DashboardLayout));

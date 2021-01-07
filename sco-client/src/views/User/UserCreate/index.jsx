@@ -28,7 +28,7 @@ import AddMenuSubItems from './AddMenuSubItems';
 import { apiGetAllMenus, apiCreateUser, apiCreateUserMenuAccess } from 'src/services/user';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
-import Progress from 'src/components/Progress';
+import Loader from 'src/components/Loader';
 
 
 /**
@@ -147,7 +147,7 @@ const UserCreate = (props) => {
 
   // Fungsi simpan data untuk membuat data user dan frofile baru
   const handleSave = async () => {
-    props.setReduxLoading(true);
+    setLoading(true);
     let formData = new FormData();
     formData.append('id', user.id);
     formData.append('username', user.username);
@@ -167,7 +167,7 @@ const UserCreate = (props) => {
         try {
           await apiCreateUserMenuAccess(userMenuItems, userMenuSubItems);
           if (isMounted.current) {
-            props.setReduxLoading(false);
+            setLoading(false);
             props.setReduxToast({
               show: true,
               type: 'success',
@@ -177,8 +177,8 @@ const UserCreate = (props) => {
           }
         } catch (error) {
           if (isMounted.current) {
+            setLoading(false);
             error.status === 401 && logout();
-            props.setReduxLoading(false);
             props.setReduxToast({
               show: true,
               type: 'error',
@@ -189,8 +189,8 @@ const UserCreate = (props) => {
       }
     } catch (err) {
       if (isMounted.current) {
+        setLoading(false);
         err.status === 401 && logout();
-        props.setReduxLoading(false);
         props.setReduxToast({
           show: true,
           type: 'error',
@@ -315,8 +315,9 @@ const UserCreate = (props) => {
             variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
             elevation={3}
           >
-            <Progress type='linear' show={loading} />
-            {stepComponent(activeStep)}
+            <Loader show={loading}>
+              {stepComponent(activeStep)}
+            </Loader>
           </Card>
         </Grid>
       </Grid>
@@ -327,7 +328,6 @@ const UserCreate = (props) => {
 // Redux dispatch
 function reduxDispatch(dispatch) {
   return {
-    setReduxLoading: (bool) => dispatch({ type: reduxAction.loading, value: bool }),
     setReduxToast: (error) => dispatch({
       type: reduxAction.toast,
       value: error

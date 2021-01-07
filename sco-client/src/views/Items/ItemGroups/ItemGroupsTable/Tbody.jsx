@@ -35,7 +35,7 @@ function Tbody({
   return (
     <TableRow {...props}>
       {userAccess !== null && userAccess.user_m_s_i_delete === 1 && (
-        <TableCell padding="checkbox">
+        <TableCell padding='checkbox'>
           <CustomTooltip placement='bottom' title='Select' >
             <Checkbox
               color='primary'
@@ -51,7 +51,11 @@ function Tbody({
         <TableCell
           key={key}
           className={classes.root}
-          padding="checkbox"
+          padding={
+            userAccess !== null && userAccess.user_m_s_i_delete === 1
+              ? 'checkbox'
+              : 'default'
+          }
         >
           {row[col.field]}
         </TableCell>
