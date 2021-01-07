@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'id'              => Str::random(32),
-                'menu_i_title'    => 'Outgoing',
+                'menu_i_title'    => 'Outgoing (Data Barang Keluar)',
                 'menu_i_url'      => '/outgoing',
                 'menu_i_icon'     => 'subdirectory_arrow_left',
                 'menu_i_children' => true,
