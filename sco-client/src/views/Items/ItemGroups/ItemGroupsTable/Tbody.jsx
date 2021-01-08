@@ -1,7 +1,8 @@
 import React from 'react';
-import { TableRow, TableCell, Checkbox } from '@material-ui/core';
+import { TableRow, TableCell, Checkbox, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import CustomTooltip from 'src/components/CustomTooltip';
+import EditIcon from '@material-ui/icons/Edit';
 
 
 /**
@@ -34,17 +35,29 @@ function Tbody({
    */
   return (
     <TableRow {...props}>
-      {userAccess !== null && userAccess.user_m_s_i_delete === 1 && (
-        <TableCell padding='checkbox'>
-          <CustomTooltip placement='bottom' title='Select' >
-            <Checkbox
-              color='primary'
-              checked={props.selected}
-              onClick={(e) => onSelect(e, row.id)}
-            />
-          </CustomTooltip>
-        </TableCell>
+      {userAccess !== null && (
+        userAccess.user_m_s_i_delete === 1 || userAccess.user_m_s_i_update === 1
+          ? (
+            <TableCell padding='checkbox'>
+              {userAccess.user_m_s_i_delete === 1 && (
+                <CustomTooltip placement='bottom' title='Select' >
+                  <Checkbox
+                    color='primary'
+                    checked={props.selected}
+                    onClick={(e) => onSelect(e, row.id)}
+                  />
+                </CustomTooltip>
+              )}
 
+              {userAccess.user_m_s_i_update === 1 && (
+                <CustomTooltip placement='bottom' title='Edit' >
+                  <IconButton>
+                    <EditIcon fontSize='small' />
+                  </IconButton>
+                </CustomTooltip>
+              )}
+            </TableCell>
+          ) : null
       )}
 
       {columns.map((col, key) => (

@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     height: '100%',
     width: '100%',
-    backgroundColor: theme.palette.type === 'dark' ? 'rgba(19, 28, 33, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: theme.palette.type === 'dark' ? 'rgba(19, 28, 33, 0.8)' : 'rgba(255, 255, 255, 0.8)',
   },
 }));
 
@@ -36,8 +36,11 @@ function Loader({ children, show, ...props }) {
    */
   return (
     <div className={classes.tableWrapper}>
-      <Backdrop className={classes.backdrop} open={show}>
-        <CircularProgress color="primary" size={50} />
+      <Backdrop
+        className={classes.backdrop}
+        open={show}
+      >
+        <CircularProgress color="primary" size={55} />
       </Backdrop>
       {children}
     </div>

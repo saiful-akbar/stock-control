@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  btnCancel: {
+    marginRight: 10
+  },
 }));
 
 
@@ -68,13 +71,14 @@ const BtnSubmit = ({
             color={color}
             size={size}
             disabled={disabled}
-            style={{ marginRight: 10 }}
+            className={classes.btnCancel}
           >
             {titleCancel}
           </Button>
         )}
 
         <Button
+          type='submit'
           onClick={handleSubmit}
           size={size}
           color={color}

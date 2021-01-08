@@ -58,6 +58,7 @@ function TheadActions({
   searchValue,
   onReload,
   onSearch,
+  onAdd,
   ...props
 }) {
   const classes = useStyles();
@@ -154,6 +155,7 @@ function TheadActions({
                   fullWidth
                   color="primary"
                   variant="contained"
+                  onClick={onAdd}
                 >
                   {"Add Item Group"}
                 </Button>
@@ -200,6 +202,7 @@ TheadActions.defaultProps = {
   searchValue: "",
   onReload: (e) => e.preventDefault(),
   onSearch: (e) => e.preventDefault(),
+  onAdd: (e) => e.preventDefault(),
 };
 
 

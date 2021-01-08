@@ -110,6 +110,12 @@ const UserTableOptions = (props) => {
         onClose={handleCloseMenu}
       >
         {props.state !== null && props.state.update === 1 && (
+          <MenuItem onClick={handleChangeUserMenus}>
+            <Typography variant='inherit'>{'Access Menu'}</Typography>
+          </MenuItem>
+        )}
+
+        {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleChangePassword}>
             <Typography variant='inherit'>{'Change password'}</Typography>
           </MenuItem>
@@ -122,18 +128,12 @@ const UserTableOptions = (props) => {
         )}
 
         <MenuItem onClick={handleViewDetail}>
-          <Typography variant='inherit'>{'Detailed user info'}</Typography>
+          <Typography variant='inherit'>{'Detail info'}</Typography>
         </MenuItem>
 
         {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleEdit}>
             <Typography variant='inherit'>{'Edit'}</Typography>
-          </MenuItem>
-        )}
-
-        {props.state !== null && props.state.update === 1 && (
-          <MenuItem onClick={handleChangeUserMenus}>
-            <Typography variant='inherit'>{'User access'}</Typography>
           </MenuItem>
         )}
       </Menu>

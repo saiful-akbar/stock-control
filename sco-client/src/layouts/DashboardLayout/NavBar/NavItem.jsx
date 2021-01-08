@@ -11,12 +11,14 @@ import {
   ListItem,
   makeStyles,
   Collapse,
+  Typography,
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import NavSubItem from './NavSubItem';
 import Icon from '@material-ui/core/Icon';
 import { connect } from 'react-redux';
+import CustomTooltip from 'src/components/CustomTooltip';
 
 
 // Style
@@ -42,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginRight: 'auto',
-    marginTop: 2
+    marginTop: 2,
+    fontWeight: 500,
   },
   active: {
     background: theme.palette.action.selected,
@@ -103,22 +106,30 @@ const NavItem = ({
         className={clsx(classes.item, className)}
         disableGutters
       >
-        <Button
-          activeClassName={classes.active}
-          className={classes.button}
-          component={RouterLink}
-          to={data.menu_i_url}
-          onClick={(e) => handleLink(e)}
-        >
-          {data.menu_i_icon && (
-            <Icon className={classes.icon} >
-              {data.menu_i_icon}
-            </Icon>
-          )}
-          <span className={classes.title}>
-            {data.menu_i_title}
-          </span>
-        </Button>
+        <CustomTooltip title={data.menu_i_title} placement='right'>
+          <Button
+            activeClassName={classes.active}
+            className={classes.button}
+            component={RouterLink}
+            to={data.menu_i_url}
+            onClick={(e) => handleLink(e)}
+          >
+            {data.menu_i_icon && (
+              <Icon className={classes.icon} >
+                {data.menu_i_icon}
+              </Icon>
+            )}
+
+            <Typography
+              noWrap
+              variant="body2"
+              component="span"
+              className={classes.title}
+            >
+              {data.menu_i_title}
+            </Typography>
+          </Button>
+        </CustomTooltip>
       </ListItem >
     );
   };
@@ -131,27 +142,36 @@ const NavItem = ({
           disableGutters
           onClick={handleCollapse}
         >
-          <Button
-            className={classes.button}
-            component={RouterLink}
-            to={{ hash: `#${data.menu_i_url}` }}
-            onClick={(e) => e.preventDefault()}
-            activeClassName={
-              data.menu_i_url === `/${pathname[1]}`
-                ? classes.active
-                : ''
-            }
-          >
-            {data.menu_i_icon && (
-              <Icon className={classes.icon} >
-                {data.menu_i_icon}
-              </Icon>
-            )}
-            <span className={classes.title}>
-              {data.menu_i_title}
-            </span>
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </Button>
+          <CustomTooltip title={data.menu_i_title} placement='right'>
+            <Button
+              className={classes.button}
+              component={RouterLink}
+              to={{ hash: `#${data.menu_i_url}` }}
+              onClick={(e) => e.preventDefault()}
+              activeClassName={
+                data.menu_i_url === `/${pathname[1]}`
+                  ? classes.active
+                  : ''
+              }
+            >
+              {data.menu_i_icon && (
+                <Icon className={classes.icon} >
+                  {data.menu_i_icon}
+                </Icon>
+              )}
+
+              <Typography
+                noWrap
+                variant="body2"
+                component="span"
+                className={classes.title}
+              >
+                {data.menu_i_title}
+              </Typography>
+
+              {open ? <ExpandLess /> : <ExpandMore />}
+            </Button>
+          </CustomTooltip>
         </ListItem>
 
         <Collapse in={open} timeout='auto' unmountOnExit>

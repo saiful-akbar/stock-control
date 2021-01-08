@@ -1,6 +1,7 @@
 import React from 'react';
 import ItemGroupsTable from './ItemGroupsTable';
 import { connect } from 'react-redux';
+import ItemGroupForm from './ItemGroupForm';
 
 
 /**
@@ -9,6 +10,7 @@ import { connect } from 'react-redux';
 function ItemGroups(props) {
 
   const [user_access, setUserAccess] = React.useState(null);
+  const [form, setForm] = React.useState({ open: false, type: 'Add', data: {} });
 
   /**
    * Ambil data user akses pada reduxUserLogin
@@ -26,7 +28,38 @@ function ItemGroups(props) {
    * Render komponent utama
    */
   return (
-    <ItemGroupsTable userAccess={user_access} />
+    <React.Fragment>
+      <ItemGroupsTable
+        userAccess={user_access}
+        onAdd={() => {
+          setForm({
+            open: true,
+            type: 'Add',
+            data: {}
+          });
+        }}
+        onEdit={(value) => {
+          setForm({
+            open: true,
+            type: 'Edit',
+            data: value
+          });
+        }}
+      />
+
+      <ItemGroupForm
+        open={form.open}
+        type={form.type}
+        data={form.data}
+        onClose={() => {
+          setForm({
+            open: false,
+            type: 'Add',
+            data: {}
+          });
+        }}
+      />
+    </React.Fragment>
   )
 }
 

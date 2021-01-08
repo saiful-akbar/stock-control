@@ -37,14 +37,6 @@ const columns = [{
   field: 'item_g_name',
   label: 'Groups Name',
   align: 'left'
-}, {
-  field: 'created_at',
-  label: 'Created At',
-  align: 'left'
-}, {
-  field: 'updated_at',
-  label: 'Updated At',
-  align: 'left'
 }];
 
 
@@ -311,6 +303,7 @@ function ItemGroupTable(props) {
           searchValue={row_data.search}
           onSearch={value => handleSearch(value)}
           loading={loading}
+          onAdd={() => props.onAdd()}
         />
 
         <Loader show={loading}>
@@ -318,20 +311,23 @@ function ItemGroupTable(props) {
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {props.userAccess !== null && props.userAccess.user_m_s_i_delete === 1 && (
-                    <TableCell
-                      padding='checkbox'
-                    >
-                      <CustomTooltip placement='bottom' title='Select' >
-                        <Checkbox
-                          color='primary'
-                          indeterminate={Boolean(selected.length > 0 && selected.length < row_data.item_groups.data.length)}
-                          checked={Boolean(row_data.item_groups.data.length > 0 && selected.length === row_data.item_groups.data.length)}
-                          inputProps={{ 'aria-label': 'select all desserts' }}
-                          onChange={handleSelectAllClick}
-                        />
-                      </CustomTooltip>
-                    </TableCell>
+                  {props.userAccess !== null && (
+                    props.userAccess.user_m_s_i_delete === 1 || props.userAccess.user_m_s_i_update === 1
+                      ? (
+                        <TableCell padding='checkbox' >
+                          {props.userAccess.user_m_s_i_delete === 1 && (
+                            <CustomTooltip placement='bottom' title='Select' >
+                              <Checkbox
+                                color='primary'
+                                indeterminate={Boolean(selected.length > 0 && selected.length < row_data.item_groups.data.length)}
+                                checked={Boolean(row_data.item_groups.data.length > 0 && selected.length === row_data.item_groups.data.length)}
+                                inputProps={{ 'aria-label': 'select all desserts' }}
+                                onChange={handleSelectAllClick}
+                              />
+                            </CustomTooltip>
+                          )}
+                        </TableCell>
+                      ) : null
                   )}
 
                   {columns.map((col, key) => (

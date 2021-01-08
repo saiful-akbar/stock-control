@@ -5,9 +5,11 @@ import PropTypes from 'prop-types';
 import {
   Button,
   ListItem,
-  makeStyles
+  makeStyles,
+  Typography
 } from '@material-ui/core';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import CustomTooltip from 'src/components/CustomTooltip';
 
 
 // Style
@@ -21,21 +23,21 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: theme.typography.fontWeightMedium,
     justifyContent: 'flex-start',
     letterSpacing: 0,
-    padding: '3px 10px 3px 38px',
+    padding: '5px 40px 5px 45px',
     textTransform: 'none',
     width: '100%',
     borderRadius: '0 25px 25px 0'
   },
   icon: {
     marginRight: theme.spacing(1),
-    fontSize: 22
+    fontSize: 10
   },
   title: {
     marginRight: 'auto',
-    marginTop: 2
+    marginTop: 2,
+    fontWeight: 500,
   },
   active: {
-    // background: theme.palette.action.selected,
     color: theme.palette.type === 'light' ? theme.palette.primary.main : theme.palette.primary.light,
     '& $title': {
       fontWeight: theme.typography.fontWeightMedium
@@ -76,21 +78,28 @@ const NavSubItem = ({
       disableGutters
       {...rest}
     >
-      <Button
-        activeClassName={classes.active}
-        className={classes.button}
-        component={RouterLink}
-        to={href}
-        onClick={(e) => handleLink(e)}
-      >
-        <ArrowRightIcon
-          className={classes.icon}
-          fontSize="small"
-        />
-        <span className={classes.title}>
-          {title}
-        </span>
-      </Button>
+      <CustomTooltip title={title} placement='right'>
+        <Button
+          activeClassName={classes.active}
+          className={classes.button}
+          component={RouterLink}
+          to={href}
+          onClick={(e) => handleLink(e)}
+        >
+          <FiberManualRecordIcon
+            className={classes.icon}
+          // fontSize="small"
+          />
+          <Typography
+            noWrap
+            variant="body2"
+            component="span"
+            className={classes.title}
+          >
+            {title}
+          </Typography>
+        </Button>
+      </CustomTooltip>
     </ListItem>
   );
 };
