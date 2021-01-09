@@ -37,6 +37,14 @@ const columns = [{
   field: 'item_g_name',
   label: 'Groups Name',
   align: 'left'
+}, {
+  field: 'created_at',
+  label: 'Created At',
+  align: 'left'
+}, {
+  field: 'updated_at',
+  label: 'Updated At',
+  align: 'left'
 }];
 
 
@@ -95,15 +103,32 @@ function ItemGroupTable(props) {
 
 
   /**
-   * Hendel jika komponen dilepas saat request api belum selesai
+   * handle mengambil data item group untuk pertama kalinya.
+   * handle jika table di reload saat aksi sukses atau berhasil.
+   * handle jika komponen dilepas saat request api belum selesai.
    */
   React.useEffect(() => {
-    row_data.item_groups.data.length === 0 && getData();
+    if (row_data.item_groups.data.length === 0) {
+      getData()
+    }
+
     return () => {
       is_mounted.current = false;
     }
+
     // eslint-disable-next-line
   }, []);
+
+
+  /**
+   * handle jika table di reload saat aksi sukses atau berhasil.
+   */
+  React.useEffect(() => {
+    if (props.reload) {
+      handleReload();
+    }
+    // eslint-disable-next-line
+  }, [props.reload]);
 
 
   /**
@@ -127,11 +152,13 @@ function ItemGroupTable(props) {
     try {
       let res = await apiGetItemGroups(page, per_page, sort, order_by, search);
       if (is_mounted.current) {
+        props.onReloadTable(false);
         setLoading(false);
         setRowData(res.data);
       }
     } catch (err) {
       if (is_mounted.current) {
+        props.onReloadTable(false);
         setLoading(false);
         switch (err.status) {
           case 401:
@@ -301,8 +328,9 @@ function ItemGroupTable(props) {
           selected={selected}
           onReload={handleReload}
           searchValue={row_data.search}
-          onSearch={value => handleSearch(value)}
           loading={loading}
+          userAccess={props.userAccess}
+          onSearch={value => handleSearch(value)}
           onAdd={() => props.onAdd()}
         />
 
@@ -367,18 +395,18 @@ function ItemGroupTable(props) {
                       const isItemSelected = isSelected(row.id);
                       return (
                         <Tbody
+                          hover
                           key={key}
+                          role="checkbox"
+                          color='primary'
                           row={row}
                           columns={columns}
                           userAccess={props.userAccess}
-                          onUpdate={(e) => e.preventDefault()}
+                          onEdit={(value) => props.onEdit(value)}
                           onSelect={(e, id) => handleSelectClick(e, id)}
                           aria-checked={isItemSelected}
                           selected={isItemSelected}
                           tabIndex={-1}
-                          role="checkbox"
-                          color='primary'
-                          hover
                         />
                       )
                     })

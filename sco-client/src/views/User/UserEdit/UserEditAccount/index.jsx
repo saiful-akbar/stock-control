@@ -292,6 +292,7 @@ function UserEditAccount({ userId, setReduxToast, reduxTheme, ...props }) {
                       type='submit'
                       handleSubmit={handleSubmit}
                       handleCancel={resetForm}
+                      disabled={loading}
                       loading={loading}
                     />
                   )}

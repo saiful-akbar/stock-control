@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ItemGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,7 @@ class ItemGroupController extends Controller
      */
     private function clearStr(string $string, string $type = null)
     {
-        switch ($type) {
+        switch (strtolower($type)) {
             case 'upper':
                 return htmlspecialchars(trim(strtoupper($string)));
                 break;
@@ -118,5 +119,41 @@ class ItemGroupController extends Controller
             "order_by"    => $order_by,
             "search"      => $search,
         ], 200);
+    }
+
+
+    /**
+     * Method menambahkan item group baru
+     *
+     * @param Request $request
+     */
+    public function create(Request $request)
+    {
+        // validasi request
+        $request->validate([
+            "group_code" => "required|string|unique:item_groups,item_g_code|max:64",
+            "group_name" => "required|string"
+        ]);
+
+        // proses menambah data baru
+        ItemGroup::create([
+            "item_g_code" => $this->clearStr($request->group_code, "upper"),
+            "item_g_name" => $this->clearStr($request->group_name),
+        ]);
+
+        // response berhasil
+        return response()->json([
+            "message" => "Item group added successfully"
+        ], 200);
+    }
+
+
+    public function update(Request $request, ItemGroup $item_group)
+    {
+    }
+
+
+    public function delete(Request $request, ItemGroup $item_group)
+    {
     }
 }

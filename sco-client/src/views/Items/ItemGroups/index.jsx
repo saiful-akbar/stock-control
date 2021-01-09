@@ -9,8 +9,9 @@ import ItemGroupForm from './ItemGroupForm';
  */
 function ItemGroups(props) {
 
-  const [user_access, setUserAccess] = React.useState(null);
-  const [form, setForm] = React.useState({ open: false, type: 'Add', data: {} });
+  const [userAccess, setUserAccess] = React.useState(null);
+  const [isReloadTable, setReloadTable] = React.useState(false);
+  const [form, setForm] = React.useState({ open: false, type: 'Add', data: null });
 
   /**
    * Ambil data user akses pada reduxUserLogin
@@ -30,12 +31,14 @@ function ItemGroups(props) {
   return (
     <React.Fragment>
       <ItemGroupsTable
-        userAccess={user_access}
+        userAccess={userAccess}
+        reload={isReloadTable}
+        onReloadTable={(bool) => setReloadTable(bool)}
         onAdd={() => {
           setForm({
             open: true,
             type: 'Add',
-            data: {}
+            data: null
           });
         }}
         onEdit={(value) => {
@@ -51,11 +54,12 @@ function ItemGroups(props) {
         open={form.open}
         type={form.type}
         data={form.data}
+        onReloadTable={(bool) => setReloadTable(bool)}
         onClose={() => {
           setForm({
             open: false,
             type: 'Add',
-            data: {}
+            data: null
           });
         }}
       />

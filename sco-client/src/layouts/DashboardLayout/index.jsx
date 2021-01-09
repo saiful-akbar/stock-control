@@ -72,16 +72,32 @@ const DashboardLayout = ({
   const navigate = useNavigate();
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
   const [isDesktopNavOpen, setDesktopNavOpen] = useState(true);
+  const [isBackdropOpen, setBackdropOpen] = useState(true);
 
 
   // Cek apakah user sudah login atau belum
   React.useEffect(() => {
     getUserIsLogin();
+
     // eslint-disable-next-line
   }, []);
 
 
 
+  // Cek apakah data user yang sedang login ada tau tidak
+  React.useEffect(() => {
+    if (reduxUserLogin !== null) {
+      setTimeout(() => {
+        setBackdropOpen(false);
+      }, 1000);
+    } else {
+      setBackdropOpen(true);
+    }
+  }, [reduxUserLogin, setBackdropOpen]);
+
+
+
+  // Mengambil data user yang sedang login
   const getUserIsLogin = async () => {
     if (cookies.get('auth_token') !== undefined) {
       if (reduxUserLogin === null) {
@@ -116,7 +132,7 @@ const DashboardLayout = ({
 
       <Backdrop
         className={classes.backdrop}
-        open={reduxUserLogin === null ? true : false}
+        open={isBackdropOpen}
       >
         <Progress
           type='circular'

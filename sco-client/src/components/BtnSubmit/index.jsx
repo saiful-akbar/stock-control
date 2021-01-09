@@ -12,15 +12,8 @@ import { makeStyles } from '@material-ui/core/styles';
  * Style
  */
 const useStyles = makeStyles((theme) => ({
-  wrapper: {
-    position: 'relative',
-  },
   buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
+    marginRight: 10
   },
   btnCancel: {
     marginRight: 10
@@ -40,55 +33,47 @@ const BtnSubmit = ({
   titleCancel,
   size,
   color,
-  singleButton,
   disabled,
+  singleButton,
   ...props
 }) => {
   const classes = useStyles();
 
-  return loading
-    ? (
-      <div className={classes.wrapper}>
-        <Button
-          disabled={true}
-          color={color}
-          size={size}
-          {...props}
-        >
-          {'Processing...'}
-        </Button>
-        <CircularProgress size={24} className={classes.buttonProgress} />
-      </div>
-    ) : (
-      <Box
-        display='flex'
-        justifyContent='center'
-        alignItems='center'
-      >
-        {!singleButton && (
-          <Button
-            onClick={handleCancel}
-            color={color}
-            size={size}
-            disabled={disabled}
-            className={classes.btnCancel}
-          >
-            {titleCancel}
-          </Button>
-        )}
 
+  return (
+    <Box
+      display='flex'
+      justifyContent='center'
+      alignItems='center'
+    >
+      {loading && (
+        <CircularProgress size={25} className={classes.buttonProgress} />
+      )}
+
+      {!singleButton && (
         <Button
-          type='submit'
-          onClick={handleSubmit}
-          size={size}
+          onClick={handleCancel}
           color={color}
-          disabled={disabled}
-          {...props}
+          size={size}
+          disabled={Boolean(disabled || loading)}
+          className={classes.btnCancel}
         >
-          {title}
+          {titleCancel}
         </Button>
-      </Box>
-    )
+      )}
+
+      <Button
+        type='submit'
+        onClick={handleSubmit}
+        size={size}
+        color={color}
+        disabled={Boolean(disabled || loading)}
+        {...props}
+      >
+        {title}
+      </Button>
+    </Box>
+  )
 };
 
 /**
@@ -100,8 +85,8 @@ BtnSubmit.defaultProps = {
   size: 'medium',
   color: 'primary',
   loading: false,
-  singleButton: false,
   disabled: false,
+  singleButton: false,
   handleCancel: () => null,
   handleSubmit: () => null,
 };

@@ -11,7 +11,7 @@ class ItemGroup extends Model
 {
     use HasFactory, Uuid;
 
-    protected $fillabale = ['item_g_code', 'item_g_name'];
+    protected $fillable = ['item_g_code', 'item_g_name'];
 
     /**
      * Relasi one to many dengan model ItemSubGroup

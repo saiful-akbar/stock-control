@@ -459,6 +459,7 @@ function UserEditProfile({ userId, setReduxToast, reduxTheme, ...props }) {
                       handleSubmit={handleSubmit}
                       handleCancel={resetForm}
                       loading={loading}
+                      disabled={loading}
                     />
                   )}
               </Box>

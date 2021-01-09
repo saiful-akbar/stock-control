@@ -1,6 +1,11 @@
+import Cookies from 'universal-cookie';
+
+// cookie
+const cookie = new Cookies();
+
 export const reduxState = {
   loading: true,
-  theme: 'light',
+  theme: cookie.get('auth_token') === 'dark' ? 'dark' : 'light',
   userLogin: null,
   toast: {
     show: false,

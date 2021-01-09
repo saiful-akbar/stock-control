@@ -23,7 +23,7 @@ function Tbody({
   row,
   columns,
   userAccess,
-  onUpdate,
+  onEdit,
   onSelect,
   ...props
 }) {
@@ -51,7 +51,7 @@ function Tbody({
 
               {userAccess.user_m_s_i_update === 1 && (
                 <CustomTooltip placement='bottom' title='Edit' >
-                  <IconButton>
+                  <IconButton onClick={() => onEdit(row)}>
                     <EditIcon fontSize='small' />
                   </IconButton>
                 </CustomTooltip>
@@ -85,7 +85,7 @@ Tbody.defaultProps = {
   row: {},
   columns: [],
   userAccess: null,
-  onUpdate: (e) => e.preventDefault(),
+  onEdit: (e) => e.preventDefault(),
   onSelect: (e) => e.preventDefault(),
 };
 

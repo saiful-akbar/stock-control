@@ -33,3 +33,19 @@ export const apiGetItemGroups = (
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 }
+
+
+/**
+ * Fungsi api untuk menambahkan data baru
+ * 
+ * @param {obj} data 
+ */
+export const apiAddItemGroup = (data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'POST',
+      url: '/master/item-groups',
+      data: data
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+}

@@ -59,6 +59,7 @@ function TheadActions({
   onReload,
   onSearch,
   onAdd,
+  userAccess,
   ...props
 }) {
   const classes = useStyles();
@@ -151,14 +152,18 @@ function TheadActions({
                   </CustomTooltip>
                 </Box>
 
-                <Button
-                  fullWidth
-                  color="primary"
-                  variant="contained"
-                  onClick={onAdd}
-                >
-                  {"Add Item Group"}
-                </Button>
+                {userAccess !== null && (
+                  userAccess.user_m_s_i_create === 1 && (
+                    <Button
+                      fullWidth
+                      color="primary"
+                      variant="contained"
+                      onClick={onAdd}
+                    >
+                      {"Add Item Group"}
+                    </Button>
+                  )
+                )}
               </Box>
             </Grid>
 
@@ -199,6 +204,7 @@ function TheadActions({
 TheadActions.defaultProps = {
   selected: [],
   loading: false,
+  userAccess: null,
   searchValue: "",
   onReload: (e) => e.preventDefault(),
   onSearch: (e) => e.preventDefault(),
