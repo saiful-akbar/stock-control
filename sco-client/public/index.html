@@ -5,23 +5,51 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="theme-color" content="#000000" />
-  <title>Stock Control</title>
-  <link href="%PUBLIC_URL%/favicon2.png" rel="shortcut icon" />
-  <link href="%PUBLIC_URL%/manifest.json" rel="manifest" />
+  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+  <!-- Konfigurasi PWA di iOS -->
+  <meta name="apple-mobile-web-app-title" content="Stock Control App">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/static/images/logo/logo.png">
+  <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/static/images/splash/launch-640.png"
+    media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/static/images/splash/launch-750.png"
+    media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/static/images/splash/launch-1242.png"
+    media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/static/images/splash/launch-1125.png"
+    media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/static/images/splash/launch-1536.png"
+    media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/static/images/splash/launch-1668.png"
+    media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
+  <link rel="apple-touch-startup-image" href="%PUBLIC_URL%/static/images/splash/launch-2048.png"
+    media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
 
   <!-- Google font & material icon -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700"
-    rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700" />
+
+  <title>Stock Control</title>
 
   <!-- pace progress -->
   <script data-pace-options='{ "ajax": false }' src="%PUBLIC_URL%/pace/pace.js"></script>
-  <link href="%PUBLIC_URL%/pace/pace-silver-minimal.css" rel="stylesheet" />
+  <link rel="stylesheet" href="%PUBLIC_URL%/pace/pace-silver-minimal.css" />
+  <link rel="stylesheet" href="%PUBLIC_URL%/css/main.css">
 </head>
 
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
+
+  <div id="preloader">
+    <img id="preloader-animation" src="%PUBLIC_URL%/static/animation/loader-light.gif" alt="Loader">
+  </div>
+
+  <script src="%PUBLIC_URL%/js/main.js"></script>
 </body>
 
 </html>

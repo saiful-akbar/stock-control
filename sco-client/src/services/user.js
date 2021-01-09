@@ -1,5 +1,6 @@
 import {
   api,
+  cache,
 } from './api';
 
 /**
@@ -290,7 +291,7 @@ export const apiEditUserAccount = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/${id}/account`
+      url: `/user/${id}/account`,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };
@@ -320,7 +321,8 @@ export const apiGetUserDetail = (id) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/${id}`
+      url: `/user/${id}`,
+      adapter: cache.adapter,
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 };

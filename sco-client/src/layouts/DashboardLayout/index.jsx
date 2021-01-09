@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
-import { connect } from 'react-redux';
-import NavBar from './NavBar';
-import TopBar from './TopBar';
+import React from 'react';
+import {
+  Outlet,
+  useNavigate
+} from 'react-router-dom';
+import {
+  withCookies
+} from 'react-cookie';
+import {
+  connect
+} from 'react-redux';
 import { userLogin } from '../../services/auth';
-import { makeStyles, Backdrop } from '@material-ui/core';
-import clsx from 'clsx';
-import Toast from 'src/components/Toast';
+import { makeStyles } from '@material-ui/core';
 import { reduxAction } from 'src/config/redux/state';
-import Progress from 'src/components/Progress';
+import Toast from 'src/components/Toast';
+import TopBar from './TopBar';
+import NavBar from './NavBar';
+import clsx from 'clsx';
 
 const drawerWidth = 256;
 const useStyles = makeStyles((theme) => ({
@@ -55,10 +61,6 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     overflow: 'auto'
   },
-  backdrop: {
-    zIndex: 9999,
-    backgroundColor: theme.palette.background.dark
-  },
 }));
 
 const DashboardLayout = ({
@@ -70,9 +72,19 @@ const DashboardLayout = ({
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [isMobileNavOpen, setMobileNavOpen] = useState(false);
-  const [isDesktopNavOpen, setDesktopNavOpen] = useState(true);
-  const [isBackdropOpen, setBackdropOpen] = useState(true);
+  const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
+  const [isDesktopNavOpen, setDesktopNavOpen] = React.useState(true);
+
+
+  /**
+   * Menghapus preloader
+   */
+  React.useEffect(() => {
+    window.onload = () => {
+      const preloader = document.getElementById("preloader");
+      preloader.remove();
+    }
+  });
 
 
   // Cek apakah user sudah login atau belum
@@ -81,20 +93,6 @@ const DashboardLayout = ({
 
     // eslint-disable-next-line
   }, []);
-
-
-
-  // Cek apakah data user yang sedang login ada tau tidak
-  React.useEffect(() => {
-    if (reduxUserLogin !== null) {
-      setTimeout(() => {
-        setBackdropOpen(false);
-      }, 1000);
-    } else {
-      setBackdropOpen(true);
-    }
-  }, [reduxUserLogin, setBackdropOpen]);
-
 
 
   // Mengambil data user yang sedang login
@@ -129,17 +127,6 @@ const DashboardLayout = ({
         openMobile={isMobileNavOpen}
         openDesktop={isDesktopNavOpen}
       />
-
-      <Backdrop
-        className={classes.backdrop}
-        open={isBackdropOpen}
-      >
-        <Progress
-          type='circular'
-          size={70}
-          show={true}
-        />
-      </Backdrop>
 
       <div className={classes.wrapper} >
         <div

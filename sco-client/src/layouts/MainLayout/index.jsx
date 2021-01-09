@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import {
   makeStyles,
-  Backdrop,
-  LinearProgress
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import Toast from 'src/components/Toast';
@@ -32,20 +30,22 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     overflow: 'auto'
   },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: theme.palette.primary.main,
-    backgroundColor: theme.palette.background.dark
-  },
 }));
 
 const MainLayout = ({ reduxToast, setReduxToast }) => {
   const classes = useStyles();
-  const [backdrop, setBackdrop] = useState(true);
 
+
+  /**
+   * Menghapus preloader
+   */
   useEffect(() => {
-    setBackdrop(false);
-  }, [setBackdrop]);
+    window.onload = () => {
+      const preloader = document.getElementById("preloader");
+      preloader.remove();
+    }
+  });
+
 
   return (
     <div className={classes.root}>
@@ -56,10 +56,6 @@ const MainLayout = ({ reduxToast, setReduxToast }) => {
           </div>
         </div>
       </div>
-
-      <Backdrop className={classes.backdrop} open={backdrop}>
-        <LinearProgress color="primary" style={{ width: '50%' }} />
-      </Backdrop>
 
       <Toast
         open={reduxToast.show}

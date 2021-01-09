@@ -8,13 +8,13 @@ import {
  */
 import DashboardLayout from 'src/layouts/DashboardLayout';
 import MainLayout from 'src/layouts/MainLayout';
-import Logout from 'src/layouts/Logout';
 
 /*
- * Views
- */
+* Views
+*/
 import Dashboard from 'src/views/Dashboard';
 import LoginView from 'src/views/auth/LoginView';
+import Logout from 'src/views/Logout';
 import NotFoundView from 'src/views/errors/NotFoundView';
 import AccountView from 'src/views/account/AccountView';
 import Menus from './views/Menus';
