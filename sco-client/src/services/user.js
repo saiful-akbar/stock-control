@@ -1,6 +1,5 @@
 import {
   api,
-  cache,
 } from './api';
 
 /**
@@ -322,7 +321,10 @@ export const apiGetUserDetail = (id) => {
     api({
       method: 'GET',
       url: `/user/${id}`,
-      adapter: cache.adapter,
-    }).then(res => resolve(res)).catch(err => reject(err.response));
+    }).then((res) => {
+      resolve(res);
+    }).catch((err) => {
+      reject(err.response);
+    });
   });
 };

@@ -10,14 +10,13 @@ import {
   IconButton,
   Toolbar,
   makeStyles,
-  Typography,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import CustomTooltip from 'src/components/CustomTooltip';
 import ThemeMode from './ThemeMode';
 import Clock from 'src/components/Clock';
-import { Skeleton } from '@material-ui/lab';
+import Logo from 'src/components/Logo';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -70,84 +69,55 @@ const TopBar = ({
     >
       <Toolbar>
         <Hidden mdDown>
-          {reduxUserLogin === null
-            ? (
-              <Skeleton variant='circle' className={classes.menuButton} width={50} height={50} />
-            ) : (
-              <CustomTooltip
-                title={openDesktopNav ? 'Close menu' : 'Open menu'}
-                placement='bottom'
-              >
-                <IconButton
-                  onClick={onDesktopNavOpen}
-                  className={classes.menuButton}
-                  color='inherit'
-                >
-                  {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
-                </IconButton>
-              </CustomTooltip>
-            )}
+          <CustomTooltip
+            title={openDesktopNav ? 'Close menu' : 'Open menu'}
+            placement='bottom'
+          >
+            <IconButton
+              onClick={onDesktopNavOpen}
+              className={classes.menuButton}
+              color='inherit'
+            >
+              {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
+            </IconButton>
+          </CustomTooltip>
         </Hidden>
 
         <Hidden lgUp>
-          {reduxUserLogin === null
-            ? (
-              <Skeleton
-                variant='circle'
-                width={50}
-                height={50}
-                className={classes.menuButton}
-              />
-            ) : (
-              <CustomTooltip
-                title='Open menu'
-                placement='bottom'
-              >
-                <IconButton
-                  onClick={onMobileNavOpen}
-                  className={classes.menuButton}
-                  color='inherit'
-                >
-                  <MenuIcon />
-                </IconButton>
-              </CustomTooltip>
-            )}
+          <CustomTooltip title='Open menu' placement='bottom' >
+            <IconButton
+              onClick={onMobileNavOpen}
+              className={classes.menuButton}
+              color='inherit'
+            >
+              <MenuIcon />
+            </IconButton>
+          </CustomTooltip>
         </Hidden>
 
-        {reduxUserLogin === null
-          ? (
-            <Skeleton variant='text'>
-              <Typography variant="h6" >
-                {'SCO'}
-              </Typography>
-            </Skeleton>
-          ) : (
-            <Typography
-              variant="h6"
-              color='inherit'
-              className={classes.title}
-              component={RouterLink}
-              to='/dashboard'
-            >
-              {'SCO'}
-            </Typography>
-          )
-        }
-
-
-        <Box flexGrow={1} />
+        <Hidden smUp>
+          <Box flexGrow={1} />
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <RouterLink to="/">
+              <Logo />
+            </RouterLink>
+          </Box>
+          <Box flexGrow={1} />
+        </Hidden>
 
         <Hidden xsDown>
-          {reduxUserLogin === null
-            ? <Skeleton variant='rect' className={classes.skeletonClock} width={150} height={30} />
-            : <Clock className={classes.clock} />
-          }
+          <RouterLink to="/">
+            <Logo />
+          </RouterLink>
+          <Box flexGrow={1} />
+          <Clock className={classes.clock} />
         </Hidden>
 
-        {reduxUserLogin === null
-          ? <Skeleton variant='circle' width={50} height={50} />
-          : <ThemeMode color='inherit' />
-        }
+        <ThemeMode color='inherit' />
 
       </Toolbar>
     </AppBar >

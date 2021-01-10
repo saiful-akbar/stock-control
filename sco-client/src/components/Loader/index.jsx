@@ -40,7 +40,7 @@ function Loader({ children, show, ...props }) {
         className={classes.backdrop}
         open={show}
       >
-        <CircularProgress color="primary" size={55} />
+        <CircularProgress color="primary" size={50} />
       </Backdrop>
       {children}
     </div>

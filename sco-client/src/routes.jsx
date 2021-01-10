@@ -3,29 +3,29 @@ import {
   Navigate
 } from 'react-router-dom';
 
-/*
- * Layouts 
- */
+/* Layouts */
 import DashboardLayout from 'src/layouts/DashboardLayout';
 import MainLayout from 'src/layouts/MainLayout';
-
-/*
-* Views
-*/
-import Dashboard from 'src/views/Dashboard';
-import LoginView from 'src/views/auth/LoginView';
 import Logout from 'src/views/Logout';
-import NotFoundView from 'src/views/errors/NotFoundView';
-import AccountView from 'src/views/account/AccountView';
-import Menus from './views/Menus';
-import User from './views/User';
-import UserCreate from './views/User/UserCreate';
-import UserEdit from './views/User/UserEdit';
-import UserEditMenuAccess from './views/User/UserEditMenuAccess';
-import UserDetail from './views/User/UserDetail';
-import Items from './views/Items';
-import Forbidden from './views/errors/Forbidden';
 
+/* views MalinLayout */
+const LoginView = React.lazy(() => import('src/views/auth/LoginView'));
+const NotFoundView = React.lazy(() => import('src/views/errors/NotFoundView'));
+const Forbidden = React.lazy(() => import('src/views/errors/Forbidden'));
+
+/* views DashboardLayout */
+const Dashboard = React.lazy(() => import('src/views/Dashboard'));
+const AccountView = React.lazy(() => import('src/views/account/AccountView'));
+const Menus = React.lazy(() => import('src/views/Menus'));
+const User = React.lazy(() => import('src/views/User'));
+const UserCreate = React.lazy(() => import('src/views/User/UserCreate'));
+const UserEdit = React.lazy(() => import('src/views/User/UserEdit'));
+const UserEditMenuAccess = React.lazy(() => import('src/views/User/UserEditMenuAccess'));
+const UserDetail = React.lazy(() => import('src/views/User/UserDetail'));
+const Items = React.lazy(() => import('src/views/Items'));
+const Consignee = React.lazy(() => import('src/views/Consignee'));
+
+/* routes */
 const routes = [{
   path: '/',
   element: < DashboardLayout />,
@@ -57,6 +57,9 @@ const routes = [{
     }, {
       path: '/master/items',
       element: <Items />,
+    }, {
+      path: '/master/consignee',
+      element: <Consignee />,
     }, {
       path: '/',
       element: <Navigate to="/dashboard" />
@@ -92,7 +95,6 @@ const routes = [{
 }, {
   path: '/logout',
   element: <Logout />,
-}
-];
+}];
 
 export default routes;

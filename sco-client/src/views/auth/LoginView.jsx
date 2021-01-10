@@ -18,7 +18,6 @@ import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
@@ -59,7 +58,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
+    width: theme.spacing(10),
+    height: theme.spacing(10),
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function LoginView({ cookies, loginUser }) {
+function LoginView({ cookies, loginUser, reduxTheme }) {
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [toast, setToast] = React.useState({ show: false, type: null, message: '' });
@@ -133,6 +133,7 @@ function LoginView({ cookies, loginUser }) {
         className={classes.root}
       >
         <CssBaseline />
+
         <Grid
           item
           square
@@ -143,9 +144,10 @@ function LoginView({ cookies, loginUser }) {
           className={classes.paperForm}
         >
           <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              <LockOutlinedIcon />
-            </Avatar>
+            <Avatar
+              src={`/static/images/logo/logo-${reduxTheme}-1.webp`}
+              className={classes.avatar}
+            />
 
             <Typography component='h1' variant='h5'>
               Logged In
@@ -184,6 +186,7 @@ function LoginView({ cookies, loginUser }) {
                     noValidate
                     className={classes.form}
                     onSubmit={handleSubmit}
+                    autoComplete='off'
                   >
                     <TextField
                       fullWidth
@@ -211,7 +214,6 @@ function LoginView({ cookies, loginUser }) {
                         label='Password'
                         id='password'
                         name='password'
-                        autoComplete='off'
                         disabled={loading}
                         type={showPassword ? 'text' : 'password'}
                         value={values.password}
@@ -293,4 +295,11 @@ function reduxDispatch(dispatch) {
   }
 };
 
-export default connect(null, reduxDispatch)(withCookies(LoginView));
+
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme
+  }
+}
+
+export default connect(reduxState, reduxDispatch)(withCookies(LoginView));

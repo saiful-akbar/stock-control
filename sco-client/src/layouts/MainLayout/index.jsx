@@ -1,12 +1,42 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import {
-  makeStyles,
+  makeStyles, CircularProgress,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import Toast from 'src/components/Toast';
 import { reduxAction } from 'src/config/redux/state';
+import ErrorBoundary from 'src/components/ErrorBoundary';
 
+
+/* Style untuk komponen lodingSuspense */
+const fallbackStyle = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  }
+}));
+
+
+/* Komponent untuk fallback suspense */
+function Fallback() {
+  const classes = fallbackStyle();
+
+  return (
+    <div className={classes.root}>
+      <CircularProgress color='primary' size={50} />
+    </div>
+  )
+}
+
+
+/* Style untuk komponen MainLayout */
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -52,7 +82,11 @@ const MainLayout = ({ reduxToast, setReduxToast }) => {
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
-            <Outlet />
+            <ErrorBoundary>
+              <React.Suspense fallback={<Fallback />} >
+                <Outlet />
+              </React.Suspense>
+            </ErrorBoundary>
           </div>
         </div>
       </div>

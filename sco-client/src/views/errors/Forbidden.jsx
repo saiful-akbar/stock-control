@@ -44,7 +44,7 @@ const Forbidden = (props) => {
         <Box textAlign="center">
           <img
             alt="NOT FOUND"
-            src="/static/images/forbidden.svg"
+            src="/static/images/svg/forbidden.svg"
             className={classes.image}
           />
           <Typography

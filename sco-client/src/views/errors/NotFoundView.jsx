@@ -43,7 +43,7 @@ const NotFoundView = (props) => {
         {<Box textAlign="center">
           <img
             alt="NOT FOUND"
-            src="/static/images/error-404.svg"
+            src="/static/images/svg/error-404.svg"
             className={classes.image}
           />
           <Typography
