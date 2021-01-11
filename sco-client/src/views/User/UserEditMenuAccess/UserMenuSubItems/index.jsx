@@ -295,7 +295,7 @@ function UserMenuSubItems(props) {
                         justify="flex-end"
                         alignItems="center"
                       >
-                        <Grid item lg={6} xs={12}>
+                        <Grid item md={6} xs={12}>
                           {menus !== null
                             ? (
                               <FormControl
@@ -332,7 +332,7 @@ function UserMenuSubItems(props) {
                             )}
                         </Grid>
 
-                        <Grid item lg={6} xs={12}>
+                        <Grid item md={6} xs={12}>
                           {menus !== null
                             ? (
                               <FormControl
@@ -372,7 +372,7 @@ function UserMenuSubItems(props) {
                             )}
                         </Grid>
 
-                        <Grid item lg={6} xs={12} align="right">
+                        <Grid item xs={12} align="center">
                           {menus !== null
                             ? (
                               <>
@@ -439,16 +439,22 @@ function UserMenuSubItems(props) {
                       justifyContent='flex-end'
                       p={2}
                     >
-                      <BtnSubmit
-                        title='Add To List'
-                        color='primary'
-                        variant='contained'
-                        type='submit'
-                        singleButton={true}
-                        disabled={!Boolean(values.menu_sub_item_id)}
-                        onClick={handleSubmit}
-                        loading={isSubmitting}
-                      />
+                      {menus !== null
+                        ? (
+                          <BtnSubmit
+                            title='Add To List'
+                            color='primary'
+                            variant='contained'
+                            type='submit'
+                            singleButton={true}
+                            disabled={!Boolean(values.menu_sub_item_id)}
+                            onClick={handleSubmit}
+                            loading={isSubmitting}
+                          />
+                        ) : (
+                          <Skeleton variant='rect' height={36} width={117} />
+                        )
+                      }
                     </Box>
                   </form>
                 )}

@@ -14,8 +14,10 @@ import {
   Checkbox,
   InputLabel,
   FormControl,
-  Paper,
   colors,
+  Card,
+  CardContent,
+  Divider,
 } from '@material-ui/core';
 import {
   apiGetUserMenuItems,
@@ -242,44 +244,45 @@ function UserMenuItems(props) {
     <>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper
-            variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
-            elevation={3}
+
+          <Formik
+            initialValues={{
+              menu_item_id: '',
+              user_m_i_read: true,
+              user_m_i_create: false,
+              user_m_i_update: false,
+              user_m_i_delete: false,
+            }}
+            validationSchema={Yup.object().shape({
+              menu_item_id: Yup.string().required('Menu Item is a required field'),
+              user_m_i_create: Yup.boolean(),
+              user_m_i_read: Yup.boolean(),
+              user_m_i_update: Yup.boolean(),
+              user_m_i_delete: Yup.boolean(),
+            })}
+            onSubmit={handleSubmiForm}
           >
-            <Box p={2}>
-              <Formik
-                initialValues={{
-                  menu_item_id: '',
-                  user_m_i_read: true,
-                  user_m_i_create: false,
-                  user_m_i_update: false,
-                  user_m_i_delete: false,
-                }}
-                validationSchema={Yup.object().shape({
-                  menu_item_id: Yup.string().required('Menu Item is a required field'),
-                  user_m_i_create: Yup.boolean(),
-                  user_m_i_read: Yup.boolean(),
-                  user_m_i_update: Yup.boolean(),
-                  user_m_i_delete: Yup.boolean(),
-                })}
-                onSubmit={handleSubmiForm}
-              >
-                {({
-                  handleBlur,
-                  handleChange,
-                  handleSubmit,
-                  values,
-                  isSubmitting
-                }) => (
-                    <form onSubmit={handleSubmit} noValidate autoComplete='off' >
+            {({
+              handleBlur,
+              handleChange,
+              handleSubmit,
+              values,
+              isSubmitting
+            }) => (
+                <form onSubmit={handleSubmit} noValidate autoComplete='off' >
+                  <Card
+                    variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+                    elevation={3}
+                  >
+                    <CardContent>
                       <Grid
                         spacing={3}
                         container
                         direction="row"
-                        justify="center"
-                        alignItems="center"
+                        justify="space-between"
+                        alignItems="flex-start"
                       >
-                        <Grid item lg={5} xs={12}>
+                        <Grid item md={6} xs={12}>
                           {menuItems !== null
                             ? (
                               <FormControl
@@ -313,7 +316,7 @@ function UserMenuItems(props) {
                             )}
                         </Grid>
 
-                        <Grid item lg={5} xs={12} align="center">
+                        <Grid item md={6} xs={12} align="center">
                           {menuItems !== null
                             ? (
                               <>
@@ -370,28 +373,34 @@ function UserMenuItems(props) {
                               <Skeleton variant='rect' height={41} />
                             )}
                         </Grid>
-
-                        <Grid item lg={2} xs={12} align="center">
-                          {menuItems !== null
-                            ? <BtnSubmit
-                              title='Add To List'
-                              color='primary'
-                              variant='contained'
-                              type='submit'
-                              singleButton={true}
-                              disabled={!Boolean(values.menu_item_id)}
-                              onClick={handleSubmit}
-                              loading={isSubmitting}
-                            />
-                            : <Skeleton variant='rect' height={41} />
-                          }
-                        </Grid>
                       </Grid>
-                    </form>
-                  )}
-              </Formik>
-            </Box>
-          </Paper>
+                    </CardContent>
+
+                    <Divider />
+
+                    <Box
+                      display='flex'
+                      justifyContent='flex-end'
+                      p={2}
+                    >
+                      {menuItems !== null
+                        ? <BtnSubmit
+                          title='Add To List'
+                          color='primary'
+                          variant='contained'
+                          type='submit'
+                          singleButton={true}
+                          disabled={!Boolean(values.menu_item_id)}
+                          onClick={handleSubmit}
+                          loading={isSubmitting}
+                        />
+                        : <Skeleton variant='rect' height={36} width={117} />
+                      }
+                    </Box>
+                  </Card>
+                </form>
+              )}
+          </Formik>
         </Grid>
 
         <Grid item xs={12}>
