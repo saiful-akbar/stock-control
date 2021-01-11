@@ -385,7 +385,7 @@ function ItemGroupTable(props) {
                       >
                         {
                           loading
-                            ? 'Loading, please wait...'
+                            ? 'Loading...'
                             : 'No data in table'
                         }
                       </TableCell>

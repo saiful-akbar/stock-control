@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Zoom,
   IconButton
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -15,10 +14,6 @@ import { apiTruncateTokens } from 'src/services/user';
 import CustomTooltip from 'src/components/CustomTooltip';
 
 
-// animasi
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Zoom ref={ref} {...props} />;
-});
 
 
 // Komponen utama
@@ -92,7 +87,6 @@ function UserTruncateToken(props) {
       <Dialog
         open={open}
         onClose={handleClose}
-        TransitionComponent={Transition}
         maxWidth='sm'
         fullWidth={true}
         aria-labelledby='dialog-truncate-title'

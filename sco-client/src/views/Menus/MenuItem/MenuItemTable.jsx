@@ -472,7 +472,7 @@ const MenuItemTable = (props) => {
                               align='center'
                               className={classes.tableCell}
                             >
-                              {loading ? 'Loading, please wait...' : 'No data in table'}
+                              {loading ? 'Loading...' : 'No data in table'}
                             </TableCell>
                           </TableRow>
                         ) : (

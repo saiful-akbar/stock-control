@@ -4,18 +4,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Zoom,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import Toast from 'src/components/Toast';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiDeleteMenuItem } from 'src/services/menuItem';
-
-
-// animasi
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Zoom ref={ref} {...props} />;
-});
 
 // Main component utama
 const MenuItemDelete = ({
@@ -79,7 +72,6 @@ const MenuItemDelete = ({
       <Dialog
         open={open}
         onClose={handleClose}
-        TransitionComponent={Transition}
         maxWidth='sm'
         fullWidth={true}
         aria-labelledby='dialog-delete'

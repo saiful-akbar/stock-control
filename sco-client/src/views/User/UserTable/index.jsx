@@ -426,7 +426,7 @@ const UserTable = (props) => {
                           <TableCell colSpan={12} align='center' >
                             {
                               loading
-                                ? 'Loading, please wait...'
+                                ? 'Loading...'
                                 : 'No data in table'
                             }
                           </TableCell>

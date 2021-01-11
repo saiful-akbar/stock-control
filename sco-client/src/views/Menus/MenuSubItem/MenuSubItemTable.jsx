@@ -381,7 +381,7 @@ const MenuSubItemTable = (props) => {
                         ? (
                           <TableRow hover >
                             <TableCell colSpan={6} align='center' className={classes.tableCell} >
-                              {loading ? 'Loading, please wait...' : 'No data in table'}
+                              {loading ? 'Loading...' : 'No data in table'}
                             </TableCell>
                           </TableRow>
                         ) : (

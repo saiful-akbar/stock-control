@@ -5,19 +5,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Zoom,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { reduxAction } from 'src/config/redux/state';
 import { connect } from 'react-redux';
 import { apiDeleteUser } from 'src/services/user';
-
-
-// animasi
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Zoom ref={ref} {...props} />;
-});
 
 
 class UserDelete extends Component {
@@ -34,7 +27,6 @@ class UserDelete extends Component {
   componentWillUnmount() {
     this.mounted = false;
   }
-
 
 
   /**
@@ -90,13 +82,12 @@ class UserDelete extends Component {
       <Dialog
         open={open}
         onClose={this.handleClose}
-        TransitionComponent={Transition}
         maxWidth='sm'
         fullWidth={true}
         aria-labelledby='dialog-delete'
         aria-describedby="delete-description"
       >
-        <DialogTitle>Delete user</DialogTitle>
+        <DialogTitle>{'Delete user'}</DialogTitle>
 
         <DialogContent>
           <Alert severity="error">

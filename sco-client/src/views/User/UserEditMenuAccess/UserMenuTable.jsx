@@ -10,7 +10,6 @@ import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CustomTooltip from 'src/components/CustomTooltip';
-import Progress from 'src/components/Progress';
 import { makeStyles, lighten } from '@material-ui/core/styles';
 import {
   Card,
@@ -21,6 +20,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
+import Loader from 'src/components/Loader';
 
 
 /**
@@ -217,7 +217,6 @@ function UserMenuTable({
       variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
       elevation={3}
     >
-      <Progress show={loading} />
       <CardContent>
         <EnhancedTableToolbar
           numSelected={selected.length}
@@ -226,107 +225,108 @@ function UserMenuTable({
           onDelete={() => onDelete(selected)}
         />
 
-        <TableContainer className={classes.container}>
-          <Table >
-            <TableHead>
-              <TableRow>
-                {action && (
-                  <TableCell padding="checkbox">
-                    <CustomTooltip
-                      placement='bottom'
-                      title={
-                        selected.length === rows.length
-                          ? 'Unselect all'
-                          : 'Select all'
-                      }
-                    >
-                      <Checkbox
-                        color='primary'
-                        indeterminate={Boolean(selected.length > 0 && selected.length < rows.length)}
-                        checked={Boolean(rows.length > 0 && selected.length === rows.length)}
-                        onChange={handleSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                      />
-                    </CustomTooltip>
-                  </TableCell>
-                )}
-
-                {columns.map((column, key) => (
-                  <TableCell
-                    key={key}
-                    align={column.align}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {rows.length === 0
-                ? (
-                  <TableRow hover>
-                    <TableCell
-                      align='center'
-                      colSpan={
-                        action
-                          ? columns.length + 2
-                          : columns.length
-                      }
-                    >
-                      {loading ? 'Loading, pelase wait...' : 'No data in table'}
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
-                    const isItemSelected = isSelected(row.id);
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        color='primary'
-                        tabIndex={-1}
-                        aria-checked={isItemSelected}
-                        key={row.id}
-                        selected={isItemSelected}
+        <Loader show={loading}>
+          <TableContainer className={classes.container}>
+            <Table >
+              <TableHead>
+                <TableRow>
+                  {action && (
+                    <TableCell padding="checkbox">
+                      <CustomTooltip
+                        placement='bottom'
+                        title={
+                          selected.length === rows.length
+                            ? 'Unselect all'
+                            : 'Select all'
+                        }
                       >
-                        {action && (
-                          <TableCell padding="checkbox">
-                            <CustomTooltip title='Select' placement='bottom'>
-                              <Checkbox
-                                color='primary'
-                                checked={isItemSelected}
-                                onClick={(event) => handleClick(event, row.id)}
-                              />
-                            </CustomTooltip>
-                          </TableCell>
-                        )}
+                        <Checkbox
+                          color='primary'
+                          indeterminate={Boolean(selected.length > 0 && selected.length < rows.length)}
+                          checked={Boolean(rows.length > 0 && selected.length === rows.length)}
+                          onChange={handleSelectAllClick}
+                          inputProps={{ 'aria-label': 'select all desserts' }}
+                        />
+                      </CustomTooltip>
+                    </TableCell>
+                  )}
 
-                        {columns.map((column, colKey) => (
-                          <TableCell
-                            key={colKey}
-                            align={column.align}
-                          >
-                            {row[column.field]}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    )
-                  })
-                )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                  {columns.map((column, key) => (
+                    <TableCell
+                      key={key}
+                      align={column.align}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
 
-        <TablePagination
-          rowsPerPageOptions={[25, 50, 100, 250]}
-          component='div'
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+              <TableBody>
+                {rows.length === 0
+                  ? (
+                    <TableRow hover>
+                      <TableCell
+                        align='center'
+                        colSpan={
+                          action
+                            ? columns.length + 2
+                            : columns.length
+                        }
+                      >
+                        {loading ? 'Loading...' : 'No data in table'}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
+                      const isItemSelected = isSelected(row.id);
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          color='primary'
+                          tabIndex={-1}
+                          aria-checked={isItemSelected}
+                          key={row.id}
+                          selected={isItemSelected}
+                        >
+                          {action && (
+                            <TableCell padding="checkbox">
+                              <CustomTooltip title='Select' placement='bottom'>
+                                <Checkbox
+                                  color='primary'
+                                  checked={isItemSelected}
+                                  onClick={(event) => handleClick(event, row.id)}
+                                />
+                              </CustomTooltip>
+                            </TableCell>
+                          )}
+
+                          {columns.map((column, colKey) => (
+                            <TableCell
+                              key={colKey}
+                              align={column.align}
+                            >
+                              {row[column.field]}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      )
+                    })
+                  )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[25, 50, 100, 250]}
+            component='div'
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Loader>
       </CardContent>
     </Card>
   );
