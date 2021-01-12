@@ -11,13 +11,24 @@ import CustomTooltip from 'src/components/CustomTooltip';
 
 const ThemeMode = ({ setReduxTheme, reduxTheme, ...props }) => {
   const cookies = new Cookies();
+  const date = new Date();
 
 
+  /**
+   * Fungsi handle saat button theme di klik
+   * @param {*} theme 
+   */
   const handleDarkMode = (theme) => {
-    const date = new Date();
+
+    // simpan pada redux theme
+    setReduxTheme(theme);
+
+    // Set cookie    
     date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
     cookies.set('theme', theme, { path: '/', expires: date });
-    setReduxTheme(theme);
+
+    // ubah class pada tag body
+    document.querySelector("body").classList.toggle("dark");
   };
 
 
