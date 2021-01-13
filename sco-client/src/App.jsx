@@ -8,7 +8,6 @@ import { ThemeProvider } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import { themeLight, themeDark } from './theme';
-import { reduxAction } from './config/redux/state';
 
 
 
@@ -18,7 +17,6 @@ import { reduxAction } from './config/redux/state';
  * @param {*} props 
  */
 const App = (props) => {
-  const { reduxTheme, setReduxTheme } = props;
   const routing = useRoutes(routes);
   const [cookies, setCookie] = useCookies();
 
@@ -26,20 +24,18 @@ const App = (props) => {
   React.useEffect(() => {
     const date = new Date();
     date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+    setCookie('theme', cookies.theme === 'dark' ? 'dark' : 'light', {
+      expires: date,
+      path: '/'
 
-    if (cookies.theme === undefined) {
-      setCookie('theme', 'light', {
-        expires: date,
-        path: '/'
-      });
-    }
+    });
 
-    setReduxTheme(cookies.theme);
-  }, [setReduxTheme, cookies.theme, setCookie]);
+    // eslint-disable-next-line
+  }, []);
 
 
   return (
-    <ThemeProvider theme={reduxTheme === 'dark' ? themeDark : themeLight}>
+    <ThemeProvider theme={props.reduxTheme === 'dark' ? themeDark : themeLight}>
       <GlobalStyles />
       {routing}
     </ThemeProvider>
@@ -57,14 +53,4 @@ const reduxState = (state) => ({
 });
 
 
-/**
- * Redux dispatch
- * 
- * @param {*} reducer 
- */
-const reduxReducer = (reducer) => ({
-  setReduxTheme: (value) => reducer({ type: reduxAction.theme, value: value }),
-});
-
-
-export default connect(reduxState, reduxReducer)(App);
+export default connect(reduxState, null)(App);

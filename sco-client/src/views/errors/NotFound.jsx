@@ -12,15 +12,13 @@ import { reduxAction } from 'src/config/redux/state';
 
 const useStyles = makeStyles((theme) => ({
   image: {
-    marginTop: '8%',
-    display: 'inline-block',
     maxWidth: '100%',
-    height: 400,
-    width: 400
+    height: 350,
+    width: 350
   },
 }));
 
-const NotFoundView = (props) => {
+const NotFound = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -35,17 +33,17 @@ const NotFoundView = (props) => {
       <Box
         display="flex"
         flexDirection="column"
-        height="100%"
         justifyContent="center"
         alignItems="center"
       >
 
-        {<Box textAlign="center">
-          <img
-            alt="NOT FOUND"
-            src="/static/images/svg/error-404.svg"
-            className={classes.image}
-          />
+        <img
+          alt="Not Found"
+          src="/static/images/svg/error-404.svg"
+          className={classes.image}
+        />
+
+        <Box m={3}>
           <Typography
             align="center"
             color="textPrimary"
@@ -53,18 +51,16 @@ const NotFoundView = (props) => {
           >
             {'404 | Not Found'}
           </Typography>
-        </Box>}
-
-        <Box textAlign="center" style={{ marginTop: 40 }}>
-          <Button
-            color='default'
-            size='large'
-            variant='outlined'
-            onClick={() => navigate('/')}
-          >
-            {'Go Back'}
-          </Button>
         </Box>
+
+        <Button
+          color='default'
+          size='large'
+          variant='outlined'
+          onClick={() => navigate('/')}
+        >
+          {'Go Back'}
+        </Button>
       </Box>
     </Page>
   );
@@ -74,4 +70,4 @@ const reduxDispatch = (dispatch) => ({
   setReduxLoading: value => dispatch({ type: reduxAction.loading, value: value })
 })
 
-export default connect(null, reduxDispatch)(NotFoundView);
+export default connect(null, reduxDispatch)(NotFound);

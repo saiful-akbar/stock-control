@@ -10,7 +10,7 @@ import Logout from 'src/views/Logout';
 
 /* views MalinLayout */
 const LoginView = React.lazy(() => import('src/views/auth/LoginView'));
-const NotFoundView = React.lazy(() => import('src/views/errors/NotFoundView'));
+const NotFound = React.lazy(() => import('src/views/errors/NotFound'));
 const Forbidden = React.lazy(() => import('src/views/errors/Forbidden'));
 
 /* views DashboardLayout */
@@ -86,7 +86,7 @@ const routes = [{
   children: [
     {
       path: '/notfound',
-      element: <NotFoundView />
+      element: <NotFound />
     }, {
       path: '/forbidden',
       element: <Forbidden />

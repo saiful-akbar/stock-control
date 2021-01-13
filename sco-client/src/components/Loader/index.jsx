@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 /**
  * Komponent utama
  */
-function Loader({ children, show, ...props }) {
+function Loader({ children, show, size, ...props }) {
   const classes = useStyles();
 
 
@@ -40,7 +40,7 @@ function Loader({ children, show, ...props }) {
         className={classes.backdrop}
         open={show}
       >
-        <CircularProgress color="primary" size={60} />
+        <CircularProgress color="primary" size={size} {...props} />
       </Backdrop>
       {children}
     </div>
@@ -62,6 +62,7 @@ Loader.propTypes = {
  */
 Loader.defaultProps = {
   show: false,
+  size: 50,
 }
 
 export default Loader;

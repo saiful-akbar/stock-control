@@ -26,7 +26,7 @@ function Fallback() {
 
   return (
     <div className={classes.root}>
-      <CircularProgress color='primary' size={60} />
+      <CircularProgress color='primary' size={50} />
     </div>
   )
 }

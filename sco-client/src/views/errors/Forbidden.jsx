@@ -12,12 +12,9 @@ import { reduxAction } from 'src/config/redux/state';
 
 const useStyles = makeStyles((theme) => ({
   image: {
-    marginTop: '17%',
-    display: 'inline-block',
     maxWidth: '100%',
     height: 350,
     width: 350,
-    marginBottom: 20,
   },
 }));
 
@@ -36,17 +33,18 @@ const Forbidden = (props) => {
       <Box
         display="flex"
         flexDirection="column"
-        height="100%"
         justifyContent="center"
         alignItems="center"
+        height={'100%'}
       >
 
-        <Box textAlign="center">
-          <img
-            alt="NOT FOUND"
-            src="/static/images/svg/forbidden.svg"
-            className={classes.image}
-          />
+        <img
+          alt="Forbidden"
+          src="/static/images/svg/forbidden.svg"
+          className={classes.image}
+        />
+
+        <Box m={3}>
           <Typography
             align="center"
             color="textPrimary"
@@ -56,16 +54,14 @@ const Forbidden = (props) => {
           </Typography>
         </Box>
 
-        <Box textAlign="center" style={{ marginTop: 40 }}>
-          <Button
-            color='default'
-            size='large'
-            variant='outlined'
-            onClick={() => navigate('/')}
-          >
-            {'Go Back'}
-          </Button>
-        </Box>
+        <Button
+          color='default'
+          size='large'
+          variant='outlined'
+          onClick={() => navigate('/')}
+        >
+          {'Go Back'}
+        </Button>
       </Box>
     </Page>
   );
