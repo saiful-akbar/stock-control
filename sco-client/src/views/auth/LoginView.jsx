@@ -51,27 +51,25 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: 'center',
   },
   paper: {
-    margin: theme.spacing(2, 2),
+    margin: theme.spacing(8, 4, 4, 4),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   avatar: {
+    marginBottom: theme.spacing(1),
     width: theme.spacing(10),
     height: theme.spacing(10),
   },
   form: {
     width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
   },
   submit: {
-    marginBottom: theme.spacing(2),
+    margin: theme.spacing(3, 0, 2),
   },
   paperForm: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
   }
 }));
 

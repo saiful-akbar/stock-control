@@ -45,19 +45,15 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2)
   },
   menu: {
-    paddingRight: '5px',
+    width: 256, // lebar menu
     height: 'calc(100% - 88px)',
     overflow: 'hidden',
     '&:hover': {
       overflowY: 'auto'
     }
   },
-  mainMenu: {
-    width: 'calc(256px - 11px)',
-  },
-  skeletonMenu: {
-    marginRight: '-5px',
-    height: '100%',
+  menuNavigation: {
+    width: `calc(256px - 18px)`, // lebar navigasi menu
   }
 }));
 
@@ -169,9 +165,9 @@ const NavBar = ({
       <Box className={classes.menu}>
         {reduxUserLogin === null
           ? (
-            <Skeleton variant='rect' className={classes.skeletonMenu} />
+            <Skeleton variant='rect' height='100%' />
           ) : (
-            <Box className={classes.mainMenu}>
+            <Box className={classes.menuNavigation}>
               <List>
                 <NavItem
                   collapse={collapseIsActive}
