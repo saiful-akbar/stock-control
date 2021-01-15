@@ -148,7 +148,7 @@ class MenuSubItemController extends Controller
     {
         // validasi form inputan
         $request->validate([
-            "menu_item" => "required|Exists:menu_items,id",
+            "menus" => "required|Exists:menu_items,id",
             "title"     => "required|max:128|unique:menu_sub_items,menu_s_i_title",
             "url"       => "required|max:128|unique:menu_sub_items,menu_s_i_url",
         ]);
@@ -167,7 +167,7 @@ class MenuSubItemController extends Controller
          * cek apakah kata pertama sama dengan url menu item
          * jika bukan gabungkan url menu item dengan url menu sub item yang baru
          */
-        $menu_item = DB::table("menu_items")->select("menu_i_url")->where("id", $request->menu_item)->first();
+        $menu_item = DB::table("menu_items")->select("menu_i_url")->where("id", $request->menus)->first();
         if ($menu_item->menu_i_url != substr($url, 0, strlen($menu_item->menu_i_url))) {
             $url = $menu_item->menu_i_url . $url;
         }
@@ -186,7 +186,7 @@ class MenuSubItemController extends Controller
 
         // propses menambahkan data baru
         MenuSubItem::create([
-            "menu_item_id"   => htmlspecialchars($request->menu_item),
+            "menu_item_id"   => htmlspecialchars($request->menus),
             "menu_s_i_title" => htmlspecialchars(ucwords($request->title)),
             "menu_s_i_url"   => htmlspecialchars(strtolower($url)),
         ]);
@@ -205,7 +205,7 @@ class MenuSubItemController extends Controller
     {
         // validasi form
         $request->validate([
-            "menu_item" => "required|Exists:menu_items,id",
+            "menus" => "required|Exists:menu_items,id",
             "title"     => "required|max:128",
             "url"       => "required|max:128",
         ]);
@@ -224,7 +224,7 @@ class MenuSubItemController extends Controller
          * cek apakah kata pertama sama dengan url menu item
          * jika bukan gabungkan url menu item dengan url menu sub item yang baru
          */
-        $menu_item = DB::table("menu_items")->select("menu_i_url")->where("id", $request->menu_item)->first();
+        $menu_item = DB::table("menu_items")->select("menu_i_url")->where("id", $request->menus)->first();
         if ($menu_item->menu_i_url != substr($url, 0, strlen($menu_item->menu_i_url))) {
             $url = $menu_item->menu_i_url . $url;
         }
@@ -254,7 +254,7 @@ class MenuSubItemController extends Controller
 
         // Proses Update data
         MenuSubItem::where("id", $menuSubItem->id)->update([
-            "menu_item_id"   => htmlspecialchars($request->menu_item),
+            "menu_item_id"   => htmlspecialchars($request->menus),
             "menu_s_i_title" => htmlspecialchars(ucwords($request->title)),
             "menu_s_i_url"   => htmlspecialchars($url),
         ]);

@@ -5,18 +5,12 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  Slide,
   MenuItem,
   FormHelperText,
   FormControl,
   Select,
   InputLabel,
-  AppBar,
-  Toolbar,
-  Typography,
-  Card,
-  CardContent,
-  CardHeader,
+  DialogTitle,
 } from '@material-ui/core';
 import {
   apiCreateMenuItem
@@ -25,31 +19,17 @@ import Toast from 'src/components/Toast';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 
 
 /**
  * Style
  */
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    position: 'relative',
-    backgroundColor: theme.palette.type === 'light' ? theme.palette.background.topBar : theme.palette.background.dark,
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-    flex: 1,
+  header: {
+    backgroundColor: theme.palette.background.topBar,
+    color: '#ffffff',
   },
 }));
-
-
-/**
- * Animasi transisi
- */
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 
 /* 
@@ -59,7 +39,6 @@ const MenuItemCreate = (props) => {
   const classes = useStyles();
 
   const [loading, setLoading] = React.useState(false);
-  const [disableSubmit, setDisableSubmit] = React.useState(true);
   const [toast, setToast] = React.useState({ show: false, type: null, message: '' });
   const [values, setValues] = React.useState({
     title: '',
@@ -69,10 +48,9 @@ const MenuItemCreate = (props) => {
   });
 
   const [errors, setErrors] = React.useState({
-    title: '',
-    url: '',
-    icon: '',
-    children: ''
+    type: 'info',
+    message: 'Fields marked with * are required',
+    field: {}
   });
 
   const handleChange = (e) => {
@@ -99,14 +77,6 @@ const MenuItemCreate = (props) => {
     }
   };
 
-  React.useEffect(() => {
-    if (values.title !== '' && values.url !== '' && values.icon !== '') {
-      setDisableSubmit(false);
-    } else {
-      setDisableSubmit(true);
-    }
-  }, [values.title, values.url, values.icon]);
-
   const resetValues = () => {
     setValues({
       title: '',
@@ -114,21 +84,26 @@ const MenuItemCreate = (props) => {
       icon: '',
       children: 0,
     });
-  }
-
-  const handleCloseDialog = () => {
-    props.close();
-    resetValues();
     setErrors({
-      title: '',
-      url: '',
-      icon: '',
-      children: ''
+      type: 'info',
+      message: 'Fields marked with * are required',
+      field: {}
     });
   }
 
-  const handleSubmit = async () => {
+  const handleCloseDialog = () => {
+    if (!loading) {
+      props.close();
+      resetValues();
+    } else {
+      return;
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+
     try {
       let res = await apiCreateMenuItem(values);
       setToast({ show: true, type: 'success', message: res.data.message });
@@ -149,159 +124,124 @@ const MenuItemCreate = (props) => {
           message: `(#${err.status}) ${err.data.message}`
         });
         if (err.status === 422) {
-          const { errors } = err.data;
           setErrors({
-            title: errors.title,
-            url: errors.url,
-            icon: errors.icon,
-            children: errors.children
+            type: 'error',
+            message: err.data.message,
+            field: { ...err.data.errors }
           });
         }
       }
     }
   };
 
+
   return (
     <>
       <Dialog
-        fullScreen
-        open={props.open}
-        TransitionComponent={Transition}
-        maxWidth='lg'
+        fullWidth
         scroll='paper'
-        fullWidth={true}
-        aria-labelledby='dialog-create-title'
+        maxWidth='md'
+        open={props.open}
+        onClose={handleCloseDialog}
       >
-        <AppBar color='secondary' className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="close"
-              onClick={handleCloseDialog}
-              disabled={loading}
-            >
-              <CloseIcon />
-            </IconButton>
 
-            <Typography
-              variant="h6"
-              className={classes.title}
-            >
-              {'Menus'}
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <DialogTitle className={classes.header}>{'Create a new menu'}</DialogTitle>
 
-        <Alert severity='info'>
-          {'Fields marked with * are required'}
+        <Alert severity={errors.type}>
+          {errors.message}
         </Alert>
 
-        <DialogContent dividers={true}>
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            alignItems="center"
-          >
-            <Grid item md={8} sm={10} xs={12}>
-              <Card variant='outlined'>
-                <CardHeader title="Create new menus" />
+        <DialogContent dividers>
+          <form onSubmit={handleSubmit} autoComplete='off'>
+            <Grid container spacing={2} mt={2} mb={2} >
+              <Grid item md={6} xs={12} >
+                <TextField
+                  fullWidth
+                  required
+                  name='title'
+                  type='text'
+                  variant='outlined'
+                  label='Title'
+                  disabled={loading}
+                  onBlur={handleBlur}
+                  helperText={errors.field.title}
+                  onChange={handleChange}
+                  value={values.title}
+                  error={Boolean(errors.field.title)}
+                />
+              </Grid>
 
-                <CardContent>
-                  <Grid
-                    container
-                    direction='row'
-                    justify='center'
-                    alignItems='center'
-                    spacing={3}
+              <Grid item md={6} xs={12} >
+                <TextField
+                  fullWidth
+                  required
+                  name='url'
+                  type='text'
+                  variant='outlined'
+                  label='Url'
+                  disabled={loading}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.url}
+                  error={Boolean(errors.field.url)}
+                  helperText={errors.field.url}
+                />
+              </Grid>
+
+              <Grid item md={6} xs={12} >
+                <TextField
+                  fullWidth
+                  required
+                  label='Icon'
+                  name='icon'
+                  type='text'
+                  variant='outlined'
+                  disabled={loading}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.icon}
+                  error={Boolean(errors.field.icon)}
+                  helperText={
+                    Boolean(errors.field.icon)
+                      ? errors.field.icon
+                      : 'Use material design icons'
+                  }
+                />
+              </Grid>
+
+              <Grid item md={6} xs={12} >
+                <FormControl
+                  fullWidth
+                  variant='outlined'
+                  disabled={loading}
+                  error={Boolean(errors.field.children)}
+                >
+                  <InputLabel id='children'>Children *</InputLabel>
+                  <Select
+                    required
+                    labelId='children'
+                    label='Children *'
+                    name='children'
+                    value={values.children}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   >
-                    <Grid item xs={12} >
-                      <TextField
-                        fullWidth
-                        required
-                        name='title'
-                        type='text'
-                        variant='outlined'
-                        label='Title'
-                        disabled={loading}
-                        onBlur={handleBlur}
-                        helperText={errors.title}
-                        onChange={handleChange}
-                        value={values.title}
-                        error={Boolean(errors.title)}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} >
-                      <TextField
-                        fullWidth
-                        required
-                        disabled={loading}
-                        name='url'
-                        type='text'
-                        variant='outlined'
-                        label='Url'
-                        onBlur={handleBlur}
-                        helperText={errors.url}
-                        onChange={handleChange}
-                        value={values.url}
-                        error={Boolean(errors.url)}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} >
-                      <TextField
-                        fullWidth
-                        required
-                        disabled={loading}
-                        label='Icon'
-                        name='icon'
-                        type='text'
-                        variant='outlined'
-                        onBlur={handleBlur}
-                        helperText={errors.icon}
-                        onChange={handleChange}
-                        value={values.icon}
-                        error={Boolean(errors.icon)}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} >
-                      <FormControl
-                        fullWidth
-                        variant='outlined'
-                        disabled={loading}
-                        error={Boolean(errors.children)}
-                      >
-                        <InputLabel id='children'>Children</InputLabel>
-                        <Select
-                          labelId='children'
-                          name='children'
-                          value={values.children}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          label='Children *'
-                          required
-                        >
-                          <MenuItem value='1' >Yes</MenuItem>
-                          <MenuItem value='0' >No</MenuItem>
-                        </Select>
-                        <FormHelperText>{errors.children}</FormHelperText>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
+                    <MenuItem value='1' >Yes</MenuItem>
+                    <MenuItem value='0' >No</MenuItem>
+                  </Select>
+                  <FormHelperText>{errors.field.children}</FormHelperText>
+                </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
+
+            <button type='submit' style={{ display: 'none' }} />
+          </form>
         </DialogContent>
 
         <DialogActions>
           <BtnSubmit
             title='Create'
             loading={loading}
-            disabled={disableSubmit}
             handleSubmit={handleSubmit}
             handleCancel={handleCloseDialog}
             variant='contained'

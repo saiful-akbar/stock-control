@@ -15,7 +15,7 @@ class CreateMenuItemsTable extends Migration
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('menu_i_title', 128);
+            $table->string('menu_i_title', 128);
             $table->string('menu_i_url', 128)->unique();
             $table->string('menu_i_icon', 128);
             $table->boolean('menu_i_children');

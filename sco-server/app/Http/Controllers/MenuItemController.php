@@ -115,6 +115,7 @@ class MenuItemController extends Controller
         // validasi form
         $request->validate([
             "title"    => "required|max:128|unique:menu_items,menu_i_title",
+            "url"      => "required|max:128|unique:menu_items,menu_i_url",
             "icon"     => "required|max:128",
             "children" => "required|boolean",
         ]);

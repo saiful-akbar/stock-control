@@ -47,8 +47,9 @@ const BtnSubmit = ({
       alignItems='center'
     >
       {loading && (
-        <CircularProgress size={25} className={classes.buttonProgress} />
+        <CircularProgress size={22} className={classes.buttonProgress} />
       )}
+
 
       {!singleButton && (
         <Button
