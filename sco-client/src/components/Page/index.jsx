@@ -36,7 +36,7 @@ const Page = forwardRef(({
     <div
       ref={ref}
       className={classes.root}
-      style={{ paddingBottom: pb ? 90 : 10 }}
+      style={{ paddingBottom: pb ? 100 : 20 }}
     >
       <Helmet>
         <title>{Boolean(title) && `${title} - `}Stock Control</title>
