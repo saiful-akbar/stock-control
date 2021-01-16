@@ -59,6 +59,7 @@ function TheadActions({
   onReload,
   onSearch,
   onAdd,
+  onDelete,
   userAccess,
   ...props
 }) {
@@ -114,7 +115,7 @@ function TheadActions({
             </Typography>
 
             <CustomTooltip title="Delete" placement="bottom">
-              <IconButton className={classes.buttonDelete}>
+              <IconButton className={classes.buttonDelete} onClick={onDelete}>
                 <DeleteIcon />
               </IconButton>
             </CustomTooltip>
@@ -209,6 +210,7 @@ TheadActions.defaultProps = {
   onReload: (e) => e.preventDefault(),
   onSearch: (e) => e.preventDefault(),
   onAdd: (e) => e.preventDefault(),
+  onDelete: (e) => e.preventDefault(),
 };
 
 

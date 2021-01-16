@@ -2,6 +2,8 @@ import React from 'react';
 import {
   useNavigate
 } from 'react-router-dom';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
 import {
   Dialog,
   DialogTitle,
@@ -12,7 +14,7 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import BtnSubmit from 'src/components/BtnSubmit';
-import { apiAddItemGroup } from 'src/services/itemGroups';
+import { apiAddItemGroup, apiUpdateItemGroup } from 'src/services/itemGroups';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 
@@ -29,16 +31,24 @@ function ItemGroupForm(props) {
    * State
    */
   const [loading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState({
-    field: {},
-    type: 'info',
-    message: 'Form with * is required'
-  });
-  const [values, setValues] = React.useState({
-    id: '',
-    group_code: '',
-    group_name: '',
-  });
+  const [alert, setAlert] = React.useState({ type: 'info', message: 'Form with * is required' });
+
+
+  /**
+   * Skema validasi untuk form
+   */
+  const validationSchema = () => {
+    return Yup.object().shape({
+      group_code: Yup
+        .string('The group code field must be a string.')
+        .max(64, 'The group code may not be greater than 64 characters.')
+        .required('The group code field is required.'),
+      group_name: Yup
+        .string('The group name field must be a string.')
+        .required('The group name field is required.')
+    });
+  }
+
 
 
   /**
@@ -54,88 +64,37 @@ function ItemGroupForm(props) {
 
 
   /**
-   * Cek props.type aksi
-   */
-  React.useEffect(() => {
-    if (props.type === 'Edit' && props.data !== null) {
-      setValues({
-        id: props.data.id,
-        group_code: props.data.item_g_code,
-        group_name: props.data.item_g_name,
-      });
-    } else {
-      setValues({
-        id: '',
-        group_code: '',
-        group_name: '',
-      });
-    }
-  }, [props.type, props.data]);
-
-
-  /**
    * Handle close dialog
    */
-  const handleClose = () => {
+  const handleClose = (e) => {
     if (!loading) {
-      setValues({
-        id: '',
-        group_code: '',
-        group_name: '',
-      });
-      setErrors({
-        field: {},
-        type: 'info',
-        message: 'Form with * is required'
-      });
-      props.onClose();
+      setAlert({ type: 'info', message: 'Form with * is required' });
+      props.onClose()
     } else {
-      return;
+      e.preventDefault();
     }
-  }
-
-
-  /**
-   * Handle saat form diisi
-   */
-  const handleChange = (e) => {
-    let newValues = { ...values };
-    newValues[e.target.name] = e.target.value;
-    setValues(newValues);
   }
 
 
   /**
    * Handle saat form di submit
    */
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmitForm = async (values, { setErrors }) => {
     setLoading(true);
 
-    if (props.type === 'Add') {
-      handleAdd();
-    } else if (props.type === 'Edit') {
-      handleUpdate();
-    }
-  }
-
-
-  /**
-   * Handle add item group
-   */
-  const handleAdd = async () => {
     try {
-      const res = await apiAddItemGroup(values);
+      const res = props.type === 'Add' ? await apiAddItemGroup(values) : await apiUpdateItemGroup(props.data.id, values);
+
       if (is_mounted.current) {
         setLoading(false);
-        props.setReduxToats(true, 'success', res.data.message);
+        props.setReduxToast(true, 'success', res.data.message);
         props.onReloadTable(true);
         handleClose();
       }
     } catch (err) {
       if (is_mounted.current) {
         setLoading(false);
-        props.setReduxToats(true, 'error', `(#${err.status}) ${err.data.message}`);
+        props.setReduxToast(true, 'error', `(#${err.status}) ${err.data.message}`);
 
         if (err.status === 401) {
           window.location.href = '/logout';
@@ -147,22 +106,11 @@ function ItemGroupForm(props) {
           navigate('/error/notfound');
         }
         else if (err.status === 422) {
-          setErrors({
-            field: err.data.errors,
-            type: 'error',
-            message: err.data.message
-          });
+          setAlert({ type: 'error', message: err.data.message });
+          setErrors(err.data.errors);
         }
       }
     }
-  }
-
-
-  /**
-   * handle update item group
-   */
-  const handleUpdate = async () => {
-
   }
 
 
@@ -174,65 +122,82 @@ function ItemGroupForm(props) {
       open={props.open}
       onClose={handleClose}
     >
-      <DialogTitle>
-        {`${props.type} item group`}
-      </DialogTitle>
+      <Formik
+        onSubmit={handleSubmitForm}
+        validationSchema={validationSchema}
+        initialValues={{
+          group_code: props.type === 'Edit' && props.data !== null ? props.data.item_g_code : '',
+          group_name: props.type === 'Edit' && props.data !== null ? props.data.item_g_name : '',
+        }}
+      >
+        {({ errors, handleBlur, handleChange, handleSubmit, touched, values, }) => (
+          <React.Fragment>
+            <DialogTitle>
+              {`${props.type} item group`}
+            </DialogTitle>
 
-      <Alert severity={errors.type}>
-        {errors.message}
-      </Alert>
+            <Alert severity={alert.type} >
+              {alert.message}
+            </Alert>
 
-      <DialogContent>
-        <form onSubmit={handleSubmit} autoComplete='off'>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id='group-code'
-                label='Group Code *'
-                variant='outlined'
-                name='group_code'
-                type='text'
-                margin='dense'
-                disabled={loading}
-                onChange={handleChange}
-                value={values.group_code}
-                error={Boolean(errors.field.group_code)}
-                helperText={errors.field.group_code}
+            <DialogContent>
+              <form onSubmit={handleSubmit} autoComplete='off' noValidate>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      required
+                      type='text'
+                      name='group_code'
+                      id='group_code'
+                      label='Group Code'
+                      variant='outlined'
+                      margin='dense'
+                      disabled={loading}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.group_code}
+                      error={Boolean(touched.group_code && errors.group_code)}
+                      helperText={touched.group_code && errors.group_code}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      required
+                      multiline
+                      rows={3}
+                      type='text'
+                      name='group_name'
+                      id='group_name'
+                      label='Group Name'
+                      variant='outlined'
+                      margin='dense'
+                      disabled={loading}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.group_name}
+                      error={Boolean(touched.group_name && errors.group_name)}
+                      helperText={touched.group_name && errors.group_name}
+                    />
+                  </Grid>
+                </Grid>
+              </form>
+            </DialogContent>
+
+            <DialogActions>
+              <BtnSubmit
+                variant='contained'
+                title={props.type === 'Add' ? 'Add' : 'Update'}
+                loading={loading}
+                handleCancel={handleClose}
+                handleSubmit={handleSubmit}
               />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                multiline
-                rows={3}
-                margin='dense'
-                id='group-name'
-                label='Group Name *'
-                variant='outlined'
-                name='group_name'
-                type='text'
-                disabled={loading}
-                onChange={handleChange}
-                value={values.group_name}
-                error={Boolean(errors.field.group_name)}
-                helperText={errors.field.group_name}
-              />
-            </Grid>
-          </Grid>
-        </form>
-      </DialogContent>
-
-      <DialogActions>
-        <BtnSubmit
-          variant='contained'
-          title={props.type === 'Add' ? 'Add' : 'Update'}
-          loading={loading}
-          handleCancel={handleClose}
-          handleSubmit={handleSubmit}
-        />
-      </DialogActions>
+            </DialogActions>
+          </React.Fragment>
+        )}
+      </Formik>
     </Dialog>
   )
 
@@ -253,7 +218,7 @@ ItemGroupForm.defaultProps = {
 
 function reduxDispatch(dispatch) {
   return {
-    setReduxToats: (show, type, message) => dispatch({
+    setReduxToast: (show, type, message) => dispatch({
       type: reduxAction.toast,
       value: {
         show: show,

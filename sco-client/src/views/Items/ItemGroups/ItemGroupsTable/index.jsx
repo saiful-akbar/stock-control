@@ -132,6 +132,14 @@ function ItemGroupTable(props) {
 
 
   /**
+   * Handle slected rows saat dialog delete di tutup
+   */
+  React.useEffect(() => {
+    setSelected(props.selectedRows);
+  }, [props.selectedRows, setSelected]);
+
+
+  /**
    * Fungsi untuk mengambil data item groups
    * 
    * @param {integer} page
@@ -332,6 +340,7 @@ function ItemGroupTable(props) {
           userAccess={props.userAccess}
           onSearch={value => handleSearch(value)}
           onAdd={() => props.onAdd()}
+          onDelete={() => props.onDelete(selected)}
         />
 
         <Loader show={loading}>
@@ -383,11 +392,7 @@ function ItemGroupTable(props) {
                         align='center'
                         colSpan={6}
                       >
-                        {
-                          loading
-                            ? 'Loading...'
-                            : 'No data in table'
-                        }
+                        {loading ? 'Loading...' : 'No data in table'}
                       </TableCell>
                     </TableRow>
                   ) : (

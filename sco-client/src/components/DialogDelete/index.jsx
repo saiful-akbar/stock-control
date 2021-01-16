@@ -5,18 +5,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Zoom,
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import BtnSubmit from 'src/components/BtnSubmit';
-
-
-/**
- * Animasi
- */
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Zoom ref={ref} {...props} />;
-});
 
 
 /**
@@ -39,11 +30,8 @@ function DialogDelete({
     <Dialog
       open={open}
       onClose={() => onClose(loading)}
-      TransitionComponent={Transition}
       maxWidth='sm'
       fullWidth={true}
-      aria-labelledby='dialog-delete'
-      elevation={3}
     >
       <DialogTitle>{title}</DialogTitle>
 
@@ -53,6 +41,7 @@ function DialogDelete({
             ? (
               <div>
                 <p>Are you sure you want to permanently delete this data ?</p>
+                <p>All data related to this data will also be permanently deleted.</p>
                 <p>Deleted data cannot be recovered.</p>
               </div>
             ) : (
@@ -82,11 +71,11 @@ function DialogDelete({
  */
 DialogDelete.defaultProps = {
   open: false,
-  onDelete: () => null,
-  onClose: () => true,
   loading: false,
   title: 'Delete',
   contentText: '',
+  onDelete: (e) => e.preventDefault(),
+  onClose: (e) => e.preventDefault(),
 };
 
 

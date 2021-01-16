@@ -110,8 +110,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::group(["prefix" => "item-groups"], function () {
             Route::get("/", [ItemGroupController::class, "index"])->middleware("access.item:read");
             Route::post("/", [ItemGroupController::class, "create"])->middleware("access.item:create");
+            Route::delete("/", [ItemGroupController::class, "delete"])->middleware("access.item:delete");
             Route::patch("/{item_group}", [ItemGroupController::class, "update"])->middleware("access.item:update");
-            Route::delete("/{item_group}", [ItemGroupController::class, "delete"])->middleware("access.item:delete");
         });
     });
 });

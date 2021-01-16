@@ -49,3 +49,34 @@ export const apiAddItemGroup = (data) => {
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 }
+
+/**
+ * Fungsi api untuk merubah item group
+ * 
+ * @param {obj} data 
+ */
+export const apiUpdateItemGroup = (id, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'PATCH',
+      url: `/master/item-groups/${id}`,
+      data: data
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+}
+
+
+/**
+ * Fungsi api untuk menghapus item group
+ * 
+ * @param {obj} data 
+ */
+export const apiDeleteItemGroup = (data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'DELETE',
+      url: `/master/item-groups`,
+      data: data
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+}

@@ -81,13 +81,13 @@ const UserForm = (props) => {
 
   return (
     <Formik
+      validationSchema={getValidationSchema}
+      onSubmit={handleSubmitForm}
       initialValues={{
         username: props.data.username,
         password: props.data.password,
         is_active: props.data.is_active === '1' ? true : false,
       }}
-      validationSchema={getValidationSchema}
-      onSubmit={handleSubmitForm}
     >
       {({
         errors,

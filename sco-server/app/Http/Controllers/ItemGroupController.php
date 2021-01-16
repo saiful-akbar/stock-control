@@ -150,10 +150,45 @@ class ItemGroupController extends Controller
 
     public function update(Request $request, ItemGroup $item_group)
     {
+        // validasi request
+        $request->validate([
+            "group_code" => "required|string|max:64",
+            "group_name" => "required|string"
+        ]);
+
+        // Cek apakah group code dirubah, & apakan group code sudah digunakan atau belum
+        if ($request->group_code != $item_group->group_code) {
+            $group_code = ItemGroup::where([
+                ["item_g_code", "=", $this->clearStr($request->group_code, "upper")],
+                ["id", "!=", $item_group->id]
+            ])->first();
+
+            if (!empty($group_code)) {
+                $request->validate([
+                    "group_code" => "unique:item_groups,item_g_code"
+                ]);
+            }
+        }
+
+        // Simpan perubahan
+        ItemGroup::where("id", $item_group->id)->update([
+            "item_g_code" => $this->clearStr($request->group_code, "upper"),
+            "item_g_name" => $this->clearStr($request->group_name),
+        ]);
+
+        // response berhasil
+        return response()->json([
+            "message" => "Item group updated successfully"
+        ], 200);
     }
 
 
-    public function delete(Request $request, ItemGroup $item_group)
+    public function delete(Request $request)
     {
+        $deleted = ItemGroup::destroy($request->all());
+        return response()->json([
+            "message" => "{$deleted} Item group deleted successfully",
+            "request" => $request->all()
+        ], 200);
     }
 }
