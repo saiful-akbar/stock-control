@@ -10,14 +10,16 @@ import {
   OutlinedInput,
   InputAdornment,
   InputLabel,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
 import { makeStyles, lighten } from "@material-ui/core/styles";
 import clsx from "clsx";
 import CustomTooltip from "src/components/CustomTooltip";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from '@material-ui/icons/Delete';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 
 
 /**
@@ -70,6 +72,25 @@ function TheadActions({
    * State
    */
   const [search, setSearch] = React.useState("");
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+
+  /**
+   * handle saat menu di klik
+   * @param {obj} event
+   */
+  const handleClickMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+
+  /**
+   * Handle close menu
+   */
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
 
   /**
@@ -97,104 +118,127 @@ function TheadActions({
    * Render komponent utama
    */
   return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: Boolean(selected.length > 0),
-      })}
-    >
-      {selected.length > 0
-        ? (
-          <React.Fragment>
-            <Typography
-              className={classes.title}
-              color="inherit"
-              variant="subtitle1"
-              component="div"
-            >
-              {selected.length} {"selected"}
-            </Typography>
-
-            <CustomTooltip title="Delete" placement="bottom">
-              <IconButton className={classes.buttonDelete} onClick={onDelete}>
-                <DeleteIcon />
-              </IconButton>
-            </CustomTooltip>
-          </React.Fragment>
-        ) : (
-          <Grid
-            container
-            direction="row"
-            justify="space-between"
-            alignItems="center"
-            spacing={3}
-          >
-            <Grid item lg={4} md={6} xs={12}>
-              <Box
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="center"
+    <>
+      <Toolbar
+        className={clsx(classes.root, {
+          [classes.highlight]: Boolean(selected.length > 0),
+        })}
+      >
+        {selected.length > 0
+          ? (
+            <React.Fragment>
+              <Typography
+                className={classes.title}
+                color="inherit"
+                variant="subtitle1"
+                component="div"
               >
+                {selected.length} {"selected"}
+              </Typography>
+
+              <CustomTooltip title="Delete" placement="bottom">
+                <IconButton className={classes.buttonDelete} onClick={onDelete}>
+                  <DeleteIcon />
+                </IconButton>
+              </CustomTooltip>
+            </React.Fragment>
+          ) : (
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+              spacing={3}
+            >
+              <Grid item lg={4} md={6} xs={12}>
                 <Box
-                  mr={1}
                   display="flex"
-                  justifyContent="center"
+                  justifyContent="flex-start"
                   alignItems="center"
                 >
-                  <CustomTooltip title="Mode options" placement="bottom">
-                    <IconButton>
-                      <MoreVertIcon />
-                    </IconButton>
-                  </CustomTooltip>
+                  <Box
+                    mr={1}
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <CustomTooltip title="Export or import" placement="bottom">
+                      <IconButton onClick={handleClickMenu}>
+                        <ImportExportIcon />
+                      </IconButton>
+                    </CustomTooltip>
 
-                  <CustomTooltip title="Reload" placement="bottom">
-                    <IconButton onClick={onReload}>
-                      <RefreshIcon />
-                    </IconButton>
-                  </CustomTooltip>
+                    <CustomTooltip title="Reload" placement="bottom">
+                      <IconButton onClick={onReload}>
+                        <RefreshIcon />
+                      </IconButton>
+                    </CustomTooltip>
+                  </Box>
+
+                  {userAccess !== null && (
+                    userAccess.user_m_s_i_create === 1 && (
+                      <Button
+                        fullWidth
+                        color="primary"
+                        variant="contained"
+                        onClick={onAdd}
+                      >
+                        {"Add Item Group"}
+                      </Button>
+                    )
+                  )}
                 </Box>
+              </Grid>
 
-                {userAccess !== null && (
-                  userAccess.user_m_s_i_create === 1 && (
-                    <Button
-                      fullWidth
-                      color="primary"
-                      variant="contained"
-                      onClick={onAdd}
-                    >
-                      {"Add Item Group"}
-                    </Button>
-                  )
-                )}
-              </Box>
-            </Grid>
-
-            <Grid item lg={8} md={6} xs={12}>
-              <form onSubmit={handleSubmitSearch} autoComplete="off" >
-                <FormControl fullWidth margin="dense" variant="outlined">
-                  <InputLabel htmlFor="search">{"Search item groups"}</InputLabel>
-                  <OutlinedInput
-                    label="Search item groups"
-                    id="search"
-                    name="search"
-                    type="search"
-                    value={search}
-                    disabled={loading}
-                    onBlur={e => handleBlurSearch(e)}
-                    onChange={e => setSearch(e.target.value)}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <InputAdornment position="start">
-                          <SearchIcon />
+              <Grid item lg={8} md={6} xs={12}>
+                <form onSubmit={handleSubmitSearch} autoComplete="off" >
+                  <FormControl fullWidth margin="dense" variant="outlined">
+                    <InputLabel htmlFor="search">{"Search item groups"}</InputLabel>
+                    <OutlinedInput
+                      label="Search item groups"
+                      id="search"
+                      name="search"
+                      type="search"
+                      value={search}
+                      disabled={loading}
+                      onBlur={e => handleBlurSearch(e)}
+                      onChange={e => setSearch(e.target.value)}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <InputAdornment position="start">
+                            <SearchIcon />
+                          </InputAdornment>
                         </InputAdornment>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              </form>
+                      }
+                    />
+                  </FormControl>
+                </form>
+              </Grid>
             </Grid>
-          </Grid>
+          )}
+      </Toolbar>
+
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={open}
+        onClose={handleCloseMenu}
+      >
+        <MenuItem onClick={handleCloseMenu} >
+          <Typography variant='inherit'>
+            {"Export to excel"}
+          </Typography>
+        </MenuItem>
+
+        {userAccess !== null && userAccess.user_m_s_i_create === 1 && (
+          <MenuItem onClick={handleCloseMenu} >
+            <Typography variant='inherit'>
+              {"Import from excel"}
+            </Typography>
+          </MenuItem>
         )}
-    </Toolbar>
+      </Menu>
+    </>
   )
 }
 

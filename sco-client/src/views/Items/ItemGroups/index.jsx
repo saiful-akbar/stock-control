@@ -67,7 +67,7 @@ function ItemGroups(props) {
         onClose={() => {
           setForm({
             open: false,
-            type: 'Add',
+            type: form.type,
             data: null
           });
         }}
