@@ -80,3 +80,22 @@ export const apiDeleteItemGroup = (data) => {
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 }
+
+
+/**
+ * Fungsi api untuk export excel item group
+ * 
+ * @param {string} search 
+ */
+export const apiExportItemGroup = (search = "") => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'GET',
+      url: `/master/item-groups/export`,
+      responseType: 'blob', //important
+      params: {
+        search: search
+      }
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+}

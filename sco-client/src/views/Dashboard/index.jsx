@@ -4,7 +4,6 @@ import Page from 'src/components/Page';
 import {
   Grid,
   Typography,
-  Paper,
   Box
 } from '@material-ui/core';
 
@@ -12,17 +11,20 @@ const Dashboard = (props) => {
   return (
     <Page
       title="Dashboard"
-      pageTitle='Dashboard'
     >
       <Grid container spacing={3}>
-        <Grid item xs={3}>
-          <Paper variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}>
-            <Box p={2}>
-              <Typography>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates consequuntur quo quisquam tempore nobis cumque itaque quis quaerat error! Veniam, voluptas minima beatae officiis optio eligendi! Voluptate ipsa aliquam ad?
-              </Typography>
-            </Box>
-          </Paper>
+        <Grid item xs={12}>
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+            p={2}
+          >
+            <Typography variant="h4" color="textPrimary">
+              Welcome to <u><strong>Stock Control Aplication</strong></u>
+            </Typography>
+          </Box>
         </Grid>
       </Grid>
     </Page>

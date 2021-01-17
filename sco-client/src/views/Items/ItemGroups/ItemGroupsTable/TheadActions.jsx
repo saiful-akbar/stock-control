@@ -12,6 +12,8 @@ import {
   InputLabel,
   Menu,
   MenuItem,
+  Backdrop,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles, lighten } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -20,6 +22,9 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import SearchIcon from "@material-ui/icons/Search";
 import DeleteIcon from '@material-ui/icons/Delete';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
+import { apiExportItemGroup } from "src/services/itemGroups";
+import { connect } from "react-redux";
+import { reduxAction } from "src/config/redux/state";
 
 
 /**
@@ -47,7 +52,11 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonDelete: {
     marginRight: theme.spacing(2),
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: theme.palette.type === 'dark' ? 'rgba(19, 28, 33, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+  },
 }));
 
 
@@ -63,9 +72,9 @@ function TheadActions({
   onAdd,
   onDelete,
   userAccess,
+  setReduxToast,
   ...props
 }) {
-  const classes = useStyles();
 
 
   /**
@@ -73,7 +82,23 @@ function TheadActions({
    */
   const [search, setSearch] = React.useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [isOpenBackdrop, setOpenBackdrop] = React.useState(false);
+
   const open = Boolean(anchorEl);
+  const classes = useStyles();
+  const isMounted = React.useRef(true);
+
+
+  /**
+   * handle jika komponen dilepas saat request api belum selesai.
+   */
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    }
+
+    // eslint-disable-next-line
+  }, []);
 
 
   /**
@@ -110,6 +135,35 @@ function TheadActions({
       onSearch(search);
     } else {
       e.preventDefault();
+    }
+  }
+
+
+  /**
+   * handle export
+   */
+  const handleExport = async () => {
+    handleCloseMenu();
+    setOpenBackdrop(true);
+    try {
+      const res = await apiExportItemGroup(search);
+      if (isMounted.current) {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        const date = new Date();
+
+        link.href = url;
+        link.setAttribute('download', `item groups (${date.toLocaleString()}).xlsx`); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setOpenBackdrop(false);
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        setOpenBackdrop(false);
+        setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+      }
     }
   }
 
@@ -224,7 +278,7 @@ function TheadActions({
         open={open}
         onClose={handleCloseMenu}
       >
-        <MenuItem onClick={handleCloseMenu} >
+        <MenuItem onClick={handleExport} >
           <Typography variant='inherit'>
             {"Export to excel"}
           </Typography>
@@ -238,6 +292,10 @@ function TheadActions({
           </MenuItem>
         )}
       </Menu>
+
+      <Backdrop className={classes.backdrop} open={isOpenBackdrop}>
+        <CircularProgress color="primary" size={50} />
+      </Backdrop>
     </>
   )
 }
@@ -258,4 +316,21 @@ TheadActions.defaultProps = {
 };
 
 
-export default TheadActions;
+/**
+ * Redux dispatch
+ */
+function reduxDispatch(dispatch) {
+  return {
+    setReduxToast: (show, type, message) => dispatch({
+      type: reduxAction.toast,
+      value: {
+        show: show,
+        type: type,
+        message: message,
+      }
+    }),
+  };
+}
+
+
+export default connect(null, reduxDispatch)(TheadActions);

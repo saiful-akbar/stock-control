@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ItemGroupsExport;
 use App\Models\ItemGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ItemGroupController extends Controller
 {
@@ -14,7 +16,7 @@ class ItemGroupController extends Controller
      * @param string $type
      * @param string $string
      *
-     * @return [type]
+     * @return String
      */
     private function clearStr(string $string, string $type = null)
     {
@@ -42,7 +44,7 @@ class ItemGroupController extends Controller
      *
      * @param Request $request
      *
-     * @return [type]
+     * @return Json|Array
      */
     public function index(Request $request)
     {
@@ -95,22 +97,18 @@ class ItemGroupController extends Controller
         }
 
         // Cek search
-        $data = [];
-        $search = "";
-        if (isset($request->search) && !empty($request->search)) {
-            $search = $this->clearStr($request->search);
-            $data = DB::table("item_groups")
-                ->where("item_g_code", "like", "%" . $search . "%")
-                ->orWhere("item_g_name", "like", "%" . $search . "%")
-                ->orWhere("created_at", "like", "%" . $search . "%")
-                ->orWhere("updated_at", "like", "%" . $search . "%")
-                ->orderBy($sort, $order_by)
-                ->paginate($per_page);
-        } else {
-            $data = DB::table("item_groups")->orderBy($sort, $order_by)->paginate($per_page);
-        }
+        $search = (isset($request->search)) ? $this->clearStr($request->search) : "";
 
+        // Amil data item group dari database
+        $data = DB::table("item_groups")
+            ->where("item_g_code", "like", "%" . $search . "%")
+            ->orWhere("item_g_name", "like", "%" . $search . "%")
+            ->orWhere("created_at", "like", "%" . $search . "%")
+            ->orWhere("updated_at", "like", "%" . $search . "%")
+            ->orderBy($sort, $order_by)
+            ->paginate($per_page);
 
+        // Respose berhasil
         return response()->json([
             "item_groups" => $data,
             "page"        => $request->page,
@@ -148,6 +146,14 @@ class ItemGroupController extends Controller
     }
 
 
+    /**
+     * Update item groups
+     *
+     * @param Request $request
+     * @param ItemGroup $item_group
+     *
+     * @return Json
+     */
     public function update(Request $request, ItemGroup $item_group)
     {
         // validasi request
@@ -183,6 +189,13 @@ class ItemGroupController extends Controller
     }
 
 
+    /**
+     * Multiple delete item groups
+     *
+     * @param Request $request
+     *
+     * @return Json
+     */
     public function delete(Request $request)
     {
         $deleted = ItemGroup::destroy($request->all());
@@ -190,5 +203,12 @@ class ItemGroupController extends Controller
             "message" => "{$deleted} Item group deleted successfully",
             "request" => $request->all()
         ], 200);
+    }
+
+    public function export(Request $request)
+    {
+        $search = (isset($request->search)) ? $this->clearStr($request->search) : "";
+
+        return (new ItemGroupsExport($search))->download('item-group-' . now() . '.xlsx');
     }
 }

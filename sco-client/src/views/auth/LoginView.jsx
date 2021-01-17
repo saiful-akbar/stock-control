@@ -145,6 +145,7 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
         >
           <div className={classes.paper}>
             <Avatar
+              alt="Logo"
               src={`/static/images/logo/logo-${reduxTheme}-1.webp`}
               className={classes.avatar}
             />
