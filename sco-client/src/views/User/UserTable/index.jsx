@@ -32,6 +32,7 @@ import UserTruncateToken from '../UserTruncateToken';
 import Row from './Row';
 import { reduxAction } from 'src/config/redux/state';
 import Loader from 'src/components/Loader';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 /**
  * style
@@ -219,6 +220,18 @@ const UserTable = (props) => {
     }
   }
 
+  /**
+   * Handle clear form search
+   */
+  const handleClearSearch = (e) => {
+    setSearch('');
+    getData(
+      rowData.users.current_page,
+      rowData.users.per_page,
+      '',
+    );
+  }
+
 
   /**
    * fungsi untuk merubah baris perhalaman pada tabel
@@ -366,20 +379,29 @@ const UserTable = (props) => {
               <TextField
                 fullWidth
                 variant='outlined'
-                label='Search users'
+                placeholder='Search by name or username'
                 margin='dense'
                 name='search'
-                type='search'
+                type='text'
                 value={search}
                 disabled={loading}
                 onBlur={handleBlur}
                 onChange={e => setSearch(e.target.value)}
                 InputProps={{
-                  endAdornment: (
-                    <InputAdornment>
+                  startAdornment: (
+                    <InputAdornment position='start'>
                       <SearchIcon />
                     </InputAdornment>
                   ),
+                  endAdornment: (
+                    rowData.search !== '' && search !== '' && (
+                      <InputAdornment position='end'>
+                        <IconButton size='small' onClick={handleClearSearch}>
+                          <CancelIcon fontSize='small' />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  )
                 }}
               />
             </form>

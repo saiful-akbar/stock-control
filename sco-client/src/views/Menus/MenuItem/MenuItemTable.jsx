@@ -28,6 +28,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import Toast from 'src/components/Toast';
 import { connect } from 'react-redux';
 import Loader from 'src/components/Loader';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 
 /**
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2.5),
   },
   container: {
-    maxHeight: "60vh",
+    maxHeight: '60vh',
   },
   visuallyHidden: {
     border: 0,
@@ -170,18 +171,18 @@ const MenuItemTable = (props) => {
    * @param {int} perPage 
    * @param {string} querySearch 
    * @param {string} sort 
-   * @param {"asc/desc"} orderBy
+   * @param {'asc/desc'} orderBy
    */
   const getData = async (
     page = rowData.menu_items.current_page,
     perPage = rowData.menu_items.per_page,
-    querySearch = search,
+    query = search,
     sort = rowData.sort,
     orderBy = rowData.order_by
   ) => {
     setLoading(true);
     try {
-      const res = await apiGetAllMenuItem(page, perPage, querySearch, sort, orderBy);
+      const res = await apiGetAllMenuItem(page, perPage, query, sort, orderBy);
       if (isMounted.current) {
         setRowData(res.data);
       }
@@ -208,7 +209,7 @@ const MenuItemTable = (props) => {
 
   /**
    * fungsi sortir tabel
-   * @param {string "asc/desc"} sort 
+   * @param {string 'asc/desc'} sort 
    */
   const handleSortTable = (sort) => {
     let orderBy = 'asc';
@@ -247,6 +248,15 @@ const MenuItemTable = (props) => {
     } else {
       handleSubmitSearch(e);
     }
+  }
+
+
+  /**
+   * Handle clear form search
+   */
+  const handleClearSearch = (e) => {
+    setSearch('');
+    getData(rowData.menu_items.current_page, rowData.menu_items.per_page, '');
   }
 
 
@@ -369,15 +379,15 @@ const MenuItemTable = (props) => {
           >
             <Grid item md={4} sm={6} xs={12}>
               <Box
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="center"
+                display='flex'
+                justifyContent='flex-start'
+                alignItems='center'
               >
                 <Box
                   mr={1}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
+                  display='flex'
+                  justifyContent='center'
+                  alignItems='center'
                 >
                   <CustomTooltip title='Reload'>
                     <IconButton onClick={handleRefresh}>
@@ -405,21 +415,30 @@ const MenuItemTable = (props) => {
               <form autoComplete='off' onSubmit={handleSubmitSearch}>
                 <TextField
                   fullWidth
-                  label='Search menus'
+                  placeholder='Search by title or path'
                   variant='outlined'
                   margin='dense'
                   name='search'
-                  type='search'
+                  type='text'
                   value={search}
                   disabled={loading}
                   onChange={e => setSearch(e.target.value)}
                   onBlur={handleBlur}
                   InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
+                    startAdornment: (
+                      <InputAdornment position='start'>
                         <SearchIcon />
                       </InputAdornment>
                     ),
+                    endAdornment: (
+                      rowData.search !== '' && search !== '' && (
+                        <InputAdornment position='end'>
+                          <IconButton size='small' onClick={handleClearSearch}>
+                            <CancelIcon fontSize='small' />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    )
                   }}
                 />
               </form>

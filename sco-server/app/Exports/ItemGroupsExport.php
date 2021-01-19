@@ -26,21 +26,17 @@ class ItemGroupsExport implements FromCollection, WithHeadings, WithStyles, With
     public function collection()
     {
         return DB::table("item_groups")
+            ->select("item_g_code", "item_g_name")
             ->where("item_g_code", "like", "%" . $this->search . "%")
             ->orWhere("item_g_name", "like", "%" . $this->search . "%")
-            ->orWhere("created_at", "like", "%" . $this->search . "%")
-            ->orWhere("updated_at", "like", "%" . $this->search . "%")
             ->get();
     }
 
     public function headings(): array
     {
         return [
-            'ID',
             'Item Group Code',
             'Item Group Name',
-            'Created At',
-            'Updated At',
         ];
     }
 
@@ -64,17 +60,14 @@ class ItemGroupsExport implements FromCollection, WithHeadings, WithStyles, With
                 ],
             ],
         ];
-        $sheet->getStyle('A1:E1')->applyFromArray($styleArray);
+        $sheet->getStyle('A1:B1')->applyFromArray($styleArray);
     }
 
     public function columnWidths(): array
     {
         return [
-            'A' => 40,
-            'B' => 20,
-            'C' => 40,
-            'D' => 30,
-            'E' => 30,
+            'A' => 20,
+            'B' => 40,
         ];
     }
 }

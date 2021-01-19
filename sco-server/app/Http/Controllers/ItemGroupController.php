@@ -100,8 +100,7 @@ class ItemGroupController extends Controller
         $search = (isset($request->search)) ? $this->clearStr($request->search) : "";
 
         // Amil data item group dari database
-        $data = DB::table("item_groups")
-            ->where("item_g_code", "like", "%" . $search . "%")
+        $data = ItemGroup::where("item_g_code", "like", "%" . $search . "%")
             ->orWhere("item_g_name", "like", "%" . $search . "%")
             ->orWhere("created_at", "like", "%" . $search . "%")
             ->orWhere("updated_at", "like", "%" . $search . "%")

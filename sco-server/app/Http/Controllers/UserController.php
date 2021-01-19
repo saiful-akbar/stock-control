@@ -109,14 +109,9 @@ class UserController extends Controller
         }
 
         // Cek search
-        $search = '';
-        if (isset($request->search) && !empty($request->search)) {
-            $search = htmlspecialchars($request->search);
-        }
+        $search = isset($request->search) ?  htmlspecialchars($request->search) : '';
 
-        $data     = [];
-        $data = DB::table("users")
-            ->leftJoin("profiles", "users.id", "=", "profiles.user_id")
+        $data = User::leftJoin("profiles", "users.id", "=", "profiles.user_id")
             ->leftJoin("personal_access_tokens", "users.id", "=", "personal_access_tokens.tokenable_id")
             ->select(
                 "users.id",
@@ -130,9 +125,6 @@ class UserController extends Controller
                 "personal_access_tokens.token",
             )
             ->where("users.username", "like", "%" . $search . "%")
-            ->orWhere("users.is_active", "like", "%" . $search . "%")
-            ->orWhere("users.created_at", "like", "%" . $search . "%")
-            ->orWhere("users.updated_at", "like", "%" . $search . "%")
             ->orWhere("profiles.profile_name", "like", "%" . $search . "%")
             ->orWhere("profiles.profile_division", "like", "%" . $search . "%")
             ->orderBy($sort, $order_by)

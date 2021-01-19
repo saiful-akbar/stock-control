@@ -105,7 +105,7 @@ const ProfileForm = (props) => {
 
       validationSchema={Yup.object().shape({
         profile_avatar: Yup.mixed(),
-        profile_name: Yup.string().required('Field is a required').max(200),
+        profile_name: Yup.string().required('The profile name field is required.').max(200),
         profile_division: Yup.string().max(128),
         profile_email: Yup.string().email('Field must be a valid email').max(200),
         profile_phone: Yup.string().max(15),
@@ -137,7 +137,6 @@ const ProfileForm = (props) => {
                   spacing={3}
                   direction='row'
                   justify='space-around'
-                  alignItems='center'
                 >
                   <Grid item xs={12} >
                     <Box
@@ -176,7 +175,7 @@ const ProfileForm = (props) => {
                       name='profile_name'
                       type='text'
                       variant='outlined'
-                      label='Full Name'
+                      label='Profile Name'
                       disabled={props.loading}
                       value={values.profile_name}
                       onBlur={handleBlur}

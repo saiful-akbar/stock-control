@@ -13,14 +13,14 @@ const themeLight = createMuiTheme({
     background: {
       default: colors.common.white,
       paper: colors.common.white,
-      topBar: '#3D4977',
+      topBar: '#3E446B',
       dark: '#F4F5FD',
     },
     primary: {
       main: '#5383FF',
     },
     secondary: {
-      main: '#3D4977',
+      main: '#3E446B',
     },
     error: {
       main: '#d32f2f',

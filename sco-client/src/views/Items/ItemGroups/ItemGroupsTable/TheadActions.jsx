@@ -6,14 +6,12 @@ import {
   IconButton,
   Typography,
   Toolbar,
-  FormControl,
-  OutlinedInput,
   InputAdornment,
-  InputLabel,
   Menu,
   MenuItem,
   Backdrop,
   CircularProgress,
+  TextField,
 } from "@material-ui/core";
 import { makeStyles, lighten } from "@material-ui/core/styles";
 import clsx from "clsx";
@@ -25,6 +23,7 @@ import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { apiExportItemGroup } from "src/services/itemGroups";
 import { connect } from "react-redux";
 import { reduxAction } from "src/config/redux/state";
+import CancelIcon from '@material-ui/icons/Cancel';
 
 
 /**
@@ -128,7 +127,7 @@ function TheadActions({
 
 
   /**
-   * Handle blur foem search
+   * Handle blur form search
    */
   const handleBlurSearch = (e) => {
     if (searchValue !== search) {
@@ -136,6 +135,16 @@ function TheadActions({
     } else {
       e.preventDefault();
     }
+  }
+
+
+  /**
+   * Handle clear form search
+   */
+  const handleClearSearch = (e) => {
+    e.preventDefault();
+    setSearch("");
+    onSearch("");
   }
 
 
@@ -246,26 +255,34 @@ function TheadActions({
 
               <Grid item lg={8} md={6} xs={12}>
                 <form onSubmit={handleSubmitSearch} autoComplete="off" >
-                  <FormControl fullWidth margin="dense" variant="outlined">
-                    <InputLabel htmlFor="search">{"Search item groups"}</InputLabel>
-                    <OutlinedInput
-                      label="Search item groups"
-                      id="search"
-                      name="search"
-                      type="search"
-                      value={search}
-                      disabled={loading}
-                      onBlur={e => handleBlurSearch(e)}
-                      onChange={e => setSearch(e.target.value)}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <InputAdornment position="start">
-                            <SearchIcon />
-                          </InputAdornment>
+                  <TextField
+                    fullWidth
+                    placeholder='Search by groups code or groups name'
+                    variant='outlined'
+                    margin='dense'
+                    name='search'
+                    type='text'
+                    value={search}
+                    disabled={loading}
+                    onChange={e => setSearch(e.target.value)}
+                    onBlur={handleBlurSearch}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <SearchIcon />
                         </InputAdornment>
-                      }
-                    />
-                  </FormControl>
+                      ),
+                      endAdornment: (
+                        searchValue !== "" && search !== "" && (
+                          <InputAdornment position='end'>
+                            <IconButton size="small" onClick={handleClearSearch}>
+                              <CancelIcon fontSize="small" />
+                            </IconButton>
+                          </InputAdornment>
+                        )
+                      )
+                    }}
+                  />
                 </form>
               </Grid>
             </Grid>

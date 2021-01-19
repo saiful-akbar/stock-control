@@ -29,6 +29,7 @@ import Toast from 'src/components/Toast';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Loader from 'src/components/Loader';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 
 // style
@@ -86,7 +87,7 @@ const MenuSubItemTable = (props) => {
 
   // daftar kolom untuk tabel
   const columns = [
-    { field: 'menu_i_title', label: 'Menus' },
+    { field: 'menu_i_title', label: 'Menus Title' },
     { field: 'menu_s_i_title', label: 'Sub Menus Title' },
     { field: 'menu_s_i_url', label: 'Path' },
     { field: 'created_at', label: 'Created At' },
@@ -181,6 +182,18 @@ const MenuSubItemTable = (props) => {
     } else {
       handleSubmitSearch(e);
     }
+  }
+
+  /**
+   * Handle clear form search
+   */
+  const handleClearSearch = (e) => {
+    setSearch('');
+    getData(
+      rowData.menu_sub_items.current_page,
+      rowData.menu_sub_items.per_page,
+      ''
+    );
   }
 
 
@@ -317,21 +330,30 @@ const MenuSubItemTable = (props) => {
               <form autoComplete='off' onSubmit={handleSubmitSearch}>
                 <TextField
                   fullWidth
-                  label='Search sub menus'
+                  placeholder='Search by menus title, sub menus title or path'
                   variant='outlined'
                   margin='dense'
                   name='search'
-                  type='search'
+                  type='text'
                   value={search}
                   disabled={loading}
                   onChange={e => setSearch(e.target.value)}
                   onBlur={handleBlur}
                   InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
+                    startAdornment: (
+                      <InputAdornment position='start'>
                         <SearchIcon />
                       </InputAdornment>
                     ),
+                    endAdornment: (
+                      rowData.search !== '' && search !== '' && (
+                        <InputAdornment position='end'>
+                          <IconButton size='small' onClick={handleClearSearch}>
+                            <CancelIcon fontSize='small' />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    )
                   }}
                 />
               </form>

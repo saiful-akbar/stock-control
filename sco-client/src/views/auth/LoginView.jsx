@@ -51,12 +51,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: 'center',
   },
   paper: {
-    margin: theme.spacing(8, 4, 4, 4),
-    minHeight: '80vh',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    minHeight: '100%',
   },
   avatar: {
     marginBottom: theme.spacing(1),
@@ -67,12 +66,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
-  submit: {
+  buttonSubmit: {
     margin: theme.spacing(3, 0, 2),
   },
   paperForm: {
     backgroundColor: theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
-  }
+    padding: theme.spacing(8, 4),
+  },
 }));
 
 function LoginView({ cookies, loginUser, reduxTheme }) {
@@ -187,9 +187,9 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
               }) => (
                   <form
                     noValidate
+                    autoComplete='off'
                     className={classes.form}
                     onSubmit={handleSubmit}
-                    autoComplete='off'
                   >
                     <TextField
                       fullWidth
@@ -245,28 +245,17 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
 
                     <Box mt={3}>
                       <Button
-                        color='primary'
                         fullWidth
+                        color='primary'
                         variant='contained'
                         size='large'
                         type='submit'
                         disabled={loading}
-                        className={classes.submit}
+                        className={classes.buttonSubmit}
                       >
-                        {loading
-                          ? (
-                            <>
-                              <CircularProgress
-                                color='inherit'
-                                size={20}
-                                style={{ marginRight: '10px' }}
-                              />
-                              {'Logged in...'}
-                            </>
-                          ) : 'Login'
-                        }
+                        {loading && <CircularProgress color='inherit' size={23} style={{ marginRight: '10px' }} />}
+                        {loading ? 'Logged In...' : 'Login'}
                       </Button>
-
                       <Copyright />
                     </Box>
                   </form>

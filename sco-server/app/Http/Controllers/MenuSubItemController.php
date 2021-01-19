@@ -88,45 +88,23 @@ class MenuSubItemController extends Controller
         }
 
         // Cek search
-        $search = '';
-        if (isset($request->search) && !empty($request->search)) {
-            $search = htmlspecialchars($request->search);
-        }
+        $search = isset($request->search) ? htmlspecialchars($request->search) : '';
 
         // Ambil data dari database
-        $data = [];
-        if (isset($search) && !empty($search)) {
-            $data = DB::table("menu_sub_items")
-                ->leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
-                ->select(
-                    "menu_items.menu_i_title",
-                    "menu_sub_items.id",
-                    "menu_sub_items.menu_item_id",
-                    "menu_sub_items.menu_s_i_title",
-                    "menu_sub_items.menu_s_i_url",
-                    "menu_sub_items.created_at",
-                    "menu_sub_items.updated_at"
-                )->where("menu_items.menu_i_title", "like", "%" . $search . "%")
-                ->orWhere("menu_sub_items.menu_s_i_title", "like", "%" . $search . "%")
-                ->orWhere("menu_sub_items.menu_s_i_url", "like", "%" . $search . "%")
-                ->orWhere("menu_sub_items.created_at", "like", "%" . $search . "%")
-                ->orWhere("menu_sub_items.updated_at", "like", "%" . $search . "%")
-                ->orderBy($sort, $order_by)
-                ->paginate($per_page);
-        } else {
-            $data = DB::table("menu_sub_items")
-                ->leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
-                ->select(
-                    "menu_items.menu_i_title",
-                    "menu_sub_items.id",
-                    "menu_sub_items.menu_item_id",
-                    "menu_sub_items.menu_s_i_title",
-                    "menu_sub_items.menu_s_i_url",
-                    "menu_sub_items.created_at",
-                    "menu_sub_items.updated_at"
-                )->orderBy($sort, $order_by)
-                ->paginate($per_page);
-        }
+        $data = MenuSubItem::leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
+            ->select(
+                "menu_items.menu_i_title",
+                "menu_sub_items.id",
+                "menu_sub_items.menu_item_id",
+                "menu_sub_items.menu_s_i_title",
+                "menu_sub_items.menu_s_i_url",
+                "menu_sub_items.created_at",
+                "menu_sub_items.updated_at"
+            )->where("menu_items.menu_i_title", "like", "%" . $search . "%")
+            ->orWhere("menu_sub_items.menu_s_i_title", "like", "%" . $search . "%")
+            ->orWhere("menu_sub_items.menu_s_i_url", "like", "%" . $search . "%")
+            ->orderBy($sort, $order_by)
+            ->paginate($per_page);
 
         // response
         return response()->json([

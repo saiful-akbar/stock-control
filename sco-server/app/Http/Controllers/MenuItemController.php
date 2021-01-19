@@ -77,24 +77,13 @@ class MenuItemController extends Controller
         }
 
         // Cek search
-        $search = '';
-        if (isset($request->search) && !empty($request->search)) {
-            $search = htmlspecialchars($request->search);
-        }
+        $search = isset($request->search) ? htmlspecialchars($request->search) : "";
 
-        $data = [];
-        if (isset($search) && !empty($search)) {
-            $data = DB::table("menu_items")
-                ->where("menu_i_title", "like", "%" . $search . "%")
-                ->orWhere("menu_i_url", "like", "%" . $search . "%")
-                ->orWhere("menu_i_icon", "like", "%" . $search . "%")
-                ->orWhere("created_at", "like", "%" . $search . "%")
-                ->orWhere("updated_at", "like", "%" . $search . "%")
-                ->orderBy($sort, $order_by)
-                ->paginate($per_page);
-        } else {
-            $data = DB::table("menu_items")->orderBy($sort, $order_by)->paginate($per_page);
-        }
+        // Ambil data dari database
+        $data = MenuItem::where("menu_i_title", "like", "%" . $search . "%")
+            ->orWhere("menu_i_url", "like", "%" . $search . "%")
+            ->orderBy($sort, $order_by)
+            ->paginate($per_page);
 
         return response()->json([
             "menu_items" => $data,
