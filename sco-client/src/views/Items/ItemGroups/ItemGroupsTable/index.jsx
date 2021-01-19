@@ -391,6 +391,12 @@ function ItemGroupTable(props) {
                       <TableCell
                         align='center'
                         colSpan={6}
+                        className={classes.tableCell}
+                        padding={
+                          props.userAccess !== null && props.userAccess.user_m_s_i_delete === 1
+                            ? 'checkbox'
+                            : 'default'
+                        }
                       >
                         {loading ? 'Loading...' : 'No data in table'}
                       </TableCell>
