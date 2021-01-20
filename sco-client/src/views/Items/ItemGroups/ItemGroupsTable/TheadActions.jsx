@@ -72,6 +72,7 @@ function TheadActions({
   onDelete,
   userAccess,
   setReduxToast,
+  onImport,
   ...props
 }) {
 
@@ -145,6 +146,15 @@ function TheadActions({
     e.preventDefault();
     setSearch("");
     onSearch("");
+  }
+
+
+  /**
+   * Handle menu import on click
+   */
+  const handleImportClick = () => {
+    onImport();
+    handleCloseMenu();
   }
 
 
@@ -302,7 +312,7 @@ function TheadActions({
         </MenuItem>
 
         {userAccess !== null && userAccess.user_m_s_i_create === 1 && (
-          <MenuItem onClick={handleCloseMenu} >
+          <MenuItem onClick={handleImportClick} >
             <Typography variant='inherit'>
               {"Import from excel"}
             </Typography>
@@ -326,10 +336,11 @@ TheadActions.defaultProps = {
   loading: false,
   userAccess: null,
   searchValue: "",
+  onAdd: (e) => e.preventDefault(),
   onReload: (e) => e.preventDefault(),
   onSearch: (e) => e.preventDefault(),
-  onAdd: (e) => e.preventDefault(),
   onDelete: (e) => e.preventDefault(),
+  onImport: (e) => e.preventDefault(),
 };
 
 

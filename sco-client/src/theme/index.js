@@ -22,14 +22,17 @@ const themeLight = createMuiTheme({
     secondary: {
       main: '#3E446B',
     },
+    info: {
+      main: '#2196F3'
+    },
     error: {
-      main: '#d32f2f',
+      main: '#F44336',
     },
     success: {
-      main: '#388e3c',
+      main: '#4CAF50',
     },
     warning: {
-      main: '#ffa000',
+      main: '#FF9800',
     },
     text: {
       primary: colors.blueGrey[900],
@@ -55,14 +58,17 @@ const themeDark = createMuiTheme({
     secondary: {
       main: '#00695c',
     },
+    info: {
+      main: '#2196F3'
+    },
     error: {
-      main: '#d32f2f',
+      main: '#F44336',
     },
     success: {
-      main: '#388e3c',
+      main: '#4CAF50',
     },
     warning: {
-      main: '#ffa000',
+      main: '#FF9800',
     },
     text: {
       primary: colors.grey[200],

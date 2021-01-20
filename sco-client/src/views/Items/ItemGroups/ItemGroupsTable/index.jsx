@@ -341,6 +341,7 @@ function ItemGroupTable(props) {
           onSearch={value => handleSearch(value)}
           onAdd={() => props.onAdd()}
           onDelete={() => props.onDelete(selected)}
+          onImport={() => props.onImport()}
         />
 
         <Loader show={loading}>

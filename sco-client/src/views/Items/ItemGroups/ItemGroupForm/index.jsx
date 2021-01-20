@@ -17,6 +17,16 @@ import BtnSubmit from 'src/components/BtnSubmit';
 import { apiAddItemGroup, apiUpdateItemGroup } from 'src/services/itemGroups';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
+import { makeStyles } from '@material-ui/styles';
+
+
+/* Style ItemGroupImport */
+const useStyles = makeStyles((theme) => ({
+  header: {
+    backgroundColor: theme.palette.background.topBar,
+    color: '#ffffff',
+  },
+}));
 
 
 /**
@@ -25,14 +35,13 @@ import { reduxAction } from 'src/config/redux/state';
 function ItemGroupForm(props) {
   const is_mounted = React.useRef(true);
   const navigate = useNavigate();
-
+  const classes = useStyles();
 
   /**
    * State
    */
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState({ type: 'info', message: 'Form with * is required' });
-
 
   /**
    * Skema validasi untuk form
@@ -49,8 +58,6 @@ function ItemGroupForm(props) {
     });
   }
 
-
-
   /**
    * Handle jika komponen dilepas saat request api belum selesai
    */
@@ -61,7 +68,6 @@ function ItemGroupForm(props) {
 
     // eslint-disable-next-line
   }, []);
-
 
   /**
    * Handle close dialog
@@ -74,7 +80,6 @@ function ItemGroupForm(props) {
       e.preventDefault();
     }
   }
-
 
   /**
    * Handle saat form di submit
@@ -113,7 +118,6 @@ function ItemGroupForm(props) {
     }
   }
 
-
   return (
     <Dialog
       fullWidth
@@ -132,7 +136,7 @@ function ItemGroupForm(props) {
       >
         {({ errors, handleBlur, handleChange, handleSubmit, touched, values, }) => (
           <React.Fragment>
-            <DialogTitle>
+            <DialogTitle className={classes.header}>
               {`${props.type} item group`}
             </DialogTitle>
 

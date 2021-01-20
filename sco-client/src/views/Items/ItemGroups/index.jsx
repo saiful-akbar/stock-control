@@ -3,6 +3,7 @@ import ItemGroupsTable from './ItemGroupsTable';
 import { connect } from 'react-redux';
 import ItemGroupForm from './ItemGroupForm';
 import ItemGroupDelete from './ItemGroupDelete';
+import ItemGroupImport from './ItemGroupImport';
 
 
 /**
@@ -14,6 +15,7 @@ function ItemGroups(props) {
   const [isReloadTable, setReloadTable] = React.useState(false);
   const [form, setForm] = React.useState({ open: false, type: 'Add', data: null });
   const [dialogDelete, setDialogDelete] = React.useState({ open: false, data: [] });
+  const [isOpenDialogImport, setOpenDialogImport] = React.useState(false);
 
   /**
    * Ambil data user akses pada reduxUserLogin
@@ -37,6 +39,7 @@ function ItemGroups(props) {
         reload={isReloadTable}
         selectedRows={dialogDelete.data}
         onReloadTable={(bool) => setReloadTable(bool)}
+        onImport={() => setOpenDialogImport(true)}
         onAdd={() => {
           setForm({
             open: true,
@@ -83,6 +86,11 @@ function ItemGroups(props) {
             data: []
           });
         }}
+      />
+
+      <ItemGroupImport
+        open={isOpenDialogImport}
+        onClose={() => setOpenDialogImport(false)}
       />
     </React.Fragment>
   )

@@ -12,7 +12,7 @@ import {
  * Aniimasi slide
  */
 function SlideTransition(props) {
-  return <Slide {...props} direction="down" timeout={300} />;
+  return <Slide {...props} direction="up" timeout={300} />;
 }
 
 /**
@@ -34,8 +34,8 @@ const Toast = ({ open, handleClose, type, message }) => {
       TransitionComponent={SlideTransition}
       key={SlideTransition.name}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right'
+        vertical: 'bottom',
+        horizontal: 'center'
       }}
     >
       <Alert
