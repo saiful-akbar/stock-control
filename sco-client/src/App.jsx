@@ -35,17 +35,6 @@ const App = (props) => {
   }, []);
 
 
-  React.useEffect(() => {
-    const params = [
-      { page: 1 },
-      { search: "nama        " },
-      { api_token: "token" },
-    ];
-
-    apiUrl("test/url", params);
-  })
-
-
   return (
     <ThemeProvider theme={props.reduxTheme === 'dark' ? themeDark : themeLight}>
       <GlobalStyles />
