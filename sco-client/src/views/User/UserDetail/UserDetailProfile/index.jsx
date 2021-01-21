@@ -19,7 +19,7 @@ import {
   Grid,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import apiUrl from 'src/apiUrl';
+import apiUrl from 'src/utils/apiUrl';
 
 
 /**

@@ -8,6 +8,7 @@ import { ThemeProvider } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import { themeLight, themeDark } from './theme';
+import apiUrl from './utils/apiUrl';
 
 
 
@@ -32,6 +33,17 @@ const App = (props) => {
 
     // eslint-disable-next-line
   }, []);
+
+
+  React.useEffect(() => {
+    const params = [
+      { page: 1 },
+      { search: "nama        " },
+      { api_token: "token" },
+    ];
+
+    apiUrl("test/url", params);
+  })
 
 
   return (

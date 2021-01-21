@@ -92,7 +92,7 @@ function ItemGroupImport({
   const [alert, setAlert] = React.useState({
     type: "info",
     message: [
-      "Import can only support files with the .xlsx, .xls, or .csv extension.",
+      "Import can only support files with the .xlsx or .xls extension.",
       "The maximum size is 2000 kilobytes or 2 megabytes."
     ]
   });
@@ -103,7 +103,7 @@ function ItemGroupImport({
       setAlert({
         type: "info",
         message: [
-          "Import can only support files with the .xlsx, .xls, or .csv extension.",
+          "Import can only support files with the .xlsx or .xls extension.",
           "The maximum size is 2000 kilobytes."
         ]
       });
@@ -127,8 +127,8 @@ function ItemGroupImport({
     const file = e.target.files[0];
     const xlsx = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     const xls = 'application/vnd.ms-excel';
-    const csv = 'text/csv';
-    if (file.type !== xlsx && file.type !== xls && file.type !== csv) {
+
+    if (file.type !== xlsx && file.type !== xls) {
       setAlert({
         type: "error",
         message: ["Unsupported file type"]
@@ -192,16 +192,16 @@ function ItemGroupImport({
       <DialogContent dividers>
         <Loader show={loading}>
           <form onSubmit={handleSubmit} encType="multipart/form-data" >
-            <input
-              type="file"
-              name="file"
-              id="file"
-              accept=".xlsx,.xls,.csv"
-              onChange={handleChange}
-              style={{ display: "none" }}
-            />
-
             <label htmlFor="file">
+              <input
+                hidden
+                type="file"
+                name="file"
+                id="file"
+                accept=".xlsx,.xls"
+                onChange={handleChange}
+              />
+
               <Box
                 display="flex"
                 flexDirection="column"

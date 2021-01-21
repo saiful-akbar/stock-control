@@ -25,7 +25,7 @@ import {
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiEditUserProfile, apiUpdateUserProfile } from 'src/services/user';
 import { reduxAction } from 'src/config/redux/state';
-import apiUrl from 'src/apiUrl';
+import apiUrl from 'src/utils/apiUrl';
 import { Skeleton } from '@material-ui/lab';
 import MaskedInput from 'react-text-mask';
 

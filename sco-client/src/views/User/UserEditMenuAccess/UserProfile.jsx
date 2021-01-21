@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Avatar, Typography, Box } from '@material-ui/core';
-import apiUrl from 'src/apiUrl';
+import apiUrl from 'src/utils/apiUrl';
 import { makeStyles } from '@material-ui/core/styles';
 
 /**

@@ -5,7 +5,7 @@ const cookie = new Cookies();
 
 export const reduxState = {
   loading: true,
-  theme: cookie.get('theme') === 'dark' ? 'dark' : 'light',
+  theme: Boolean(cookie.get('theme') === 'dark') ? 'dark' : 'light',
   userLogin: null,
   toast: {
     show: false,

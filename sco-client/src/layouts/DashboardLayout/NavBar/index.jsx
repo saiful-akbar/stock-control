@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
-import apiUrl from 'src/apiUrl';
+import apiUrl from 'src/utils/apiUrl';
 import NavItem from './NavItem';
 
 // Style

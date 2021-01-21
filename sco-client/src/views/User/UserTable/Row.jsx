@@ -14,7 +14,7 @@ import {
   Badge,
   Link,
 } from "@material-ui/core";
-import apiUrl from "src/apiUrl";
+import apiUrl from "src/utils/apiUrl";
 import UserTableOptions from "../UserTableOptions";
 import {
   useNavigate
