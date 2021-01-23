@@ -87,10 +87,19 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'id'              => Str::random(32),
-                'menu_i_title'    => 'Outgoing (Data Barang Keluar)',
+                'menu_i_title'    => 'Outgoing',
                 'menu_i_url'      => '/outgoing',
                 'menu_i_icon'     => 'subdirectory_arrow_left',
                 'menu_i_children' => true,
+                'created_at'      => now(),
+                'updated_at'      => now()
+            ],
+            [
+                'id'              => Str::random(32),
+                'menu_i_title'    => 'Documents',
+                'menu_i_url'      => '/documents',
+                'menu_i_icon'     => 'insert_drive_file',
+                'menu_i_children' => false,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
@@ -220,6 +229,17 @@ class DatabaseSeeder extends Seeder
                 'id'              => Str::random(32),
                 'user_id'         => $this->getUser('admin'),
                 'menu_item_id'    => $this->getMenuItem('/master'),
+                'user_m_i_create' => true,
+                'user_m_i_read'   => true,
+                'user_m_i_update' => true,
+                'user_m_i_delete' => true,
+                'created_at'      => now(),
+                'updated_at'      => now()
+            ],
+            [
+                'id'              => Str::random(32),
+                'user_id'         => $this->getUser('admin'),
+                'menu_item_id'    => $this->getMenuItem('/documents'),
                 'user_m_i_create' => true,
                 'user_m_i_read'   => true,
                 'user_m_i_update' => true,

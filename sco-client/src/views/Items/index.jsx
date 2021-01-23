@@ -12,6 +12,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import ItemGroups from './ItemGroups';
+import ItemSubGroup from './ItemSubGroups';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -100,7 +101,7 @@ function Items(props) {
           </TabPanel>
 
           <TabPanel value="itemSubGroups" className={classes.tabPanel}>
-            {"Item Sub Groups"}
+            <ItemSubGroup />
           </TabPanel>
 
           <TabPanel value="itemList" className={classes.tabPanel}>

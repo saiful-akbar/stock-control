@@ -28,4 +28,24 @@ class ItemSubGroup extends Model
     {
         return $this->hasMany(Item::class, 'item_s_g_code', 'item_s_g_code');
     }
+
+    /**
+     * Merubah format timestime pada field created_at
+     *
+     * @return String
+     */
+    public function getCreatedAtAttribute()
+    {
+        return \Carbon\Carbon::parse($this->attributes['created_at'])->format('d M Y H:i');
+    }
+
+    /**
+     * Merubah format timestime pada field updated_at
+     *
+     * @return String
+     */
+    public function getUpdatedAtAttribute()
+    {
+        return \Carbon\Carbon::parse($this->attributes['updated_at'])->format('d M Y H:i');
+    }
 }
