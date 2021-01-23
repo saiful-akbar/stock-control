@@ -35,39 +35,69 @@ class ItemGroupsExport implements FromCollection, WithHeadings, WithStyles, With
     public function headings(): array
     {
         return [
-            'Item Group Code',
-            'Item Group Name',
+            "ITEM GROUP CODE",
+            "ITEM GROUP NAME",
         ];
-    }
-
-    public function styles(Worksheet $sheet)
-    {
-        $styleArray = [
-            'font' => [
-                'bold' => true,
-            ],
-            'alignment' => [
-                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
-            ],
-            'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_GRADIENT_LINEAR,
-                'rotation' => 90,
-                'startColor' => [
-                    'argb' => 'b7b7b7',
-                ],
-                'endColor' => [
-                    'argb' => 'FFFFFF',
-                ],
-            ],
-        ];
-        $sheet->getStyle('A1:B1')->applyFromArray($styleArray);
     }
 
     public function columnWidths(): array
     {
         return [
-            'A' => 20,
-            'B' => 40,
+            "A" => 20,
+            "B" => 45,
         ];
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $count = DB::table("item_groups")
+            ->select("item_g_code", "item_g_name")
+            ->where("item_g_code", "like", "%" . $this->search . "%")
+            ->orWhere("item_g_name", "like", "%" . $this->search . "%")
+            ->count();
+
+        $count = $count + 1;
+
+        $styleHeader = [
+            "font" => [
+                "bold" => true,
+                "color" => ["argb" => "FFFFFF"]
+            ],
+            "alignment" => [
+                "horizontal" => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                "vertical" => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+            "borders" => [
+                "allBorders" => [
+                    "borderStyle" => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    "color" => ["argb" => "FFFFFF"],
+                ],
+            ],
+            "fill" => [
+                "fillType" => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                "color" => [
+                    "argb" => "4f81bd",
+                ],
+            ],
+        ];
+
+        $styleBody = [
+            "alignment" => [
+                "horizontal" => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+            ],
+            "borders" => [
+                "allBorders" => [
+                    "borderStyle" => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    "color" => ["argb" => "FFFFFF"]
+                ],
+            ],
+            "fill" => [
+                "fillType" => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                "color" => ["argb" => "dce6f1",],
+            ]
+        ];
+
+        $sheet->getStyle("A1:B1")->applyFromArray($styleHeader);
+        $sheet->getStyle("A2:B{$count}")->applyFromArray($styleBody);
     }
 }

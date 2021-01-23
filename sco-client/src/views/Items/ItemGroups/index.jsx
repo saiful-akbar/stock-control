@@ -91,6 +91,7 @@ function ItemGroups(props) {
       <ItemGroupImport
         open={isOpenDialogImport}
         onClose={() => setOpenDialogImport(false)}
+        onReloadTable={() => setReloadTable(true)}
       />
     </React.Fragment>
   )

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ItemGroupsExport;
 use App\Models\ItemGroup;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Exports\ItemGroupsExport;
+use App\Imports\ItemGroupsImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ItemGroupController extends Controller
@@ -21,15 +21,15 @@ class ItemGroupController extends Controller
     private function clearStr(string $string, string $type = null)
     {
         switch (strtolower($type)) {
-            case 'upper':
+            case "upper":
                 return htmlspecialchars(trim(strtoupper($string)));
                 break;
 
-            case 'proper':
+            case "proper":
                 return htmlspecialchars(trim(ucwords($string)));
                 break;
 
-            case 'lower':
+            case "lower":
                 return htmlspecialchars(trim(strtolower($string)));
                 break;
 
@@ -204,10 +204,35 @@ class ItemGroupController extends Controller
         ], 200);
     }
 
+    /**
+     * Method export item groups
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function export(Request $request)
     {
         $search = (isset($request->search)) ? $this->clearStr($request->search) : "";
 
-        return (new ItemGroupsExport($search))->download('item-group-' . now() . '.xlsx');
+        return (new ItemGroupsExport($search))->download("item-group-" . now() . ".xlsx");
+    }
+
+    /**
+     * Method import excel item group
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            "file" => "required|file|filled|mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel|mimes:xlsx,xls|max:1000"
+        ]);
+
+        Excel::import(new ItemGroupsImport, $request->file("file"));
+
+        return response()->json([
+            "message" => "Item group successfully imported"
+        ]);
     }
 }

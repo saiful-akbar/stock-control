@@ -99,3 +99,22 @@ export const apiExportItemGroup = (search = "") => {
     }).then(res => resolve(res)).catch(err => reject(err.response));
   });
 }
+
+
+/**
+ * Fungsi api untuk import excel item group
+ * 
+ * @param {string} search 
+ */
+export const apiImportItemGroup = (file) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'POST',
+      url: `/master/item-groups/import`,
+      data: file,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(res => resolve(res)).catch(err => reject(err.response));
+  });
+}
