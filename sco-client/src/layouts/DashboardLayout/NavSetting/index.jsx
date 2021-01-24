@@ -98,6 +98,17 @@ function NavSetting({
     const date = new Date();
     date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
     cookie.set('theme', newTheme, { path: '/', expires: date })
+
+    // ubah class pada tag body
+    if (newTheme === 'dark') {
+      document.querySelector("body").classList.add("bg-dark");
+    } else {
+      if (newTheme === 'system' && prefersDarkMode) {
+        document.querySelector("body").classList.add("bg-dark");
+      } else {
+        document.querySelector("body").classList.remove("bg-dark");
+      }
+    }
   }
 
 

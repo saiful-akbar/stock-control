@@ -33,6 +33,16 @@ const App = (props) => {
       setReduxTheme(prefersDarkMode ? 'dark' : 'light');
     }
 
+    if (theme === 'dark') {
+      document.querySelector("body").classList.add("bg-dark");
+    } else {
+      if (theme !== 'light' && prefersDarkMode) {
+        document.querySelector("body").classList.add("bg-dark");
+      } else {
+        document.querySelector("body").classList.remove("bg-dark");
+      }
+    }
+
     // eslint-disable-next-line
   }, [prefersDarkMode])
 
