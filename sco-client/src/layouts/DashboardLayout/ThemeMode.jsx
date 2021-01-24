@@ -28,7 +28,7 @@ const ThemeMode = ({ setReduxTheme, reduxTheme, ...props }) => {
     cookies.set('theme', theme, { path: '/', expires: date });
 
     // ubah class pada tag body
-    document.querySelector("body").classList.toggle("dark");
+    document.querySelector("body").classList.toggle("bg-dark");
   };
 
 

@@ -14,7 +14,8 @@
   <meta name="apple-mobile-web-app-title" content="Stock Control App">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/static/images/icon/apple-icon-180x180-dunplab-manifest-29310.png" sizes="180x180" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/static/images/icon/apple-icon-180x180-dunplab-manifest-29310.png"
+    sizes="180x180" />
 
   <!-- Icon & manifest -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -23,7 +24,8 @@
 
   <!-- Google font & material icon -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700" />
 
   <title>Stock Control</title>
 
@@ -33,35 +35,44 @@
       background-color: #F4F5FD;
     }
 
+    .bg-dark {
+      background-color: #0D1418 !important;
+    }
+
     table thead tr th,
     table tbody tr td {
       white-space: nowrap !important;
       font-size: 13px !important;
     }
 
-    .bg-dark {
-      background-color: #0D1418 !important;
-    }
-
     /* Scrollbar */
-    ::-webkit-scrollbar {
+    body::-webkit-scrollbar,
+    body ::-webkit-scrollbar {
+      background-color: transparent;
       width: 7px;
       height: 7px;
+    }
+
+    body::-webkit-scrollbar-corner,
+    body ::-webkit-scrollbar-corner {
       background-color: transparent;
+      width: 7px;
+      height: 7px;
     }
 
-    ::-webkit-scrollbar-track {
-      background-color: transparent;
+    body::-webkit-scrollbar-thumb,
+    body ::-webkit-scrollbar-thumb {
+      /* border-radius: 8px; */
+      min-height: 24px;
+      background-color: rgb(107, 107, 107, 0.3);
     }
 
-    ::-webkit-scrollbar-thumb {
-      background-color: rgba(168, 168, 168, 0.3);
-      border-radius: 25px;
+    body::-webkit-scrollbar-thumb:hover,
+    body ::-webkit-scrollbar-thumb:hover {
+      background-color: rgb(107, 107, 107, 0.6);
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background-color: rgba(168, 168, 168, 0.6);
-    }
+    /* End scrollbar */
 
     /* Preloader */
     #preloader {
@@ -116,6 +127,8 @@
         transform: rotate(360deg);
       }
     }
+
+    /* End preloader */
   </style>
 </head>
 

@@ -15,6 +15,7 @@ import {
   Typography,
   makeStyles,
   Grid,
+  SwipeableDrawer,
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
@@ -25,7 +26,6 @@ import NavItem from './NavItem';
 const useStyles = makeStyles((theme) => ({
   mobileDrawer: {
     width: 256,
-    backgroundColor: theme.palette.background.dark,
     overflow: 'hidden',
   },
   desktopDrawer: {
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 
 // Main component
 const NavBar = ({
-  onMobileClose,
+  onMobileToggle,
   openMobile,
   openDesktop,
   reduxUserLogin,
@@ -83,8 +83,8 @@ const NavBar = ({
   };
 
   useEffect(() => {
-    if (openMobile && onMobileClose) {
-      onMobileClose();
+    if (openMobile && onMobileToggle) {
+      onMobileToggle(false);
     }
     // eslint-disable-next-line
   }, [location.pathname]);
@@ -215,15 +215,16 @@ const NavBar = ({
   return (
     <>
       <Hidden lgUp>
-        <Drawer
+        <SwipeableDrawer
           anchor='left'
-          classes={{ paper: classes.mobileDrawer }}
-          onClose={onMobileClose}
-          open={openMobile}
           variant='temporary'
+          open={openMobile}
+          onClose={() => onMobileToggle(false)}
+          onOpen={() => onMobileToggle(true)}
+          classes={{ paper: classes.mobileDrawer }}
         >
           {content}
-        </Drawer>
+        </SwipeableDrawer>
       </Hidden>
 
       <Hidden mdDown>
@@ -241,13 +242,13 @@ const NavBar = ({
 };
 
 NavBar.propTypes = {
-  onMobileClose: PropTypes.func,
+  onMobileToggle: PropTypes.func,
   openMobile: PropTypes.bool,
   openDesktop: PropTypes.bool
 };
 
 NavBar.defaultProps = {
-  onMobileClose: () => { },
+  onMobileToggle: () => { },
   openMobile: false
 };
 

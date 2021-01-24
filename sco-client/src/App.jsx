@@ -3,11 +3,12 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import React from 'react';
 import GlobalStyles from './components/GlobalStyles';
 import routes from './routes';
+import Cookies from 'universal-cookie';
 import { useRoutes } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/core';
+import { ThemeProvider, useMediaQuery } from '@material-ui/core';
 import { connect } from 'react-redux';
-import { useCookies } from 'react-cookie';
 import { themeLight, themeDark } from './theme';
+import { reduxAction } from './config/redux/state';
 
 
 /**
@@ -17,24 +18,27 @@ import { themeLight, themeDark } from './theme';
  */
 const App = (props) => {
   const routing = useRoutes(routes);
-  const [cookies, setCookie] = useCookies();
+  const cookie = new Cookies();
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const { reduxTheme, setReduxTheme } = props;
 
 
   React.useEffect(() => {
-    const date = new Date();
-    date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-    setCookie('theme', cookies.theme === 'dark' ? 'dark' : 'light', {
-      expires: date,
-      path: '/'
-
-    });
+    const theme = cookie.get('theme');
+    if (Boolean(theme)) {
+      if (theme !== 'dark' && theme !== 'light') {
+        setReduxTheme(prefersDarkMode ? 'dark' : 'light');
+      }
+    } else {
+      setReduxTheme(prefersDarkMode ? 'dark' : 'light');
+    }
 
     // eslint-disable-next-line
-  }, []);
+  }, [prefersDarkMode])
 
 
   return (
-    <ThemeProvider theme={props.reduxTheme === 'dark' ? themeDark : themeLight}>
+    <ThemeProvider theme={reduxTheme === 'dark' ? themeDark : themeLight}>
       <GlobalStyles />
       {routing}
     </ThemeProvider>
@@ -52,4 +56,10 @@ const reduxState = (state) => ({
 });
 
 
-export default connect(reduxState, null)(App);
+// Redux reducer
+const reduxReducer = (dispatch) => ({
+  setReduxTheme: (value) => dispatch({ type: reduxAction.theme, value: value }),
+})
+
+
+export default connect(reduxState, reduxReducer)(App);

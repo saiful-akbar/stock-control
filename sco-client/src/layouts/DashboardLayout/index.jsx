@@ -20,6 +20,7 @@ import TopBar from './TopBar';
 import NavBar from './NavBar';
 import clsx from 'clsx';
 import ErrorBoundary from 'src/components/ErrorBoundary';
+import NavSetting from './NavSetting';
 
 
 /* Style untuk komponen lodingSuspense */
@@ -103,6 +104,7 @@ const DashboardLayout = ({
   const navigate = useNavigate();
   const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
   const [isDesktopNavOpen, setDesktopNavOpen] = React.useState(true);
+  const [isSettingOpen, setSettingOpen] = React.useState(false);
 
 
   /**
@@ -149,12 +151,19 @@ const DashboardLayout = ({
       <TopBar
         onMobileNavOpen={() => setMobileNavOpen(true)}
         onDesktopNavOpen={() => setDesktopNavOpen(!isDesktopNavOpen)}
+        onSettingOpen={() => setSettingOpen(true)}
         openDesktopNav={isDesktopNavOpen}
       />
+
       <NavBar
-        onMobileClose={() => setMobileNavOpen(false)}
+        onMobileToggle={(value) => setMobileNavOpen(value)}
         openMobile={isMobileNavOpen}
         openDesktop={isDesktopNavOpen}
+      />
+
+      <NavSetting
+        open={isSettingOpen}
+        onToggle={(value) => setSettingOpen(value)}
       />
 
       <div className={classes.wrapper} >

@@ -12,9 +12,9 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import SettingsIcon from '@material-ui/icons/Settings';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import CustomTooltip from 'src/components/CustomTooltip';
-import ThemeMode from './ThemeMode';
 import Clock from 'src/components/Clock';
 import Logo from 'src/components/Logo';
 
@@ -55,6 +55,7 @@ const TopBar = ({
   className,
   onMobileNavOpen,
   onDesktopNavOpen,
+  onSettingOpen,
   openDesktopNav,
   reduxTheme,
   reduxUserLogin,
@@ -73,11 +74,7 @@ const TopBar = ({
             title={openDesktopNav ? 'Close menu' : 'Open menu'}
             placement='bottom'
           >
-            <IconButton
-              onClick={onDesktopNavOpen}
-              className={classes.menuButton}
-              color='inherit'
-            >
+            <IconButton onClick={onDesktopNavOpen} className={classes.menuButton} color='inherit' >
               {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
             </IconButton>
           </CustomTooltip>
@@ -85,11 +82,7 @@ const TopBar = ({
 
         <Hidden lgUp>
           <CustomTooltip title='Open menu' placement='bottom' >
-            <IconButton
-              onClick={onMobileNavOpen}
-              className={classes.menuButton}
-              color='inherit'
-            >
+            <IconButton onClick={onMobileNavOpen} className={classes.menuButton} color='inherit' >
               <MenuIcon />
             </IconButton>
           </CustomTooltip>
@@ -97,11 +90,7 @@ const TopBar = ({
 
         <Hidden smUp>
           <Box flexGrow={1} />
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
+          <Box display="flex" justifyContent="center" alignItems="center" >
             <RouterLink to="/">
               <Logo />
             </RouterLink>
@@ -113,12 +102,16 @@ const TopBar = ({
           <RouterLink to="/">
             <Logo />
           </RouterLink>
+
           <Box flexGrow={1} />
           <Clock className={classes.clock} />
         </Hidden>
 
-        <ThemeMode color='inherit' />
-
+        <CustomTooltip title='Open setting' >
+          <IconButton color='inherit' onClick={onSettingOpen} >
+            <SettingsIcon />
+          </IconButton>
+        </CustomTooltip>
       </Toolbar>
     </AppBar >
   );
@@ -127,6 +120,7 @@ const TopBar = ({
 TopBar.propTypes = {
   className: PropTypes.string,
   onMobileNavOpen: PropTypes.func,
+  onSettingOpen: PropTypes.func,
   openDesktopNav: PropTypes.bool,
 };
 
