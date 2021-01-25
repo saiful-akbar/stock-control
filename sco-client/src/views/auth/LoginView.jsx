@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paperForm: {
     backgroundColor: theme.palette.type === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
-    padding: theme.spacing(8, 4),
+    padding: theme.spacing(4),
   },
 }));
 

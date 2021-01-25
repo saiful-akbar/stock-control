@@ -11,7 +11,7 @@ import {
   IconButton,
   Typography,
   useMediaQuery,
-  SwipeableDrawer
+  Drawer,
 } from '@material-ui/core';
 
 
@@ -114,11 +114,10 @@ function NavSetting({
 
   // Render
   return (
-    <SwipeableDrawer
+    <Drawer
       anchor='right'
       open={open}
       onClose={() => onToggle(false)}
-      onOpen={() => onToggle(true)}
       classes={{ paper: classes.root }}
     >
       <Box
@@ -157,8 +156,8 @@ function NavSetting({
           </ToggleButtonGroup>
         </Box>
       </Box>
-    </SwipeableDrawer>
-  );
+    </Drawer>
+  )
 }
 
 
