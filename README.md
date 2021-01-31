@@ -1,3 +1,5 @@
+<p align="center"><img src="https://raw.githubusercontent.com/saiful-akbar/stock-control/main/sco-client/public/static/images/logo/logo-light-1.png?token=ARIS262XDQ3A7L5GH3UJTQLAC3QI6" width="200"></p>
+
 # Stock Control
 Aplikasi web untuk mengontrol data stok barang
 
