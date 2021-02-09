@@ -214,7 +214,7 @@ class ItemGroupController extends Controller
     {
         $search = (isset($request->search)) ? $this->clearStr($request->search) : "";
 
-        return (new ItemGroupsExport($search))->download("item-group-" . now() . ".xlsx");
+        return (new ItemGroupsExport($search))->download("item-group.xlsx");
     }
 
     /**

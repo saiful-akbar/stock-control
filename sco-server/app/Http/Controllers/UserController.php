@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Profile;
 use App\Models\UserLog;
-use App\Models\MenuItem;
 use Illuminate\Support\Str;
 use App\Models\UserMenuItem;
 use Illuminate\Http\Request;
 use App\Models\UserMenuSubItem;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller

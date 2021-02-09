@@ -10,7 +10,7 @@ class Document extends Model
 {
     use HasFactory, Uuid;
 
-    protected $fillable = ["document_description", "document_path"];
+    protected $fillable = ["document_title", "document_description", "document_path"];
 
     /**
      * Merubah format timestime pada field created_at

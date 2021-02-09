@@ -1,157 +1,180 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Stock control aplication" />
+    <meta
+      name="keywords"
+      content="stock, control, stock control, sco, feelbuy, lock & lock"
+    />
+    <meta name="author" content="Stock Control" />
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Stock control aplication" />
-  <meta name="keywords" content="stock, control, stock control, sco, feelbuy, lock & lock">
-  <meta name="author" content="Stock Control" />
+    <!-- Konfigurasi PWA di iOS -->
+    <meta name="apple-mobile-web-app-title" content="Stock Control App" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link
+      rel="apple-touch-icon"
+      href="%PUBLIC_URL%/static/images/icon/apple-icon-180x180-dunplab-manifest-29310.png"
+      sizes="180x180"
+    />
 
-  <!-- Konfigurasi PWA di iOS -->
-  <meta name="apple-mobile-web-app-title" content="Stock Control App">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/static/images/icon/apple-icon-180x180-dunplab-manifest-29310.png"
-    sizes="180x180" />
+    <!-- Icon & manifest -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon1.ico" />
+    <link
+      rel="icon"
+      href="%PUBLIC_URL%/favicon1.ico"
+      type="image/svg+xml"
+      id="icon"
+    />
 
-  <!-- Icon & manifest -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon1.ico" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon1.ico" type="image/svg+xml" id="icon" />
+    <!-- Google font & material icon -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700"
+    />
 
-  <!-- Google font & material icon -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700" />
+    <title>Stock Control</title>
 
-  <title>Stock Control</title>
-
-  <!-- style css -->
-  <style>
-    body {
-      background-color: #F4F5FD;
-    }
-
-    .bg-dark {
-      background-color: #0D1418 !important;
-    }
-
-    table thead tr th,
-    table tbody tr td {
-      white-space: nowrap !important;
-      font-size: 13px !important;
-    }
-
-    /* Scrollbar */
-    body::-webkit-scrollbar,
-    body ::-webkit-scrollbar {
-      background-color: transparent;
-      width: 7px;
-      height: 7px;
-    }
-
-    body::-webkit-scrollbar-corner,
-    body ::-webkit-scrollbar-corner {
-      background-color: transparent;
-      width: 7px;
-      height: 7px;
-    }
-
-    body::-webkit-scrollbar-thumb,
-    body ::-webkit-scrollbar-thumb {
-      /* border-radius: 8px; */
-      min-height: 24px;
-      background-color: rgb(107, 107, 107, 0.3);
-    }
-
-    body::-webkit-scrollbar-thumb:hover,
-    body ::-webkit-scrollbar-thumb:hover {
-      background-color: rgb(107, 107, 107, 0.6);
-    }
-
-    /* End scrollbar */
-
-    /* Preloader */
-    #preloader {
-      background-color: #F4F5FD;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      left: 0;
-      z-index: 9999;
-    }
-
-    #preloader div {
-      box-sizing: border-box;
-      display: block;
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      margin: 8px;
-      border-radius: 50%;
-      animation: preloader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-      border: 6px solid #5383FF;
-      border-color: #5383FF transparent transparent transparent;
-    }
-
-    .loader-secondary div {
-      border: 6px solid #0097a7 !important;
-      border-color: #0097a7 transparent transparent transparent !important;
-    }
-
-    #preloader div:nth-child(1) {
-      animation-delay: -0.45s;
-    }
-
-    #preloader div:nth-child(2) {
-      animation-delay: -0.3s;
-    }
-
-    #preloader div:nth-child(3) {
-      animation-delay: -0.15s;
-    }
-
-    @keyframes preloader {
-      0% {
-        transform: rotate(0deg);
+    <!-- style css -->
+    <style>
+      body {
+        background-color: #f4f5fd;
       }
 
-      100% {
-        transform: rotate(360deg);
+      .bg-dark {
+        background-color: #0d1418 !important;
       }
-    }
 
-    /* End preloader */
-  </style>
-</head>
-
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-
-  <div id="preloader">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-
-  <div id="root"></div>
-
-  <script>
-    (function () {
-      if (document.cookie.split(";").some(value => value.trim() === "theme=dark")) {
-        document.querySelector("body").classList.add("bg-dark");
-        document.getElementById("preloader").classList.add("bg-dark", "loader-secondary");
+      table thead tr th,
+      table tbody tr td {
+        white-space: nowrap !important;
+        font-size: 13px !important;
       }
-    })();
-  </script>
-</body>
 
+      /* Scrollbar */
+      body::-webkit-scrollbar,
+      body ::-webkit-scrollbar {
+        background-color: transparent;
+        width: 7px;
+        height: 7px;
+      }
+
+      body::-webkit-scrollbar-corner,
+      body ::-webkit-scrollbar-corner {
+        background-color: transparent;
+        width: 7px;
+        height: 7px;
+      }
+
+      body::-webkit-scrollbar-thumb,
+      body ::-webkit-scrollbar-thumb {
+        border-radius: 25px;
+        min-height: 24px;
+        background-color: rgb(107, 107, 107, 0.4);
+      }
+
+      body::-webkit-scrollbar-thumb:hover,
+      body ::-webkit-scrollbar-thumb:hover {
+        background-color: rgb(107, 107, 107, 0.8);
+      }
+
+      /* End scrollbar */
+
+      /* Preloader */
+      #preloader {
+        background-color: #f4f5fd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 9999;
+      }
+
+      #preloader div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        margin: 8px;
+        border-radius: 50%;
+        animation: preloader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border: 6px solid #5383ff;
+        border-color: #5383ff transparent transparent transparent;
+      }
+
+      .loader-secondary div {
+        border: 6px solid #0097a7 !important;
+        border-color: #0097a7 transparent transparent transparent !important;
+      }
+
+      #preloader div:nth-child(1) {
+        animation-delay: -0.45s;
+      }
+
+      #preloader div:nth-child(2) {
+        animation-delay: -0.3s;
+      }
+
+      #preloader div:nth-child(3) {
+        animation-delay: -0.15s;
+      }
+
+      @keyframes preloader {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* End preloader */
+    </style>
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <div id="preloader">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div id="root"></div>
+
+    <script>
+      (function() {
+        if (
+          document.cookie
+            .split(';')
+            .some(value => value.trim() === 'theme=dark')
+        ) {
+          document.querySelector('body').classList.add('bg-dark');
+          document
+            .getElementById('preloader')
+            .classList.add('bg-dark', 'loader-secondary');
+        }
+      })();
+    </script>
+  </body>
 </html>
