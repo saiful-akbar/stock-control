@@ -20,10 +20,10 @@ function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
   return (
     <TableRow {...props}>
       {userAccess !== null &&
-        (userAccess.user_m_s_i_delete === 1 ||
-        userAccess.user_m_s_i_update === 1 ? (
+        (userAccess.user_m_i_delete === 1 ||
+        userAccess.user_m_i_update === 1 ? (
           <TableCell padding="checkbox">
-            {userAccess.user_m_s_i_delete === 1 && (
+            {userAccess.user_m_i_delete === 1 && (
               <CustomTooltip placement="bottom" title="Select">
                 <Checkbox
                   color="primary"
@@ -33,7 +33,7 @@ function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
               </CustomTooltip>
             )}
 
-            {userAccess.user_m_s_i_update === 1 && (
+            {userAccess.user_m_i_update === 1 && (
               <CustomTooltip placement="bottom" title="Edit">
                 <IconButton onClick={() => onEdit(row)}>
                   <EditIcon fontSize="small" />
@@ -48,7 +48,7 @@ function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
           key={key}
           className={classes.root}
           padding={
-            userAccess !== null && userAccess.user_m_s_i_delete === 1
+            userAccess !== null && userAccess.user_m_i_delete === 1
               ? 'checkbox'
               : 'default'
           }

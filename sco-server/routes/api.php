@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ItemGroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MenuItemController;
@@ -115,5 +116,13 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
             Route::delete("/", [ItemGroupController::class, "delete"])->middleware("access.item:delete");
             Route::patch("/{item_group}", [ItemGroupController::class, "update"])->middleware("access.item:update");
         });
+    });
+
+    /**
+     * Route group document
+     */
+    Route::group(['prefix' => 'documents'], function () {
+        Route::get("/", [DocumentController::class, "index"])->middleware("access.document:read");
+        Route::post("/", [DocumentController::class, "store"])->middleware("access.document:read");
     });
 });

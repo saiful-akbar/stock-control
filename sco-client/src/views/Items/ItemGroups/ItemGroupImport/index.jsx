@@ -17,24 +17,22 @@ import Loader from 'src/components/Loader';
 import { makeStyles } from '@material-ui/styles';
 import { apiImportItemGroup } from 'src/services/itemGroups';
 
-
 // Style DialogTitle
-const styles = (theme) => ({
+const styles = theme => ({
   root: {
     margin: 0,
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   closeButton: {
     position: 'absolute',
     right: theme.spacing(1),
-    top: theme.spacing(1),
+    top: theme.spacing(1)
     // color: theme.palette.grey[500],
-  },
+  }
 });
 
-
 // Komponen custom dialog titla
-const DialogTitle = withStyles(styles)((props) => {
+const DialogTitle = withStyles(styles)(props => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
@@ -53,32 +51,28 @@ const DialogTitle = withStyles(styles)((props) => {
   );
 });
 
-
 // Komponen dialog content
-const DialogContent = withStyles((theme) => ({
+const DialogContent = withStyles(theme => ({
   root: {
-    padding: theme.spacing(2),
-  },
+    padding: theme.spacing(2)
+  }
 }))(MuiDialogContent);
 
-
 // Komponen dialog actions
-const DialogActions = withStyles((theme) => ({
+const DialogActions = withStyles(theme => ({
   root: {
     margin: 0,
-    padding: theme.spacing(1),
-  },
+    padding: theme.spacing(1)
+  }
 }))(MuiDialogActions);
 
-
 // Style ItemGroupImport
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   header: {
     backgroundColor: theme.palette.background.topBar,
-    color: '#ffffff',
-  },
+    color: '#ffffff'
+  }
 }));
-
 
 // Komponen utama
 function ItemGroupImport({
@@ -91,103 +85,93 @@ function ItemGroupImport({
   const classes = useStyles();
   const isMounted = React.useRef(true);
 
-
   // State
   const [loading, setLoading] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState('');
   const [alert, setAlert] = React.useState({
-    type: "info",
+    type: 'info',
     message: [
-      "Import can only support files with the .xlsx or .xls extension.",
-      "The maximum size is 1000 kilobytes."
+      'Import can only support files with the .xlsx or .xls extension.',
+      'The maximum size is 1000 kilobytes.'
     ]
   });
-
 
   // Handle jika komponen dilepas saat request api belum selesai
   React.useEffect(() => {
     return () => {
       isMounted.current = false;
-    }
+    };
     // eslint-disable-next-line
   }, []);
-
 
   // Set alert saat dialog pertama kali dibuka
   React.useEffect(() => {
     if (open) {
       setAlert({
-        type: "info",
+        type: 'info',
         message: [
-          "Import can only support files with the .xlsx or .xls extension.",
-          "The maximum size is 1000 kilobytes."
+          'Import can only support files with the .xlsx or .xls extension.',
+          'The maximum size is 1000 kilobytes.'
         ]
       });
     }
   }, [open]);
 
-
   // Handle close dialog
-  const handleClose = (e) => {
+  const handleClose = e => {
     if (!loading) {
-      setValue("");
+      setValue('');
       onClose();
     } else {
       e.preventDefault();
     }
-  }
-
+  };
 
   // Handle input change
-  const handleChange = (e) => {
+  const handleChange = e => {
     const file = e.target.files[0];
-    const xlsx = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const xlsx =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     const xls = 'application/vnd.ms-excel';
 
     if (Boolean(file)) {
       if (file.type !== xlsx && file.type !== xls) {
         setAlert({
-          type: "error",
-          message: ["The file must be a file of type xlsx or xls."]
+          type: 'error',
+          message: ['The file must be a file of type xlsx or xls.']
         });
-      }
-      else if (Math.ceil(file.size / 1000) > 1000) {
+      } else if (Math.ceil(file.size / 1000) > 1000) {
         setAlert({
-          type: "error",
-          message: ["The file may not be greater than 1000 kilobytes"]
+          type: 'error',
+          message: ['The file may not be greater than 1000 kilobytes']
         });
-      }
-      else {
+      } else {
         setAlert({
-          type: "success",
-          message: ["File ready to import"]
+          type: 'success',
+          message: ['File ready to import']
         });
         setValue(file);
       }
     }
-  }
-
+  };
 
   // Handle submit
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     setLoading(true);
     setAlert({
-      type: "warning",
-      message: [
-        "Importing...",
-        "Do not reload or leave this page."
-      ]
+      type: 'warning',
+      message: ['Importing...', 'Do not reload or leave this page.']
     });
 
     let formData = new FormData();
-    formData.set("file", value);
+    formData.set('file', value);
 
     apiImportItemGroup(formData)
-      .then((res) => {
+      .then(res => {
         if (isMounted.current) {
           setLoading(false);
-          setReduxToast(true, "success", res.data.message);
+          setReduxToast(true, 'success', res.data.message);
           onReloadTable();
           handleClose();
         }
@@ -196,13 +180,12 @@ function ItemGroupImport({
         if (isMounted.current) {
           setLoading(false);
           setAlert({
-            type: "error",
-            message: err.status === 422 ? err.data.errors : [err.data.message],
+            type: 'error',
+            message: err.status === 422 ? err.data.errors : [err.data.message]
           });
         }
       });
-  }
-
+  };
 
   return (
     <Dialog
@@ -212,7 +195,6 @@ function ItemGroupImport({
       maxWidth="md"
       aria-labelledby="dialog-import-title"
     >
-
       <DialogTitle
         id="dialog-import-title"
         onClose={handleClose}
@@ -221,7 +203,7 @@ function ItemGroupImport({
         {'Import from excel'}
       </DialogTitle>
 
-      <Alert severity={alert.type} >
+      <Alert severity={alert.type}>
         <Box ml={3}>
           <ul>
             {alert.message.map((m, key) => (
@@ -233,7 +215,7 @@ function ItemGroupImport({
 
       <DialogContent dividers>
         <Loader show={loading}>
-          <form onSubmit={handleSubmit} encType="multipart/form-data" >
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             <label htmlFor="file">
               <input
                 hidden
@@ -249,22 +231,19 @@ function ItemGroupImport({
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               >
-                <FileCopyIcon
-                  color="disabled"
-                  style={{ fontSize: 150 }}
-                />
+                <FileCopyIcon color="disabled" style={{ fontSize: 150 }} />
 
                 <Typography variant="h5">
-                  {value === "" ? "Select files" : value.name}
+                  {value === '' ? 'Select files' : value.name}
                 </Typography>
 
                 <Button
                   size="small"
                   variant="outlined"
                   color="default"
-                  component='span'
+                  component="span"
                   style={{
                     textAlign: 'center',
                     marginTop: 20
@@ -283,37 +262,35 @@ function ItemGroupImport({
           variant="contained"
           color="primary"
           onClick={handleSubmit}
-          disabled={Boolean(value === "" || loading)}
+          disabled={Boolean(value === '' || loading)}
         >
-          {loading ? "importing..." : "Import now"}
+          {loading ? 'importing...' : 'Import now'}
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-
 // Default props ItemGroupImport
 ItemGroupImport.defaultProps = {
   open: false,
-  onClose: (e) => e.preventDefault(),
-  onReloadTable: (e) => e.preventDefault(),
+  onClose: e => e.preventDefault(),
+  onReloadTable: e => e.preventDefault()
 };
-
 
 // Redux reducer
 function reduxReducer(dispatch) {
   return {
-    setReduxToast: (show, type, message) => dispatch({
-      type: reduxAction.toast,
-      value: {
-        show: show,
-        type: type,
-        message: message
-      }
-    })
-  }
+    setReduxToast: (show, type, message) =>
+      dispatch({
+        type: reduxAction.toast,
+        value: {
+          show: show,
+          type: type,
+          message: message
+        }
+      })
+  };
 }
-
 
 export default connect(null, reduxReducer)(ItemGroupImport);

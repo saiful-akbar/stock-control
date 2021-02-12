@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +20,7 @@ class Document extends Model
      */
     public function getCreatedAtAttribute()
     {
-        return \Carbon\Carbon::parse($this->attributes['created_at'])->format('d M Y H:i');
+        return Carbon::parse($this->attributes['created_at'])->format('d M Y H:i');
     }
 
     /**
@@ -29,6 +30,6 @@ class Document extends Model
      */
     public function getUpdatedAtAttribute()
     {
-        return \Carbon\Carbon::parse($this->attributes['updated_at'])->format('d M Y H:i');
+        return Carbon::parse($this->attributes['updated_at'])->format('d M Y H:i');
     }
 }

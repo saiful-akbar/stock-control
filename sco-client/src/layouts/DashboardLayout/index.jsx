@@ -1,19 +1,9 @@
 import React from 'react';
-import {
-  Outlet,
-  useNavigate
-} from 'react-router-dom';
-import {
-  withCookies
-} from 'react-cookie';
-import {
-  connect
-} from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { withCookies } from 'react-cookie';
+import { connect } from 'react-redux';
 import { userLogin } from '../../services/auth';
-import {
-  makeStyles,
-  CircularProgress
-} from '@material-ui/core';
+import { makeStyles, CircularProgress } from '@material-ui/core';
 import { reduxAction } from 'src/config/redux/state';
 import Toast from 'src/components/Toast';
 import TopBar from './TopBar';
@@ -22,17 +12,15 @@ import clsx from 'clsx';
 import ErrorBoundary from 'src/components/ErrorBoundary';
 import NavSetting from './NavSetting';
 
-
 /* Style untuk komponen lodingSuspense */
 const fallbackStyle = makeStyles(theme => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
+    height: '100%'
   }
 }));
-
 
 /* Komponent untuk fallback suspense */
 function Fallback() {
@@ -40,15 +28,14 @@ function Fallback() {
 
   return (
     <div className={classes.root}>
-      <CircularProgress color='primary' size={50} />
+      <CircularProgress color="primary" size={50} />
     </div>
-  )
+  );
 }
-
 
 /* Style untuk komponen DashboardLayout  */
 const drawerWidth = 256;
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     display: 'flex',
@@ -63,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 64,
     [theme.breakpoints.up('lg')]: {
       paddingLeft: drawerWidth
-    },
+    }
   },
   contentContainer: {
     display: 'flex',
@@ -71,26 +58,26 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
     [theme.breakpoints.up('lg')]: {
-      marginLeft: -drawerWidth,
-    },
+      marginLeft: -drawerWidth
+    }
   },
   contentContainerShift: {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.enteringScreen
     }),
     [theme.breakpoints.up('lg')]: {
-      marginLeft: 0,
-    },
+      marginLeft: 0
+    }
   },
   content: {
     flex: '1 1 auto',
     height: '100%',
     overflow: 'auto'
-  },
+  }
 }));
 
 const DashboardLayout = ({
@@ -98,54 +85,48 @@ const DashboardLayout = ({
   reduxUserLogin,
   setReduxUserLogin,
   reduxToast,
-  setReduxToast,
+  setReduxToast
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+
+  /* State */
   const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
   const [isDesktopNavOpen, setDesktopNavOpen] = React.useState(true);
   const [isSettingOpen, setSettingOpen] = React.useState(false);
 
-
-  /**
-   * Menghapus preloader
-   */
+  /* Menghapus preloader */
   React.useEffect(() => {
-    window.onload = () => {
-      const preloader = document.getElementById("preloader");
-      preloader.remove();
+    if (reduxUserLogin !== null) {
+      document.getElementById('preloader').remove();
     }
-  });
+  }, [reduxUserLogin]);
 
-
-  // Cek apakah user sudah login atau belum
+  /* Cek apakah user sudah login atau belum */
   React.useEffect(() => {
     getUserIsLogin();
 
     // eslint-disable-next-line
   }, []);
 
-
-  // Mengambil data user yang sedang login
+  /* Mengambil data user yang sedang login */
   const getUserIsLogin = async () => {
     if (cookies.get('auth_token') !== undefined) {
       if (reduxUserLogin === null) {
         try {
           await setReduxUserLogin();
-        }
-        catch (err) {
+        } catch (err) {
           if (err.status === 401) {
             window.location.href = '/logout';
           }
         }
       }
-    }
-    else {
+    } else {
       navigate('/login');
     }
-  }
+  };
 
-
+  /* Render */
   return (
     <div className={classes.root}>
       <TopBar
@@ -156,25 +137,25 @@ const DashboardLayout = ({
       />
 
       <NavBar
-        onMobileToggle={(value) => setMobileNavOpen(value)}
+        onMobileToggle={value => setMobileNavOpen(value)}
         openMobile={isMobileNavOpen}
         openDesktop={isDesktopNavOpen}
       />
 
       <NavSetting
         open={isSettingOpen}
-        onToggle={(value) => setSettingOpen(value)}
+        onToggle={value => setSettingOpen(value)}
       />
 
-      <div className={classes.wrapper} >
+      <div className={classes.wrapper}>
         <div
           className={clsx(classes.contentContainer, {
-            [classes.contentContainerShift]: isDesktopNavOpen,
+            [classes.contentContainerShift]: isDesktopNavOpen
           })}
         >
-          <div className={classes.content} >
+          <div className={classes.content}>
             <ErrorBoundary>
-              <React.Suspense fallback={<Fallback />} >
+              <React.Suspense fallback={<Fallback />}>
                 <Outlet />
               </React.Suspense>
             </ErrorBoundary>
@@ -186,27 +167,30 @@ const DashboardLayout = ({
         open={reduxToast.show}
         type={reduxToast.type}
         message={reduxToast.message}
-        handleClose={() => setReduxToast(false, reduxToast.type, reduxToast.message)}
+        handleClose={() =>
+          setReduxToast(false, reduxToast.type, reduxToast.message)
+        }
       />
     </div>
   );
 };
 
-const reduxDispatch = (dispatch) => ({
+const reduxDispatch = dispatch => ({
   setReduxUserLogin: () => dispatch(userLogin()),
-  setReduxToast: (show, type, message) => dispatch({
-    type: reduxAction.toast,
-    value: {
-      show: show,
-      type: type,
-      message: message,
-    }
-  })
+  setReduxToast: (show, type, message) =>
+    dispatch({
+      type: reduxAction.toast,
+      value: {
+        show: show,
+        type: type,
+        message: message
+      }
+    })
 });
 
-const reduxState = (state) => ({
+const reduxState = state => ({
   reduxUserLogin: state.userLogin,
-  reduxToast: state.toast,
+  reduxToast: state.toast
 });
 
 export default connect(reduxState, reduxDispatch)(withCookies(DashboardLayout));

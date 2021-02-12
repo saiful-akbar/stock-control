@@ -1,12 +1,15 @@
 {
-  // for prettier configuration
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-
   // format code on save
   "editor.formatOnSave": true,
+
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "[php]": {
+    "editor.formatOnSave": true
+  },
 
   // update import on file move
   "javascript.updateImportsOnFileMove.enabled": "always",
@@ -14,6 +17,12 @@
   // emmet jsx
   "emmet.includeLanguages": {
     "javascript": "javascriptreact"
+  },
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.tslint": true,
+    "source.fixAll.stylelint": true
   },
 
   "emmet.triggerExpansionOnTab": true,
