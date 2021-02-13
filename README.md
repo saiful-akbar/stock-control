@@ -4,22 +4,7 @@
 
 # Stock Control
 
-Aplikasi berbasis website untuk mengelola serta mengontrol data stok barang
-
-## Instalasi
-
-- Buka terminal atau git bash jika sudah menginstal git pada repository/folder poject stock-control.
-- Ketikan `cd sco-client` untuk masuk ke direktori sco-client yang merupakan folder frontend.
-- Ketikan `npm install` jika menggunakan npm, atau `yarn` jika menggunakan yarn. tunggu hingga proses instalasi selesai.
-- Ketikan `cd ../sco-server` untuk masuk ke folder sco-server yang merupahan folder backend.
-- Ketikan `composer install`. tunggu hingga proses instalasi selesai.
-- ketikan `cp .env.example .env` untuk menyalin file `.env.example` menjadi file `.env`.
-- Ketikan `php artisan key:generate` untuk men-generate unique key pada file .env.
-- Buat databse pada mysql atau dari phpMyAdmin.
-- Buka file `.env` dengan text editor cari `DB_DATABASE=DB_NAME` lalu ubah value-nya dengan nama database yang telah dibuat, `contoh: DB_DATABASE=db_stock_control`. lalu simpan.
-- Kembali ke terminal atau git bash dan ketikan `php artisan migrate:fresh --seed` untuk migrasi table beserta seeder-nya pada database.
-- Ketikan `php artisan serve` untuk menjalankan local server laravel.
-- Buka terminal atau git bash pada jendela baru lalu ketikan `npm start` jika menggukan npm atau `yarn start` jika menggukan yarn untuk menjalankan local server pada react js.
+**Aplikasi Stock Control** merupakan aplikasi berbasis web dengan proses pengembangannya menggunakan framework laravel dan library react js. Aplikasi ini dibuat untuk mempermudah dalam mengontrol serta mengelola data stok barang.
 
 ## Teknologi Yang Digunakan
 
@@ -75,3 +60,18 @@ Aplikasi berbasis website untuk mengelola serta mengontrol data stok barang
       - Menghapus,
       - Import dari file excel,
       - Export kedalam bentuk file excel
+
+## Instalasi
+
+- Buka terminal atau git bash jika sudah menginstal git pada repository/folder poject stock-control.
+- Ketikan `cd sco-client` untuk masuk ke direktori sco-client yang merupakan folder frontend.
+- Ketikan `npm install` jika menggunakan npm, atau `yarn` jika menggunakan yarn. tunggu hingga proses instalasi selesai.
+- Ketikan `cd ../sco-server` untuk masuk ke folder sco-server yang merupahan folder backend.
+- Ketikan `composer install`. tunggu hingga proses instalasi selesai.
+- ketikan `cp .env.example .env` untuk menyalin file `.env.example` menjadi file `.env`.
+- Ketikan `php artisan key:generate` untuk men-generate unique key pada file .env.
+- Buat databse pada mysql atau dari phpMyAdmin.
+- Buka file `.env` dengan text editor cari `DB_DATABASE=DB_NAME` lalu ubah value-nya dengan nama database yang telah dibuat, `contoh: DB_DATABASE=db_stock_control`. lalu simpan.
+- Kembali ke terminal atau git bash dan ketikan `php artisan migrate:fresh --seed` untuk migrasi table beserta seeder-nya pada database.
+- Ketikan `php artisan serve` untuk menjalankan local server laravel.
+- Buka terminal atau git bash pada jendela baru lalu ketikan `npm start` jika menggukan npm atau `yarn start` jika menggukan yarn untuk menjalankan local server pada react js.

@@ -97,8 +97,9 @@ const DashboardLayout = ({
 
   /* Menghapus preloader */
   React.useEffect(() => {
-    if (reduxUserLogin !== null) {
-      document.getElementById('preloader').remove();
+    const preloader = document.getElementById('preloader');
+    if (reduxUserLogin !== null && Boolean(preloader)) {
+      preloader.remove();
     }
   }, [reduxUserLogin]);
 
@@ -175,7 +176,8 @@ const DashboardLayout = ({
   );
 };
 
-const reduxDispatch = dispatch => ({
+/* Redux reducer */
+const reduxReducer = dispatch => ({
   setReduxUserLogin: () => dispatch(userLogin()),
   setReduxToast: (show, type, message) =>
     dispatch({
@@ -188,9 +190,10 @@ const reduxDispatch = dispatch => ({
     })
 });
 
+/* Redux state */
 const reduxState = state => ({
   reduxUserLogin: state.userLogin,
   reduxToast: state.toast
 });
 
-export default connect(reduxState, reduxDispatch)(withCookies(DashboardLayout));
+export default connect(reduxState, reduxReducer)(withCookies(DashboardLayout));

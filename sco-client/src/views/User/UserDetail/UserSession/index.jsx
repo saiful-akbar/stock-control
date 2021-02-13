@@ -15,51 +15,55 @@ import { connect } from 'react-redux';
 import { Box, Divider } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
+/* Komponent untuk menentukan tipe icon berdasarkan browser yang digunakan */
+function isDevice(type = null) {
+  if (
+    type === 'Android' ||
+    type === 'iPhone' ||
+    type === 'iPad' ||
+    type === 'Windows Phone'
+  ) {
+    return <PhoneAndroidIcon />;
+  } else {
+    return <DesktopWindowsIcon />;
+  }
+}
 
-/**
- * Style
- */
-const useStyles = makeStyles((theme) => ({
+/* Style */
+const useStyles = makeStyles(theme => ({
   paper: {
-    padding: '6px 16px',
+    padding: '6px 16px'
   },
   secondaryTail: {
-    backgroundColor: theme.palette.secondary.main,
-  },
+    backgroundColor: theme.palette.secondary.main
+  }
 }));
 
-
-/**
- * Komponen utama
- */
+/* Komponen utama */
 function UserSeesion({ data, ...props }) {
   const classes = useStyles();
 
-  const isDevice = (type = null) => {
-    if (type === 'Android' || type === 'iPhone' || type === 'iPad' || type === 'Windows Phone') {
-      return <PhoneAndroidIcon />
-    } else {
-      return <DesktopWindowsIcon />
-    }
-  }
-
+  /* Render */
   return (
-    <>
+    <React.Fragment>
       <Box pb={2}>
-        {data === null
-          ? (
-            <Skeleton variant='text' >
-              <Typography variant='h5' color='textPrimary'>{'Session'}</Typography>
-            </Skeleton>
-          ) : (
-            <Typography variant='h5' color='textPrimary'>{'Session'}</Typography>
-          )}
+        {data === null ? (
+          <Skeleton variant="text">
+            <Typography variant="h5" color="textPrimary">
+              {'Session'}
+            </Typography>
+          </Skeleton>
+        ) : (
+          <Typography variant="h5" color="textPrimary">
+            {'Session'}
+          </Typography>
+        )}
       </Box>
 
       <Divider />
 
       <Timeline align="alternate">
-        {data !== null && (
+        {data !== null &&
           data.map(dt => {
             return (
               <TimelineItem key={dt.id}>
@@ -70,7 +74,7 @@ function UserSeesion({ data, ...props }) {
                 </TimelineOppositeContent>
 
                 <TimelineSeparator>
-                  <TimelineDot color="secondary">
+                  <TimelineDot color="secondary" variant="default">
                     {isDevice(dt.device)}
                   </TimelineDot>
                   <TimelineConnector />
@@ -79,41 +83,33 @@ function UserSeesion({ data, ...props }) {
                 <TimelineContent>
                   <Paper
                     elevation={3}
-                    variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
                     className={classes.paper}
+                    variant={
+                      props.reduxTheme === 'dark' ? 'outlined' : 'elevation'
+                    }
                   >
-                    <Typography variant="h6">
-                      {dt.ip2}
-                    </Typography>
-                    <Typography variant='body1'>{`${dt.browser} on ${dt.device}`}</Typography>
+                    <Typography variant="h6">{dt.ip2}</Typography>
+                    <Typography variant="body1">{`${dt.browser} on ${dt.device}`}</Typography>
                   </Paper>
                 </TimelineContent>
               </TimelineItem>
-            )
-          })
-        )}
+            );
+          })}
       </Timeline>
-    </>
+    </React.Fragment>
   );
 }
 
-
-/**
- * Properti default untuk komponen UserDetailAccount
- */
+/* Properti default untuk komponen UserDetailAccount */
 UserSeesion.defaultProps = {
   data: null
 };
 
-
-/**
- * redux State
- */
+/* redux State */
 function reduxState(state) {
   return {
     reduxTheme: state.theme
-  }
+  };
 }
-
 
 export default connect(reduxState, null)(UserSeesion);
