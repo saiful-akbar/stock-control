@@ -2,7 +2,8 @@ import React from 'react';
 import { TableRow, TableCell, Checkbox, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import CustomTooltip from 'src/components/CustomTooltip';
-import EditIcon from '@material-ui/icons/Edit';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+// import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -19,29 +20,17 @@ function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
   /* Render komponen utama */
   return (
     <TableRow {...props}>
-      {userAccess !== null &&
-        (userAccess.user_m_s_i_delete === 1 ||
-        userAccess.user_m_s_i_update === 1 ? (
-          <TableCell padding="checkbox">
-            {userAccess.user_m_s_i_delete === 1 && (
-              <CustomTooltip placement="bottom" title="Select">
-                <Checkbox
-                  color="primary"
-                  checked={props.selected}
-                  onClick={e => onSelect(e, row.id)}
-                />
-              </CustomTooltip>
-            )}
-
-            {userAccess.user_m_s_i_update === 1 && (
-              <CustomTooltip placement="bottom" title="Edit">
-                <IconButton onClick={() => onEdit(row)}>
-                  <EditIcon fontSize="small" />
-                </IconButton>
-              </CustomTooltip>
-            )}
-          </TableCell>
-        ) : null)}
+      {Boolean(userAccess !== null && userAccess.user_m_s_i_delete === 1) && (
+        <TableCell padding="checkbox">
+          <CustomTooltip placement="bottom" title="Select">
+            <Checkbox
+              color="primary"
+              checked={props.selected}
+              onClick={e => onSelect(e, row.id)}
+            />
+          </CustomTooltip>
+        </TableCell>
+      )}
 
       {columns.map((col, key) => (
         <TableCell
@@ -56,6 +45,26 @@ function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
           {row[col.field]}
         </TableCell>
       ))}
+
+      {Boolean(userAccess !== null) && (
+        <TableCell padding="checkbox">
+          {userAccess.user_m_s_i_update === 1 && (
+            <CustomTooltip placement="bottom" title="Edit">
+              <IconButton onClick={() => onEdit(row)}>
+                <EditOutlinedIcon fontSize="small" />
+              </IconButton>
+            </CustomTooltip>
+          )}
+
+          {/* {userAccess.user_m_s_i_delete === 1 && (
+            <CustomTooltip placement="bottom" title="Delete">
+              <IconButton onClick={() => onEdit(row)}>
+                <DeleteOutlineOutlinedIcon fontSize="small" />
+              </IconButton>
+            </CustomTooltip>
+          )} */}
+        </TableCell>
+      )}
     </TableRow>
   );
 }

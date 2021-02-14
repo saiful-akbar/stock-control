@@ -1,8 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  useEffect,
-} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -18,12 +14,12 @@ import {
   colors,
   CardContent,
   Divider,
-  Card,
+  Card
 } from '@material-ui/core';
 import {
   apiAddUserMenuSubItem,
   apiGetUserMenuSubItems,
-  apiDeleteUserMenuSubItems,
+  apiDeleteUserMenuSubItems
 } from 'src/services/user';
 import UserMenuTable from '../UserMenuTable';
 import { Skeleton } from '@material-ui/lab';
@@ -33,10 +29,9 @@ import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import DialogDelete from 'src/components/DialogDelete';
 
-
 /**
  * Komponen utama
- * @param {*} props 
+ * @param {*} props
  */
 function UserMenuSubItems(props) {
   const [loading, setLoading] = useState(true);
@@ -51,7 +46,6 @@ function UserMenuSubItems(props) {
    * User id
    */
   const { userId } = props;
-
 
   /**
    * Data kolom pada tabel list
@@ -86,9 +80,8 @@ function UserMenuSubItems(props) {
       label: 'Delete',
       field: 'user_m_s_i_delete',
       align: 'center'
-    },
+    }
   ];
-
 
   useEffect(() => {
     if (rowData === null) {
@@ -96,29 +89,27 @@ function UserMenuSubItems(props) {
     }
     return () => {
       isMounted.current = false;
-    }
+    };
     // eslint-disable-next-line
   }, []);
 
-
   /**
    * Tambilan menu akses true atau false
-   * @param {boolean} access 
+   * @param {boolean} access
    */
-  const menuAccess = (access) => {
+  const menuAccess = access => {
     if (access === 1) {
-      return <CheckIcon style={{ color: colors.green[500] }} />
+      return <CheckIcon style={{ color: colors.green[500] }} />;
     } else {
-      return <CloseIcon style={{ color: colors.red[500] }} />
+      return <CloseIcon style={{ color: colors.red[500] }} />;
     }
-  }
-
+  };
 
   /**
    * Fungsi untuk menyesuaikan data dengan row table dan menyimpan kedalam state rowData
-   * @param {array} data 
+   * @param {array} data
    */
-  const setValueRowData = (data) => {
+  const setValueRowData = data => {
     let result = [];
     data.map(dt => {
       result = [
@@ -130,14 +121,13 @@ function UserMenuSubItems(props) {
           user_m_s_i_read: menuAccess(dt.user_m_s_i_read),
           user_m_s_i_create: menuAccess(dt.user_m_s_i_create),
           user_m_s_i_update: menuAccess(dt.user_m_s_i_update),
-          user_m_s_i_delete: menuAccess(dt.user_m_s_i_delete),
+          user_m_s_i_delete: menuAccess(dt.user_m_s_i_delete)
         }
       ];
       return result;
-    })
+    });
     setRowData(result);
-  }
-
+  };
 
   /**
    * FUngsi mengambil semua data menu item
@@ -166,13 +156,12 @@ function UserMenuSubItems(props) {
         }
       }
     }
-  }
-
+  };
 
   /**
    * FUngsi submit menambah user menu item baru
-   * @param {object} data 
-   * @param {function} param1 
+   * @param {object} data
+   * @param {function} param1
    */
   const handleSubmiForm = async (data, { resetForm, setFieldValue }) => {
     let newData = {
@@ -181,7 +170,7 @@ function UserMenuSubItems(props) {
       user_m_s_i_read: data.user_m_s_i_read ? 1 : 0,
       user_m_s_i_create: data.user_m_s_i_create ? 1 : 0,
       user_m_s_i_update: data.user_m_s_i_update ? 1 : 0,
-      user_m_s_i_delete: data.user_m_s_i_delete ? 1 : 0,
+      user_m_s_i_delete: data.user_m_s_i_delete ? 1 : 0
     };
 
     try {
@@ -193,30 +182,30 @@ function UserMenuSubItems(props) {
         props.setReduxToast({
           show: true,
           type: 'success',
-          message: res.data.message,
+          message: res.data.message
         });
       }
     } catch (err) {
       if (isMounted.current) {
         if (err.status === 401) {
           window.location.href = '/logout';
-        }
-        else {
+        } else {
           setLoading(false);
           props.setReduxToast({
             show: true,
             type: 'error',
-            message: `(#${err.status}) ${err.status === 422 ? err.data.message : err.data.message}`
+            message: `(#${err.status}) ${
+              err.status === 422 ? err.data.message : err.data.message
+            }`
           });
         }
       }
     }
   };
 
-
   /**
    * Fungsi untuk menghapus user menu sub items
-   * @param {arrya} data 
+   * @param {arrya} data
    */
   const handleDelete = async (data = []) => {
     setDeleteLoading(true);
@@ -229,15 +218,14 @@ function UserMenuSubItems(props) {
         props.setReduxToast({
           show: true,
           type: 'success',
-          message: res.data.message,
+          message: res.data.message
         });
       }
     } catch (err) {
       if (isMounted.current) {
         if (err.status === 401) {
           window.location.href = '/logout';
-        }
-        else {
+        } else {
           setDeleteLoading(false);
           setDeleteData({ show: false, id: deleteData.id });
           props.setReduxToast({
@@ -248,17 +236,13 @@ function UserMenuSubItems(props) {
         }
       }
     }
-  }
-
+  };
 
   return (
     <>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Card
-            variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
-            elevation={3}
-          >
+          <Card variant="elevation" elevation={3}>
             <Formik
               initialValues={{
                 menu_item_id: '',
@@ -266,15 +250,19 @@ function UserMenuSubItems(props) {
                 user_m_s_i_read: true,
                 user_m_s_i_create: false,
                 user_m_s_i_update: false,
-                user_m_s_i_delete: false,
+                user_m_s_i_delete: false
               }}
               validationSchema={Yup.object().shape({
-                menu_item_id: Yup.string().required('Menu Item is a required field'),
-                menu_sub_item_id: Yup.string().required('Menu Sub Item is a required field'),
+                menu_item_id: Yup.string().required(
+                  'Menu Item is a required field'
+                ),
+                menu_sub_item_id: Yup.string().required(
+                  'Menu Sub Item is a required field'
+                ),
                 user_m_s_i_read: Yup.boolean(),
                 user_m_s_i_create: Yup.boolean(),
                 user_m_s_i_update: Yup.boolean(),
-                user_m_s_i_delete: Yup.boolean(),
+                user_m_s_i_delete: Yup.boolean()
               })}
               onSubmit={handleSubmiForm}
             >
@@ -286,178 +274,174 @@ function UserMenuSubItems(props) {
                 errors,
                 isSubmitting
               }) => (
-                  <form onSubmit={handleSubmit} noValidate autoComplete='off' >
-                    <CardContent>
-                      <Grid
-                        spacing={3}
-                        container
-                        direction="row"
-                        justify="flex-end"
-                        alignItems="center"
-                      >
-                        <Grid item md={6} xs={12}>
-                          {menus !== null
-                            ? (
-                              <FormControl
-                                fullWidth
-                                variant='outlined'
-                              >
-                                <InputLabel id='menu-items' margin='dense'>{'Menus'}</InputLabel>
-                                <Select
-                                  label='Menus'
-                                  labelId='menu-items'
-                                  name='menu_item_id'
-                                  margin='dense'
-                                  disabled={isSubmitting}
-                                  value={values.menu_item_id}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                >
-                                  <MenuItem value=''>{'none'}</MenuItem>
-                                  {menus.map(item => {
-                                    return (
-                                      <MenuItem
-                                        key={item.id}
-                                        value={item.id}
-                                      >
-                                        {item.menu_i_title}
-                                      </MenuItem>
-                                    )
-                                  })}
-                                </Select>
-                              </FormControl>
-
-                            ) : (
-                              <Skeleton variant='rect' height={41} />
-                            )}
-                        </Grid>
-
-                        <Grid item md={6} xs={12}>
-                          {menus !== null
-                            ? (
-                              <FormControl
-                                fullWidth
-                                variant='outlined'
-                              >
-                                <InputLabel id='menu-sub-items' margin='dense'>{'Sub Menus'}</InputLabel>
-                                <Select
-                                  label='Sub Menus'
-                                  labelId='menu-sub-items'
-                                  name='menu_sub_item_id'
-                                  margin='dense'
-                                  disabled={isSubmitting}
-                                  value={values.menu_sub_item_id}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                >
-                                  <MenuItem value=''>{'none'}</MenuItem>
-                                  {menus.map(item => {
-                                    if (values.menu_item_id === item.id) {
-                                      return item.menu_sub_items.map(subItem => (
-                                        <MenuItem
-                                          key={subItem.id}
-                                          value={subItem.id}
-                                        >
-                                          {subItem.menu_s_i_title}
-                                        </MenuItem>
-                                      ))
-                                    }
-                                    return null;
-                                  })}
-                                </Select>
-                              </FormControl>
-
-                            ) : (
-                              <Skeleton variant='rect' height={41} />
-                            )}
-                        </Grid>
-
-                        <Grid item xs={12} align="center">
-                          {menus !== null
-                            ? (
-                              <>
-                                <FormControlLabel
-                                  label='Read'
-                                  control={
-                                    <Checkbox
-                                      name='user_m_s_i_read'
-                                      color='primary'
-                                      checked={values.user_m_s_i_read}
-                                      onChange={handleChange}
-                                      disabled={Boolean(values.menu_sub_item_id === '' || isSubmitting)}
-                                    />
-                                  }
-                                />
-                                <FormControlLabel
-                                  label='Create'
-                                  control={
-                                    <Checkbox
-                                      name='user_m_s_i_create'
-                                      color='primary'
-                                      checked={values.user_m_s_i_create}
-                                      onChange={handleChange}
-                                      disabled={Boolean(values.menu_sub_item_id === '' || isSubmitting)}
-                                    />
-                                  }
-                                />
-                                <FormControlLabel
-                                  label='Update'
-                                  control={
-                                    <Checkbox
-                                      name='user_m_s_i_update'
-                                      color='primary'
-                                      checked={values.user_m_s_i_update}
-                                      onChange={handleChange}
-                                      disabled={Boolean(values.menu_sub_item_id === '' || isSubmitting)}
-                                    />
-                                  }
-                                />
-                                <FormControlLabel
-                                  label='Delete'
-                                  control={
-                                    <Checkbox
-                                      name='user_m_s_i_delete'
-                                      color='primary'
-                                      checked={values.user_m_s_i_delete}
-                                      onChange={handleChange}
-                                      disabled={Boolean(values.menu_sub_item_id === '' || isSubmitting)}
-                                    />
-                                  }
-                                />
-                              </>
-                            ) : (
-                              <Skeleton variant='rect' height={41} />
-                            )}
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-
-                    <Divider />
-
-                    <Box
-                      display='flex'
-                      justifyContent='flex-end'
-                      p={2}
+                <form onSubmit={handleSubmit} noValidate autoComplete="off">
+                  <CardContent>
+                    <Grid
+                      spacing={3}
+                      container
+                      direction="row"
+                      justify="flex-end"
+                      alignItems="center"
                     >
-                      {menus !== null
-                        ? (
-                          <BtnSubmit
-                            title='Add To List'
-                            color='primary'
-                            variant='contained'
-                            type='submit'
-                            singleButton={true}
-                            disabled={!Boolean(values.menu_sub_item_id)}
-                            onClick={handleSubmit}
-                            loading={isSubmitting}
-                          />
+                      <Grid item md={6} xs={12}>
+                        {menus !== null ? (
+                          <FormControl fullWidth variant="outlined">
+                            <InputLabel id="menu-items" margin="dense">
+                              {'Menus'}
+                            </InputLabel>
+                            <Select
+                              label="Menus"
+                              labelId="menu-items"
+                              name="menu_item_id"
+                              margin="dense"
+                              disabled={isSubmitting}
+                              value={values.menu_item_id}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            >
+                              <MenuItem value="">{'none'}</MenuItem>
+                              {menus.map(item => {
+                                return (
+                                  <MenuItem key={item.id} value={item.id}>
+                                    {item.menu_i_title}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                          </FormControl>
                         ) : (
-                          <Skeleton variant='rect' height={36} width={117} />
-                        )
-                      }
-                    </Box>
-                  </form>
-                )}
+                          <Skeleton variant="rect" height={41} />
+                        )}
+                      </Grid>
+
+                      <Grid item md={6} xs={12}>
+                        {menus !== null ? (
+                          <FormControl fullWidth variant="outlined">
+                            <InputLabel id="menu-sub-items" margin="dense">
+                              {'Sub Menus'}
+                            </InputLabel>
+                            <Select
+                              label="Sub Menus"
+                              labelId="menu-sub-items"
+                              name="menu_sub_item_id"
+                              margin="dense"
+                              disabled={isSubmitting}
+                              value={values.menu_sub_item_id}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            >
+                              <MenuItem value="">{'none'}</MenuItem>
+                              {menus.map(item => {
+                                if (values.menu_item_id === item.id) {
+                                  return item.menu_sub_items.map(subItem => (
+                                    <MenuItem
+                                      key={subItem.id}
+                                      value={subItem.id}
+                                    >
+                                      {subItem.menu_s_i_title}
+                                    </MenuItem>
+                                  ));
+                                }
+                                return null;
+                              })}
+                            </Select>
+                          </FormControl>
+                        ) : (
+                          <Skeleton variant="rect" height={41} />
+                        )}
+                      </Grid>
+
+                      <Grid item xs={12} align="center">
+                        {menus !== null ? (
+                          <>
+                            <FormControlLabel
+                              label="Read"
+                              control={
+                                <Checkbox
+                                  name="user_m_s_i_read"
+                                  color="primary"
+                                  checked={values.user_m_s_i_read}
+                                  onChange={handleChange}
+                                  disabled={Boolean(
+                                    values.menu_sub_item_id === '' ||
+                                      isSubmitting
+                                  )}
+                                />
+                              }
+                            />
+                            <FormControlLabel
+                              label="Create"
+                              control={
+                                <Checkbox
+                                  name="user_m_s_i_create"
+                                  color="primary"
+                                  checked={values.user_m_s_i_create}
+                                  onChange={handleChange}
+                                  disabled={Boolean(
+                                    values.menu_sub_item_id === '' ||
+                                      isSubmitting
+                                  )}
+                                />
+                              }
+                            />
+                            <FormControlLabel
+                              label="Update"
+                              control={
+                                <Checkbox
+                                  name="user_m_s_i_update"
+                                  color="primary"
+                                  checked={values.user_m_s_i_update}
+                                  onChange={handleChange}
+                                  disabled={Boolean(
+                                    values.menu_sub_item_id === '' ||
+                                      isSubmitting
+                                  )}
+                                />
+                              }
+                            />
+                            <FormControlLabel
+                              label="Delete"
+                              control={
+                                <Checkbox
+                                  name="user_m_s_i_delete"
+                                  color="primary"
+                                  checked={values.user_m_s_i_delete}
+                                  onChange={handleChange}
+                                  disabled={Boolean(
+                                    values.menu_sub_item_id === '' ||
+                                      isSubmitting
+                                  )}
+                                />
+                              }
+                            />
+                          </>
+                        ) : (
+                          <Skeleton variant="rect" height={41} />
+                        )}
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+
+                  <Divider />
+
+                  <Box display="flex" justifyContent="flex-end" p={2}>
+                    {menus !== null ? (
+                      <BtnSubmit
+                        title="Add To List"
+                        color="primary"
+                        variant="contained"
+                        type="submit"
+                        singleButton={true}
+                        disabled={!Boolean(values.menu_sub_item_id)}
+                        onClick={handleSubmit}
+                        loading={isSubmitting}
+                      />
+                    ) : (
+                      <Skeleton variant="rect" height={36} width={117} />
+                    )}
+                  </Box>
+                </form>
+              )}
             </Formik>
           </Card>
         </Grid>
@@ -465,7 +449,7 @@ function UserMenuSubItems(props) {
         <Grid item xs={12}>
           <UserMenuTable
             action
-            label='List of access rights'
+            label="List of access rights"
             loading={loading}
             columns={columns}
             rows={rowData === null ? [] : rowData}
@@ -473,7 +457,7 @@ function UserMenuSubItems(props) {
             onDelete={selected => {
               setDeleteData({
                 show: true,
-                id: selected,
+                id: selected
               });
             }}
           />
@@ -487,37 +471,26 @@ function UserMenuSubItems(props) {
         onClose={bool => {
           setDeleteData({
             show: bool,
-            id: [],
+            id: []
           });
         }}
       />
     </>
   );
-};
-
+}
 
 /**
  * Redux dispatch
- * @param {dispatch} dispatch 
+ * @param {dispatch} dispatch
  */
 function reduxDispatch(dispatch) {
   return {
-    setReduxToast: (error) => dispatch({
-      type: reduxAction.toast,
-      value: error
-    })
-  }
-};
-
-
-/**
- * redux state
- */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  }
+    setReduxToast: error =>
+      dispatch({
+        type: reduxAction.toast,
+        value: error
+      })
+  };
 }
 
-
-export default connect(reduxState, reduxDispatch)(UserMenuSubItems);
+export default connect(null, reduxDispatch)(UserMenuSubItems);

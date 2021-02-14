@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableContainer: {
     minWidth: '100%',
-    maxHeight: '60vh'
+    maxHeight: '70vh'
   },
   tableCell: {
     paddingBottom: 10,
@@ -79,7 +79,7 @@ function ItemGroupTable(props) {
    */
   const [selected, setSelected] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [row_data, setRowData] = React.useState({
+  const [rowData, setRowData] = React.useState({
     item_groups: {
       current_page: 1,
       from: 1,
@@ -106,7 +106,7 @@ function ItemGroupTable(props) {
    * handle jika komponen dilepas saat request api belum selesai.
    */
   React.useEffect(() => {
-    if (row_data.item_groups.data.length === 0) {
+    if (rowData.item_groups.data.length === 0) {
       getData();
     }
 
@@ -190,16 +190,16 @@ function ItemGroupTable(props) {
    */
   const handleSort = sort => {
     let order_by = 'asc';
-    if (row_data.sort === sort && row_data.order_by === 'asc') {
+    if (rowData.sort === sort && rowData.order_by === 'asc') {
       order_by = 'desc';
     }
 
     getData(
-      row_data.item_groups.current_page, // current_page
-      row_data.item_groups.per_page, // per_page
+      rowData.item_groups.current_page, // current_page
+      rowData.item_groups.per_page, // per_page
       sort, // sort
       order_by, // order_by
-      row_data.search // search
+      rowData.search // search
     );
   };
 
@@ -209,10 +209,10 @@ function ItemGroupTable(props) {
   const handleChangePage = (e, new_page) => {
     getData(
       new_page + 1, // current_page
-      row_data.item_groups.per_page, // per_page
-      row_data.sort, // sort
-      row_data.order_by, // order_by
-      row_data.search // search
+      rowData.item_groups.per_page, // per_page
+      rowData.sort, // sort
+      rowData.order_by, // order_by
+      rowData.search // search
     );
   };
 
@@ -220,16 +220,16 @@ function ItemGroupTable(props) {
    * Hanlde ketika jumlah baris per halaman di rubah
    */
   const handleChangeRowsPerPage = e => {
-    const new_data = { ...row_data };
+    const new_data = { ...rowData };
     new_data.item_groups['current_page'] = 1;
     new_data.item_groups['per_page'] = e.target.value;
     setRowData(new_data);
     getData(
       1, // current_page
       e.target.value, // per_page
-      row_data.sort, // sort
-      row_data.order_by, // order_by
-      row_data.search // searrch
+      rowData.sort, // sort
+      rowData.order_by, // order_by
+      rowData.search // searrch
     );
   };
 
@@ -240,7 +240,7 @@ function ItemGroupTable(props) {
    */
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = row_data.item_groups.data.map(n => n.id);
+      const newSelecteds = rowData.item_groups.data.map(n => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -284,11 +284,11 @@ function ItemGroupTable(props) {
    */
   const handleReload = () => {
     getData(
-      row_data.item_groups.current_page, // current_page
-      row_data.item_groups.per_page, // per_page
-      row_data.sort, // sort
-      row_data.order_by, // order_by
-      row_data.search // search
+      rowData.item_groups.current_page, // current_page
+      rowData.item_groups.per_page, // per_page
+      rowData.sort, // sort
+      rowData.order_by, // order_by
+      rowData.search // search
     );
   };
 
@@ -298,9 +298,9 @@ function ItemGroupTable(props) {
   const handleSearch = value => {
     getData(
       1, // current_page
-      row_data.item_groups.per_page, // per_page
-      row_data.sort, // sort
-      row_data.order_by, // order_by
+      rowData.item_groups.per_page, // per_page
+      rowData.sort, // sort
+      rowData.order_by, // order_by
       value // search
     );
   };
@@ -309,15 +309,11 @@ function ItemGroupTable(props) {
    * Render komponen utama
    */
   return (
-    <Card
-      className={classes.root}
-      elevation={3}
-      variant={props.reduxTheme === 'light' ? 'elevation' : 'outlined'}
-    >
+    <Card className={classes.root} elevation={3} variant="elevation">
       <CardContent>
         <TheadActions
           selected={selected}
-          searchValue={row_data.search}
+          searchValue={rowData.search}
           loading={loading}
           userAccess={props.userAccess}
           onReload={handleReload}
@@ -327,44 +323,42 @@ function ItemGroupTable(props) {
           onImport={() => props.onImport()}
         />
 
-        <Loader show={loading}>
+        <Loader show={Boolean(props.userAccess === null || loading)}>
           <TableContainer className={classes.tableContainer}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {props.userAccess !== null &&
-                    (props.userAccess.user_m_s_i_delete === 1 ||
-                    props.userAccess.user_m_s_i_update === 1 ? (
-                      <TableCell padding="checkbox">
-                        {props.userAccess.user_m_s_i_delete === 1 && (
-                          <CustomTooltip placement="bottom" title="Select">
-                            <Checkbox
-                              color="primary"
-                              indeterminate={Boolean(
-                                selected.length > 0 &&
-                                  selected.length <
-                                    row_data.item_groups.data.length
-                              )}
-                              checked={Boolean(
-                                row_data.item_groups.data.length > 0 &&
-                                  selected.length ===
-                                    row_data.item_groups.data.length
-                              )}
-                              inputProps={{
-                                'aria-label': 'select all desserts'
-                              }}
-                              onChange={handleSelectAllClick}
-                            />
-                          </CustomTooltip>
-                        )}
-                      </TableCell>
-                    ) : null)}
+                  {Boolean(
+                    props.userAccess !== null &&
+                      props.userAccess.user_m_s_i_delete === 1
+                  ) && (
+                    <TableCell padding="checkbox">
+                      <CustomTooltip placement="bottom" title="Select">
+                        <Checkbox
+                          color="primary"
+                          indeterminate={Boolean(
+                            selected.length > 0 &&
+                              selected.length < rowData.item_groups.data.length
+                          )}
+                          checked={Boolean(
+                            rowData.item_groups.data.length > 0 &&
+                              selected.length ===
+                                rowData.item_groups.data.length
+                          )}
+                          inputProps={{
+                            'aria-label': 'select all desserts'
+                          }}
+                          onChange={handleSelectAllClick}
+                        />
+                      </CustomTooltip>
+                    </TableCell>
+                  )}
 
                   {columns.map((col, key) => (
                     <Thead
                       key={key}
                       column={col}
-                      data={row_data}
+                      data={rowData}
                       onSort={field => handleSort(field)}
                       className={classes.tableCell}
                       padding={
@@ -375,28 +369,43 @@ function ItemGroupTable(props) {
                       }
                     />
                   ))}
+
+                  {Boolean(
+                    props.userAccess !== null &&
+                      Boolean(
+                        props.userAccess.user_m_s_i_delete === 1 ||
+                          props.userAccess.user_m_s_i_update === 1
+                      )
+                  ) && <TableCell padding="checkbox" />}
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {row_data.item_groups.data.length === 0 ? (
+                {Boolean(
+                  rowData.item_groups.data.length === 0 ||
+                    props.userAccess === null
+                ) ? (
                   <TableRow hover>
                     <TableCell
                       align="center"
                       colSpan={6}
                       className={classes.tableCell}
                       padding={
-                        props.userAccess !== null &&
-                        props.userAccess.user_m_s_i_delete === 1
+                        Boolean(
+                          props.userAccess !== null &&
+                            props.userAccess.user_m_s_i_delete === 1
+                        )
                           ? 'checkbox'
                           : 'default'
                       }
                     >
-                      {loading ? 'Loading...' : 'No data in table'}
+                      {Boolean(props.userAccess === null || loading)
+                        ? 'Loading...'
+                        : 'No data in table'}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  row_data.item_groups.data.map((row, key) => {
+                  rowData.item_groups.data.map((row, key) => {
                     const isItemSelected = isSelected(row.id);
                     return (
                       <Tbody
@@ -423,9 +432,9 @@ function ItemGroupTable(props) {
           <TablePagination
             component="div"
             rowsPerPageOptions={[25, 50, 100, 250]}
-            count={row_data.item_groups.total}
-            rowsPerPage={Number(row_data.item_groups.per_page)}
-            page={row_data.item_groups.current_page - 1}
+            count={rowData.item_groups.total}
+            rowsPerPage={Number(rowData.item_groups.per_page)}
+            page={rowData.item_groups.current_page - 1}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             ActionsComponent={TpaginationActions}
@@ -453,13 +462,4 @@ function reduxDispatch(dispatch) {
   };
 }
 
-/**
- * Redux state
- */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  };
-}
-
-export default connect(reduxState, reduxDispatch)(ItemGroupTable);
+export default connect(null, reduxDispatch)(ItemGroupTable);

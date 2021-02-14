@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import {
   Card,
   CardHeader,
@@ -10,19 +9,14 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import PropTypes from 'prop-types';
-import {
-  fade,
-  makeStyles,
-  withStyles
-} from '@material-ui/core/styles';
+import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { useSpring, animated } from 'react-spring/web.cjs';
 
-
 /**
  * Icon minus untuk tree
- * @param {*} props 
+ * @param {*} props
  */
 function MinusSquare(props) {
   return (
@@ -33,10 +27,9 @@ function MinusSquare(props) {
   );
 }
 
-
 /**
  * Icon plus untuk tree
- * @param {*} props 
+ * @param {*} props
  */
 function PlusSquare(props) {
   return (
@@ -47,29 +40,35 @@ function PlusSquare(props) {
   );
 }
 
-
 /**
  * Icon close untuk ttree
- * @param {*} props 
+ * @param {*} props
  */
 function CloseSquare(props) {
   return (
-    <SvgIcon className="close" fontSize="inherit" style={{ width: 14, height: 14 }} {...props}>
+    <SvgIcon
+      className="close"
+      fontSize="inherit"
+      style={{ width: 14, height: 14 }}
+      {...props}
+    >
       {/* tslint:disable-next-line: max-line-length */}
       <path d="M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z" />
     </SvgIcon>
   );
 }
 
-
 /**
  * Animasi transisi tree
- * @param {*} props 
+ * @param {*} props
  */
 function TransitionComponent(props) {
   const style = useSpring({
     from: { opacity: 0, transform: 'translate3d(20px,0,0)' },
-    to: { opacity: props.in ? 1 : 0, transform: `translate3d(${props.in ? 0 : 20}px,0,0)` },
+    to: {
+      opacity: props.in ? 1 : 0,
+      transform: `translate3d(${props.in ? 0 : 20}px,0,0)`
+    }
   });
 
   return (
@@ -79,58 +78,53 @@ function TransitionComponent(props) {
   );
 }
 
-
 /**
  * Tipe properti untuk komponent TransitionComponent
  */
 TransitionComponent.propTypes = {
-  // Show the component; triggers the enter or exit states   
-  in: PropTypes.bool,
-
+  // Show the component; triggers the enter or exit states
+  in: PropTypes.bool
 };
-
 
 /**
  * Custom TreeItem komponen
  */
-const StyledTreeItem = withStyles((theme) => ({
+const StyledTreeItem = withStyles(theme => ({
   iconContainer: {
     '& .close': {
-      opacity: 0.3,
-    },
+      opacity: 0.3
+    }
   },
   group: {
     marginLeft: 7,
     paddingLeft: 18,
-    borderLeft: `1px dashed ${fade(theme.palette.text.primary, 0.4)}`,
-  },
-}))((props) => <TreeItem {...props} TransitionComponent={TransitionComponent} />);
-
+    borderLeft: `1px dashed ${fade(theme.palette.text.primary, 0.4)}`
+  }
+}))(props => <TreeItem {...props} TransitionComponent={TransitionComponent} />);
 
 /**
  * Style untuk komponen UserDetailMenu
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    whiteSpace: 'nowrap',
+    whiteSpace: 'nowrap'
   },
   content: {
     paddingBottom: theme.spacing(1),
-    overflowX: 'auto',
+    overflowX: 'auto'
   },
   labelRoot: {
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(0.5, 0),
+    padding: theme.spacing(0.5, 0)
   },
   labelText: {
     fontWeight: 'bold',
     flexGrow: 1,
-    marginRight: 15,
-  },
+    marginRight: 15
+  }
 }));
-
 
 /**
  * Komponen utama
@@ -139,93 +133,90 @@ function UserDetailMenus({ data, ...props }) {
   const isMounted = React.useRef(true);
   const classes = useStyles();
 
-
   /**
-   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai 
+   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
    */
   React.useEffect(() => {
     return () => {
       isMounted.current = false;
-    }
+    };
     // eslint-disable-next-line
   }, []);
-
 
   /**
    * Render Komponen utama
    */
   return (
-    <Card
-      elevation={3}
-      variant={
-        props.reduxTheme === 'dark'
-          ? 'outlined'
-          : 'elevation'
-      }
-    >
+    <Card elevation={3} variant="elevation">
       <CardHeader
         title={
-          data === null
-            ? <Skeleton variant='text' width={120} />
-            : 'Menu Access'
+          data === null ? (
+            <Skeleton variant="text" width={120} />
+          ) : (
+            'Menu Access'
+          )
         }
       />
 
       <CardContent className={classes.content}>
-        {data === null
-          ? <Skeleton variant='rect' width='100%' height={145} />
-          : (
-            <TreeView
-              className={classes.root}
-              defaultExpanded={['1']}
-              defaultCollapseIcon={<MinusSquare />}
-              defaultExpandIcon={<PlusSquare />}
-              defaultEndIcon={<CloseSquare />}
-            >
-              <StyledTreeItem nodeId="1" label="Main">
-                <StyledTreeItem
-                  nodeId='2'
-                  label={
-                    <div className={classes.labelRoot}>
-                      <Typography variant="body2" className={classes.labelText}>
-                        {'Dashboard'}
-                      </Typography>
-                    </div>
-                  }
-                />
+        {data === null ? (
+          <Skeleton variant="rect" width="100%" height={145} />
+        ) : (
+          <TreeView
+            className={classes.root}
+            defaultExpanded={['1']}
+            defaultCollapseIcon={<MinusSquare />}
+            defaultExpandIcon={<PlusSquare />}
+            defaultEndIcon={<CloseSquare />}
+          >
+            <StyledTreeItem nodeId="1" label="Main">
+              <StyledTreeItem
+                nodeId="2"
+                label={
+                  <div className={classes.labelRoot}>
+                    <Typography variant="body2" className={classes.labelText}>
+                      {'Dashboard'}
+                    </Typography>
+                  </div>
+                }
+              />
 
-                {data.map(dt => {
-                  let menuAccess;
-                  if (dt.user_m_i_read === 1) {
-                    menuAccess = 'read';
-                  }
-                  if (dt.user_m_i_create === 1) {
-                    menuAccess += ' | create';
-                  }
-                  if (dt.user_m_i_update === 1) {
-                    menuAccess += ' | update';
-                  }
-                  if (dt.user_m_i_delete === 1) {
-                    menuAccess += ' | delete';
-                  }
+              {data.map(dt => {
+                let menuAccess;
+                if (dt.user_m_i_read === 1) {
+                  menuAccess = 'read';
+                }
+                if (dt.user_m_i_create === 1) {
+                  menuAccess += ' | create';
+                }
+                if (dt.user_m_i_update === 1) {
+                  menuAccess += ' | update';
+                }
+                if (dt.user_m_i_delete === 1) {
+                  menuAccess += ' | delete';
+                }
 
-                  return (
-                    <StyledTreeItem
-                      key={dt.id}
-                      nodeId={dt.id}
-                      label={
-                        <div className={classes.labelRoot}>
-                          <Typography variant="body2" className={classes.labelText}>
-                            {dt.menu_i_title}
-                          </Typography>
+                return (
+                  <StyledTreeItem
+                    key={dt.id}
+                    nodeId={dt.id}
+                    label={
+                      <div className={classes.labelRoot}>
+                        <Typography
+                          variant="body2"
+                          className={classes.labelText}
+                        >
+                          {dt.menu_i_title}
+                        </Typography>
 
-                          <Typography variant="caption" color="inherit">
-                            {menuAccess}
-                          </Typography>
-                        </div>
-                      }
-                    >
-                      {dt.sub_menus.length !== 0 && dt.sub_menus.map(sm => {
+                        <Typography variant="caption" color="inherit">
+                          {menuAccess}
+                        </Typography>
+                      </div>
+                    }
+                  >
+                    {dt.sub_menus.length !== 0 &&
+                      dt.sub_menus.map(sm => {
                         let subMenuAccess;
                         if (sm.user_m_s_i_read === 1) {
                           subMenuAccess = 'read';
@@ -246,7 +237,10 @@ function UserDetailMenus({ data, ...props }) {
                             nodeId={sm.id}
                             label={
                               <div className={classes.labelRoot}>
-                                <Typography variant="body2" className={classes.labelText}>
+                                <Typography
+                                  variant="body2"
+                                  className={classes.labelText}
+                                >
                                   {sm.menu_s_i_title}
                                 </Typography>
                                 <Typography variant="caption" color="inherit">
@@ -255,20 +249,18 @@ function UserDetailMenus({ data, ...props }) {
                               </div>
                             }
                           />
-                        )
+                        );
                       })}
-                    </StyledTreeItem>
-                  )
-                })}
-              </StyledTreeItem>
-            </TreeView>
-          )
-        }
+                  </StyledTreeItem>
+                );
+              })}
+            </StyledTreeItem>
+          </TreeView>
+        )}
       </CardContent>
     </Card>
   );
 }
-
 
 /**
  * Properti default untuk komponen UserDetailMenus
@@ -277,16 +269,4 @@ UserDetailMenus.defaultProps = {
   data: null
 };
 
-
-/**
- * Redux State
- * @param {obj} state 
- */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  }
-}
-
-
-export default connect(reduxState, null)(UserDetailMenus);
+export default UserDetailMenus;

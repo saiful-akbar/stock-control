@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableContainer: {
     minWidth: '100%',
-    maxHeight: '60vh'
+    maxHeight: '70vh'
   },
   tableCell: {
     paddingBottom: 10,
@@ -60,7 +60,7 @@ function DocumentTable(props) {
 
   /* State */
   const [selected, setSelected] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [rowData, setRowData] = React.useState({
     documents: {
       current_page: 1,
@@ -281,11 +281,7 @@ function DocumentTable(props) {
 
   /* Render */
   return (
-    <Card
-      className={classes.root}
-      elevation={3}
-      variant={props.reduxTheme === 'light' ? 'elevation' : 'outlined'}
-    >
+    <Card className={classes.root} elevation={3} variant="elevation">
       <CardContent>
         <TheadActions
           selected={selected}
@@ -299,38 +295,35 @@ function DocumentTable(props) {
           onImport={() => props.onImport()}
         />
 
-        <Loader show={loading}>
+        <Loader show={Boolean(props.userAccess === null || loading)}>
           <TableContainer className={classes.tableContainer}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {props.userAccess !== null &&
-                    (props.userAccess.user_m_i_delete === 1 ||
-                    props.userAccess.user_m_i_update === 1 ? (
-                      <TableCell padding="checkbox">
-                        {props.userAccess.user_m_i_delete === 1 && (
-                          <CustomTooltip placement="bottom" title="Select">
-                            <Checkbox
-                              color="primary"
-                              indeterminate={Boolean(
-                                selected.length > 0 &&
-                                  selected.length <
-                                    rowData.documents.data.length
-                              )}
-                              checked={Boolean(
-                                rowData.documents.data.length > 0 &&
-                                  selected.length ===
-                                    rowData.documents.data.length
-                              )}
-                              inputProps={{
-                                'aria-label': 'select all desserts'
-                              }}
-                              onChange={handleSelectAllClick}
-                            />
-                          </CustomTooltip>
-                        )}
-                      </TableCell>
-                    ) : null)}
+                  {Boolean(
+                    props.userAccess !== null &&
+                      props.userAccess.user_m_i_delete === 1
+                  ) && (
+                    <TableCell padding="checkbox">
+                      <CustomTooltip placement="bottom" title="Select">
+                        <Checkbox
+                          color="primary"
+                          indeterminate={Boolean(
+                            selected.length > 0 &&
+                              selected.length < rowData.documents.data.length
+                          )}
+                          checked={Boolean(
+                            rowData.documents.data.length > 0 &&
+                              selected.length === rowData.documents.data.length
+                          )}
+                          inputProps={{
+                            'aria-label': 'select all desserts'
+                          }}
+                          onChange={handleSelectAllClick}
+                        />
+                      </CustomTooltip>
+                    </TableCell>
+                  )}
 
                   {columns.map((col, key) => (
                     <Thead
@@ -340,18 +333,31 @@ function DocumentTable(props) {
                       onSort={field => handleSort(field)}
                       className={classes.tableCell}
                       padding={
-                        props.userAccess !== null &&
-                        props.userAccess.user_m_i_delete === 1
+                        Boolean(
+                          props.userAccess !== null &&
+                            props.userAccess.user_m_i_delete === 1
+                        )
                           ? 'checkbox'
                           : 'default'
                       }
                     />
                   ))}
+
+                  {Boolean(
+                    props.userAccess !== null &&
+                      Boolean(
+                        props.userAccess.user_m_i_delete === 1 ||
+                          props.userAccess.user_m_i_update === 1
+                      )
+                  ) && <TableCell padding="checkbox" />}
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {rowData.documents.data.length === 0 ? (
+                {Boolean(
+                  rowData.documents.data.length === 0 ||
+                    props.userAccess === null
+                ) ? (
                   <TableRow hover>
                     <TableCell
                       align="center"
@@ -364,7 +370,9 @@ function DocumentTable(props) {
                           : 'default'
                       }
                     >
-                      {loading ? 'Loading...' : 'No data in table'}
+                      {Boolean(props.userAccess === null || loading)
+                        ? 'Loading...'
+                        : 'No data in table'}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -428,11 +436,4 @@ function reduxReducer(dispatch) {
   };
 }
 
-/* Redux state */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  };
-}
-
-export default connect(reduxState, reduxReducer)(DocumentTable);
+export default connect(null, reduxReducer)(DocumentTable);

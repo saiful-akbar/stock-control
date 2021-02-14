@@ -51,10 +51,12 @@
     <style>
       body {
         background-color: #f4f5fd;
+        scrollbar-width: thin;
+        scrollbar-color: rgb(107, 107, 107, 0.4) transparent;
       }
 
       .bg-dark {
-        background-color: #0d1418 !important;
+        background-color: #1c2025 !important;
       }
 
       table thead tr th,
@@ -64,32 +66,26 @@
       }
 
       /* Scrollbar on Chrome, Edge, and Safari */
-      body::-webkit-scrollbar {
+      ::-webkit-scrollbar {
         background-color: transparent;
         width: 7px;
         height: 7px;
       }
 
-      body::-webkit-scrollbar-corner {
+      ::-webkit-scrollbar-corner {
         background-color: transparent;
         width: 7px;
         height: 7px;
       }
 
-      body::-webkit-scrollbar-thumb {
+      ::-webkit-scrollbar-thumb {
         border-radius: 25px;
         min-height: 24px;
         background-color: rgb(107, 107, 107, 0.4);
       }
 
-      body::-webkit-scrollbar-thumb:hover {
+      ::-webkit-scrollbar-thumb:hover {
         background-color: rgb(107, 107, 107, 0.8);
-      }
-
-      /* Scrollbar on Firefox */
-      body {
-        scrollbar-width: thin;
-        scrollbar-color: rgb(107, 107, 107, 0.4) transparent;
       }
 
       /* End scrollbar */
@@ -132,8 +128,8 @@
       }
 
       .loader-secondary div {
-        border: 6px solid #0097a7 !important;
-        border-color: #0097a7 transparent transparent transparent !important;
+        border: 6px solid #8a85ff !important;
+        border-color: #8a85ff transparent transparent transparent !important;
       }
 
       #preloader div:nth-child(1) {

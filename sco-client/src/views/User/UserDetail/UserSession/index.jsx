@@ -11,7 +11,6 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import PhoneAndroidIcon from '@material-ui/icons/PhoneAndroid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { connect } from 'react-redux';
 import { Box, Divider } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
@@ -74,7 +73,7 @@ function UserSeesion({ data, ...props }) {
                 </TimelineOppositeContent>
 
                 <TimelineSeparator>
-                  <TimelineDot color="secondary" variant="default">
+                  <TimelineDot color="primary" variant="default">
                     {isDevice(dt.device)}
                   </TimelineDot>
                   <TimelineConnector />
@@ -84,9 +83,7 @@ function UserSeesion({ data, ...props }) {
                   <Paper
                     elevation={3}
                     className={classes.paper}
-                    variant={
-                      props.reduxTheme === 'dark' ? 'outlined' : 'elevation'
-                    }
+                    variant="elevation"
                   >
                     <Typography variant="h6">{dt.ip2}</Typography>
                     <Typography variant="body1">{`${dt.browser} on ${dt.device}`}</Typography>
@@ -105,11 +102,4 @@ UserSeesion.defaultProps = {
   data: null
 };
 
-/* redux State */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  };
-}
-
-export default connect(reduxState, null)(UserSeesion);
+export default UserSeesion;

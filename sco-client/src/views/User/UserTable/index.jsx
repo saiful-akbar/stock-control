@@ -1,11 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Grid,
-  Button,
-  Card,
-  CardContent,
-  Box,
-} from '@material-ui/core';
+import { Grid, Button, Card, CardContent, Box } from '@material-ui/core';
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -32,18 +26,18 @@ import UserTruncateToken from '../UserTruncateToken';
 import Row from './Row';
 import { reduxAction } from 'src/config/redux/state';
 import Loader from 'src/components/Loader';
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
 /**
  * style
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
+    marginLeft: theme.spacing(2.5)
   },
   container: {
-    maxHeight: '60vh',
+    maxHeight: '70vh'
   },
   visuallyHidden: {
     border: 0,
@@ -54,20 +48,22 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     position: 'absolute',
     top: 20,
-    width: 1,
+    width: 1
   },
+  tableCell: {
+    paddingBottom: 10,
+    paddingTop: 10
+  }
 }));
-
 
 /**
  * component utama
- * @param {*} props 
+ * @param {*} props
  */
-const UserTable = (props) => {
+const UserTable = props => {
   const classes = useStyles();
   const isMounted = useRef(true);
   const navigate = useNavigate();
-
 
   /**
    * state
@@ -86,7 +82,6 @@ const UserTable = (props) => {
     sort: 'profile_name',
     order_by: 'asc'
   });
-
 
   /**
    * Daftar kolom untuk tabel
@@ -116,19 +111,17 @@ const UserTable = (props) => {
       field: 'updated_at',
       label: 'Updated At',
       align: 'left'
-    },
+    }
   ];
-
 
   /**
    * inisialisasi awal untuk mengambil data dari api
    */
   useEffect(() => {
     rowData.users.data.length <= 0 && getData();
-    return () => isMounted.current = false;
+    return () => (isMounted.current = false);
     // eslint-disable-next-line
   }, []);
-
 
   /**
    * Reload table dari luar komponen
@@ -137,7 +130,6 @@ const UserTable = (props) => {
     props.reload && getData();
     // eslint-disable-next-line
   }, [props.reload]);
-
 
   /**
    * Fungsi untuk mengambil data dari api
@@ -162,30 +154,32 @@ const UserTable = (props) => {
         props.setReload(false);
         setLoading(false);
       }
-    }
-    catch (err) {
+    } catch (err) {
       if (isMounted.current) {
         props.setReload(false);
         setLoading(false);
         if (err.status === 401) {
           window.location.href = '/logout';
         } else {
-          props.setReduxToast(true, 'error', `(#${err.status}) ${err.data.message}`);
+          props.setReduxToast(
+            true,
+            'error',
+            `(#${err.status}) ${err.data.message}`
+          );
         }
       }
     }
   };
 
-
   /**
    * fungsi sortir tabel
-   * @param {string} sort 
+   * @param {string} sort
    */
-  const handleSortTable = (sort) => {
+  const handleSortTable = sort => {
     let orderBy = 'asc';
     if (rowData.sort === sort) {
       if (rowData.order_by === 'asc') {
-        orderBy = 'desc'
+        orderBy = 'desc';
       }
     }
     getData(
@@ -195,49 +189,42 @@ const UserTable = (props) => {
       sort,
       orderBy
     );
-  }
-
+  };
 
   /**
    * fungsi submit form pencarian
-   * @param {*} e 
+   * @param {*} e
    */
-  const handleSubmitSearch = (e) => {
+  const handleSubmitSearch = e => {
     e.preventDefault();
     getData(1, rowData.users.per_page, search);
-  }
-
+  };
 
   /**
    * fungsi handle blur pada form pencarian
-   * @param {obj} e 
+   * @param {obj} e
    */
-  const handleBlur = (e) => {
+  const handleBlur = e => {
     if (rowData.search === '' && search === '') {
       e.preventDefault();
     } else {
       handleSubmitSearch(e);
     }
-  }
+  };
 
   /**
    * Handle clear form search
    */
-  const handleClearSearch = (e) => {
+  const handleClearSearch = e => {
     setSearch('');
-    getData(
-      rowData.users.current_page,
-      rowData.users.per_page,
-      '',
-    );
-  }
-
+    getData(rowData.users.current_page, rowData.users.per_page, '');
+  };
 
   /**
    * fungsi untuk merubah baris perhalaman pada tabel
-   * @param {obj} event 
+   * @param {obj} event
    */
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     let newRowData = { ...rowData };
     newRowData.users['per_page'] = event.target.value;
     newRowData.users['current_page'] = 1;
@@ -245,42 +232,39 @@ const UserTable = (props) => {
     getData(1, event.target.value);
   };
 
-
   /**
    * fungsi untuk kembali kehalaman pertama pada tabel
-   * @param {obj} event 
+   * @param {obj} event
    */
-  const handleFirstPageButtonClick = (event) => {
+  const handleFirstPageButtonClick = event => {
     getData(1);
   };
 
-
   /**
    * fungsi untuk kembali 1 halaman pada tabel
-   * @param {obj} event 
+   * @param {obj} event
    */
-  const handleBackButtonClick = (event) => {
+  const handleBackButtonClick = event => {
     getData(rowData.users.current_page - 1);
   };
 
-
   /**
    * fungsi untuk maju 1 halamnn pada tabel
-   * @param {obj} event 
+   * @param {obj} event
    */
-  const handleNextButtonClick = (event) => {
+  const handleNextButtonClick = event => {
     getData(rowData.users.current_page + 1);
   };
 
-
   /**
    * fungsi untuk maju ke halamn terakhir pada tabel
-   * @param {obj} event 
+   * @param {obj} event
    */
-  const handleLastPageButtonClick = (event) => {
-    getData(Math.max(0, Math.ceil(rowData.users.total / rowData.users.per_page)));
+  const handleLastPageButtonClick = event => {
+    getData(
+      Math.max(0, Math.ceil(rowData.users.total / rowData.users.per_page))
+    );
   };
-
 
   /**
    * component custom untuk tabel pagination
@@ -289,118 +273,120 @@ const UserTable = (props) => {
     return (
       <div className={classes.root}>
         <IconButton
-          aria-label='first page'
+          aria-label="first page"
           disabled={rowData.users.current_page <= 1}
           onClick={handleFirstPageButtonClick}
         >
           <FirstPageIcon />
         </IconButton>
         <IconButton
-          aria-label='previous page'
+          aria-label="previous page"
           disabled={rowData.users.current_page <= 1}
           onClick={handleBackButtonClick}
         >
           <KeyboardArrowLeft />
         </IconButton>
         <IconButton
-          aria-label='next page'
-          disabled={rowData.users.current_page >= Math.ceil(rowData.users.total / rowData.users.per_page)}
+          aria-label="next page"
+          disabled={
+            rowData.users.current_page >=
+            Math.ceil(rowData.users.total / rowData.users.per_page)
+          }
           onClick={handleNextButtonClick}
         >
           <KeyboardArrowRight />
         </IconButton>
         <IconButton
-          aria-label='last page'
-          disabled={rowData.users.current_page >= Math.ceil(rowData.users.total / rowData.users.per_page)}
+          aria-label="last page"
+          disabled={
+            rowData.users.current_page >=
+            Math.ceil(rowData.users.total / rowData.users.per_page)
+          }
           onClick={handleLastPageButtonClick}
         >
           <LastPageIcon />
         </IconButton>
       </div>
     );
-  }
+  };
 
   /**
    * render component utaman
    */
   return (
-    <Card
-      variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
-      elevation={3}
-    >
+    <Card variant="elevation" elevation={3}>
       <CardContent>
         <Grid
           spacing={3}
           container
-          direction='row'
-          justify='space-between'
-          alignItems='center'
+          direction="row"
+          justify="space-between"
+          alignItems="center"
         >
           <Grid item lg={4} md={6} xs={12}>
-            <Box
-              display="flex"
-              justifyContent="flex-start"
-              alignItems="center"
-            >
+            <Box display="flex" justifyContent="flex-start" alignItems="center">
               <Box
                 mr={1}
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
               >
-                {props.state !== null && props.state.create === 1 && props.state.update === 1 && props.state.delete === 1 && (
-                  <UserTruncateToken />
-                )}
+                {Boolean(
+                  props.state !== null &&
+                    props.state.create === 1 &&
+                    props.state.update === 1 &&
+                    props.state.delete === 1
+                ) && <UserTruncateToken />}
 
-                <CustomTooltip title='Reload'>
+                <CustomTooltip title="Reload">
                   <IconButton onClick={() => getData()}>
                     <RefreshIcon />
                   </IconButton>
                 </CustomTooltip>
               </Box>
 
-              {props.state !== null && (
-                props.state.create === 1 && (
-                  <Button
-                    fullWidth
-                    variant='contained'
-                    color='primary'
-                    onClick={() => navigate('/user/create', { state: props.state })}
-                  >
-                    {'Create a new user'}
-                  </Button>
-                )
+              {Boolean(props.state !== null && props.state.create === 1) && (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    navigate('/user/create', { state: props.state })
+                  }
+                >
+                  {'Create a new user'}
+                </Button>
               )}
             </Box>
           </Grid>
 
           <Grid item lg={8} md={6} xs={12}>
-            <form autoComplete='off' onSubmit={handleSubmitSearch}>
+            <form autoComplete="off" onSubmit={handleSubmitSearch}>
               <TextField
                 fullWidth
-                variant='outlined'
-                placeholder='Search by name or username'
-                margin='dense'
-                name='search'
-                type='text'
+                variant="outlined"
+                placeholder="Search by name or username"
+                margin="dense"
+                name="search"
+                type="text"
                 value={search}
                 disabled={loading}
                 onBlur={handleBlur}
                 onChange={e => setSearch(e.target.value)}
                 InputProps={{
                   startAdornment: (
-                    <InputAdornment position='start'>
+                    <InputAdornment position="start">
                       <SearchIcon />
                     </InputAdornment>
                   ),
-                  endAdornment: (
-                    rowData.search !== '' && search !== '' && (
-                      <InputAdornment position='end'>
-                        <IconButton size='small' onClick={handleClearSearch}>
-                          <CancelIcon fontSize='small' />
-                        </IconButton>
-                      </InputAdornment>
-                    )
+                  endAdornment: Boolean(
+                    rowData.search !== '' && search !== ''
+                  ) && (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={handleClearSearch}>
+                        <CancelOutlinedIcon fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
                   )
                 }}
               />
@@ -413,10 +399,13 @@ const UserTable = (props) => {
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell align='center'>{'Options'}</TableCell>
+                      <TableCell className={classes.tableCell} align="center">
+                        {'Options'}
+                      </TableCell>
 
                       {columns.map((col, i) => (
                         <TableCell
+                          className={classes.tableCell}
                           key={i}
                           align={col.align}
                         >
@@ -432,7 +421,9 @@ const UserTable = (props) => {
                             {col.label}
                             {rowData.sort === col.field && (
                               <span className={classes.visuallyHidden}>
-                                {rowData.order_by === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                {rowData.order_by === 'desc'
+                                  ? 'sorted descending'
+                                  : 'sorted ascending'}
                               </span>
                             )}
                           </TableSortLabel>
@@ -442,35 +433,35 @@ const UserTable = (props) => {
                   </TableHead>
 
                   <TableBody>
-                    {rowData.users.data.length <= 0
-                      ? (
-                        <TableRow hover >
-                          <TableCell colSpan={12} align='center' >
-                            {
-                              loading
-                                ? 'Loading...'
-                                : 'No data in table'
-                            }
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        rowData.users.data.map((row, key) => (
-                          <Row
-                            key={key}
-                            row={row}
-                            state={props.state}
-                            onDelete={() => props.onDelete(row.id)}
-                            onChangePassword={() => props.onChangePassword(row.id)}
-                          />
-                        ))
-                      )
-                    }
+                    {rowData.users.data.length <= 0 ? (
+                      <TableRow hover>
+                        <TableCell
+                          className={classes.tableCell}
+                          colSpan={12}
+                          align="center"
+                        >
+                          {loading ? 'Loading...' : 'No data in table'}
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      rowData.users.data.map((row, key) => (
+                        <Row
+                          key={key}
+                          row={row}
+                          state={props.state}
+                          onDelete={() => props.onDelete(row.id)}
+                          onChangePassword={() =>
+                            props.onChangePassword(row.id)
+                          }
+                        />
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </TableContainer>
 
               <TablePagination
-                component='div'
+                component="div"
                 rowsPerPageOptions={[25, 50, 100, 250]}
                 count={rowData.users.total}
                 rowsPerPage={Number(rowData.users.per_page)}
@@ -483,43 +474,36 @@ const UserTable = (props) => {
           </Grid>
         </Grid>
       </CardContent>
-    </Card >
+    </Card>
   );
 };
 
-
 /**
  * Redux state
- * @param {obj} state 
+ * @param {obj} state
  */
 function reduxState(state) {
   return {
-    reduxUserLogin: state.userLogin,
-    reduxTheme: state.theme,
-  }
-};
-
+    reduxUserLogin: state.userLogin
+  };
+}
 
 /**
  * Redux dispatch
- * @param {obj} dispatch 
+ * @param {obj} dispatch
  */
 function reduxDispatch(dispatch) {
   return {
-    setReduxToast: (
-      show = false,
-      type = 'success',
-      message = ''
-    ) => dispatch({
-      type: reduxAction.toast,
-      value: {
-        show: show,
-        type: type,
-        message: message
-      }
-    }),
-  }
+    setReduxToast: (show = false, type = 'success', message = '') =>
+      dispatch({
+        type: reduxAction.toast,
+        value: {
+          show: show,
+          type: type,
+          message: message
+        }
+      })
+  };
 }
-
 
 export default connect(reduxState, reduxDispatch)(UserTable);

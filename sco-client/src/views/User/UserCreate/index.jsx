@@ -1,47 +1,34 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Page from 'src/components/Page';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import {
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import CustomTooltip from 'src/components/CustomTooltip';
-import {
-  makeStyles
-} from '@material-ui/core/styles';
-import {
-  Grid,
-  Stepper,
-  Step,
-  StepLabel,
-  Fab,
-  Card,
-} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Stepper, Step, StepLabel, Fab, Card } from '@material-ui/core';
 import UserForm from './UserForm';
 import ProfileForm from './ProfileForm';
 import AddMenuItems from './AddMenuItems';
 import AddMenuSubItems from './AddMenuSubItems';
-import { apiGetAllMenus, apiCreateUser, apiCreateUserMenuAccess } from 'src/services/user';
+import {
+  apiGetAllMenus,
+  apiCreateUser,
+  apiCreateUserMenuAccess
+} from 'src/services/user';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import Loader from 'src/components/Loader';
 
-
 /**
  * Style
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   backButton: {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   instructions: {
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   },
   fab: {
     position: 'absolute',
@@ -58,14 +45,19 @@ const useStyles = makeStyles((theme) => ({
  * Main component
  * @param {*} props
  */
-const UserCreate = (props) => {
+const UserCreate = props => {
   const classes = useStyles();
   const navigate = useNavigate();
   const isMounted = useRef(true);
   const location = useLocation();
   const { state } = location;
 
-  const [steps] = useState(['User account', 'Profile', 'Menu Items', 'Menu Sub Items']);
+  const [steps] = useState([
+    'User account',
+    'Profile',
+    'Menu Items',
+    'Menu Sub Items'
+  ]);
   const [loading, setLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [menus, setMenus] = useState({ menuItems: [], menuSubItems: [] });
@@ -84,12 +76,11 @@ const UserCreate = (props) => {
     profile_division: '',
     profile_email: '',
     profile_phone: '',
-    profile_address: '',
+    profile_address: ''
   });
 
   const [userMenuItems, setUserMenuItems] = useState([]);
   const [userMenuSubItems, setUserMenuSubItems] = useState([]);
-
 
   /**
    * cek state akses user
@@ -100,7 +91,6 @@ const UserCreate = (props) => {
       navigate('/404');
     }
   }, [navigate, state]);
-
 
   // mengambil semua data menu dari api
   useEffect(() => {
@@ -118,7 +108,7 @@ const UserCreate = (props) => {
           window.location.href = '/logout';
         }
       }
-    }
+    };
 
     getAllMenus();
     return () => {
@@ -126,24 +116,20 @@ const UserCreate = (props) => {
     };
   }, []);
 
-
   // keluar aplikasi
   const logout = () => {
     window.location.href = '/logout';
-  }
-
+  };
 
   // handle next step
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
-
 
   // handle previous step
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
-
 
   // Fungsi simpan data untuk membuat data user dan frofile baru
   const handleSave = async () => {
@@ -198,23 +184,22 @@ const UserCreate = (props) => {
         });
       }
     }
-  }
-
+  };
 
   /**
    * FUngsi konsidi pemanggilan component saat step aktif
-   * @param {aktif step} active 
+   * @param {aktif step} active
    */
-  const stepComponent = (active) => {
+  const stepComponent = active => {
     switch (active) {
       case 1:
         return (
           <ProfileForm
             data={userProfile}
             loading={loading}
-            setLoading={(bool) => setLoading(bool)}
-            notification={(message) => props.setReduxToast(message)}
-            setData={(data) => setUserProfile(data)}
+            setLoading={bool => setLoading(bool)}
+            notification={message => props.setReduxToast(message)}
+            setData={data => setUserProfile(data)}
             nextStep={() => handleNext()}
             backStep={() => handleBack()}
           />
@@ -227,9 +212,9 @@ const UserCreate = (props) => {
             data={userMenuItems}
             menus={menus}
             loading={loading}
-            setLoading={(bool) => setLoading(bool)}
-            notification={(message) => props.setReduxToast(message)}
-            setData={(data) => setUserMenuItems(data)}
+            setLoading={bool => setLoading(bool)}
+            notification={message => props.setReduxToast(message)}
+            setData={data => setUserMenuItems(data)}
             nextStep={() => handleNext()}
             backStep={() => handleBack()}
           />
@@ -243,9 +228,9 @@ const UserCreate = (props) => {
             data={userMenuSubItems}
             menus={menus}
             loading={loading}
-            setLoading={(bool) => setLoading(bool)}
-            notification={(message) => props.setReduxToast(message)}
-            setData={(data) => setUserMenuSubItems(data)}
+            setLoading={bool => setLoading(bool)}
+            notification={message => props.setReduxToast(message)}
+            setData={data => setUserMenuSubItems(data)}
             save={() => handleSave()}
             backStep={() => handleBack()}
           />
@@ -259,9 +244,9 @@ const UserCreate = (props) => {
             loading={loading}
             nextStep={() => handleNext()}
             backStep={() => handleBack()}
-            setLoading={(bool) => setLoading(bool)}
-            notification={(message) => props.setReduxToast(message)}
-            setData={(data) => {
+            setLoading={bool => setLoading(bool)}
+            notification={message => props.setReduxToast(message)}
+            setData={data => {
               let newUserProfile = { ...userProfile };
               newUserProfile['user_id'] = data.id;
               setUserProfile(newUserProfile);
@@ -270,20 +255,15 @@ const UserCreate = (props) => {
           />
         );
     }
-  }
-
+  };
 
   return (
-    <Page
-      title='User Create'
-      pageTitle='Create New User'
-      pb={true}
-    >
-      <div className={classes.fab} >
-        <CustomTooltip title='Return to the user page' placement='left' >
+    <Page title="User Create" pageTitle="Create New User" pb={true}>
+      <div className={classes.fab}>
+        <CustomTooltip title="Return to the user page" placement="left">
           <Fab
-            color='secondary'
-            arial-label='Return to the user page'
+            color="secondary"
+            arial-label="Return to the user page"
             disabled={false}
             onClick={() => {
               navigate('/user', { state: state });
@@ -294,15 +274,15 @@ const UserCreate = (props) => {
         </CustomTooltip>
       </div>
 
-      <Grid container spacing={3} >
-        <Grid item xs={12} >
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
           <Stepper
             alternativeLabel
             activeStep={activeStep}
-            variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
+            variant="elevation"
             elevation={3}
           >
-            {steps.map((label) => (
+            {steps.map(label => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
@@ -311,13 +291,8 @@ const UserCreate = (props) => {
         </Grid>
 
         <Grid item xs={12}>
-          <Card
-            variant={props.reduxTheme === 'dark' ? 'outlined' : 'elevation'}
-            elevation={3}
-          >
-            <Loader show={loading}>
-              {stepComponent(activeStep)}
-            </Loader>
+          <Card variant="elevation" elevation={3}>
+            <Loader show={loading}>{stepComponent(activeStep)}</Loader>
           </Card>
         </Grid>
       </Grid>
@@ -328,22 +303,12 @@ const UserCreate = (props) => {
 // Redux dispatch
 function reduxDispatch(dispatch) {
   return {
-    setReduxToast: (error) => dispatch({
-      type: reduxAction.toast,
-      value: error
-    })
-  }
+    setReduxToast: error =>
+      dispatch({
+        type: reduxAction.toast,
+        value: error
+      })
+  };
 }
 
-
-/**
- * Redux State
- */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  }
-}
-
-
-export default connect(reduxState, reduxDispatch)(UserCreate);
+export default connect(null, reduxDispatch)(UserCreate);

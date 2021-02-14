@@ -1,14 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import WorkIcon from '@material-ui/icons/Work';
 import MailIcon from '@material-ui/icons/Mail';
 import PhoneAndroidIcon from '@material-ui/icons/PhoneAndroid';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
-import {
-  makeStyles
-} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   List,
   ListItem,
@@ -16,25 +13,27 @@ import {
   ListItemAvatar,
   Divider,
   Box,
-  Grid,
+  Grid
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import apiUrl from 'src/utils/apiUrl';
 
-
 /**
  * Style
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
+    width: '100%'
   },
   avatar: {
     width: theme.spacing(30),
-    height: theme.spacing(30),
+    height: theme.spacing(30)
   },
+  avatarIcon: {
+    backgroundColor: theme.palette.secondary.main,
+    color: '#fff'
+  }
 }));
-
 
 /**
  * Komponen utama
@@ -43,17 +42,15 @@ function UserDetailProfile({ data, ...props }) {
   const isMounted = React.useRef(true);
   const classes = useStyles();
 
-
   /**
-   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai 
+   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
    */
   React.useEffect(() => {
     return () => {
       isMounted.current = false;
-    }
+    };
     // eslint-disable-next-line
   }, []);
-
 
   /**
    * Render Komponen utama
@@ -61,25 +58,20 @@ function UserDetailProfile({ data, ...props }) {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Box
-          display='flex'
-          justifyContent='center'
-        >
-          {data === null
-            ? (
-              <Skeleton variant='circle' className={classes.avatar} />
-            ) : (
-              <Avatar
-                alt='Avatar'
-                className={classes.avatar}
-                src={
-                  data.profile_avatar === null
-                    ? ''
-                    : apiUrl(`/avatar/${data.profile_avatar}`)
-                }
-              />
-            )
-          }
+        <Box display="flex" justifyContent="center">
+          {data === null ? (
+            <Skeleton variant="circle" className={classes.avatar} />
+          ) : (
+            <Avatar
+              alt="Avatar"
+              className={classes.avatar}
+              src={
+                data.profile_avatar === null
+                  ? ''
+                  : apiUrl(`/avatar/${data.profile_avatar}`)
+              }
+            />
+          )}
         </Box>
       </Grid>
 
@@ -87,28 +79,31 @@ function UserDetailProfile({ data, ...props }) {
         <List className={classes.root}>
           <ListItem>
             <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <AccountBoxIcon />
-                    </Avatar>
-                  )
-              }
+              {data === null ? (
+                <Skeleton variant="circle" width={40} height={40} />
+              ) : (
+                <Avatar className={classes.avatarIcon}>
+                  <AccountBoxIcon />
+                </Avatar>
+              )}
             </ListItemAvatar>
 
             <ListItemText
               primary={
-                data === null
-                  ? <Skeleton variant='text' width='50%' />
-                  : data.profile_name === null ? "..." : data.profile_name
+                data === null ? (
+                  <Skeleton variant="text" width="50%" />
+                ) : data.profile_name === null ? (
+                  '...'
+                ) : (
+                  data.profile_name
+                )
               }
               secondary={
-                data === null
-                  ? <Skeleton variant='text' width='30%' />
-                  : 'Profile name'
+                data === null ? (
+                  <Skeleton variant="text" width="30%" />
+                ) : (
+                  'Profile name'
+                )
               }
             />
           </ListItem>
@@ -116,28 +111,31 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <WorkIcon />
-                    </Avatar>
-                  )
-              }
+              {data === null ? (
+                <Skeleton variant="circle" width={40} height={40} />
+              ) : (
+                <Avatar className={classes.avatarIcon}>
+                  <WorkIcon />
+                </Avatar>
+              )}
             </ListItemAvatar>
 
             <ListItemText
               primary={
-                data === null
-                  ? <Skeleton variant='text' width='50%' />
-                  : data.profile_division === null ? "..." : data.profile_division
+                data === null ? (
+                  <Skeleton variant="text" width="50%" />
+                ) : data.profile_division === null ? (
+                  '...'
+                ) : (
+                  data.profile_division
+                )
               }
               secondary={
-                data === null
-                  ? <Skeleton variant='text' width='30%' />
-                  : 'Division'
+                data === null ? (
+                  <Skeleton variant="text" width="30%" />
+                ) : (
+                  'Division'
+                )
               }
             />
           </ListItem>
@@ -145,28 +143,31 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <MailIcon />
-                    </Avatar>
-                  )
-              }
+              {data === null ? (
+                <Skeleton variant="circle" width={40} height={40} />
+              ) : (
+                <Avatar className={classes.avatarIcon}>
+                  <MailIcon />
+                </Avatar>
+              )}
             </ListItemAvatar>
 
             <ListItemText
               primary={
-                data === null
-                  ? <Skeleton variant='text' width='50%' />
-                  : data.profile_email === null ? "..." : data.profile_email
+                data === null ? (
+                  <Skeleton variant="text" width="50%" />
+                ) : data.profile_email === null ? (
+                  '...'
+                ) : (
+                  data.profile_email
+                )
               }
               secondary={
-                data === null
-                  ? <Skeleton variant='text' width='30%' />
-                  : 'Email'
+                data === null ? (
+                  <Skeleton variant="text" width="30%" />
+                ) : (
+                  'Email'
+                )
               }
             />
           </ListItem>
@@ -174,28 +175,31 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <PhoneAndroidIcon />
-                    </Avatar>
-                  )
-              }
+              {data === null ? (
+                <Skeleton variant="circle" width={40} height={40} />
+              ) : (
+                <Avatar className={classes.avatarIcon}>
+                  <PhoneAndroidIcon />
+                </Avatar>
+              )}
             </ListItemAvatar>
 
             <ListItemText
               primary={
-                data === null
-                  ? <Skeleton variant='text' width='50%' />
-                  : data.profile_phone === null ? "..." : data.profile_phone
+                data === null ? (
+                  <Skeleton variant="text" width="50%" />
+                ) : data.profile_phone === null ? (
+                  '...'
+                ) : (
+                  data.profile_phone
+                )
               }
               secondary={
-                data === null
-                  ? <Skeleton variant='text' width='30%' />
-                  : 'Phone'
+                data === null ? (
+                  <Skeleton variant="text" width="30%" />
+                ) : (
+                  'Phone'
+                )
               }
             />
           </ListItem>
@@ -203,28 +207,31 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemAvatar>
-              {
-                data === null
-                  ? (
-                    <Skeleton variant='circle' width={40} height={40} />
-                  ) : (
-                    <Avatar>
-                      <LocationOnIcon />
-                    </Avatar>
-                  )
-              }
+              {data === null ? (
+                <Skeleton variant="circle" width={40} height={40} />
+              ) : (
+                <Avatar className={classes.avatarIcon}>
+                  <LocationOnIcon />
+                </Avatar>
+              )}
             </ListItemAvatar>
 
             <ListItemText
               primary={
-                data === null
-                  ? <Skeleton variant='text' width='50%' />
-                  : data.profile_address === null ? "..." : data.profile_address
+                data === null ? (
+                  <Skeleton variant="text" width="50%" />
+                ) : data.profile_address === null ? (
+                  '...'
+                ) : (
+                  data.profile_address
+                )
               }
               secondary={
-                data === null
-                  ? <Skeleton variant='text' width='30%' />
-                  : 'Address'
+                data === null ? (
+                  <Skeleton variant="text" width="30%" />
+                ) : (
+                  'Address'
+                )
               }
             />
           </ListItem>
@@ -234,7 +241,6 @@ function UserDetailProfile({ data, ...props }) {
   );
 }
 
-
 /**
  * Properti default untuk komponen UserDetailProfile
  */
@@ -242,16 +248,4 @@ UserDetailProfile.defaultProps = {
   data: null
 };
 
-
-/**
- * Redux State
- * @param {obj} state 
- */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  }
-}
-
-
-export default connect(reduxState, null)(UserDetailProfile);
+export default UserDetailProfile;

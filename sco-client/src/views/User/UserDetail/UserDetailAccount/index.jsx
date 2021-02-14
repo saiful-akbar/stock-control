@@ -1,49 +1,42 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import PersonIcon from '@material-ui/icons/Person';
 import LockIcon from '@material-ui/icons/Lock';
-import {
-  makeStyles
-} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   List,
   ListItem,
   ListItemText,
   ListItemAvatar,
-  Divider,
+  Divider
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-
-/**
- * Style
- */
-const useStyles = makeStyles((theme) => ({
+/* Style */
+const useStyles = makeStyles(theme => ({
   root: {
-    width: '100%',
+    width: '100%'
   },
+  avatarIcon: {
+    backgroundColor: theme.palette.secondary.main,
+    color: '#fff'
+  }
 }));
 
-
-/**
- * Komponen utama
- */
+/* Komponen utama */
 function UserDetailAccount({ data, ...props }) {
   const isMounted = React.useRef(true);
   const classes = useStyles();
 
-
   /**
-   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai 
+   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
    */
   React.useEffect(() => {
     return () => {
       isMounted.current = false;
-    }
+    };
     // eslint-disable-next-line
   }, []);
-
 
   /**
    * Render Komponen utama
@@ -53,28 +46,31 @@ function UserDetailAccount({ data, ...props }) {
       <List className={classes.root}>
         <ListItem>
           <ListItemAvatar>
-            {
-              data === null
-                ? (
-                  <Skeleton variant='circle' width={40} height={40} />
-                ) : (
-                  <Avatar>
-                    <PersonIcon />
-                  </Avatar>
-                )
-            }
+            {data === null ? (
+              <Skeleton variant="circle" width={40} height={40} />
+            ) : (
+              <Avatar className={classes.avatarIcon}>
+                <PersonIcon />
+              </Avatar>
+            )}
           </ListItemAvatar>
 
           <ListItemText
             primary={
-              data === null
-                ? <Skeleton variant='text' width='50%' />
-                : data.username === null ? "..." : data.username
+              data === null ? (
+                <Skeleton variant="text" width="50%" />
+              ) : data.username === null ? (
+                '...'
+              ) : (
+                data.username
+              )
             }
             secondary={
-              data === null
-                ? <Skeleton variant='text' width='30%' />
-                : 'Username'
+              data === null ? (
+                <Skeleton variant="text" width="30%" />
+              ) : (
+                'Username'
+              )
             }
           />
         </ListItem>
@@ -82,28 +78,29 @@ function UserDetailAccount({ data, ...props }) {
 
         <ListItem>
           <ListItemAvatar>
-            {
-              data === null
-                ? (
-                  <Skeleton variant='circle' width={40} height={40} />
-                ) : (
-                  <Avatar>
-                    <LockIcon />
-                  </Avatar>
-                )
-            }
+            {data === null ? (
+              <Skeleton variant="circle" width={40} height={40} />
+            ) : (
+              <Avatar className={classes.avatarIcon}>
+                <LockIcon />
+              </Avatar>
+            )}
           </ListItemAvatar>
 
           <ListItemText
             primary={
-              data === null
-                ? <Skeleton variant='text' width='50%' />
-                : "*********"
+              data === null ? (
+                <Skeleton variant="text" width="50%" />
+              ) : (
+                '*********'
+              )
             }
             secondary={
-              data === null
-                ? <Skeleton variant='text' width='30%' />
-                : 'Password'
+              data === null ? (
+                <Skeleton variant="text" width="30%" />
+              ) : (
+                'Password'
+              )
             }
           />
         </ListItem>
@@ -112,24 +109,9 @@ function UserDetailAccount({ data, ...props }) {
   );
 }
 
-
-/**
- * Properti default untuk komponen UserDetailAccount
- */
+/* Properti default untuk komponen UserDetailAccount */
 UserDetailAccount.defaultProps = {
   data: null
 };
 
-
-/**
- * Redux State
- * @param {obj} state 
- */
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  }
-}
-
-
-export default connect(reduxState, null)(UserDetailAccount);
+export default UserDetailAccount;

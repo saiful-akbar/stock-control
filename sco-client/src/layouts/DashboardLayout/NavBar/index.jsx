@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Link as RouterLink,
-  useLocation,
-} from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -15,7 +12,7 @@ import {
   Typography,
   makeStyles,
   Grid,
-  SwipeableDrawer,
+  SwipeableDrawer
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
@@ -23,10 +20,10 @@ import apiUrl from 'src/utils/apiUrl';
 import NavItem from './NavItem';
 
 // Style
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   mobileDrawer: {
     width: 256,
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   desktopDrawer: {
     width: 256,
@@ -34,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     height: 'calc(100% - 64px)',
     backgroundColor: theme.palette.background.dark,
     borderRight: 'none',
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   avatar: {
     cursor: 'pointer',
@@ -53,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   menuNavigation: {
-    width: `calc(256px - 18px)`, // lebar navigasi menu
+    width: `calc(256px - 18px)` // lebar navigasi menu
   }
 }));
 
@@ -62,7 +59,7 @@ const NavBar = ({
   onMobileToggle,
   openMobile,
   openDesktop,
-  reduxUserLogin,
+  reduxUserLogin
 }) => {
   const classes = useStyles();
   const location = useLocation();
@@ -78,7 +75,7 @@ const NavBar = ({
       user_m_i_create: 1,
       user_m_i_read: 1,
       user_m_i_update: 1,
-      user_m_i_delete: 1,
+      user_m_i_delete: 1
     }
   };
 
@@ -89,124 +86,106 @@ const NavBar = ({
     // eslint-disable-next-line
   }, [location.pathname]);
 
-
   const content = (
-    <Box
-      height='100%'
-      display='flex'
-      flexDirection='column'
-    >
+    <Box height="100%" display="flex" flexDirection="column">
       <Grid
         container
-        direction='row'
-        justify='center'
-        alignItems='center'
-        wrap='nowrap'
+        direction="row"
+        justify="center"
+        alignItems="center"
+        wrap="nowrap"
         spacing={2}
         className={classes.profile}
       >
-        {reduxUserLogin !== null
-          ? (
-            <>
-              <Grid item>
-                <Avatar
-                  to='/account'
-                  className={classes.avatar}
-                  component={RouterLink}
-                  src={
-                    reduxUserLogin.profile.profile_avatar === null
-                      ? ''
-                      : apiUrl(`/avatar/${reduxUserLogin.profile.profile_avatar}`)
-                  }
-                />
-              </Grid>
+        {reduxUserLogin !== null ? (
+          <React.Fragment>
+            <Grid item>
+              <Avatar
+                to="/account"
+                className={classes.avatar}
+                component={RouterLink}
+                src={
+                  reduxUserLogin.profile.profile_avatar === null
+                    ? ''
+                    : apiUrl(`/avatar/${reduxUserLogin.profile.profile_avatar}`)
+                }
+              />
+            </Grid>
 
-              <Grid item xs zeroMinWidth>
-                <Typography
-                  color='textPrimary'
-                  variant='h6'
-                  noWrap
-                >
-                  {reduxUserLogin.profile.profile_name}
-                </Typography>
+            <Grid item xs zeroMinWidth>
+              <Typography color="textPrimary" variant="h6" noWrap>
+                {reduxUserLogin.profile.profile_name}
+              </Typography>
 
-                <Typography
-                  color='textSecondary'
-                  variant='body2'
-                  noWrap
-                >
-                  {reduxUserLogin.profile.profile_division}
-                </Typography>
-              </Grid>
-            </>
-          ) : (
-            <>
-              <Grid item>
-                <Skeleton variant='circle' className={classes.avatar} />
-              </Grid>
+              <Typography color="textSecondary" variant="body2" noWrap>
+                {reduxUserLogin.profile.profile_division}
+              </Typography>
+            </Grid>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <Grid item>
+              <Skeleton variant="circle" className={classes.avatar} />
+            </Grid>
 
-              <Grid item xs zeroMinWidth>
-                <Skeleton variant='text' width='100%' >
-                  <Typography variant='h6'>{'...'}</Typography>
-                </Skeleton>
+            <Grid item xs zeroMinWidth>
+              <Skeleton variant="text" width="100%">
+                <Typography variant="h6">{'...'}</Typography>
+              </Skeleton>
 
-                <Skeleton variant='text' width='90%' >
-                  <Typography variant='body2'>{'...'}</Typography>
-                </Skeleton>
-              </Grid>
-            </>
-          )
-        }
+              <Skeleton variant="text" width="90%">
+                <Typography variant="body2">{'...'}</Typography>
+              </Skeleton>
+            </Grid>
+          </React.Fragment>
+        )}
       </Grid>
 
       <Divider />
       <Box flexGrow={1} />
 
       <Box className={classes.menu}>
-        {reduxUserLogin === null
-          ? (
-            <Skeleton variant='rect' height='100%' />
-          ) : (
-            <Box className={classes.menuNavigation}>
-              <List>
+        {reduxUserLogin === null ? (
+          <Skeleton variant="rect" height="100%" />
+        ) : (
+          <Box className={classes.menuNavigation}>
+            <List>
+              <NavItem
+                collapse={collapseIsActive}
+                collapseActive={url => setCollapseIsActive(url)}
+                data={menuDashboard}
+              />
+              {reduxUserLogin.menu_items.map((item, key) => (
                 <NavItem
+                  key={key}
+                  data={item}
                   collapse={collapseIsActive}
-                  collapseActive={(url) => setCollapseIsActive(url)}
-                  data={menuDashboard}
+                  collapseActive={url => setCollapseIsActive(url)}
                 />
-                {reduxUserLogin.menu_items.map((item, key) => (
-                  <NavItem
-                    key={key}
-                    data={item}
-                    collapse={collapseIsActive}
-                    collapseActive={(url) => setCollapseIsActive(url)}
-                  />
-                ))}
-              </List>
-            </Box>
-          )
-        }
+              ))}
+            </List>
+          </Box>
+        )}
       </Box>
 
       <Box flexGrow={1} />
       <Divider />
 
-      <Box p={2} >
-        <Box display='flex' justifyContent='center' >
-          {reduxUserLogin === null
-            ? (
-              <Skeleton variant='rect' width={224} height={30} />
-            ) : (
-              <Button
-                fullWidth
-                color='secondary'
-                size='small'
-                variant='contained'
-                onClick={() => window.location.href = '/logout'}
-              >
-                {'Logout'}
-              </Button>
-            )}
+      <Box p={2}>
+        <Box display="flex" justifyContent="center">
+          {reduxUserLogin === null ? (
+            <Skeleton variant="rect" width={224} height={30} />
+          ) : (
+            <Button
+              fullWidth
+              color="primary"
+              size="small"
+              variant="outlined"
+              onClick={() => (window.location.href = '/logout')}
+            >
+              {'Logout'}
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>
@@ -216,8 +195,8 @@ const NavBar = ({
     <>
       <Hidden lgUp>
         <SwipeableDrawer
-          anchor='left'
-          variant='temporary'
+          anchor="left"
+          variant="temporary"
           open={openMobile}
           onClose={() => onMobileToggle(false)}
           onOpen={() => onMobileToggle(true)}
@@ -229,10 +208,10 @@ const NavBar = ({
 
       <Hidden mdDown>
         <Drawer
-          anchor='left'
+          anchor="left"
           classes={{ paper: classes.desktopDrawer }}
           open={openDesktop}
-          variant='persistent'
+          variant="persistent"
         >
           {content}
         </Drawer>
@@ -248,12 +227,12 @@ NavBar.propTypes = {
 };
 
 NavBar.defaultProps = {
-  onMobileToggle: () => { },
+  onMobileToggle: () => {},
   openMobile: false
 };
 
-const reduxState = (state) => ({
-  reduxUserLogin: state.userLogin,
+const reduxState = state => ({
+  reduxUserLogin: state.userLogin
 });
 
 export default connect(reduxState, null)(NavBar);

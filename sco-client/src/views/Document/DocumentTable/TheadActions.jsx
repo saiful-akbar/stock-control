@@ -14,10 +14,10 @@ import clsx from 'clsx';
 import CustomTooltip from 'src/components/CustomTooltip';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SearchIcon from '@material-ui/icons/Search';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 /**
  * Style untuk komponen utama
@@ -128,7 +128,7 @@ function TheadActions({
 
             <CustomTooltip title="Delete" placement="bottom">
               <IconButton className={classes.buttonDelete} onClick={onDelete}>
-                <DeleteIcon />
+                <DeleteOutlineOutlinedIcon />
               </IconButton>
             </CustomTooltip>
           </React.Fragment>
@@ -194,7 +194,7 @@ function TheadActions({
                     endAdornment: searchValue !== '' && search !== '' && (
                       <InputAdornment position="end">
                         <IconButton size="small" onClick={handleClearSearch}>
-                          <CancelIcon fontSize="small" />
+                          <CancelOutlinedIcon fontSize="small" />
                         </IconButton>
                       </InputAdornment>
                     )

@@ -8,13 +8,12 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import { Box } from '@material-ui/core';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
+import { Box, useMediaQuery } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import { Alert } from '@material-ui/lab';
 import Loader from 'src/components/Loader';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 import { apiImportItemGroup } from 'src/services/itemGroups';
 
 // Style DialogTitle
@@ -26,8 +25,8 @@ const styles = theme => ({
   closeButton: {
     position: 'absolute',
     right: theme.spacing(1),
-    top: theme.spacing(1)
-    // color: theme.palette.grey[500],
+    top: theme.spacing(1),
+    color: theme.palette.grey[500]
   }
 });
 
@@ -71,6 +70,13 @@ const useStyles = makeStyles(theme => ({
   header: {
     backgroundColor: theme.palette.background.topBar,
     color: '#ffffff'
+  },
+  image: {
+    width: '100%',
+    height: '30vh',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'auto 100%'
   }
 }));
 
@@ -84,6 +90,8 @@ function ItemGroupImport({
 }) {
   const classes = useStyles();
   const isMounted = React.useRef(true);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   // State
   const [loading, setLoading] = React.useState(false);
@@ -110,8 +118,7 @@ function ItemGroupImport({
       setAlert({
         type: 'info',
         message: [
-          'Import can only support files with the .xlsx or .xls extension.',
-          'The maximum size is 1000 kilobytes.'
+          'Import can only support files with the .xlsx or .xls extension.'
         ]
       });
     }
@@ -190,6 +197,7 @@ function ItemGroupImport({
   return (
     <Dialog
       fullWidth
+      fullScreen={fullScreen}
       open={open}
       onClose={handleClose}
       maxWidth="md"
@@ -231,9 +239,14 @@ function ItemGroupImport({
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
+                height="100%"
                 style={{ cursor: 'pointer' }}
               >
-                <FileCopyIcon color="disabled" style={{ fontSize: 150 }} />
+                <img
+                  src="/static/images/svg/add_file.svg"
+                  alt="Add File"
+                  className={classes.image}
+                />
 
                 <Typography variant="h5">
                   {value === '' ? 'Select files' : value.name}

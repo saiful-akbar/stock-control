@@ -9,16 +9,20 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import CustomTooltip from 'src/components/CustomTooltip';
 
 const useStyles = makeStyles({
   root: {
-    width: '100%',
+    width: '100%'
   },
   container: {
-    maxHeight: 400,
+    maxHeight: '70vh'
   },
+  tableCell: {
+    paddingBottom: 10,
+    paddingTop: 10
+  }
 });
 
 export default function UserCreateTable({ columns, rows, action, ...props }) {
@@ -30,21 +34,29 @@ export default function UserCreateTable({ columns, rows, action, ...props }) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = event => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
   return (
-    <Paper className={classes.root} variant='outlined'>
+    <Paper className={classes.root} variant="outlined">
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label='sticky table'>
+        <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <TableCell align='center'>No</TableCell>
-              <TableCell align='center'>Delete</TableCell>
+              <TableCell
+                className={classes.tableCell}
+                align="center"
+                padding="checkbox"
+              >
+                No
+              </TableCell>
+
               {columns.map((column, key) => (
                 <TableCell
+                  padding="checkbox"
+                  className={classes.tableCell}
                   key={key}
                   align={column.align}
                   style={{ minWidth: 50 }}
@@ -52,38 +64,46 @@ export default function UserCreateTable({ columns, rows, action, ...props }) {
                   {column.label}
                 </TableCell>
               ))}
+
+              <TableCell padding="checkbox" className={classes.tableCell} />
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowKey) => {
-              return (
-                <TableRow hover role='checkbox' tabIndex={-1} key={rowKey}>
-                  <TableCell align='center'>{rowKey + 1}</TableCell>
+            {rows
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, rowKey) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={rowKey}>
+                    <TableCell align="center">{rowKey + 1}</TableCell>
 
-                  <TableCell align='center'>
-                    <CustomTooltip title='Delete' placement='bottom'>
-                      <IconButton onClick={() => action(row.id)} >
-                        <DeleteIcon fontSize='small' />
-                      </IconButton>
-                    </CustomTooltip>
-                  </TableCell>
+                    {columns.map((column, colKey) => (
+                      <TableCell
+                        key={colKey}
+                        align={column.align}
+                        padding="checkbox"
+                      >
+                        {row[column.name]}
+                      </TableCell>
+                    ))}
 
-                  {columns.map((column, colKey) => (
-                    <TableCell key={colKey} align={column.align}>
-                      {row[column.name]}
+                    <TableCell align="center" padding="checkbox">
+                      <CustomTooltip title="Delete" placement="bottom">
+                        <IconButton onClick={() => action(row.id)}>
+                          <DeleteOutlinedIcon fontSize="small" />
+                        </IconButton>
+                      </CustomTooltip>
                     </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
 
       <TablePagination
         rowsPerPageOptions={[10, 25, 50, 100]}
-        component='div'
+        component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}
         page={page}
@@ -97,5 +117,5 @@ export default function UserCreateTable({ columns, rows, action, ...props }) {
 UserCreateTable.defaultProps = {
   columns: [],
   rows: [],
-  action: null,
-}
+  action: null
+};

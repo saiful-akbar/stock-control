@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import {
-  makeStyles, CircularProgress,
-} from '@material-ui/core';
+import { makeStyles, CircularProgress } from '@material-ui/core';
 import { connect } from 'react-redux';
 import Toast from 'src/components/Toast';
 import { reduxAction } from 'src/config/redux/state';
 import ErrorBoundary from 'src/components/ErrorBoundary';
-
 
 /* Style untuk komponen lodingSuspense */
 const fallbackStyle = makeStyles(theme => ({
@@ -15,10 +12,9 @@ const fallbackStyle = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
+    height: '100%'
   }
 }));
-
 
 /* Komponent untuk fallback suspense */
 function Fallback() {
@@ -26,14 +22,13 @@ function Fallback() {
 
   return (
     <div className={classes.root}>
-      <CircularProgress color='primary' size={50} />
+      <CircularProgress color="primary" size={50} />
     </div>
-  )
+  );
 }
 
-
 /* Style untuk komponen MainLayout */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     display: 'flex',
@@ -44,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     display: 'flex',
     flex: '1 1 auto',
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
   contentContainer: {
     display: 'flex',
@@ -55,23 +50,23 @@ const useStyles = makeStyles((theme) => ({
     flex: '1 1 auto',
     height: '100%',
     overflow: 'auto'
-  },
+  }
 }));
 
 const MainLayout = ({ reduxToast, setReduxToast }) => {
   const classes = useStyles();
-
 
   /**
    * Menghapus preloader
    */
   useEffect(() => {
     window.onload = () => {
-      const preloader = document.getElementById("preloader");
+      const preloader = document.getElementById('preloader');
       preloader.remove();
-    }
-  });
+    };
 
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -79,7 +74,7 @@ const MainLayout = ({ reduxToast, setReduxToast }) => {
         <div className={classes.contentContainer}>
           <div className={classes.content}>
             <ErrorBoundary>
-              <React.Suspense fallback={<Fallback />} >
+              <React.Suspense fallback={<Fallback />}>
                 <Outlet />
               </React.Suspense>
             </ErrorBoundary>
@@ -91,27 +86,28 @@ const MainLayout = ({ reduxToast, setReduxToast }) => {
         open={reduxToast.show}
         type={reduxToast.type}
         message={reduxToast.message}
-        handleClose={() => setReduxToast(false, reduxToast.type, reduxToast.message)}
+        handleClose={() =>
+          setReduxToast(false, reduxToast.type, reduxToast.message)
+        }
       />
     </div>
   );
 };
 
-
-const reduxDispatch = (dispatch) => ({
-  setReduxToast: (show, type, message) => dispatch({
-    type: reduxAction.toast,
-    value: {
-      show: show,
-      type: type,
-      message: message,
-    }
-  })
+const reduxDispatch = dispatch => ({
+  setReduxToast: (show, type, message) =>
+    dispatch({
+      type: reduxAction.toast,
+      value: {
+        show: show,
+        type: type,
+        message: message
+      }
+    })
 });
 
-const reduxState = (state) => ({
+const reduxState = state => ({
   reduxToast: state.toast
 });
-
 
 export default connect(reduxState, reduxDispatch)(MainLayout);

@@ -1,9 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import {
-  makeStyles,
-  withStyles
-} from "@material-ui/core/styles";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
   Box,
   TableCell,
@@ -12,116 +9,113 @@ import {
   Avatar,
   Icon,
   Badge,
-  Link,
-} from "@material-ui/core";
-import apiUrl from "src/utils/apiUrl";
-import UserTableOptions from "../UserTableOptions";
-import {
-  useNavigate
-} from 'react-router-dom';
-
+  Link
+} from '@material-ui/core';
+import apiUrl from 'src/utils/apiUrl';
+import UserTableOptions from '../UserTableOptions';
+import { useNavigate } from 'react-router-dom';
 
 /**
- * Custom style avatar badge 
+ * Custom style avatar badge
  */
-const StyledBadge = withStyles((theme) => ({
+const StyledBadge = withStyles(theme => ({
   badge: {
     color: theme.palette.type === 'light' ? '#263238' : '#FFFFFF',
     boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    "&::after": {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      borderRadius: "50%",
-      animation: "$ripple 1.2s infinite ease-in-out",
-      border: "1px solid currentColor",
-      content: "''",
-    },
+    '&::after': {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: '$ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: "''"
+    }
   },
-  "@keyframes ripple": {
-    "0%": {
-      transform: "scale(.8)",
-      opacity: 1,
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1
     },
-    "100%": {
-      transform: "scale(2.4)",
-      opacity: 0,
-    },
-  },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0
+    }
+  }
 }))(Badge);
-
 
 /**
  * Style untuk komponent Row
  */
-const useRowStyles = makeStyles((theme) => ({
+const useRowStyles = makeStyles(theme => ({
   avatar: {
-    width: 42,
-    height: 42,
+    width: 50,
+    height: 50
   },
   red: {
-    color: theme.palette.error.light,
+    color: theme.palette.error.light
   },
   green: {
-    color: theme.palette.success.light,
+    color: theme.palette.success.light
   },
   link: {
     color: 'inherit',
     fontWeight: 'bold',
     '&:hover': {
-      color: '#2196f3',
+      color: '#2196f3'
     }
+  },
+  tableCell: {
+    paddingBottom: 10,
+    paddingTop: 10
   }
 }));
-
 
 function Row(props) {
   const { row, onDelete, state, onChangePassword } = props;
   const classes = useRowStyles();
   const navigate = useNavigate();
 
-
   /**
    * FUngsi link ke halaman user view detail
-   * @param {obj} e 
+   * @param {obj} e
    */
-  const goto = (e) => {
+  const goto = e => {
     e.preventDefault();
     navigate(`/user/${row.id}`, { state });
-  }
-
+  };
 
   return (
     <React.Fragment>
       <TableRow hover className={classes.root}>
-        <TableCell>
+        <TableCell className={classes.tableCell}>
           <UserTableOptions
             userData={row}
             state={state}
             onDelete={() => onDelete(row.id)}
             onChangePassword={() => onChangePassword(row.id)}
-
           />
         </TableCell>
 
-        <TableCell>
-          <Box
-            display="flex"
-            alignItems="center"
-          >
+        <TableCell className={classes.tableCell}>
+          <Box display="flex" alignItems="center">
             <StyledBadge
               overlap="circle"
               variant="dot"
-              color={Boolean(row.token) ? "primary" : "error"}
+              color={Boolean(row.token) ? 'primary' : 'error'}
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
+                vertical: 'bottom',
+                horizontal: 'right'
               }}
             >
               <Avatar
                 className={classes.avatar}
                 alt={row.profile_name}
-                src={Boolean(row.profile_avatar) ? apiUrl(`/avatar/${row.profile_avatar}`) : ""}
+                src={
+                  Boolean(row.profile_avatar)
+                    ? apiUrl(`/avatar/${row.profile_avatar}`)
+                    : ''
+                }
               />
             </StyledBadge>
 
@@ -131,36 +125,31 @@ function Row(props) {
                   className={classes.link}
                   variant="body2"
                   href={`/user/${row.id}`}
-                  onClick={(e) => goto(e)}
+                  onClick={e => goto(e)}
                 >
                   {row.profile_name}
                 </Link>
               </Typography>
 
-              <Typography
-                color="textSecondary"
-                variant="caption"
-              >
-                {
-                  row.profile_division === null || row.profile_division === ""
-                    ? "..."
-                    : row.profile_division
-                }
+              <Typography color="textSecondary" variant="caption">
+                {row.profile_division === null || row.profile_division === ''
+                  ? '...'
+                  : row.profile_division}
               </Typography>
             </div>
           </Box>
         </TableCell>
 
-        <TableCell>{row.username}</TableCell>
+        <TableCell className={classes.tableCell}>{row.username}</TableCell>
 
-        <TableCell>
-          <Icon className={row.is_active === 1 ? classes.green : classes.red} >
-            {row.is_active === 1 ? "check" : "close"}
+        <TableCell className={classes.tableCell}>
+          <Icon className={row.is_active === 1 ? classes.green : classes.red}>
+            {row.is_active === 1 ? 'check' : 'close'}
           </Icon>
         </TableCell>
 
-        <TableCell>{row.created_at}</TableCell>
-        <TableCell>{row.updated_at}</TableCell>
+        <TableCell className={classes.tableCell}>{row.created_at}</TableCell>
+        <TableCell className={classes.tableCell}>{row.updated_at}</TableCell>
       </TableRow>
     </React.Fragment>
   );
@@ -168,7 +157,7 @@ function Row(props) {
 
 Row.propTypes = {
   row: PropTypes.object.isRequired,
-  state: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired
 };
 
 export default Row;

@@ -1,31 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  IconButton,
-  Typography,
-} from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import CustomTooltip from 'src/components/CustomTooltip';
 
 // Componen utama
-const UserTableOptions = (props) => {
+const UserTableOptions = props => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const { state, userData } = props;
 
-
   /**
    * handle saat menu di klik
    * @param {obj} event
    */
-  const handleClickMenu = (event) => {
+  const handleClickMenu = event => {
     setAnchorEl(event.currentTarget);
   };
-
 
   /**
    * Handle close menu
@@ -33,7 +28,6 @@ const UserTableOptions = (props) => {
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
-
 
   /**
    * Link menu akses
@@ -48,8 +42,7 @@ const UserTableOptions = (props) => {
         }
       }
     });
-  }
-
+  };
 
   /**
    * handle edit user
@@ -64,8 +57,7 @@ const UserTableOptions = (props) => {
         }
       }
     });
-  }
-
+  };
 
   /**
    * Handle delete
@@ -73,8 +65,7 @@ const UserTableOptions = (props) => {
   const handleDelete = () => {
     props.onDelete();
     handleCloseMenu();
-  }
-
+  };
 
   /**
    * Handle ubah password
@@ -82,8 +73,7 @@ const UserTableOptions = (props) => {
   const handleChangePassword = () => {
     props.onChangePassword();
     handleCloseMenu();
-  }
-
+  };
 
   /**
    * handle view user
@@ -91,17 +81,18 @@ const UserTableOptions = (props) => {
   const handleViewDetail = () => {
     handleCloseMenu();
     navigate(`/user/${userData.id}`, { state: state });
-  }
-
+  };
 
   /**
    * Render komponen utama
    */
   return (
-    <>
-      <IconButton onClick={handleClickMenu}>
-        <MoreVertIcon fontSize='small' />
-      </IconButton>
+    <React.Fragment>
+      <CustomTooltip placement="bottom" title="Options">
+        <IconButton onClick={handleClickMenu}>
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
+      </CustomTooltip>
 
       <Menu
         anchorEl={anchorEl}
@@ -111,35 +102,34 @@ const UserTableOptions = (props) => {
       >
         {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleChangeUserMenus}>
-            <Typography variant='inherit'>{'Access Menu'}</Typography>
+            <Typography variant="inherit">{'Access Menu'}</Typography>
           </MenuItem>
         )}
 
         {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleChangePassword}>
-            <Typography variant='inherit'>{'Change password'}</Typography>
+            <Typography variant="inherit">{'Change password'}</Typography>
           </MenuItem>
         )}
 
         {props.state !== null && props.state.delete === 1 && (
           <MenuItem onClick={handleDelete}>
-            <Typography variant='inherit'>{'Delete'}</Typography>
+            <Typography variant="inherit">{'Delete'}</Typography>
           </MenuItem>
         )}
 
         <MenuItem onClick={handleViewDetail}>
-          <Typography variant='inherit'>{'Detail info'}</Typography>
+          <Typography variant="inherit">{'Detail info'}</Typography>
         </MenuItem>
 
         {props.state !== null && props.state.update === 1 && (
           <MenuItem onClick={handleEdit}>
-            <Typography variant='inherit'>{'Edit'}</Typography>
+            <Typography variant="inherit">{'Edit'}</Typography>
           </MenuItem>
         )}
       </Menu>
-    </>
-  )
+    </React.Fragment>
+  );
 };
-
 
 export default UserTableOptions;

@@ -3,18 +3,16 @@ import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar } from '@material-ui/core';
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    width: theme.spacing(6),
-    height: theme.spacing(6),
+    margin: theme.spacing(1),
+    width: theme.spacing(5),
+    height: theme.spacing(5)
   }
-}))
+}));
 
 const Logo = ({ reduxTheme, ...props }) => {
   const classes = useStyle();
-
 
   return (
     <Avatar
@@ -28,7 +26,7 @@ const Logo = ({ reduxTheme, ...props }) => {
 function reduxState(state) {
   return {
     reduxTheme: state.theme
-  }
+  };
 }
 
 export default connect(reduxState, null)(Logo);

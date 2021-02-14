@@ -9,17 +9,16 @@ import {
   Hidden,
   IconButton,
   Toolbar,
-  makeStyles,
+  makeStyles
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import CustomTooltip from 'src/components/CustomTooltip';
 import Clock from 'src/components/Clock';
 import Logo from 'src/components/Logo';
 
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.topBar,
@@ -29,26 +28,19 @@ const useStyles = makeStyles((theme) => ({
     width: 60,
     height: 60
   },
-  logo: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
   clock: {
     color: '#fff',
     border: '1px solid #999999',
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   skeletonClock: {
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(1)
   },
   title: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
+    flexGrow: 1
+  }
 }));
 
 const TopBar = ({
@@ -66,54 +58,49 @@ const TopBar = ({
   return (
     <AppBar
       className={clsx(classes.root, className)}
-      elevation={reduxTheme === 'dark' ? 0 : 5}
+      elevation={reduxTheme === 'dark' ? 3 : 5}
     >
       <Toolbar>
+        {/* Toogle menu */}
         <Hidden mdDown>
           <CustomTooltip
             title={openDesktopNav ? 'Close menu' : 'Open menu'}
-            placement='bottom'
+            placement="bottom"
           >
-            <IconButton onClick={onDesktopNavOpen} className={classes.menuButton} color='inherit' >
+            <IconButton onClick={onDesktopNavOpen} color="inherit">
               {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
             </IconButton>
           </CustomTooltip>
         </Hidden>
 
         <Hidden lgUp>
-          <CustomTooltip title='Open menu' placement='bottom' >
-            <IconButton onClick={onMobileNavOpen} className={classes.menuButton} color='inherit' >
+          <CustomTooltip title="Open menu" placement="bottom">
+            <IconButton onClick={onMobileNavOpen} color="inherit">
               <MenuIcon />
             </IconButton>
           </CustomTooltip>
         </Hidden>
+        {/* End toggle menu */}
 
-        <Hidden smUp>
-          <Box flexGrow={1} />
-          <Box display="flex" justifyContent="center" alignItems="center" >
-            <RouterLink to="/">
-              <Logo />
-            </RouterLink>
-          </Box>
-          <Box flexGrow={1} />
-        </Hidden>
+        {/* Logo */}
+        <RouterLink to="/">
+          <Logo />
+        </RouterLink>
 
+        <Box flexGrow={1} />
+
+        {/* Clock */}
         <Hidden xsDown>
-          <RouterLink to="/">
-            <Logo />
-          </RouterLink>
-
-          <Box flexGrow={1} />
           <Clock className={classes.clock} />
         </Hidden>
 
-        <CustomTooltip title='Open setting' >
-          <IconButton color='inherit' onClick={onSettingOpen} >
-            <SettingsIcon />
+        <CustomTooltip title="Open setting">
+          <IconButton color="inherit" onClick={onSettingOpen}>
+            <SettingsOutlinedIcon />
           </IconButton>
         </CustomTooltip>
       </Toolbar>
-    </AppBar >
+    </AppBar>
   );
 };
 
@@ -121,9 +108,8 @@ TopBar.propTypes = {
   className: PropTypes.string,
   onMobileNavOpen: PropTypes.func,
   onSettingOpen: PropTypes.func,
-  openDesktopNav: PropTypes.bool,
+  openDesktopNav: PropTypes.bool
 };
-
 
 /**
  * Redux state
@@ -131,8 +117,8 @@ TopBar.propTypes = {
 function reduxState(state) {
   return {
     reduxTheme: state.theme,
-    reduxUserLogin: state.userLogin,
-  }
+    reduxUserLogin: state.userLogin
+  };
 }
 
 export default connect(reduxState, null)(TopBar);

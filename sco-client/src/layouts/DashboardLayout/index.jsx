@@ -97,11 +97,13 @@ const DashboardLayout = ({
 
   /* Menghapus preloader */
   React.useEffect(() => {
-    const preloader = document.getElementById('preloader');
-    if (reduxUserLogin !== null && Boolean(preloader)) {
+    window.onload = () => {
+      const preloader = document.getElementById('preloader');
       preloader.remove();
-    }
-  }, [reduxUserLogin]);
+    };
+
+    // eslint-disable-next-line
+  }, []);
 
   /* Cek apakah user sudah login atau belum */
   React.useEffect(() => {
