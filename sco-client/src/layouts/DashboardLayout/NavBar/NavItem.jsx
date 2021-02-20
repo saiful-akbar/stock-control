@@ -11,7 +11,7 @@ import {
   ListItem,
   makeStyles,
   Collapse,
-  Typography,
+  Typography
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -20,20 +20,19 @@ import Icon from '@material-ui/core/Icon';
 import { connect } from 'react-redux';
 import CustomTooltip from 'src/components/CustomTooltip';
 
-
 // Style
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   item: {
     display: 'flex',
-    padding: 0,
-    margin: '5px 0',
+    padding: 0
+    // margin: '5px 0',
   },
   button: {
     color: theme.palette.text.secondary,
     fontWeight: theme.typography.fontWeightMedium,
     justifyContent: 'flex-start',
     letterSpacing: 0,
-    padding: '5px 10px',
+    padding: '10px 10px',
     textTransform: 'none',
     width: '100%',
     borderRadius: '0 25px 25px 0'
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginRight: 'auto',
     marginTop: 2,
-    fontWeight: 500,
+    fontWeight: 500
   },
   active: {
     background: theme.palette.action.selected,
@@ -56,9 +55,8 @@ const useStyles = makeStyles((theme) => ({
     '& $icon': {
       color: theme.palette.primary.main
     }
-  },
+  }
 }));
-
 
 // Main component
 const NavItem = ({
@@ -66,7 +64,7 @@ const NavItem = ({
   data,
   collapse,
   collapseActive,
-  reduxUserLogin,
+  reduxUserLogin
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -87,7 +85,7 @@ const NavItem = ({
     data.menu_i_url === collapse ? setOpen(true) : setOpen(false);
   }, [data.menu_i_url, collapse]);
 
-  const handleLink = (e) => {
+  const handleLink = e => {
     e.preventDefault();
     collapseActive(null);
     navigate(data.menu_i_url, {
@@ -95,29 +93,24 @@ const NavItem = ({
         create: data.pivot.user_m_i_create,
         read: data.pivot.user_m_i_read,
         update: data.pivot.user_m_i_update,
-        delete: data.pivot.user_m_i_delete,
+        delete: data.pivot.user_m_i_delete
       }
     });
-  }
+  };
 
   const listDefault = () => {
     return (
-      <ListItem
-        className={clsx(classes.item, className)}
-        disableGutters
-      >
-        <CustomTooltip title={data.menu_i_title} placement='right'>
+      <ListItem className={clsx(classes.item, className)} disableGutters>
+        <CustomTooltip title={data.menu_i_title} placement="right">
           <Button
             activeClassName={classes.active}
             className={classes.button}
             component={RouterLink}
             to={data.menu_i_url}
-            onClick={(e) => handleLink(e)}
+            onClick={e => handleLink(e)}
           >
             {data.menu_i_icon && (
-              <Icon className={classes.icon} >
-                {data.menu_i_icon}
-              </Icon>
+              <Icon className={classes.icon}>{data.menu_i_icon}</Icon>
             )}
 
             <Typography
@@ -130,7 +123,7 @@ const NavItem = ({
             </Typography>
           </Button>
         </CustomTooltip>
-      </ListItem >
+      </ListItem>
     );
   };
 
@@ -142,22 +135,18 @@ const NavItem = ({
           disableGutters
           onClick={handleCollapse}
         >
-          <CustomTooltip title={data.menu_i_title} placement='right'>
+          <CustomTooltip title={data.menu_i_title} placement="right">
             <Button
               className={classes.button}
               component={RouterLink}
               to={{ hash: `#${data.menu_i_url}` }}
-              onClick={(e) => e.preventDefault()}
+              onClick={e => e.preventDefault()}
               activeClassName={
-                data.menu_i_url === `/${pathname[1]}`
-                  ? classes.active
-                  : ''
+                data.menu_i_url === `/${pathname[1]}` ? classes.active : ''
               }
             >
               {data.menu_i_icon && (
-                <Icon className={classes.icon} >
-                  {data.menu_i_icon}
-                </Icon>
+                <Icon className={classes.icon}>{data.menu_i_icon}</Icon>
               )}
 
               <Typography
@@ -174,7 +163,7 @@ const NavItem = ({
           </CustomTooltip>
         </ListItem>
 
-        <Collapse in={open} timeout='auto' unmountOnExit>
+        <Collapse in={open} timeout="auto" unmountOnExit>
           {reduxUserLogin.menu_sub_items.map((sub, key) => {
             if (data.id === sub.menu_item_id) {
               return (
@@ -184,7 +173,7 @@ const NavItem = ({
                   title={sub.menu_s_i_title}
                   state={sub.pivot}
                 />
-              )
+              );
             }
             return null;
           })}
@@ -203,8 +192,8 @@ NavItem.propTypes = {
   title: PropTypes.string
 };
 
-const reduxState = (state) => ({
-  reduxUserLogin: state.userLogin,
+const reduxState = state => ({
+  reduxUserLogin: state.userLogin
 });
 
 export default connect(reduxState, null)(NavItem);

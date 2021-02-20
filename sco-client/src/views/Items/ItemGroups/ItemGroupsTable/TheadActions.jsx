@@ -53,10 +53,7 @@ const useStyles = makeStyles(theme => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor:
-      theme.palette.type === 'dark'
-        ? 'rgba(19, 28, 33, 0.8)'
-        : 'rgba(255, 255, 255, 0.8)'
+    backgroundColor: 'rgba(0, 0, 0, 0.8)'
   }
 }));
 
@@ -76,9 +73,7 @@ function TheadActions({
   onImport,
   ...props
 }) {
-  /**
-   * State
-   */
+  /* State */
   const [search, setSearch] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isOpenBackdrop, setOpenBackdrop] = React.useState(false);
@@ -87,9 +82,7 @@ function TheadActions({
   const classes = useStyles();
   const isMounted = React.useRef(true);
 
-  /**
-   * handle jika komponen dilepas saat request api belum selesai.
-   */
+  /* handle jika komponen dilepas saat request api belum selesai. */
   React.useEffect(() => {
     return () => {
       isMounted.current = false;

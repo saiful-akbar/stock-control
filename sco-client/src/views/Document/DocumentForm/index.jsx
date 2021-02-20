@@ -23,7 +23,6 @@ import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { apiAddDocument } from 'src/services/document';
 
 /* Style ItemGroupImport */
@@ -57,6 +56,13 @@ const useStyles = makeStyles(theme => ({
   },
   iconInput: {
     fontSize: 70
+  },
+  image: {
+    width: '100%',
+    height: '20vh',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'auto 100%'
   }
 }));
 
@@ -162,7 +168,6 @@ function DocumentForm(props) {
       scroll="paper"
       maxWidth="md"
       open={props.open}
-      onClose={handleClose}
     >
       <Formik
         onSubmit={handleSubmitForm}
@@ -241,12 +246,10 @@ function DocumentForm(props) {
                             : classes.inputFile
                         }
                       >
-                        <FileCopyIcon
-                          className="icon-input"
-                          color="disabled"
-                          style={{
-                            fontSize: 70
-                          }}
+                        <img
+                          src="/static/images/svg/add_file.svg"
+                          alt="Add File"
+                          className={classes.image}
                         />
 
                         <Typography variant="h6">

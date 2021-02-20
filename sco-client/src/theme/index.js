@@ -1,5 +1,5 @@
 import { createMuiTheme, colors } from '@material-ui/core';
-import { darkShadows /* lightShadows */ } from './shadows';
+import { darkShadows } from './shadows';
 
 const themeLight = createMuiTheme({
   palette: {
@@ -68,7 +68,6 @@ const themeDark = createMuiTheme({
       secondary: colors.grey[500]
     }
   }
-  // shadows: lightShadows
 });
 
 export { themeLight, themeDark };
