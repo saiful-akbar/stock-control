@@ -27,9 +27,10 @@
 - Otentikasi pengguna
 - Document
   - Berisi format template file excel untuk diimport dan dokumen lainnya
-  - Menambahkan document baru
-  - Memperbarui
-  - Menghapus
+  - Menambahkan data document baru
+  - Memperbarui data
+  - Menghapus data
+  - Mendownload file dokumen
 - Manajemen menu
   - Menambahkan data menu baru
   - Merubah data menu
@@ -56,8 +57,8 @@
     - Item Sub Groups
       - Melihat data item sub groups,
       - Membuat data baru
-      - Memperbarui,
-      - Menghapus,
+      - Memperbarui
+      - Menghapus
       - Import dari file excel,
       - Export kedalam bentuk file excel
 
