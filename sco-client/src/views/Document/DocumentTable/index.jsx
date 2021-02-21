@@ -28,12 +28,14 @@ const columns = [
   {
     field: 'document_title',
     label: 'Title',
-    align: 'left'
+    align: 'left',
+    sort: true
   },
   {
     field: 'document_description',
     label: 'Description',
-    align: 'left'
+    align: 'left',
+    sort: true
   }
 ];
 
@@ -99,12 +101,11 @@ function DocumentTable(props) {
     // eslint-disable-next-line
   }, []);
 
-  /* Fungsi handle jika table di reload saat aksi sukses atau berhasil. */
+  /* handle jika table di reload saat aksi sukses atau berhasil. */
   React.useEffect(() => {
     if (props.reload) {
       handleReload();
     }
-
     // eslint-disable-next-line
   }, [props.reload]);
 
@@ -343,13 +344,7 @@ function DocumentTable(props) {
                     />
                   ))}
 
-                  {Boolean(
-                    props.userAccess !== null &&
-                      Boolean(
-                        props.userAccess.user_m_i_delete === 1 ||
-                          props.userAccess.user_m_i_update === 1
-                      )
-                  ) && <TableCell padding="checkbox" />}
+                  <TableCell padding="checkbox" />
                 </TableRow>
               </TableHead>
 
@@ -361,7 +356,7 @@ function DocumentTable(props) {
                   <TableRow hover>
                     <TableCell
                       align="center"
-                      colSpan={3}
+                      colSpan={5}
                       className={classes.tableCell}
                       padding={
                         props.userAccess !== null &&
@@ -387,7 +382,7 @@ function DocumentTable(props) {
                         row={row}
                         columns={columns}
                         userAccess={props.userAccess}
-                        onEdit={value => props.onEdit(value)}
+                        onEdit={data => props.onEdit(data)}
                         onSelect={(e, id) => handleSelectClick(e, id)}
                         aria-checked={isItemSelected}
                         selected={isItemSelected}

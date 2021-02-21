@@ -26,7 +26,7 @@
     - Dapat dirubah menjadi mode gelap, terang atau sesuai tema os
 - Otentikasi pengguna
 - Document
-  - Berisi format template file excel untuk diimport
+  - Berisi format template file excel untuk diimport dan dokumen lainnya
   - Menambahkan document baru
   - Memperbarui
   - Menghapus

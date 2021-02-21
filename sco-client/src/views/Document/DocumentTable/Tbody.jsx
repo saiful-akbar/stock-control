@@ -1,9 +1,18 @@
 import React from 'react';
-import { TableRow, TableCell, Checkbox, IconButton } from '@material-ui/core';
+import {
+  TableRow,
+  TableCell,
+  Checkbox,
+  IconButton,
+  CircularProgress
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import CustomTooltip from 'src/components/CustomTooltip';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined';
+import { apiDownloadDocument } from 'src/services/document';
+import { connect } from 'react-redux';
+import { reduxAction } from 'src/config/redux/state';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -14,8 +23,51 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /* Komponne utama */
-function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
+function Tbody({
+  row,
+  columns,
+  userAccess,
+  onEdit,
+  onSelect,
+  setReduxToast,
+  ...props
+}) {
   const classes = useStyles();
+  const isMounted = React.useRef(true);
+  const [loading, setLoading] = React.useState(false);
+
+  /* handle jika komponen dilepas saat request api belum selesai. */
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+
+    // eslint-disable-next-line
+  }, []);
+
+  /* Fungsi untuk handle download file document */
+  const handleDownload = async data => {
+    setLoading(true);
+    try {
+      const res = await apiDownloadDocument(data.id);
+      if (isMounted.current) {
+        setLoading(false);
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.setAttribute('download', data.document_path); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        setLoading(false);
+        setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+      }
+    }
+  };
 
   /* Render komponen utama */
   return (
@@ -48,21 +100,25 @@ function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
         </TableCell>
       ))}
 
-      {/* Cell actions edit & delete */}
+      {/* Cell actions download, edit & delete */}
       {Boolean(userAccess !== null) && (
-        <TableCell padding="checkbox">
-          {userAccess.user_m_i_update === 1 && (
-            <CustomTooltip placement="bottom" title="Edit">
-              <IconButton onClick={() => onEdit(row)}>
-                <EditOutlinedIcon fontSize="small" />
+        <TableCell padding="checkbox" align="center">
+          {loading ? (
+            <IconButton disabled>
+              <CircularProgress size={20} />
+            </IconButton>
+          ) : (
+            <CustomTooltip placement="bottom" title="Download">
+              <IconButton onClick={() => handleDownload(row)}>
+                <CloudDownloadOutlinedIcon fontSize="small" />
               </IconButton>
             </CustomTooltip>
           )}
 
-          {userAccess.user_m_i_delete === 1 && (
-            <CustomTooltip placement="bottom" title="Delete">
+          {userAccess.user_m_i_update === 1 && (
+            <CustomTooltip placement="bottom" title="Edit">
               <IconButton onClick={() => onEdit(row)}>
-                <DeleteOutlineOutlinedIcon fontSize="small" />
+                <EditOutlinedIcon fontSize="small" />
               </IconButton>
             </CustomTooltip>
           )}
@@ -81,4 +137,19 @@ Tbody.defaultProps = {
   onSelect: e => e.preventDefault()
 };
 
-export default Tbody;
+/* Redux reducer */
+function reduxDispatch(dispatch) {
+  return {
+    setReduxToast: (show, type, message) =>
+      dispatch({
+        type: reduxAction.toast,
+        value: {
+          show: show,
+          type: type,
+          message: message
+        }
+      })
+  };
+}
+
+export default connect(null, reduxDispatch)(Tbody);

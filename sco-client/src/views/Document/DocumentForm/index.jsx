@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import {
@@ -23,7 +22,8 @@ import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
-import { apiAddDocument } from 'src/services/document';
+import { apiAddDocument, apiUpdateDocument } from 'src/services/document';
+import Loader from 'src/components/Loader';
 
 /* Style ItemGroupImport */
 const useStyles = makeStyles(theme => ({
@@ -43,43 +43,47 @@ const useStyles = makeStyles(theme => ({
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: 5,
     cursor: 'pointer',
-    padding: theme.spacing(4),
-    '&:hover': {
-      border: `1px solid ${theme.palette.type === 'dark' ? '#fff' : '#000'}`
-    }
+    padding: theme.spacing(2),
+    textAlign: 'center'
   },
   inputFileError: {
     border: `1px solid #F44336`,
     borderRadius: 5,
     cursor: 'pointer',
-    padding: theme.spacing(4)
-  },
-  iconInput: {
-    fontSize: 70
+    padding: theme.spacing(2),
+    textAlign: 'center'
   },
   image: {
     width: '100%',
-    height: '20vh',
+    height: '15vh',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'auto 100%'
+  },
+  buttonFile: {
+    textAlign: 'center',
+    marginTop: 20
   }
 }));
 
 /* Komponen utama */
-function DocumentForm(props) {
+function DocumentForm({
+  open,
+  type,
+  data,
+  onReloadTable,
+  onClose,
+  setReduxToast,
+  ...props
+}) {
   const isMounted = React.useRef(true);
-  const navigate = useNavigate();
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   /* State */
   const [loading, setLoading] = React.useState(false);
-  const [alert, setAlert] = React.useState({
-    type: 'info',
-    message: ['Form with * is required']
-  });
+  const [alert, setAlert] = React.useState({ type: '', message: [] });
 
   /* Skema validasi untuk form */
   const validationSchema = () => {
@@ -107,11 +111,18 @@ function DocumentForm(props) {
     // eslint-disable-next-line
   }, []);
 
+  /* Handle set alert */
+  React.useEffect(() => {
+    setAlert({
+      type: 'info',
+      message: ['Form with * is required']
+    });
+  }, [open, setAlert]);
+
   /* Handle close dialog */
   const handleClose = e => {
     if (!loading) {
-      setAlert({ type: 'info', message: ['Form with * is required'] });
-      props.onClose();
+      onClose();
     } else {
       e.preventDefault();
     }
@@ -120,42 +131,38 @@ function DocumentForm(props) {
   /* Handle saat form di submit */
   const handleSubmitForm = async (values, { setErrors }) => {
     setLoading(true);
+
     setAlert({
       type: 'warning',
-      message: ['Importing...', 'Do not reload or leave this page.']
+      message: ['Processing...', "Don't leave or reload this page"]
     });
 
-    let formData = new FormData();
+    const formData = new FormData();
+    formData.set('_method', Boolean(type === 'Add') ? 'POST' : 'PATCH');
     formData.set('document_file', values.document_file);
     formData.set('document_title', values.document_title);
     formData.set('document_description', values.document_description);
 
     try {
-      let res = await apiAddDocument(formData);
+      let res = Boolean(type === 'Add')
+        ? await apiAddDocument(formData)
+        : await apiUpdateDocument(data.id, formData);
 
       if (isMounted.current) {
-        console.log('success', res);
-
         setLoading(false);
+        setReduxToast(true, 'success', res.data.message);
+        onReloadTable(true);
+        handleClose();
       }
     } catch (err) {
+      console.log(err);
       if (isMounted.current) {
-        console.log('error', err);
-
         setLoading(false);
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else if (err.status === 403) {
-          navigate('/error/forbidden');
-        } else if (err.status === 404) {
-          navigate('/error/notfound');
-        } else if (err.status === 422) {
-          setErrors(err.data.errors);
-          setAlert({
-            type: 'error',
-            message: [err.data.message]
-          });
-        }
+        setErrors(err.data.errors);
+        setAlert({
+          type: 'error',
+          message: [err.data.message]
+        });
       }
     }
   };
@@ -167,21 +174,19 @@ function DocumentForm(props) {
       fullWidth
       scroll="paper"
       maxWidth="md"
-      open={props.open}
+      open={open}
     >
       <Formik
         onSubmit={handleSubmitForm}
         validationSchema={validationSchema}
         initialValues={{
           document_file: '',
-          document_title:
-            props.type === 'Edit' && props.data !== null
-              ? props.data.item_g_code
-              : '',
-          document_description:
-            props.type === 'Edit' && props.data !== null
-              ? props.data.item_g_name
-              : ''
+          document_title: Boolean(type === 'Edit' && data !== null)
+            ? data.document_title
+            : '',
+          document_description: Boolean(type === 'Edit' && data !== null)
+            ? data.document_description
+            : ''
         }}
       >
         {({
@@ -195,7 +200,7 @@ function DocumentForm(props) {
         }) => (
           <React.Fragment>
             <DialogTitle disableTypography className={classes.header}>
-              <Typography variant="h6">{`${props.type} document`}</Typography>
+              <Typography variant="h6">{`${type} document`}</Typography>
               <IconButton
                 disabled={loading}
                 className={classes.closeButton}
@@ -216,125 +221,134 @@ function DocumentForm(props) {
             </Alert>
 
             <DialogContent dividers>
-              <form
-                onSubmit={handleSubmit}
-                autoComplete="off"
-                noValidate
-                encType="multipart/form-data"
-              >
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label htmlFor="file">
-                      <input
-                        hidden
-                        type="file"
-                        name="document_file"
-                        id="file"
-                        onChange={event => {
-                          setFieldValue('document_file', event.target.files[0]);
-                        }}
-                      />
-
-                      <Box
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
-                        alignItems="center"
-                        className={
-                          Boolean(errors.document_file)
-                            ? classes.inputFileError
-                            : classes.inputFile
-                        }
-                      >
-                        <img
-                          src="/static/images/svg/add_file.svg"
-                          alt="Add File"
-                          className={classes.image}
+              <Loader show={false}>
+                <form
+                  onSubmit={handleSubmit}
+                  autoComplete="off"
+                  noValidate
+                  encType="multipart/form-data"
+                >
+                  <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                      <label htmlFor="file">
+                        <input
+                          hidden
+                          type="file"
+                          id="file"
+                          disabled={loading}
+                          name="document_file"
+                          onChange={event => {
+                            setFieldValue(
+                              'document_file',
+                              event.target.files[0]
+                            );
+                          }}
                         />
 
-                        <Typography variant="h6">
-                          {values.document_file === ''
-                            ? 'Select files'
-                            : values.document_file.name}
-                        </Typography>
-
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color="default"
-                          component="span"
-                          style={{
-                            textAlign: 'center',
-                            marginTop: 20
-                          }}
+                        <Box
+                          display="flex"
+                          flexDirection="column"
+                          justifyContent="center"
+                          alignItems="center"
+                          className={
+                            Boolean(errors.document_file)
+                              ? classes.inputFileError
+                              : classes.inputFile
+                          }
                         >
-                          {'Select files from your computer'}
-                        </Button>
-                      </Box>
-                    </label>
+                          <img
+                            src="/static/images/svg/add_file.svg"
+                            alt="Add File"
+                            className={classes.image}
+                          />
 
-                    <FormControl error={Boolean(errors.document_file)}>
-                      <FormHelperText>{errors.document_file}</FormHelperText>
-                    </FormControl>
-                  </Grid>
+                          <Typography variant="h6">
+                            {values.document_file === ''
+                              ? 'Select files'
+                              : values.document_file.name}
+                          </Typography>
 
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      required
-                      type="text"
-                      name="document_title"
-                      id="document_title"
-                      label="Documnet Title"
-                      variant="outlined"
-                      margin="dense"
-                      disabled={loading}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.document_title}
-                      error={Boolean(
-                        touched.document_title && errors.document_title
-                      )}
-                      helperText={
-                        touched.document_title && errors.document_title
-                      }
-                    />
-                  </Grid>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            color="default"
+                            component="span"
+                            className={classes.buttonFile}
+                          >
+                            {'Select files from your computer'}
+                          </Button>
+                        </Box>
+                      </label>
 
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      required
-                      multiline
-                      rows={3}
-                      type="text"
-                      name="document_description"
-                      id="document_description"
-                      label="Document Description"
-                      variant="outlined"
-                      margin="dense"
-                      disabled={loading}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.document_description}
-                      error={Boolean(
-                        touched.document_description &&
+                      <FormControl error={Boolean(errors.document_file)}>
+                        <FormHelperText>
+                          {Boolean(
+                            !Boolean(errors.document_file) && type === 'Edit'
+                          )
+                            ? "Leave the document file fields blank if you don't want to change them"
+                            : errors.document_file}
+                        </FormHelperText>
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        required
+                        type="text"
+                        name="document_title"
+                        id="document_title"
+                        label="Documnet Title"
+                        variant="outlined"
+                        margin="dense"
+                        disabled={loading}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.document_title}
+                        error={Boolean(
+                          touched.document_title && errors.document_title
+                        )}
+                        helperText={
+                          touched.document_title && errors.document_title
+                        }
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        required
+                        multiline
+                        rows={3}
+                        type="text"
+                        name="document_description"
+                        id="document_description"
+                        label="Document Description"
+                        variant="outlined"
+                        margin="dense"
+                        disabled={loading}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.document_description}
+                        error={Boolean(
+                          touched.document_description &&
+                            errors.document_description
+                        )}
+                        helperText={
+                          touched.document_description &&
                           errors.document_description
-                      )}
-                      helperText={
-                        touched.document_description &&
-                        errors.document_description
-                      }
-                    />
+                        }
+                      />
+                    </Grid>
                   </Grid>
-                </Grid>
-              </form>
+                </form>
+              </Loader>
             </DialogContent>
 
             <DialogActions>
               <BtnSubmit
                 variant="contained"
-                title={props.type === 'Add' ? 'Add' : 'Update'}
+                title={type === 'Add' ? 'Add' : 'Update'}
                 loading={loading}
                 handleCancel={handleClose}
                 handleSubmit={handleSubmit}
@@ -352,8 +366,8 @@ DocumentForm.defaultProps = {
   data: null,
   open: false,
   type: 'Add',
-  onReloadTable: e => e.preventDefault(),
-  onClose: e => e.preventDefault()
+  onReloadTable: () => {},
+  onClose: () => {}
 };
 
 /* Redux reducer */

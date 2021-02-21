@@ -1,15 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Grid } from '@material-ui/core';
 import Page from 'src/components/Page';
 import DocumentTable from './DocumentTable';
 import DocumentForm from './DocumentForm';
+import DialogDelete from 'src/components/DialogDelete';
+import { apiDeleteDocument } from 'src/services/document';
+import { reduxAction } from 'src/config/redux/state';
 
 /* Komponen utama */
 function Document(props) {
+  const isMounted = React.useRef(true);
+  const navigate = useNavigate();
+
   /* State */
   const [userAccess, setUserAccess] = React.useState(null);
   const [isReloadTable, setReloadTable] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [form, setForm] = React.useState({
     open: false,
     type: 'Add',
@@ -20,6 +28,15 @@ function Document(props) {
     data: []
   });
 
+  /* Handle jika komponen dilepas saat request api belum selesai */
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+
+    // eslint-disable-next-line
+  }, []);
+
   /* Ambil data user akses pada reduxUserLogin */
   React.useEffect(() => {
     if (props.reduxUserLogin !== null) {
@@ -28,6 +45,47 @@ function Document(props) {
       });
     }
   }, [props.reduxUserLogin]);
+
+  /* Handle delete document */
+  const handleDelete = async data => {
+    setLoading(true);
+
+    try {
+      let res = await apiDeleteDocument(dialogDelete.data);
+
+      if (isMounted.current) {
+        setReloadTable(true);
+        setLoading(false);
+        setDialogDelete({ open: false, data: [] });
+        props.setReduxToast(true, 'success', res.data.message);
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        setLoading(false);
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
+
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            props.setReduxToast(
+              true,
+              'error',
+              `(#${err.status}) ${err.data.message}`
+            );
+            break;
+        }
+      }
+    }
+  };
 
   /* Render */
   return (
@@ -76,6 +134,14 @@ function Document(props) {
           });
         }}
       />
+
+      <DialogDelete
+        title="Delete document"
+        open={dialogDelete.open}
+        onDelete={handleDelete}
+        loading={loading}
+        onClose={bool => setDialogDelete({ open: bool, data: [] })}
+      />
     </Page>
   );
 }
@@ -88,4 +154,19 @@ function reduxState(state) {
   };
 }
 
-export default connect(reduxState, null)(Document);
+/* Redux reducer */
+function reduxDispatch(dispatch) {
+  return {
+    setReduxToast: (show, type, message) =>
+      dispatch({
+        type: reduxAction.toast,
+        value: {
+          show: show,
+          type: type,
+          message: message
+        }
+      })
+  };
+}
+
+export default connect(reduxState, reduxDispatch)(Document);

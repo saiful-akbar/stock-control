@@ -124,5 +124,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     Route::group(['prefix' => 'documents'], function () {
         Route::get("/", [DocumentController::class, "index"])->middleware("access.document:read");
         Route::post("/", [DocumentController::class, "store"])->middleware("access.document:read");
+        Route::delete("/", [DocumentController::class, "delete"])->middleware("access.document:delete");
+        Route::patch("/{document}", [DocumentController::class, "update"])->middleware("access.document:update");
+        Route::get("/{document}/download", [DocumentController::class, "download"])->middleware("access.document:read");
     });
 });

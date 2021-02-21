@@ -5,10 +5,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Box
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import BtnSubmit from 'src/components/BtnSubmit';
-
 
 /**
  * Komponen utama
@@ -22,49 +22,48 @@ function DialogDelete({
   contentText,
   ...props
 }) {
-
-  /**
-   * Render komponen utama
-   */
   return (
     <Dialog
       open={open}
       onClose={() => onClose(loading)}
-      maxWidth='sm'
+      maxWidth="sm"
       fullWidth={true}
     >
       <DialogTitle>{title}</DialogTitle>
 
       <DialogContent>
         <Alert severity="error">
-          {contentText === ''
-            ? (
-              <div>
-                <p>Are you sure you want to permanently delete this data ?</p>
-                <p>All data related to this data will also be permanently deleted.</p>
-                <p>Deleted data cannot be recovered.</p>
-              </div>
+          <Box ml={3}>
+            {contentText === null ? (
+              <ul>
+                <li>Are you sure you want to permanently delete this data ?</li>
+                <li>
+                  All data related to this data will also be permanently
+                  deleted.
+                </li>
+                <li>Deleted data cannot be recovered.</li>
+              </ul>
             ) : (
               contentText
             )}
+          </Box>
         </Alert>
       </DialogContent>
 
       <DialogActions>
         <BtnSubmit
-          title='Delete'
-          color='primary'
+          title="Delete"
+          color="primary"
           loading={loading}
           handleSubmit={onDelete}
           handleCancel={() => onClose(loading)}
-          variant='contained'
-          size='small'
+          variant="contained"
+          size="small"
         />
       </DialogActions>
     </Dialog>
-  )
+  );
 }
-
 
 /**
  * Default props
@@ -73,11 +72,10 @@ DialogDelete.defaultProps = {
   open: false,
   loading: false,
   title: 'Delete',
-  contentText: '',
-  onDelete: (e) => e.preventDefault(),
-  onClose: (e) => e.preventDefault(),
+  contentText: null,
+  onDelete: () => {},
+  onClose: () => {}
 };
-
 
 /**
  * Tipe props
@@ -88,8 +86,7 @@ DialogDelete.propTypes = {
   onClose: PropTypes.func,
   loading: PropTypes.bool,
   title: PropTypes.string,
-  contentText: PropTypes.string,
+  contentText: PropTypes.string
 };
-
 
 export default DialogDelete;
