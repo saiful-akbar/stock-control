@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   },
   icon: {
     marginRight: theme.spacing(2),
-    fontSize: 20
+    fontSize: 22
   },
   title: {
     marginRight: 'auto',

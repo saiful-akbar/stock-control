@@ -20,8 +20,7 @@ const useStyles = makeStyles({
     maxHeight: '70vh'
   },
   tableCell: {
-    paddingBottom: 10,
-    paddingTop: 10
+    padding: 10
   }
 });
 

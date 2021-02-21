@@ -61,8 +61,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: '70vh'
   },
   tableCell: {
-    paddingBottom: 10,
-    paddingTop: 10
+    padding: 10
   }
 }));
 

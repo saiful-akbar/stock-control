@@ -56,8 +56,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.success.light
   },
   tableCell: {
-    paddingBottom: 10,
-    paddingTop: 10
+    padding: 10
   }
 }));
 
@@ -488,7 +487,7 @@ const MenuItemTable = props => {
                             </TableCell>
 
                             <TableCell className={classes.tableCell}>
-                              <Icon>{row.menu_i_icon}</Icon>
+                              <Icon fontSize="small">{row.menu_i_icon}</Icon>
                             </TableCell>
 
                             <TableCell className={classes.tableCell}>

@@ -8,8 +8,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 /* Style */
 const useStyles = makeStyles(theme => ({
   root: {
-    paddingBottom: 10,
-    paddingTop: 10
+    padding: 10
   }
 }));
 
@@ -46,23 +45,13 @@ function Tbody({ row, columns, userAccess, onEdit, onSelect, ...props }) {
         </TableCell>
       ))}
 
-      {Boolean(userAccess !== null) && (
+      {Boolean(userAccess !== null && userAccess.user_m_s_i_update === 1) && (
         <TableCell padding="checkbox">
-          {userAccess.user_m_s_i_update === 1 && (
-            <CustomTooltip placement="bottom" title="Edit">
-              <IconButton onClick={() => onEdit(row)}>
-                <EditOutlinedIcon fontSize="small" />
-              </IconButton>
-            </CustomTooltip>
-          )}
-
-          {/* {userAccess.user_m_s_i_delete === 1 && (
-            <CustomTooltip placement="bottom" title="Delete">
-              <IconButton onClick={() => onEdit(row)}>
-                <DeleteOutlineOutlinedIcon fontSize="small" />
-              </IconButton>
-            </CustomTooltip>
-          )} */}
+          <CustomTooltip placement="bottom" title="Edit">
+            <IconButton onClick={() => onEdit(row)}>
+              <EditOutlinedIcon fontSize="small" />
+            </IconButton>
+          </CustomTooltip>
         </TableCell>
       )}
     </TableRow>

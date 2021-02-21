@@ -17,8 +17,7 @@ import { reduxAction } from 'src/config/redux/state';
 /* Style */
 const useStyles = makeStyles(theme => ({
   root: {
-    paddingBottom: 10,
-    paddingTop: 10
+    padding: 10
   }
 }));
 

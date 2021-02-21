@@ -66,8 +66,7 @@ const useRowStyles = makeStyles(theme => ({
     }
   },
   tableCell: {
-    paddingBottom: 10,
-    paddingTop: 10
+    padding: 10
   }
 }));
 

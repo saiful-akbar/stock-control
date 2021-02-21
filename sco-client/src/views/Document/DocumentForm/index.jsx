@@ -44,21 +44,22 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 5,
     cursor: 'pointer',
     padding: theme.spacing(2),
-    textAlign: 'center'
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
   },
   inputFileError: {
     border: `1px solid #F44336`,
     borderRadius: 5,
     cursor: 'pointer',
     padding: theme.spacing(2),
-    textAlign: 'center'
+    [theme.breakpoints.down('xs')]: {
+      textAlign: 'center'
+    }
   },
   image: {
-    width: '100%',
-    height: '15vh',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'auto 100%'
+    width: theme.spacing(15),
+    height: theme.spacing(15)
   },
   buttonFile: {
     textAlign: 'center',
@@ -155,7 +156,6 @@ function DocumentForm({
         handleClose();
       }
     } catch (err) {
-      console.log(err);
       if (isMounted.current) {
         setLoading(false);
         setErrors(err.data.errors);
@@ -244,39 +244,46 @@ function DocumentForm({
                             );
                           }}
                         />
-
                         <Box
-                          display="flex"
-                          flexDirection="column"
-                          justifyContent="center"
-                          alignItems="center"
                           className={
                             Boolean(errors.document_file)
                               ? classes.inputFileError
                               : classes.inputFile
                           }
                         >
-                          <img
-                            src="/static/images/svg/add_file.svg"
-                            alt="Add File"
-                            className={classes.image}
-                          />
-
-                          <Typography variant="h6">
-                            {values.document_file === ''
-                              ? 'Select files'
-                              : values.document_file.name}
-                          </Typography>
-
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="default"
-                            component="span"
-                            className={classes.buttonFile}
+                          <Grid
+                            spacing={3}
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center"
                           >
-                            {'Select files from your computer'}
-                          </Button>
+                            <Grid item>
+                              <img
+                                src="/static/images/svg/add_file.svg"
+                                alt="Add File"
+                                className={classes.image}
+                              />
+                            </Grid>
+
+                            <Grid item zeroMinWidth>
+                              <Typography variant="h6" noWrap>
+                                {values.document_file === ''
+                                  ? 'Select files'
+                                  : values.document_file.name}
+                              </Typography>
+
+                              <Button
+                                size="small"
+                                variant="outlined"
+                                color="default"
+                                component="span"
+                                className={classes.buttonFile}
+                              >
+                                {'Select files from your computer'}
+                              </Button>
+                            </Grid>
+                          </Grid>
                         </Box>
                       </label>
 

@@ -248,7 +248,7 @@ function ItemGroupImport({
                   className={classes.image}
                 />
 
-                <Typography variant="h5">
+                <Typography variant="h5" noWrap>
                   {value === '' ? 'Select files' : value.name}
                 </Typography>
 

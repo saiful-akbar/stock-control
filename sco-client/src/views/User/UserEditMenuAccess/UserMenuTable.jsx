@@ -108,6 +108,9 @@ const useStylesUserMenuTable = makeStyles({
   },
   tableAction: {
     display: 'none'
+  },
+  tableCell: {
+    padding: 10
   }
 });
 
@@ -242,6 +245,7 @@ function UserMenuTable({
 
                   {columns.map((column, key) => (
                     <TableCell
+                      className={classes.tableCell}
                       padding="checkbox"
                       key={key}
                       align={column.align}
@@ -256,7 +260,9 @@ function UserMenuTable({
                 {rows.length === 0 ? (
                   <TableRow hover>
                     <TableCell
+                      padding="checkbox"
                       align="center"
+                      className={classes.tableCell}
                       colSpan={action ? columns.length + 2 : columns.length}
                     >
                       {loading ? 'Loading...' : 'No data in table'}
@@ -292,6 +298,7 @@ function UserMenuTable({
                           {columns.map((column, colKey) => (
                             <TableCell
                               padding="checkbox"
+                              className={classes.tableCell}
                               key={colKey}
                               align={column.align}
                             >
