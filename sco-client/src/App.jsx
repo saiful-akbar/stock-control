@@ -31,13 +31,14 @@ const App = props => {
       setReduxTheme(prefersDarkMode ? 'dark' : 'light');
     }
 
+    const body = document.querySelector('body');
     if (theme === 'dark') {
-      document.querySelector('body').classList.add('bg-dark');
+      body.classList.add('dark');
     } else {
       if (theme !== 'light' && prefersDarkMode) {
-        document.querySelector('body').classList.add('bg-dark');
+        body.classList.add('dark');
       } else {
-        document.querySelector('body').classList.remove('bg-dark');
+        body.classList.remove('dark');
       }
     }
 

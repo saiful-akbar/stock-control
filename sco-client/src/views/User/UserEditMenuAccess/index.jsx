@@ -1,25 +1,9 @@
-import React, {
-  useEffect,
-  useState
-} from 'react';
-import {
-  useLocation,
-  useNavigate,
-  useParams
-} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Page from 'src/components/Page';
-import {
-  Tabs,
-  Tab,
-  Divider,
-  Fab,
-  Grid,
-} from '@material-ui/core';
-import {
-  useTheme,
-  makeStyles
-} from '@material-ui/core/styles';
+import { Tabs, Tab, Divider, Fab, Grid } from '@material-ui/core';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import CustomTooltip from 'src/components/CustomTooltip';
 import UserMenuItems from './UserMenuItems';
@@ -27,28 +11,27 @@ import UserMenuSubItems from './UserMenuSubItems';
 import UserProfile from './UserProfile';
 import queryString from 'query-string';
 
-
 /**
  * Style
  */
 const useStyle = makeStyles(theme => ({
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
     zIndex: theme.zIndex.drawer + 1
-  },
+  }
 }));
 
 /**
  * Component Tabpanel
- * @param {props} props 
+ * @param {props} props
  */
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
     <div
-      role='tabpanel'
+      role="tabpanel"
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
@@ -59,32 +42,29 @@ function TabPanel(props) {
   );
 }
 
-
 /**
  * default value component TabPanel
  */
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired
 };
-
 
 /**
  * props pada component Tab
- * @param {index tabs} index 
+ * @param {index tabs} index
  */
 function a11yProps(index) {
   return {
     id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`
   };
 }
 
-
 /**
  * Komponen utama
- * @param {*} props 
+ * @param {*} props
  */
 function UserEditMenuAccess(props) {
   const classes = useStyle();
@@ -98,7 +78,6 @@ function UserEditMenuAccess(props) {
   const [value, setValue] = useState(0);
   const [profile, setProfile] = useState(null);
 
-
   /**
    * Cek apakah state bernilai null atau tidak & state.update bernilai 1 atau tidak
    * Jika tidak arahkan ke halaman 404
@@ -107,10 +86,9 @@ function UserEditMenuAccess(props) {
     if (state === null || state.update !== 1 || state.profile === null) {
       navigate('/404');
     } else {
-      setProfile(state.profile)
+      setProfile(state.profile);
     }
   }, [state, navigate]);
-
 
   /**
    * Menangkap nilai query sting "tab" untuk menemtukan tab yang aktif
@@ -120,11 +98,10 @@ function UserEditMenuAccess(props) {
     setValue(parsed.tab === 'menuSubItems' ? 1 : 0);
   }, [search]);
 
-
   /**
    * Fungsi untuk menghandle Tab
-   * @param {obj} event 
-   * @param {int} newValue 
+   * @param {obj} event
+   * @param {int} newValue
    */
   const handleChangeTabs = (event, newValue) => {
     setValue(newValue);
@@ -132,16 +109,11 @@ function UserEditMenuAccess(props) {
     navigate(`/user/${id}/menus?tab=${tab}`, { state: state });
   };
 
-
   /**
    * Render komponen utama
    */
   return (
-    <Page
-      title='User Access Menu'
-      pageTitle='User Access Menu'
-      pb={true}
-    >
+    <Page title="User Access Menu" pageTitle="User Access Menu" pb={true}>
       <Grid
         container
         direction="row"
@@ -157,35 +129,32 @@ function UserEditMenuAccess(props) {
           <Tabs
             value={value}
             onChange={handleChangeTabs}
-            variant='fullWidth'
-            indicatorColor='primary'
-            textColor='primary'
-            aria-label='Access the user menu'
+            variant="fullWidth"
+            indicatorColor="primary"
+            textColor="primary"
+            aria-label="Access the user menu"
           >
-            <Tab label='Menus' {...a11yProps(0)} />
-            <Tab label='Sub Menus' {...a11yProps(1)} />
+            <Tab label="Menus" {...a11yProps(0)} />
+            <Tab label="Sub Menus" {...a11yProps(1)} />
           </Tabs>
           <Divider />
         </Grid>
 
         <Grid item xs={12}>
-          <TabPanel value={value} index={0} dir={theme.direction} >
+          <TabPanel value={value} index={0} dir={theme.direction}>
             <UserMenuItems userId={id} />
           </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction} >
+          <TabPanel value={value} index={1} dir={theme.direction}>
             <UserMenuSubItems userId={id} />
           </TabPanel>
         </Grid>
       </Grid>
 
       <div className={classes.fab}>
-        <CustomTooltip
-          title='Return to the user page'
-          placement='left'
-        >
+        <CustomTooltip title="Return to the user page" placement="left">
           <Fab
-            color='secondary'
-            arial-label='Return to the user page'
+            color="secondary"
+            arial-label="Return to the user page"
             disabled={false}
             onClick={() => navigate('/user', { state: state })}
           >
@@ -193,9 +162,8 @@ function UserEditMenuAccess(props) {
           </Fab>
         </CustomTooltip>
       </div>
-    </Page >
-  )
+    </Page>
+  );
 }
-
 
 export default UserEditMenuAccess;

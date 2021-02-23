@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1)
   },
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
     zIndex: theme.zIndex.drawer + 1
@@ -259,21 +259,6 @@ const UserCreate = props => {
 
   return (
     <Page title="User Create" pageTitle="Create New User" pb={true}>
-      <div className={classes.fab}>
-        <CustomTooltip title="Return to the user page" placement="left">
-          <Fab
-            color="secondary"
-            arial-label="Return to the user page"
-            disabled={false}
-            onClick={() => {
-              navigate('/user', { state: state });
-            }}
-          >
-            <RotateLeftIcon />
-          </Fab>
-        </CustomTooltip>
-      </div>
-
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Stepper
@@ -296,6 +281,21 @@ const UserCreate = props => {
           </Card>
         </Grid>
       </Grid>
+
+      <div className={classes.fab}>
+        <CustomTooltip title="Return to the user page" placement="left">
+          <Fab
+            color="secondary"
+            arial-label="Return to the user page"
+            disabled={false}
+            onClick={() => {
+              navigate('/user', { state: state });
+            }}
+          >
+            <RotateLeftIcon />
+          </Fab>
+        </CustomTooltip>
+      </div>
     </Page>
   );
 };

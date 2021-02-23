@@ -37,25 +37,27 @@ function Fallback() {
 const drawerWidth = 256;
 const useStyles = makeStyles(theme => ({
   root: {
+    // display: 'flex',
+    // overflow: 'hidden',
     backgroundColor: theme.palette.background.dark,
-    display: 'flex',
-    height: '100%',
-    overflow: 'hidden',
+    height: '100vh',
     width: '100%'
   },
   wrapper: {
-    display: 'flex',
-    flex: '1 1 auto',
-    overflow: 'hidden',
+    // display: 'flex',
+    // flex: '1 1 auto',
+    // overflow: 'hidden',
+    height: '100%',
     paddingTop: 64,
     [theme.breakpoints.up('lg')]: {
       paddingLeft: drawerWidth
     }
   },
   contentContainer: {
-    display: 'flex',
-    flex: '1 1 auto',
-    overflow: 'hidden',
+    // display: 'flex',
+    // flex: '1 1 auto',
+    // overflow: 'hidden',
+    height: '100%',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
@@ -74,9 +76,9 @@ const useStyles = makeStyles(theme => ({
     }
   },
   content: {
-    flex: '1 1 auto',
-    height: '100%',
-    overflow: 'auto'
+    // flex: '1 1 auto',
+    // overflow: 'auto'
+    height: '100%'
   }
 }));
 

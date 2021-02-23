@@ -67,10 +67,6 @@ const DialogActions = withStyles(theme => ({
 
 // Style ItemGroupImport
 const useStyles = makeStyles(theme => ({
-  header: {
-    backgroundColor: theme.palette.background.topBar,
-    color: '#ffffff'
-  },
   image: {
     width: '100%',
     height: '30vh',
@@ -203,11 +199,7 @@ function ItemGroupImport({
       maxWidth="md"
       aria-labelledby="dialog-import-title"
     >
-      <DialogTitle
-        id="dialog-import-title"
-        onClose={handleClose}
-        className={classes.header}
-      >
+      <DialogTitle id="dialog-import-title" onClose={handleClose}>
         {'Import from excel'}
       </DialogTitle>
 

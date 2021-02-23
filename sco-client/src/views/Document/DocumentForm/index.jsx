@@ -35,9 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     margin: 0,
-    padding: theme.spacing(2),
-    backgroundColor: theme.palette.background.topBar,
-    color: '#ffffff'
+    padding: theme.spacing(2)
   },
   inputFile: {
     border: `1px solid ${theme.palette.divider}`,

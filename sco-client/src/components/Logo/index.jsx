@@ -5,7 +5,7 @@ import { Avatar } from '@material-ui/core';
 
 const useStyle = makeStyles(theme => ({
   root: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0, 1),
     width: theme.spacing(5),
     height: theme.spacing(5)
   }

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  useLocation,
-  useNavigate,
-  useParams
-} from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Page from 'src/components/Page';
 import {
   Grid,
@@ -11,11 +7,9 @@ import {
   Typography,
   AccordionDetails,
   AccordionSummary,
-  Accordion,
+  Accordion
 } from '@material-ui/core';
-import {
-  makeStyles
-} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import UserDetailProfile from './UserDetailProfile';
 import { apiGetUserDetail } from 'src/services/user';
@@ -28,21 +22,19 @@ import { Skeleton } from '@material-ui/lab';
 import UserDetailMenu from './UserDetailMenu';
 import UserSeesion from './UserSession';
 
-
 // Style
 const useStyle = makeStyles(theme => ({
   fab: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
     zIndex: theme.zIndex.drawer + 1
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
+    fontWeight: theme.typography.fontWeightRegular
+  }
 }));
-
 
 /**
  * Komponen utama
@@ -57,15 +49,13 @@ function UserDetail(props) {
   const [userData, setUserData] = React.useState(null);
   const [expanded, setExpanded] = React.useState('panel1');
 
-
   /**
    * Expanded acordion
-   * @param {string} panel 
+   * @param {string} panel
    */
-  const handleAccordionChange = (panel) => (e, isExpanded) => {
+  const handleAccordionChange = panel => (e, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
-
 
   /**
    * Cek apakah state bernilai null atau tidak & state.update bernilai 1 atau tidak
@@ -77,19 +67,17 @@ function UserDetail(props) {
     }
   }, [location.state, navigate]);
 
-
   /**
-   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai 
+   * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
    * Dan untuk menjalankan fungsi getData() untuk mengambil data user
    */
-  React.useEffect((props) => {
+  React.useEffect(props => {
     userData === null && getData();
     return () => {
       isMounted.current = false;
-    }
+    };
     // eslint-disable-next-line
   }, []);
-
 
   /**
    * Fungsi untuk mengambil data user dari api
@@ -102,30 +90,29 @@ function UserDetail(props) {
           user: res.data.user,
           profile: res.data.profile,
           menus: res.data.menus,
-          logs: res.data.logs,
+          logs: res.data.logs
         });
       }
     } catch (err) {
       if (isMounted.current) {
         if (err.status === 401) {
-          window.location.href = '/logout'
+          window.location.href = '/logout';
         } else {
-          props.setReduxToast(true, 'error', `(#${err.status}) ${err.data.message}`);
+          props.setReduxToast(
+            true,
+            'error',
+            `(#${err.status}) ${err.data.message}`
+          );
         }
       }
     }
-  }
-
+  };
 
   /**
    * Render Komponen utama
    */
   return (
-    <Page
-      pb
-      title='Detailed User Info'
-      pageTitle='Detailed User Info'
-    >
+    <Page pb title="Detailed User Info" pageTitle="Detailed User Info">
       <Grid
         spacing={3}
         container
@@ -134,57 +121,73 @@ function UserDetail(props) {
         alignItems="flex-start"
       >
         <Grid item lg={8} md={10} xs={12}>
-          <Accordion expanded={expanded === 'panel1'} onChange={handleAccordionChange('panel1')}>
+          <Accordion
+            expanded={expanded === 'panel1'}
+            onChange={handleAccordionChange('panel1')}
+          >
             <AccordionSummary
               expandIcon={
-                userData === null
-                  ? <Skeleton variant='circle' width={20} height={20} />
-                  : <ExpandMoreIcon />
+                userData === null ? (
+                  <Skeleton variant="circle" width={20} height={20} />
+                ) : (
+                  <ExpandMoreIcon />
+                )
               }
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              {userData === null
-                ? (
-                  <Skeleton variant='text' >
-                    <Typography className={classes.heading}>{'Account Info'}</Typography>
-                  </Skeleton>
-                )
-                : (
-                  <Typography className={classes.heading}>{'Account Info'}</Typography>
-                )
-              }
+              {userData === null ? (
+                <Skeleton variant="text">
+                  <Typography className={classes.heading}>
+                    {'Account Info'}
+                  </Typography>
+                </Skeleton>
+              ) : (
+                <Typography className={classes.heading}>
+                  {'Account Info'}
+                </Typography>
+              )}
             </AccordionSummary>
 
             <AccordionDetails>
-              <UserDetailAccount data={userData === null ? null : userData.user} />
+              <UserDetailAccount
+                data={userData === null ? null : userData.user}
+              />
             </AccordionDetails>
           </Accordion>
 
-          <Accordion expanded={expanded === 'panel2'} onChange={handleAccordionChange('panel2')}>
+          <Accordion
+            expanded={expanded === 'panel2'}
+            onChange={handleAccordionChange('panel2')}
+          >
             <AccordionSummary
               expandIcon={
-                userData === null
-                  ? <Skeleton variant='circle' width={20} height={20} />
-                  : <ExpandMoreIcon />
+                userData === null ? (
+                  <Skeleton variant="circle" width={20} height={20} />
+                ) : (
+                  <ExpandMoreIcon />
+                )
               }
               aria-controls="panel2a-content"
               id="panel2a-header"
             >
-              {userData === null
-                ? (
-                  <Skeleton variant='text' >
-                    <Typography className={classes.heading}>{'Profile Info'}</Typography>
-                  </Skeleton>
-                )
-                : (
-                  <Typography className={classes.heading}>{'Profile Info'}</Typography>
-                )
-              }
+              {userData === null ? (
+                <Skeleton variant="text">
+                  <Typography className={classes.heading}>
+                    {'Profile Info'}
+                  </Typography>
+                </Skeleton>
+              ) : (
+                <Typography className={classes.heading}>
+                  {'Profile Info'}
+                </Typography>
+              )}
             </AccordionSummary>
 
             <AccordionDetails>
-              <UserDetailProfile data={userData === null ? null : userData.profile} />
+              <UserDetailProfile
+                data={userData === null ? null : userData.profile}
+              />
             </AccordionDetails>
           </Accordion>
         </Grid>
@@ -199,13 +202,10 @@ function UserDetail(props) {
       </Grid>
 
       <div className={classes.fab}>
-        <CustomTooltip
-          title='Return to the user page'
-          placement='left'
-        >
+        <CustomTooltip title="Return to the user page" placement="left">
           <Fab
-            color='secondary'
-            arial-label='Return to the user page'
+            color="secondary"
+            arial-label="Return to the user page"
             disabled={false}
             onClick={() => {
               navigate('/user', { state: location.state });
@@ -219,27 +219,22 @@ function UserDetail(props) {
   );
 }
 
-
 /**
  * Redux dispatch
- * @param {obj} dispatch 
+ * @param {obj} dispatch
  */
 function reduxDispatch(dispatch) {
   return {
-    setReduxToast: (
-      show = false,
-      type = 'success',
-      message = ''
-    ) => dispatch({
-      type: reduxAction.toast,
-      value: {
-        show: show,
-        type: type,
-        message: message
-      }
-    }),
-  }
+    setReduxToast: (show = false, type = 'success', message = '') =>
+      dispatch({
+        type: reduxAction.toast,
+        value: {
+          show: show,
+          type: type,
+          message: message
+        }
+      })
+  };
 }
-
 
 export default connect(null, reduxDispatch)(UserDetail);

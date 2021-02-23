@@ -7,14 +7,13 @@ const themeLight = createMuiTheme({
     background: {
       default: colors.common.white,
       paper: colors.common.white,
-      topBar: '#3E446B',
-      dark: '#F4F5FD'
+      dark: '#F2F3F5'
     },
     primary: {
-      main: '#5383FF'
+      main: '#7289DA'
     },
     secondary: {
-      main: '#3E446B'
+      main: '#3ea575'
     },
     info: {
       main: '#2196F3'
@@ -40,9 +39,8 @@ const themeDark = createMuiTheme({
   palette: {
     type: 'dark',
     background: {
-      default: '#1C2025',
+      default: '#282C34',
       paper: '#282C34',
-      topBar: '#282C34',
       dark: '#1C2025'
     },
     primary: {

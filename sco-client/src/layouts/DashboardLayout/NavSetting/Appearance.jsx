@@ -65,13 +65,14 @@ const Appearance = ({ setReduxTheme, reduxTheme, ...props }) => {
     cookie.set('theme', newTheme, { path: '/', expires: date });
 
     // ubah class pada tag body
+    const body = document.querySelector('body');
     if (newTheme === 'dark') {
-      document.querySelector('body').classList.add('bg-dark');
+      body.classList.add('dark');
     } else {
       if (newTheme === 'system' && prefersDarkMode) {
-        document.querySelector('body').classList.add('bg-dark');
+        body.classList.add('dark');
       } else {
-        document.querySelector('body').classList.remove('bg-dark');
+        body.classList.remove('dark');
       }
     }
   };

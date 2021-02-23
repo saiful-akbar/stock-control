@@ -1,0 +1,151 @@
+table thead tr th,
+table tbody tr td {
+  white-space: nowrap !important;
+  font-size: 13px !important;
+}
+
+/* 
+ * Scrollbar
+ */
+
+/* scrollbar light */
+body::-webkit-scrollbar {
+  background-color: #e3e5e8;
+  width: 15px;
+  height: 15px;
+}
+
+body ::-webkit-scrollbar {
+  background-color: #f2f3f5;
+  width: 15px;
+  height: 15px;
+}
+
+body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #cecece;
+  min-height: 24px;
+  border: 4px solid #e3e5e8;
+}
+
+body ::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #cecece;
+  min-height: 24px;
+  border: 5px solid #f2f3f5;
+}
+
+body::-webkit-scrollbar-thumb:hover,
+body ::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+body::-webkit-scrollbar-corner,
+body ::-webkit-scrollbar-corner {
+  background-color: #cecece;
+}
+
+/* scrollbar dark */
+body.dark::-webkit-scrollbar {
+  background-color: #393d44;
+  width: 15px;
+  height: 15px;
+}
+
+body.dark ::-webkit-scrollbar {
+  background-color: #1c2025;
+  width: 15px;
+  height: 15px;
+}
+
+body.dark::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #5b5b5b;
+  min-height: 24px;
+  border: 4px solid #393d44;
+}
+
+body.dark ::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #5b5b5b;
+  min-height: 24px;
+  border: 5px solid #1c2025;
+}
+
+body.dark::-webkit-scrollbar-thumb:hover,
+body.dark ::-webkit-scrollbar-thumb:hover {
+  background: #8b8b8b;
+}
+
+body.dark::-webkit-scrollbar-corner,
+body.dark ::-webkit-scrollbar-corner {
+  background-color: #5b5b5b;
+}
+
+/**
+ * End scrollbar
+ */
+
+/*
+ * Preloader
+ */
+#preloader {
+  background-color: #f2f3f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+@keyframes preloader {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#preloader div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  margin: 8px;
+  border-radius: 50%;
+  animation: preloader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border: 6px solid #7289da;
+  border-color: #7289da transparent transparent transparent;
+}
+
+#preloader div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+#preloader div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+#preloader div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+.loader-dark {
+  background-color: #1c2025 !important;
+}
+
+.loader-dark div {
+  border: 6px solid #8a85ff !important;
+  border-color: #8a85ff transparent transparent transparent !important;
+}
+
+/*
+ * End preloader
+ */
