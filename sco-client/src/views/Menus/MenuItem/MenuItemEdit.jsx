@@ -128,7 +128,6 @@ const MenuItemEdit = props => {
         scroll="paper"
         fullScreen={fullScreen}
         open={props.open}
-        onClose={handleCloseDialog}
       >
         <Formik
           initialValues={{

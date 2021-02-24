@@ -1,29 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  CircularProgress,
-  Box,
-} from '@material-ui/core';
+import { Button, CircularProgress, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
 
 /**
  * Style
  */
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   buttonProgress: {
     marginRight: 10
   },
   btnCancel: {
     marginRight: 10
-  },
+  }
 }));
-
 
 /**
  * Komponen utama
- * @param {*} param0 
+ * @param {*} param0
  */
 const BtnSubmit = ({
   title,
@@ -39,24 +33,18 @@ const BtnSubmit = ({
 }) => {
   const classes = useStyles();
 
-
   return (
-    <Box
-      display='flex'
-      justifyContent='center'
-      alignItems='center'
-    >
+    <Box display="flex" justifyContent="center" alignItems="center">
       {loading && (
         <CircularProgress size={22} className={classes.buttonProgress} />
       )}
-
 
       {!singleButton && (
         <Button
           onClick={handleCancel}
           color={color}
           size={size}
-          disabled={Boolean(disabled || loading)}
+          disabled={loading}
           className={classes.btnCancel}
         >
           {titleCancel}
@@ -64,7 +52,7 @@ const BtnSubmit = ({
       )}
 
       <Button
-        type='submit'
+        type="submit"
         onClick={handleSubmit}
         size={size}
         color={color}
@@ -74,7 +62,7 @@ const BtnSubmit = ({
         {title}
       </Button>
     </Box>
-  )
+  );
 };
 
 /**
@@ -89,9 +77,8 @@ BtnSubmit.defaultProps = {
   disabled: false,
   singleButton: false,
   handleCancel: () => null,
-  handleSubmit: () => null,
+  handleSubmit: () => null
 };
-
 
 BtnSubmit.propsTypes = {
   title: PropTypes.string,
@@ -102,7 +89,7 @@ BtnSubmit.propsTypes = {
   disabled: PropTypes.bool,
   singleButton: PropTypes.bool,
   handleCancel: PropTypes.func,
-  handleSubmit: PropTypes.func,
-}
+  handleSubmit: PropTypes.func
+};
 
 export default BtnSubmit;

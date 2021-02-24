@@ -157,7 +157,6 @@ const MenuItemCreate = props => {
         maxWidth="md"
         fullScreen={fullScreen}
         open={props.open}
-        onClose={handleCloseDialog}
       >
         <DialogTitle disableTypography className={classes.header}>
           <Typography variant="h6">{'Create a new menu'}</Typography>

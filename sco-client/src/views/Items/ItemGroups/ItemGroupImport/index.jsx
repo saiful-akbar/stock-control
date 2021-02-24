@@ -15,6 +15,7 @@ import { Alert } from '@material-ui/lab';
 import Loader from 'src/components/Loader';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { apiImportItemGroup } from 'src/services/itemGroups';
+import BtnSubmit from 'src/components/BtnSubmit';
 
 // Style DialogTitle
 const styles = theme => ({
@@ -184,7 +185,8 @@ function ItemGroupImport({
           setLoading(false);
           setAlert({
             type: 'error',
-            message: err.status === 422 ? err.data.errors : [err.data.message]
+            message:
+              err.status === 422 ? err.data.errors.file : [err.data.message]
           });
         }
       });
@@ -195,7 +197,6 @@ function ItemGroupImport({
       fullWidth
       fullScreen={fullScreen}
       open={open}
-      onClose={handleClose}
       maxWidth="md"
       aria-labelledby="dialog-import-title"
     >
@@ -263,14 +264,14 @@ function ItemGroupImport({
       </DialogContent>
 
       <DialogActions>
-        <Button
+        <BtnSubmit
           variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={Boolean(value === '' || loading)}
-        >
-          {loading ? 'importing...' : 'Import now'}
-        </Button>
+          title="Import now"
+          loading={loading}
+          disabled={Boolean(loading || value === '')}
+          handleCancel={handleClose}
+          handleSubmit={handleSubmit}
+        />
       </DialogActions>
     </Dialog>
   );

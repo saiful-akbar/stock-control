@@ -16,8 +16,8 @@ import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import CustomTooltip from 'src/components/CustomTooltip';
 import Clock from 'src/components/Clock';
 import Logo from 'src/components/Logo';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import { useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,8 +30,6 @@ const useStyles = makeStyles(theme => ({
     height: 60
   },
   clock: {
-    // color: '#fff',
-    // border: '1px solid #999999',
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1)
   },
@@ -46,6 +44,7 @@ const useStyles = makeStyles(theme => ({
 
 /* Elevation scroll */
 function ElevationScroll(props) {
+  const theme = useTheme();
   const { children, window } = props;
   const trigger = useScrollTrigger({
     disableHysteresis: true,
@@ -54,7 +53,7 @@ function ElevationScroll(props) {
   });
 
   return React.cloneElement(children, {
-    elevation: trigger ? 4 : 0
+    elevation: trigger ? (Boolean(theme.palette.type === 'light') ? 5 : 4) : 0
   });
 }
 
@@ -77,11 +76,9 @@ const TopBar = ({
 
   return (
     <React.Fragment>
-      <CssBaseline />
       <ElevationScroll {...rest}>
-        <AppBar className={clsx(classes.root, className)} elevation={0}>
+        <AppBar className={clsx(classes.root, className)}>
           <Toolbar>
-            {/* Toogle menu */}
             <Hidden mdDown>
               <CustomTooltip
                 title={openDesktopNav ? 'Close menu' : 'Open menu'}
@@ -100,16 +97,13 @@ const TopBar = ({
                 </IconButton>
               </CustomTooltip>
             </Hidden>
-            {/* End toggle menu */}
 
-            {/* Logo */}
             <RouterLink to="/">
               <Logo />
             </RouterLink>
 
             <Box flexGrow={1} />
 
-            {/* Clock */}
             <Hidden xsDown>
               <Clock className={classes.clock} />
             </Hidden>

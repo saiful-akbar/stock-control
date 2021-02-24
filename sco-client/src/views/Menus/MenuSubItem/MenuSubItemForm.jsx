@@ -137,7 +137,6 @@ const MenuSubItemForm = props => {
         maxWidth="md"
         scroll="paper"
         open={props.open}
-        onClose={handleCloseDialog}
       >
         <Formik
           initialValues={{

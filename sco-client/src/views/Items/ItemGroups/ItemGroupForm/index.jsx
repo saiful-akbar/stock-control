@@ -139,7 +139,6 @@ function ItemGroupForm(props) {
       scroll="paper"
       maxWidth="md"
       open={props.open}
-      onClose={handleClose}
     >
       <Formik
         onSubmit={handleSubmitForm}

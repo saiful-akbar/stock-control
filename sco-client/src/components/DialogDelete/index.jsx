@@ -5,14 +5,30 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Box
+  Box,
+  Typography,
+  IconButton
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import BtnSubmit from 'src/components/BtnSubmit';
+import CloseIcon from '@material-ui/icons/Close';
+import { makeStyles } from '@material-ui/styles';
 
-/**
- * Komponen utama
- */
+/* Style */
+const useStyles = makeStyles(theme => ({
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500]
+  },
+  header: {
+    margin: 0,
+    padding: theme.spacing(2)
+  }
+}));
+
+/* Komponen utama */
 function DialogDelete({
   open,
   onDelete,
@@ -22,6 +38,8 @@ function DialogDelete({
   contentText,
   ...props
 }) {
+  const classes = useStyles();
+
   return (
     <Dialog
       open={open}
@@ -29,7 +47,16 @@ function DialogDelete({
       maxWidth="sm"
       fullWidth={true}
     >
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle disableTypography className={classes.header}>
+        <Typography variant="h6">{title}</Typography>
+        <IconButton
+          disabled={loading}
+          className={classes.closeButton}
+          onClick={() => onClose(loading)}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
       <DialogContent>
         <Alert severity="error">
