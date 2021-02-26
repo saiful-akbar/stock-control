@@ -1,67 +1,65 @@
-import {
-  api,
-  cache,
-} from './api';
-import {
-  reduxAction
-} from 'src/config/redux/state';
+import { api, cache } from './api';
+import { reduxAction } from 'src/config/redux/state';
 import csrf from './csrf';
-
 
 /**
  * Fungsi untuk login user
- * @param {username & password} data 
+ * @param {username & password} data
  */
-export const login = (data) => (dispatch) => {
+export const login = data => dispatch => {
   return new Promise((resolve, reject) => {
-    csrf().then(() => {
-      api({
-        method: 'POST',
-        url: '/login',
-        data: data,
-      }).then((res) => {
-        resolve(res);
-        dispatch({
-          type: reduxAction.userLogin,
-          value: res.data
-        });
-      }).catch((err) => {
-        reject(err.response);
+    csrf()
+      .then(() => {
+        api({
+          method: 'POST',
+          url: '/login',
+          data: data
+        })
+          .then(res => {
+            resolve(res);
+            dispatch({
+              type: reduxAction.userLogin,
+              value: res.data
+            });
+          })
+          .catch(err => {
+            reject(err.response);
+          });
+      })
+      .catch(csrfErr => {
+        reject(csrfErr.response);
       });
-    }).catch((csrfErr) => {
-      reject(csrfErr.response);
-    })
   });
 };
-
 
 /**
  * ambil data user yang sedang login
  */
-export const userLogin = () => (dispatch) => {
+export const userLogin = () => dispatch => {
   return new Promise((resolve, reject) => {
     csrf().then(() => {
       api({
         method: 'GET',
         url: '/login/user',
-        adapter: cache.adapter,
-      }).then(res => {
-        resolve(res);
-        dispatch({
-          type: reduxAction.userLogin,
-          value: res.data
+        adapter: cache.adapter
+      })
+        .then(res => {
+          resolve(res);
+          dispatch({
+            type: reduxAction.userLogin,
+            value: res.data
+          });
+          dispatch({
+            type: reduxAction.loading,
+            value: false
+          });
+        })
+        .catch(err => {
+          reject(err.response);
         });
-        dispatch({
-          type: reduxAction.loading,
-          value: false
-        });
-      }).catch((err) => {
-        reject(err.response);
-      });
     });
   });
 };
-
 
 /**
  * logout
@@ -70,11 +68,13 @@ export const logout = () => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: '/logout/',
-    }).then((res) => {
-      resolve(res);
-    }).catch((err) => {
-      reject(err.response);
-    });
+      url: '/logout/'
+    })
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err.response);
+      });
   });
 };

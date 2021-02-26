@@ -53,53 +53,25 @@ class DatabaseSeeder extends Seeder
         return DB::table('menu_items')->insert([
             [
                 'id'              => Str::random(32),
-                'menu_i_title'    => 'Menu Management',
-                'menu_i_url'      => '/menu',
-                'menu_i_icon'     => 'list',
-                'menu_i_children' => false,
-                'created_at'      => now(),
-                'updated_at'      => now()
-            ], [
-                'id'              => Str::random(32),
-                'menu_i_title'    => 'Users',
-                'menu_i_url'      => '/user',
-                'menu_i_icon'     => 'people',
-                'menu_i_children' => false,
-                'created_at'      => now(),
-                'updated_at'      => now()
-            ], [
-                'id'              => Str::random(32),
                 'menu_i_title'    => 'Master Data',
-                'menu_i_url'      => '/master',
-                'menu_i_icon'     => 'account_balance',
-                'menu_i_children' => true,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
             [
                 'id'              => Str::random(32),
                 'menu_i_title'    => 'Incoming',
-                'menu_i_url'      => '/incoming',
-                'menu_i_icon'     => 'subdirectory_arrow_right',
-                'menu_i_children' => true,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
             [
                 'id'              => Str::random(32),
                 'menu_i_title'    => 'Outgoing',
-                'menu_i_url'      => '/outgoing',
-                'menu_i_icon'     => 'subdirectory_arrow_left',
-                'menu_i_children' => true,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
             [
                 'id'              => Str::random(32),
-                'menu_i_title'    => 'Documents',
-                'menu_i_url'      => '/documents',
-                'menu_i_icon'     => 'insert_drive_file',
-                'menu_i_children' => false,
+                'menu_i_title'    => 'Download',
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
@@ -110,67 +82,65 @@ class DatabaseSeeder extends Seeder
     public function menuSubItemData()
     {
         return DB::table('menu_sub_items')->insert([
+
+            /* sub menu master data */
             [
                 'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/master'),
+                'menu_item_id'   => $this->getMenuItem('Master Data'),
+                'menu_s_i_icon'  => 'category',
                 'menu_s_i_title' => 'Items',
-                'menu_s_i_url'   => '/master/items',
+                'menu_s_i_url'   => '/items',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
             [
                 'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/master'),
-                'menu_s_i_title' => 'Consignee',
-                'menu_s_i_url'   => '/master/consignee',
+                'menu_item_id'   => $this->getMenuItem('Master Data'),
+                'menu_s_i_icon'  => 'people',
+                'menu_s_i_title' => 'Users',
+                'menu_s_i_url'   => '/user',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
             [
                 'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/master'),
-                'menu_s_i_title' => 'Store',
-                'menu_s_i_url'   => '/master/store',
+                'menu_item_id'   => $this->getMenuItem('Master Data'),
+                'menu_s_i_icon'  => 'list',
+                'menu_s_i_title' => 'Menu Management',
+                'menu_s_i_url'   => '/menus',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
+
+            /* Sub menu incoming */
             [
                 'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/incoming'),
+                'menu_item_id'   => $this->getMenuItem('Incoming'),
+                'menu_s_i_icon'  => 'shopping_cart',
                 'menu_s_i_title' => 'Purchase',
-                'menu_s_i_url'   => '/incoming/purchase',
+                'menu_s_i_url'   => '/purchase',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
+
+            /* Sub menu outgoing */
             [
                 'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/incoming'),
-                'menu_s_i_title' => 'Return',
-                'menu_s_i_url'   => '/incoming/return',
+                'menu_item_id'   => $this->getMenuItem('Outgoing'),
+                'menu_s_i_icon'  => 'local_shipping',
+                'menu_s_i_title' => 'Deliveri Note (Surat Jalan)',
+                'menu_s_i_url'   => '/delivery-note',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
+
+            /* Sub menu document & download */
             [
                 'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/incoming'),
-                'menu_s_i_title' => 'Take In Warehouse',
-                'menu_s_i_url'   => '/incoming/takeIn',
-                'created_at'     => now(),
-                'updated_at'     => now()
-            ],
-            [
-                'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/outgoing'),
-                'menu_s_i_title' => 'Take Out Warehouse',
-                'menu_s_i_url'   => '/outgoing/takeout',
-                'created_at'     => now(),
-                'updated_at'     => now()
-            ],
-            [
-                'id'             => Str::random(32),
-                'menu_item_id'   => $this->getMenuItem('/outgoing'),
-                'menu_s_i_title' => 'Delivery Note (Surat Jalan)',
-                'menu_s_i_url'   => '/outgoing/delivery-note',
+                'menu_item_id'   => $this->getMenuItem('Download'),
+                'menu_s_i_icon'  => 'folder',
+                'menu_s_i_title' => 'Documents',
+                'menu_s_i_url'   => '/documents',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],
@@ -184,66 +154,32 @@ class DatabaseSeeder extends Seeder
             [
                 'id'              => Str::random(32),
                 'user_id'         => $this->getUser('admin'),
-                'menu_item_id'    => $this->getMenuItem('/user'),
-                'user_m_i_create' => true,
+                'menu_item_id'    => $this->getMenuItem('Master Data'),
                 'user_m_i_read'   => true,
-                'user_m_i_update' => true,
-                'user_m_i_delete' => true,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
             [
                 'id'              => Str::random(32),
                 'user_id'         => $this->getUser('admin'),
-                'menu_item_id'    => $this->getMenuItem('/menu'),
-                'user_m_i_create' => true,
+                'menu_item_id'    => $this->getMenuItem('Incoming'),
                 'user_m_i_read'   => true,
-                'user_m_i_update' => true,
-                'user_m_i_delete' => true,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
             [
                 'id'              => Str::random(32),
                 'user_id'         => $this->getUser('admin'),
-                'menu_item_id'    => $this->getMenuItem('/outgoing'),
-                'user_m_i_create' => true,
+                'menu_item_id'    => $this->getMenuItem('Outgoing'),
                 'user_m_i_read'   => true,
-                'user_m_i_update' => true,
-                'user_m_i_delete' => true,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
             [
                 'id'              => Str::random(32),
                 'user_id'         => $this->getUser('admin'),
-                'menu_item_id'    => $this->getMenuItem('/incoming'),
-                'user_m_i_create' => true,
+                'menu_item_id'    => $this->getMenuItem('Download'),
                 'user_m_i_read'   => true,
-                'user_m_i_update' => true,
-                'user_m_i_delete' => true,
-                'created_at'      => now(),
-                'updated_at'      => now()
-            ],
-            [
-                'id'              => Str::random(32),
-                'user_id'         => $this->getUser('admin'),
-                'menu_item_id'    => $this->getMenuItem('/master'),
-                'user_m_i_create' => true,
-                'user_m_i_read'   => true,
-                'user_m_i_update' => true,
-                'user_m_i_delete' => true,
-                'created_at'      => now(),
-                'updated_at'      => now()
-            ],
-            [
-                'id'              => Str::random(32),
-                'user_id'         => $this->getUser('admin'),
-                'menu_item_id'    => $this->getMenuItem('/documents'),
-                'user_m_i_create' => true,
-                'user_m_i_read'   => true,
-                'user_m_i_update' => true,
-                'user_m_i_delete' => true,
                 'created_at'      => now(),
                 'updated_at'      => now()
             ],
@@ -257,7 +193,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/incoming/purchase'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/items'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,
@@ -268,7 +204,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/incoming/return'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/user'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,
@@ -279,7 +215,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/incoming/takeIn'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/menus'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,
@@ -290,7 +226,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/master/store'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/purchase'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,
@@ -301,7 +237,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/master/consignee'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/delivery-note'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,
@@ -312,29 +248,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/master/items'),
-                'user_m_s_i_create' => true,
-                'user_m_s_i_read'   => true,
-                'user_m_s_i_update' => true,
-                'user_m_s_i_delete' => true,
-                'created_at'        => now(),
-                'updated_at'        => now()
-            ],
-            [
-                'id'                => Str::random(32),
-                'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/outgoing/takeout'),
-                'user_m_s_i_create' => true,
-                'user_m_s_i_read'   => true,
-                'user_m_s_i_update' => true,
-                'user_m_s_i_delete' => true,
-                'created_at'        => now(),
-                'updated_at'        => now()
-            ],
-            [
-                'id'                => Str::random(32),
-                'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/outgoing/delivery-note'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/documents'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,
@@ -355,11 +269,11 @@ class DatabaseSeeder extends Seeder
         return $user->id;
     }
 
-    private function getMenuItem($url)
+    private function getMenuItem($title)
     {
         $mi = DB::table('menu_items')
             ->select('id')
-            ->where('menu_i_url', $url)
+            ->where('menu_i_title', $title)
             ->first();
 
         return $mi->id;

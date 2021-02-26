@@ -15,8 +15,5 @@ class UserMenuItem extends Model
         'user_id',
         'menu_item_id',
         'user_m_i_read',
-        'user_m_i_create',
-        'user_m_i_update',
-        'user_m_i_delete',
     ];
 }

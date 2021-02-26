@@ -54,33 +54,51 @@ class User extends Authenticatable
         'password',
     ];
 
+    /**
+     * Relasi dengan table profile
+     */
     public function profile()
     {
         return $this->hasOne(Profile::class, 'user_id', 'id');
     }
 
+    /**
+     * Relasi dengan table user_log
+     */
     public function userLog()
     {
         return $this->hasOne(UserLog::class, 'user_id', 'id');
     }
 
+    /**
+     * Relasi dengan table user_menu_item
+     */
     public function menuItem()
     {
         return $this->belongsToMany(MenuItem::class, 'user_menu_item', 'user_id', 'menu_item_id')
-            ->withPivot('user_m_i_create', 'user_m_i_read', 'user_m_i_update', 'user_m_i_delete');
+            ->withPivot('user_m_i_read');
     }
 
+    /**
+     * Relasi dengan table user_menu_sub_item
+     */
     public function menuSubItem()
     {
         return $this->belongsToMany(MenuSubItem::class, 'user_menu_sub_item', 'user_id', 'menu_sub_item_id')
             ->withPivot('user_m_s_i_create', 'user_m_s_i_read', 'user_m_s_i_update', 'user_m_s_i_delete');
     }
 
+    /**
+     * Merubah format created_at
+     */
     public function getCreatedAtAttribute()
     {
         return \Carbon\Carbon::parse($this->attributes['created_at'])->format('d M Y H:i');
     }
 
+    /**
+     * Merubah format updated_at
+     */
     public function getUpdatedAtAttribute()
     {
         return \Carbon\Carbon::parse($this->attributes['updated_at'])->format('d M Y H:i');

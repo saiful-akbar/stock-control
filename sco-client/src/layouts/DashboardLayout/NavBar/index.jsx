@@ -44,14 +44,8 @@ const useStyles = makeStyles(theme => ({
   },
   menu: {
     width: 256, // lebar menu
-    height: 'calc(100% - 88px)',
-    overflow: 'hidden',
-    '&:hover': {
-      overflowY: 'auto'
-    }
-  },
-  menuNavigation: {
-    width: `calc(256px - 18px)` // lebar navigasi menu
+    height: 'calc(100% - 150px)',
+    overflowY: 'auto'
   }
 }));
 
@@ -66,26 +60,17 @@ const NavBar = ({
   const location = useLocation();
   const [collapseIsActive, setCollapseIsActive] = useState(null);
 
-  const menuDashboard = {
-    id: 0,
-    menu_i_title: 'Dashboard',
-    menu_i_url: '/dashboard',
-    menu_i_icon: 'dashboard',
-    menu_i_children: 0,
-    pivot: {
-      user_m_i_create: 1,
-      user_m_i_read: 1,
-      user_m_i_update: 1,
-      user_m_i_delete: 1
-    }
-  };
-
   useEffect(() => {
     if (openMobile && onMobileToggle) {
       onMobileToggle(false);
     }
     // eslint-disable-next-line
   }, [location.pathname]);
+
+  /* Fungsi untuk mengambil avatar dari api url */
+  const getAvatar = avatarUrl => {
+    return avatarUrl !== null ? apiUrl(`/avatar/${avatarUrl}`) : '';
+  };
 
   const content = (
     <Box height="100%" display="flex" flexDirection="column">
@@ -98,48 +83,40 @@ const NavBar = ({
         spacing={2}
         className={classes.profile}
       >
-        {reduxUserLogin !== null ? (
-          <React.Fragment>
-            <Grid item>
-              <Avatar
-                to="/account"
-                className={classes.avatar}
-                component={RouterLink}
-                src={
-                  reduxUserLogin.profile.profile_avatar === null
-                    ? ''
-                    : apiUrl(`/avatar/${reduxUserLogin.profile.profile_avatar}`)
-                }
-              />
-            </Grid>
+        <Grid item>
+          {reduxUserLogin !== null ? (
+            <Avatar
+              to="/account"
+              className={classes.avatar}
+              component={RouterLink}
+              src={getAvatar(reduxUserLogin.profile.profile_avatar)}
+            />
+          ) : (
+            <Skeleton variant="circle" className={classes.avatar} />
+          )}
+        </Grid>
 
-            <Grid item xs zeroMinWidth>
+        <Grid item xs zeroMinWidth>
+          {reduxUserLogin !== null ? (
+            <>
               <Typography color="textPrimary" variant="h6" noWrap>
                 {reduxUserLogin.profile.profile_name}
               </Typography>
-
               <Typography color="textSecondary" variant="body2" noWrap>
                 {reduxUserLogin.profile.profile_division}
               </Typography>
-            </Grid>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <Grid item>
-              <Skeleton variant="circle" className={classes.avatar} />
-            </Grid>
-
-            <Grid item xs zeroMinWidth>
+            </>
+          ) : (
+            <>
               <Skeleton variant="text" width="100%">
                 <Typography variant="h6">{'...'}</Typography>
               </Skeleton>
-
               <Skeleton variant="text" width="90%">
                 <Typography variant="body2">{'...'}</Typography>
               </Skeleton>
-            </Grid>
-          </React.Fragment>
-        )}
+            </>
+          )}
+        </Grid>
       </Grid>
 
       <Divider />
@@ -149,45 +126,32 @@ const NavBar = ({
         {reduxUserLogin === null ? (
           <Skeleton variant="rect" height="100%" />
         ) : (
-          <Box className={classes.menuNavigation}>
-            <List>
+          <List component="div" disablePadding>
+            {reduxUserLogin.menu_items.map((item, key) => (
               <NavItem
+                key={key}
+                data={item}
                 collapse={collapseIsActive}
                 collapseActive={url => setCollapseIsActive(url)}
-                data={menuDashboard}
               />
-              {reduxUserLogin.menu_items.map((item, key) => (
-                <NavItem
-                  key={key}
-                  data={item}
-                  collapse={collapseIsActive}
-                  collapseActive={url => setCollapseIsActive(url)}
-                />
-              ))}
-            </List>
-          </Box>
+            ))}
+          </List>
         )}
       </Box>
 
       <Box flexGrow={1} />
       <Divider />
 
-      <Box p={2}>
-        <Box display="flex" justifyContent="center">
-          {reduxUserLogin === null ? (
-            <Skeleton variant="rect" width={224} height={30} />
-          ) : (
-            <Button
-              fullWidth
-              color="primary"
-              size="small"
-              variant="outlined"
-              onClick={() => (window.location.href = '/logout')}
-            >
-              {'Logout'}
-            </Button>
-          )}
-        </Box>
+      <Box p={2} display="flex" justifyContent="center">
+        <Button
+          fullWidth
+          color="primary"
+          size="small"
+          variant="outlined"
+          onClick={() => (window.location.href = '/logout')}
+        >
+          {'Logout'}
+        </Button>
       </Box>
     </Box>
   );

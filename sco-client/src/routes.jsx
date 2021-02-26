@@ -51,7 +51,7 @@ const routes = [
         element: <AccountView />
       },
       {
-        path: '/menu',
+        path: '/menus',
         element: <Menus />
       },
       {
@@ -75,39 +75,39 @@ const routes = [
         element: <UserDetail />
       },
       {
-        path: '/master/items',
+        path: '/items',
         element: <Items />
       },
       {
-        path: '/master/consignee',
+        path: '/consignee',
         element: <Consignee />
       },
       {
-        path: '/master/store',
+        path: '/store',
         element: <Store />
       },
       {
-        path: '/incoming/purchase',
+        path: '/purchase',
         element: <Purchase />
       },
       {
-        path: '/incoming/return',
+        path: '/return',
         element: <Return />
       },
       {
-        path: '/incoming/takein',
+        path: '/takein',
         element: <TakeIn />
       },
       {
-        path: '/outgoing/delivery-note',
+        path: '/delivery-note',
         element: <DeliveryNote />
       },
       {
-        path: '/outgoing/takeout',
+        path: '/takeout',
         element: <TakeOut />
       },
       {
-        path: '/master/store',
+        path: '/store',
         element: <Store />
       },
       {

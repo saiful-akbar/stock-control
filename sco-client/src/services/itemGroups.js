@@ -29,7 +29,9 @@ export const apiGetItemGroups = (
       }
     })
       .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .catch(err => {
+        reject(err.response);
+      });
   });
 };
 

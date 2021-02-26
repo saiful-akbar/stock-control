@@ -5,16 +5,21 @@ import ItemGroupForm from './ItemGroupForm';
 import ItemGroupDelete from './ItemGroupDelete';
 import ItemGroupImport from './ItemGroupImport';
 
-
 /**
  * Komponent utama
  */
 function ItemGroups(props) {
-
   const [userAccess, setUserAccess] = React.useState(null);
   const [isReloadTable, setReloadTable] = React.useState(false);
-  const [form, setForm] = React.useState({ open: false, type: 'Add', data: null });
-  const [dialogDelete, setDialogDelete] = React.useState({ open: false, data: [] });
+  const [form, setForm] = React.useState({
+    open: false,
+    type: 'Add',
+    data: null
+  });
+  const [dialogDelete, setDialogDelete] = React.useState({
+    open: false,
+    data: []
+  });
   const [isOpenDialogImport, setOpenDialogImport] = React.useState(false);
 
   /**
@@ -22,12 +27,11 @@ function ItemGroups(props) {
    */
   React.useEffect(() => {
     if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.map((msi) => {
-        return msi.menu_s_i_url === '/master/items' ? setUserAccess(msi.pivot) : null;
+      props.reduxUserLogin.menu_sub_items.map(msi => {
+        return msi.menu_s_i_url === '/items' ? setUserAccess(msi.pivot) : null;
       });
     }
   }, [props.reduxUserLogin]);
-
 
   /**
    * Render komponent utama
@@ -38,7 +42,7 @@ function ItemGroups(props) {
         userAccess={userAccess}
         reload={isReloadTable}
         selectedRows={dialogDelete.data}
-        onReloadTable={(bool) => setReloadTable(bool)}
+        onReloadTable={bool => setReloadTable(bool)}
         onImport={() => setOpenDialogImport(true)}
         onAdd={() => {
           setForm({
@@ -47,14 +51,14 @@ function ItemGroups(props) {
             data: null
           });
         }}
-        onEdit={(value) => {
+        onEdit={value => {
           setForm({
             open: true,
             type: 'Edit',
             data: value
           });
         }}
-        onDelete={(selected) => {
+        onDelete={selected => {
           setDialogDelete({
             open: true,
             data: selected
@@ -66,7 +70,7 @@ function ItemGroups(props) {
         open={form.open}
         type={form.type}
         data={form.data}
-        onReloadTable={(bool) => setReloadTable(bool)}
+        onReloadTable={bool => setReloadTable(bool)}
         onClose={() => {
           setForm({
             open: false,
@@ -79,7 +83,7 @@ function ItemGroups(props) {
       <ItemGroupDelete
         open={dialogDelete.open}
         data={dialogDelete.data}
-        onReloadTable={(bool) => setReloadTable(bool)}
+        onReloadTable={bool => setReloadTable(bool)}
         onClose={() => {
           setDialogDelete({
             open: false,
@@ -94,9 +98,8 @@ function ItemGroups(props) {
         onReloadTable={() => setReloadTable(true)}
       />
     </React.Fragment>
-  )
+  );
 }
-
 
 /**
  * Redux state
@@ -104,9 +107,8 @@ function ItemGroups(props) {
 function reduxState(state) {
   return {
     reduxTheme: state.theme,
-    reduxUserLogin: state.userLogin,
-  }
+    reduxUserLogin: state.userLogin
+  };
 }
-
 
 export default connect(reduxState, null)(ItemGroups);

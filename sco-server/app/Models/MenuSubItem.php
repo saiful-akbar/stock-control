@@ -12,6 +12,7 @@ class MenuSubItem extends Model
 
     protected $fillable = [
         'menu_item_id',
+        'menu_s_i_icon',
         'menu_s_i_title',
         'menu_s_i_url',
     ];

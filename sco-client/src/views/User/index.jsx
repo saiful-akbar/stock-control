@@ -1,50 +1,48 @@
-import React, {
-  useEffect,
-  useState
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import UserTable from './UserTable';
 import Page from 'src/components/Page';
-import {
-  useLocation,
-  useNavigate
-} from 'react-router-dom';
 import UserDelete from './UserDelete';
 import UserChangePassword from './UserChangePassword';
 import { Grid } from '@material-ui/core';
-
+import { connect } from 'react-redux';
 
 // Componen utama
-const User = (props) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
+const User = props => {
+  const [userAccess, setUserAccess] = React.useState(null);
   const [reloadTable, setReloadTable] = useState(false);
-  const [dialogDelete, setDialogDelete] = useState({ open: false, userId: null });
-  const [changePassword, setChangePassword] = useState({ open: false, userId: null });
-
+  const [dialogDelete, setDialogDelete] = useState({
+    open: false,
+    userId: null
+  });
+  const [changePassword, setChangePassword] = useState({
+    open: false,
+    userId: null
+  });
 
   /**
-   * Cek apakah terdapat satate dari url atau tidak
-   * Dan cek apakah state read bernilai true/1 atau false/0
+   * Ambil data user akses pada reduxUserLogin
    */
   useEffect(() => {
-    if (location.state === null || location.state.read !== 1) {
-      navigate('/404');
+    if (props.reduxUserLogin !== null) {
+      props.reduxUserLogin.menu_sub_items.map(msi => {
+        return msi.menu_s_i_url === '/user' ? setUserAccess(msi.pivot) : null;
+      });
     }
-  }, [location.state, navigate]);
-
+  }, [props.reduxUserLogin]);
 
   // render component utama
   return (
-    <Page title='Users' pageTitle='Users'>
+    <Page title="Users" pageTitle="Users">
       <Grid container spacing={3}>
-        <Grid item xs >
+        <Grid item xs>
           <UserTable
-            state={location.state}
+            state={userAccess}
             reload={reloadTable}
             setReload={bool => setReloadTable(bool)}
             onDelete={userId => setDialogDelete({ open: true, userId: userId })}
-            onChangePassword={userId => setChangePassword({ open: true, userId: userId })}
+            onChangePassword={userId =>
+              setChangePassword({ open: true, userId: userId })
+            }
           />
         </Grid>
       </Grid>
@@ -63,8 +61,15 @@ const User = (props) => {
         onReloadTable={() => setReloadTable(true)}
       />
     </Page>
-  )
+  );
 };
 
+/* Redux State */
+function reduxState(state) {
+  return {
+    reduxTheme: state.theme,
+    reduxUserLogin: state.userLogin
+  };
+}
 
-export default User;
+export default connect(reduxState, null)(User);

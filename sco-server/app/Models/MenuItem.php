@@ -12,15 +12,11 @@ class MenuItem extends Model
 
     protected $fillable = [
         'menu_i_title',
-        'menu_i_url',
-        'menu_i_icon',
-        'menu_i_children',
     ];
 
     public function user()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'user_menu_item', 'menu_item_id', 'user_id')
-            ->withPivot('user_m_i_create', 'user_m_i_read', 'user_m_i_update', 'user_m_i_delete');
+        return $this->belongsToMany(\App\Models\User::class, 'user_menu_item', 'menu_item_id', 'user_id')->withPivot('user_m_i_read');
     }
 
     public function menuSubItems()

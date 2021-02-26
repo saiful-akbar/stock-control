@@ -16,6 +16,7 @@ class CreateMenuSubItemsTable extends Migration
         Schema::create('menu_sub_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('menu_item_id');
+            $table->string('menu_s_i_icon', 128);
             $table->string('menu_s_i_title', 128)->unique();
             $table->string('menu_s_i_url', 128)->unique();
             $table->timestamps();

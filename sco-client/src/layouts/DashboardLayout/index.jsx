@@ -104,14 +104,16 @@ const DashboardLayout = ({
 
   /* Mengambil data user yang sedang login */
   const getUserIsLogin = async () => {
-    if (cookies.get('auth_token') !== undefined) {
-      if (reduxUserLogin === null) {
-        try {
-          await setReduxUserLogin();
-        } catch (err) {
-          if (err.status === 401) {
-            window.location.href = '/logout';
-          }
+    if (
+      Boolean(
+        cookies.get('auth_token') !== undefined && reduxUserLogin === null
+      )
+    ) {
+      try {
+        await setReduxUserLogin();
+      } catch (err) {
+        if (err.status === 401) {
+          window.location.href = '/logout';
         }
       }
     } else {

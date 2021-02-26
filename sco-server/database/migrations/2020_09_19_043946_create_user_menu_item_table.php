@@ -17,10 +17,7 @@ class CreateUserMenuItemTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->uuid('menu_item_id');
-            $table->boolean('user_m_i_create');
             $table->boolean('user_m_i_read');
-            $table->boolean('user_m_i_update');
-            $table->boolean('user_m_i_delete');
             $table->timestamps();
 
             $table->foreign('user_id')
