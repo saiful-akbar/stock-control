@@ -22,6 +22,7 @@ import NavItem from './NavItem';
 // Style
 const useStyles = makeStyles(theme => ({
   mobileDrawer: {
+    backgroundColor: theme.palette.background.dark,
     width: 256,
     overflow: 'hidden'
   },
