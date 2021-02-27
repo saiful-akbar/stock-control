@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Grid, Button, Icon, Card, CardContent, Box } from '@material-ui/core';
+import { Grid, Button, Card, CardContent, Box } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -55,8 +55,13 @@ const useStyles = makeStyles(theme => ({
   green: {
     color: theme.palette.success.light
   },
+  tableCellDense: {
+    paddingTop: 0,
+    paddingBottom: 0
+  },
   tableCell: {
-    padding: 10
+    paddingTop: 10,
+    paddingBottom: 10
   }
 }));
 
@@ -106,21 +111,6 @@ const MenuItemTable = props => {
     {
       field: 'menu_i_title',
       label: 'Title',
-      align: 'left'
-    },
-    {
-      field: 'menu_i_url',
-      label: 'Path',
-      align: 'left'
-    },
-    {
-      field: 'menu_i_icon',
-      label: 'Icon',
-      align: 'left'
-    },
-    {
-      field: 'menu_i_children',
-      label: 'Sub Menu',
       align: 'left'
     },
     {
@@ -384,7 +374,9 @@ const MenuItemTable = props => {
                   </CustomTooltip>
                 </Box>
 
-                {props.state !== null && props.state.create === 1 && (
+                {Boolean(
+                  props.state !== null && props.state.user_m_s_i_create === 1
+                ) && (
                   <Button
                     fullWidth
                     color="primary"
@@ -416,7 +408,9 @@ const MenuItemTable = props => {
                         <SearchIcon />
                       </InputAdornment>
                     ),
-                    endAdornment: rowData.search !== '' && search !== '' && (
+                    endAdornment: Boolean(
+                      rowData.search !== '' && search !== ''
+                    ) && (
                       <InputAdornment position="end">
                         <IconButton size="small" onClick={handleClearSearch}>
                           <CancelOutlinedIcon fontSize="small" />
@@ -429,7 +423,7 @@ const MenuItemTable = props => {
             </Grid>
 
             <Grid item xs={12}>
-              <Loader show={loading}>
+              <Loader show={Boolean(props.state === null || loading)}>
                 <TableContainer className={classes.container}>
                   <Table stickyHeader>
                     <TableHead>
@@ -473,78 +467,79 @@ const MenuItemTable = props => {
                             align="center"
                             className={classes.tableCell}
                           >
-                            {loading ? 'Loading...' : 'No data in table'}
+                            {Boolean(props.state === null || loading)
+                              ? 'Loading...'
+                              : 'No data in table'}
                           </TableCell>
                         </TableRow>
                       ) : (
                         rowData.menu_items.data.map((row, key) => (
                           <TableRow hover key={key}>
-                            <TableCell className={classes.tableCell}>
-                              {row.menu_i_title}
-                            </TableCell>
-                            <TableCell className={classes.tableCell}>
-                              {row.menu_i_url}
-                            </TableCell>
-
-                            <TableCell className={classes.tableCell}>
-                              <Icon fontSize="small">{row.menu_i_icon}</Icon>
-                            </TableCell>
-
-                            <TableCell className={classes.tableCell}>
-                              <Icon
+                            {columns.map((col, key) => (
+                              <TableCell
+                                key={key}
                                 className={
-                                  row.menu_i_children === 1
-                                    ? classes.green
-                                    : classes.red
+                                  Boolean(
+                                    props.state !== null &&
+                                      Boolean(
+                                        props.state.user_m_s_i_update === 1 ||
+                                          props.state.user_m_s_i_delete === 1
+                                      )
+                                  )
+                                    ? classes.tableCellDense
+                                    : classes.tableCell
                                 }
                               >
-                                {row.menu_i_children === 1 ? 'check' : 'close'}
-                              </Icon>
-                            </TableCell>
-
-                            <TableCell className={classes.tableCell}>
-                              {row.created_at}
-                            </TableCell>
-                            <TableCell className={classes.tableCell}>
-                              {row.updated_at}
-                            </TableCell>
+                                {row[col.field]}
+                              </TableCell>
+                            ))}
 
                             {props.state !== null &&
-                              (props.state.update === 1 ||
-                              props.state.delete === 1 ? (
-                                <TableCell
-                                  align="center"
-                                  className={classes.tableCell}
-                                >
-                                  {props.state.update === 1 && (
-                                    <CustomTooltip title="Update">
-                                      <IconButton
-                                        aria-label="Update"
-                                        onClick={() =>
-                                          props.openDialogEdit(row)
-                                        }
-                                      >
-                                        <EditOutlinedIcon fontSize="small" />
-                                      </IconButton>
-                                    </CustomTooltip>
-                                  )}
+                            Boolean(
+                              props.state.user_m_s_i_update === 1 ||
+                                props.state.user_m_s_i_delete === 1
+                            ) ? (
+                              <TableCell
+                                align="center"
+                                className={
+                                  Boolean(
+                                    props.state !== null &&
+                                      Boolean(
+                                        props.state.user_m_s_i_update === 1 ||
+                                          props.state.user_m_s_i_delete === 1
+                                      )
+                                  )
+                                    ? classes.tableCellDense
+                                    : classes.tableCell
+                                }
+                              >
+                                {props.state.user_m_s_i_update === 1 && (
+                                  <CustomTooltip title="Update">
+                                    <IconButton
+                                      aria-label="Update"
+                                      onClick={() => props.openDialogEdit(row)}
+                                    >
+                                      <EditOutlinedIcon fontSize="small" />
+                                    </IconButton>
+                                  </CustomTooltip>
+                                )}
 
-                                  {props.state.delete === 1 && (
-                                    <CustomTooltip title="Delete">
-                                      <IconButton
-                                        aria-label="delete"
-                                        onClick={() =>
-                                          props.openDialogDelete(row.id)
-                                        }
-                                      >
-                                        <DeleteOutlineOutlinedIcon fontSize="small" />
-                                      </IconButton>
-                                    </CustomTooltip>
-                                  )}
-                                </TableCell>
-                              ) : (
-                                <TableCell />
-                              ))}
+                                {props.state.user_m_s_i_delete === 1 && (
+                                  <CustomTooltip title="Delete">
+                                    <IconButton
+                                      aria-label="delete"
+                                      onClick={() =>
+                                        props.openDialogDelete(row.id)
+                                      }
+                                    >
+                                      <DeleteOutlineOutlinedIcon fontSize="small" />
+                                    </IconButton>
+                                  </CustomTooltip>
+                                )}
+                              </TableCell>
+                            ) : (
+                              <TableCell />
+                            )}
                           </TableRow>
                         ))
                       )}

@@ -79,6 +79,7 @@ const DashboardLayout = ({
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const authToken = cookies.get('auth_token');
 
   /* State */
   const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
@@ -104,11 +105,7 @@ const DashboardLayout = ({
 
   /* Mengambil data user yang sedang login */
   const getUserIsLogin = async () => {
-    if (
-      Boolean(
-        cookies.get('auth_token') !== undefined && reduxUserLogin === null
-      )
-    ) {
+    if (Boolean(authToken !== undefined || reduxUserLogin === null)) {
       try {
         await setReduxUserLogin();
       } catch (err) {

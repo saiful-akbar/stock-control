@@ -27,6 +27,7 @@ import Toast from 'src/components/Toast';
 import { useNavigate } from 'react-router-dom';
 import Loader from 'src/components/Loader';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import Icon from '@material-ui/core/Icon';
 
 // style
 const useStyles = makeStyles(theme => ({
@@ -50,6 +51,10 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     padding: 10
+  },
+  tableCellDense: {
+    paddingTop: 0,
+    paddingBottom: 0
   }
 }));
 
@@ -83,11 +88,12 @@ const MenuSubItemTable = props => {
 
   // daftar kolom untuk tabel
   const columns = [
-    { field: 'menu_i_title', label: 'Menus Title' },
-    { field: 'menu_s_i_title', label: 'Sub Menus Title' },
-    { field: 'menu_s_i_url', label: 'Path' },
-    { field: 'created_at', label: 'Created At' },
-    { field: 'updated_at', label: 'Updated At' }
+    { field: 'menu_i_title', label: 'Menus Title', align: 'left' },
+    { field: 'menu_s_i_title', label: 'Sub Menus Title', align: 'left' },
+    { field: 'menu_s_i_icon', label: 'Icon', align: 'left' },
+    { field: 'menu_s_i_url', label: 'Path', align: 'left' },
+    { field: 'created_at', label: 'Created At', align: 'left' },
+    { field: 'updated_at', label: 'Updated At', align: 'left' }
   ];
 
   // inisialisasi awal untuk mengambil data dari api
@@ -136,7 +142,7 @@ const MenuSubItemTable = props => {
           window.location.href = '/logout';
         } else {
           if (err.status === 403) {
-            navigate('/404');
+            navigate('/error/forbidden');
           } else {
             setToast({
               show: true,
@@ -318,7 +324,9 @@ const MenuSubItemTable = props => {
                   </CustomTooltip>
                 </Box>
 
-                {props.state !== null && props.state.create === 1 && (
+                {Boolean(
+                  props.state !== null && props.state.user_m_s_i_create === 1
+                ) && (
                   <Button
                     fullWidth
                     color="primary"
@@ -357,7 +365,9 @@ const MenuSubItemTable = props => {
                         <SearchIcon />
                       </InputAdornment>
                     ),
-                    endAdornment: rowData.search !== '' && search !== '' && (
+                    endAdornment: Boolean(
+                      rowData.search !== '' && search !== ''
+                    ) && (
                       <InputAdornment position="end">
                         <IconButton size="small" onClick={handleClearSearch}>
                           <CancelOutlinedIcon fontSize="small" />
@@ -370,13 +380,17 @@ const MenuSubItemTable = props => {
             </Grid>
 
             <Grid item xs={12}>
-              <Loader show={loading}>
+              <Loader show={Boolean(props.state === null || loading)}>
                 <TableContainer className={classes.container}>
                   <Table stickyHeader>
                     <TableHead>
                       <TableRow>
                         {columns.map((col, i) => (
-                          <TableCell key={i} className={classes.tableCell}>
+                          <TableCell
+                            key={i}
+                            className={classes.tableCell}
+                            align={col.align}
+                          >
                             <TableSortLabel
                               active={rowData.sort === col.field}
                               direction={
@@ -406,7 +420,7 @@ const MenuSubItemTable = props => {
                       {rowData.menu_sub_items.data.length <= 0 ? (
                         <TableRow hover>
                           <TableCell
-                            colSpan={6}
+                            colSpan={7}
                             align="center"
                             className={classes.tableCell}
                           >
@@ -419,52 +433,75 @@ const MenuSubItemTable = props => {
                             {columns.map((col, colKey) => (
                               <TableCell
                                 key={colKey}
-                                className={classes.tableCell}
+                                align={col.align}
+                                className={
+                                  props.state !== null &&
+                                  Boolean(
+                                    props.state.user_m_s_i_update === 1 ||
+                                      props.state.user_m_s_i_delete === 1
+                                  )
+                                    ? classes.tableCellDense
+                                    : classes.tableCell
+                                }
                               >
-                                {row[col.field]}
+                                {col.field === 'menu_s_i_icon' ? (
+                                  <Icon fontSize="small">{row[col.field]}</Icon>
+                                ) : (
+                                  row[col.field]
+                                )}
                               </TableCell>
                             ))}
 
                             {props.state !== null &&
-                              (props.state.update === 1 ||
-                              props.state.delete === 1 ? (
-                                <TableCell
-                                  align="center"
-                                  className={classes.tableCell}
-                                >
-                                  {props.state.update === 1 && (
-                                    <CustomTooltip title="Update">
-                                      <IconButton
-                                        aria-label="Update"
-                                        onClick={() =>
-                                          props.openDialogForm({
-                                            type: 'Update',
-                                            show: true,
-                                            data: row
-                                          })
-                                        }
-                                      >
-                                        <EditOutlinedIcon fontSize="small" />
-                                      </IconButton>
-                                    </CustomTooltip>
-                                  )}
+                            Boolean(
+                              props.state.user_m_s_i_update === 1 ||
+                                props.state.user_m_s_i_delete === 1
+                            ) ? (
+                              <TableCell
+                                align="center"
+                                className={
+                                  props.state !== null &&
+                                  Boolean(
+                                    props.state.user_m_s_i_update === 1 ||
+                                      props.state.user_m_s_i_delete === 1
+                                  )
+                                    ? classes.tableCellDense
+                                    : classes.tableCell
+                                }
+                              >
+                                {props.state.user_m_s_i_update === 1 && (
+                                  <CustomTooltip title="Edit">
+                                    <IconButton
+                                      aria-label="Edit"
+                                      onClick={() =>
+                                        props.openDialogForm({
+                                          type: 'Edit',
+                                          show: true,
+                                          data: row
+                                        })
+                                      }
+                                    >
+                                      <EditOutlinedIcon fontSize="small" />
+                                    </IconButton>
+                                  </CustomTooltip>
+                                )}
 
-                                  {props.state.delete === 1 && (
-                                    <CustomTooltip title="Delete">
-                                      <IconButton
-                                        aria-label="delete"
-                                        onClick={() =>
-                                          props.openDialogDelete(row.id)
-                                        }
-                                      >
-                                        <DeleteOutlineOutlinedIcon fontSize="small" />
-                                      </IconButton>
-                                    </CustomTooltip>
-                                  )}
-                                </TableCell>
-                              ) : (
-                                <TableCell />
-                              ))}
+                                {props.state.user_m_s_i_delete === 1 && (
+                                  <CustomTooltip title="Delete">
+                                    <IconButton
+                                      aria-label="delete"
+                                      onClick={() =>
+                                        props.openDialogDelete(row.id)
+                                      }
+                                    >
+                                      <DeleteOutlineOutlinedIcon fontSize="small" />
+                                    </IconButton>
+                                  </CustomTooltip>
+                                )}
+                              </TableCell>
+                            ) : (
+                              <TableCell />
+                            )}
                           </TableRow>
                         ))
                       )}

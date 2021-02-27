@@ -91,7 +91,7 @@ const useStyleNavItem = makeStyles(theme => ({
   menuActive: {
     background:
       theme.palette.type === 'dark'
-        ? 'rgba(255, 255, 255, 0.02)'
+        ? 'rgba(255, 255, 255, 0.03)'
         : 'rgba(0, 0, 0, 0.03)',
     paddingBottom: 20
   }

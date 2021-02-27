@@ -7,12 +7,17 @@ import MenuItem from '@material-ui/core/MenuItem';
 import CustomTooltip from 'src/components/CustomTooltip';
 
 // Componen utama
-const UserTableOptions = props => {
+const UserTableOptions = ({
+  userData,
+  state,
+  onDelete,
+  onChangePassword,
+  ...props
+}) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
-  const { state, userData } = props;
 
   /**
    * handle saat menu di klik
@@ -34,14 +39,7 @@ const UserTableOptions = props => {
    */
   const handleChangeUserMenus = () => {
     handleCloseMenu();
-    navigate(`/user/${userData.id}/menus`, {
-      state: {
-        ...state,
-        profile: {
-          ...userData
-        }
-      }
-    });
+    navigate(`/users/${userData.id}/menus`);
   };
 
   /**
@@ -49,21 +47,14 @@ const UserTableOptions = props => {
    */
   const handleEdit = () => {
     handleCloseMenu();
-    navigate(`/user/${userData.id}/edit`, {
-      state: {
-        ...state,
-        profile: {
-          ...userData
-        }
-      }
-    });
+    navigate(`/users/${userData.id}/edit`);
   };
 
   /**
    * Handle delete
    */
   const handleDelete = () => {
-    props.onDelete();
+    onDelete();
     handleCloseMenu();
   };
 
@@ -71,7 +62,7 @@ const UserTableOptions = props => {
    * Handle ubah password
    */
   const handleChangePassword = () => {
-    props.onChangePassword();
+    onChangePassword();
     handleCloseMenu();
   };
 
@@ -80,7 +71,7 @@ const UserTableOptions = props => {
    */
   const handleViewDetail = () => {
     handleCloseMenu();
-    navigate(`/user/${userData.id}`, { state: state });
+    navigate(`/users/${userData.id}`);
   };
 
   /**
@@ -100,19 +91,19 @@ const UserTableOptions = props => {
         open={open}
         onClose={handleCloseMenu}
       >
-        {props.state !== null && props.state.update === 1 && (
+        {state !== null && state.user_m_s_i_update === 1 && (
           <MenuItem onClick={handleChangeUserMenus}>
             <Typography variant="inherit">{'Access Menu'}</Typography>
           </MenuItem>
         )}
 
-        {props.state !== null && props.state.update === 1 && (
+        {state !== null && state.user_m_s_i_update === 1 && (
           <MenuItem onClick={handleChangePassword}>
             <Typography variant="inherit">{'Change password'}</Typography>
           </MenuItem>
         )}
 
-        {props.state !== null && props.state.delete === 1 && (
+        {state !== null && state.user_m_s_i_delete === 1 && (
           <MenuItem onClick={handleDelete}>
             <Typography variant="inherit">{'Delete'}</Typography>
           </MenuItem>
@@ -122,7 +113,7 @@ const UserTableOptions = props => {
           <Typography variant="inherit">{'Detail info'}</Typography>
         </MenuItem>
 
-        {props.state !== null && props.state.update === 1 && (
+        {state !== null && state.user_m_s_i_update === 1 && (
           <MenuItem onClick={handleEdit}>
             <Typography variant="inherit">{'Edit'}</Typography>
           </MenuItem>

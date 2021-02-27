@@ -1,17 +1,20 @@
 import React from 'react';
 import MenuItemTable from './MenuItemTable';
-import MenuItemCreate from './MenuItemCreate';
-import MenuItemEdit from './MenuItemEdit';
+import MenuItemForm from './MenuItemForm';
 import MenuItemDelete from './MenuItemDelete';
 
 const MenuItem = ({ state }) => {
   const [reload, setReload] = React.useState(false);
-  const [dialogCreate, setDialogCerate] = React.useState(false);
   const [dialogDelete, setDialogDelete] = React.useState({
     show: false,
     id: null
   });
-  const [dialogEdit, setDialogEdit] = React.useState({ show: false, data: {} });
+
+  const [formDialog, setFormDialog] = React.useState({
+    open: false,
+    type: 'Create',
+    data: null
+  });
 
   return (
     <div>
@@ -19,15 +22,23 @@ const MenuItem = ({ state }) => {
         state={state}
         reload={reload}
         stopReload={() => setReload(false)}
-        openDialogCreate={() => setDialogCerate(true)}
+        openDialogCreate={() =>
+          setFormDialog({ open: true, type: 'Create', data: null })
+        }
+        openDialogEdit={data =>
+          setFormDialog({ open: true, type: 'Edit', data: data })
+        }
         openDialogDelete={id => setDialogDelete({ show: true, id: id })}
-        openDialogEdit={data => setDialogEdit({ show: true, data: data })}
       />
-      <MenuItemCreate
+      <MenuItemForm
         state={state}
-        open={dialogCreate}
-        close={() => setDialogCerate(false)}
-        reloadTable={() => setReload(true)}
+        open={formDialog.open}
+        type={formDialog.type}
+        data={formDialog.data}
+        onReloadTable={() => setReload(true)}
+        onClose={() =>
+          setFormDialog({ open: false, type: formDialog.type, data: null })
+        }
       />
       <MenuItemDelete
         state={state}
@@ -35,13 +46,6 @@ const MenuItem = ({ state }) => {
         open={dialogDelete.show}
         closeDialog={() => setDialogDelete({ show: false, id: null })}
         reloadTable={() => setReload(true)}
-      />
-      <MenuItemEdit
-        state={state}
-        data={dialogEdit.data}
-        open={dialogEdit.show}
-        reloadTable={() => setReload(true)}
-        closeDialog={() => setDialogEdit({ show: false, data: {} })}
       />
     </div>
   );

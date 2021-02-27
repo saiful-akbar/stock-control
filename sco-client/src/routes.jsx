@@ -55,23 +55,23 @@ const routes = [
         element: <Menus />
       },
       {
-        path: '/user',
+        path: '/users',
         element: <User />
       },
       {
-        path: '/user/create',
+        path: '/users/create',
         element: <UserCreate />
       },
       {
-        path: '/user/:id/edit',
+        path: '/users/:id/edit',
         element: <UserEdit />
       },
       {
-        path: '/user/:id/menus',
+        path: '/users/:id/menus',
         element: <UserEditMenuAccess />
       },
       {
-        path: '/user/:id',
+        path: '/users/:id',
         element: <UserDetail />
       },
       {

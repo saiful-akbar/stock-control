@@ -30,7 +30,7 @@ const Page = forwardRef(
         style={{ paddingBottom: pb ? 100 : 20 }}
       >
         <Helmet>
-          <title>{Boolean(title) && `${title} - `}Stock Control</title>
+          <title>SCO{Boolean(title) && ` :: ${title}`}</title>
         </Helmet>
 
         <Container maxWidth={false}>

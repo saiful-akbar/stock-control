@@ -5,21 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\MenuItem;
 use App\Models\MenuSubItem;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class MenuSubItemController extends Controller
 {
-
-    // Ambil semua data menu item yang children nya true/1
-    private function getMenuItems()
-    {
-        return DB::table("menu_items")
-            ->select("id", "menu_i_title")
-            ->where("menu_i_children", "=", "1")
-            ->get();
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -53,10 +41,6 @@ class MenuSubItemController extends Controller
         $sort = "menu_i_title";
         if (isset($request->sort) && !empty($request->sort)) {
             switch ($request->sort) {
-                case 'menu_i_url':
-                    $sort = "menu_i_url";
-                    break;
-
                 case 'menu_s_i_title':
                     $sort = "menu_s_i_title";
                     break;
@@ -96,6 +80,7 @@ class MenuSubItemController extends Controller
                 "menu_items.menu_i_title",
                 "menu_sub_items.id",
                 "menu_sub_items.menu_item_id",
+                "menu_sub_items.menu_s_i_icon",
                 "menu_sub_items.menu_s_i_title",
                 "menu_sub_items.menu_s_i_url",
                 "menu_sub_items.created_at",
@@ -109,7 +94,7 @@ class MenuSubItemController extends Controller
         // response
         return response()->json([
             "menu_sub_items" => $data,
-            "menu_items" => $this->getMenuItems(),
+            "menu_items" => MenuItem::all(),
             "search" => $search,
             "sort" => $sort,
             "order_by" => $order_by
@@ -127,8 +112,9 @@ class MenuSubItemController extends Controller
         // validasi form inputan
         $request->validate([
             "menus" => "required|Exists:menu_items,id",
-            "title"     => "required|max:128|unique:menu_sub_items,menu_s_i_title",
-            "url"       => "required|max:128|unique:menu_sub_items,menu_s_i_url",
+            "title" => "required|max:128|unique:menu_sub_items,menu_s_i_title",
+            "url"   => "required|max:128|unique:menu_sub_items,menu_s_i_url",
+            "icon"  => "required|max:128",
         ]);
 
         /**
@@ -138,28 +124,7 @@ class MenuSubItemController extends Controller
          */
         $url = str_replace(" ", "/", $request->url);
         if (substr($url, 0, 1) != "/") {
-            $url = "/" . $url;
-        }
-
-        /**
-         * cek apakah kata pertama sama dengan url menu item
-         * jika bukan gabungkan url menu item dengan url menu sub item yang baru
-         */
-        $menu_item = DB::table("menu_items")->select("menu_i_url")->where("id", $request->menus)->first();
-        if ($menu_item->menu_i_url != substr($url, 0, strlen($menu_item->menu_i_url))) {
-            $url = $menu_item->menu_i_url . $url;
-        }
-
-        /**
-         * cek apakan ada url yang sama pada record dengan url hasil request
-         * jika ada kembalikan pesan error
-         * jika tidak lanjutkan create menu sub item
-         */
-        if (MenuSubItem::where("menu_s_i_url", $url)->count() >= 1) {
-            return response()->json([
-                "errors" => ["url" => ["The url has already been taken."]],
-                "message" => "The given data was invalid."
-            ], 422);
+            $url = "/{$url}";
         }
 
         // propses menambahkan data baru
@@ -167,6 +132,7 @@ class MenuSubItemController extends Controller
             "menu_item_id"   => htmlspecialchars($request->menus),
             "menu_s_i_title" => htmlspecialchars(ucwords($request->title)),
             "menu_s_i_url"   => htmlspecialchars(strtolower($url)),
+            "menu_s_i_icon"  => htmlspecialchars(strtolower($request->icon)),
         ]);
 
         return response()->json(["message" => "Sub menus created successfuly"], 200);
@@ -184,8 +150,9 @@ class MenuSubItemController extends Controller
         // validasi form
         $request->validate([
             "menus" => "required|Exists:menu_items,id",
-            "title"     => "required|max:128",
-            "url"       => "required|max:128",
+            "title" => "required|max:128",
+            "url"   => "required|max:128",
+            "icon"  => "required|max:128",
         ]);
 
         /**
@@ -195,16 +162,7 @@ class MenuSubItemController extends Controller
          */
         $url = str_replace(" ", "/", $request->url);
         if (substr($url, 0, 1) != "/") {
-            $url = "/" . $url;
-        }
-
-        /**
-         * cek apakah kata pertama sama dengan url menu item
-         * jika bukan gabungkan url menu item dengan url menu sub item yang baru
-         */
-        $menu_item = DB::table("menu_items")->select("menu_i_url")->where("id", $request->menus)->first();
-        if ($menu_item->menu_i_url != substr($url, 0, strlen($menu_item->menu_i_url))) {
-            $url = $menu_item->menu_i_url . $url;
+            $url = "/{$url}";
         }
 
         /**
@@ -222,7 +180,7 @@ class MenuSubItemController extends Controller
 
         /**
          * cek apakah title request != title yang sebelumnya
-         * jika tidak. Cek apakah title hasil request sudah pernah dipakai atau belum
+         * jika berbeda. Cek apakah title hasil request sudah digunakan atau belum
          */
         if ($request->title != $menuSubItem->menu_s_i_title) {
             if (MenuSubItem::where("menu_s_i_title", $request->title)->count() >= 1) {
@@ -230,11 +188,12 @@ class MenuSubItemController extends Controller
             }
         }
 
-        // Proses Update data
+        // simpan ke database
         MenuSubItem::where("id", $menuSubItem->id)->update([
             "menu_item_id"   => htmlspecialchars($request->menus),
             "menu_s_i_title" => htmlspecialchars(ucwords($request->title)),
-            "menu_s_i_url"   => htmlspecialchars($url),
+            "menu_s_i_url"   => htmlspecialchars(strtolower($url)),
+            "menu_s_i_icon"  => htmlspecialchars(strtolower($request->icon)),
         ]);
 
         return response()->json(["message" => "Sub menus updated successfuly"], 200);

@@ -68,8 +68,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
          * Route middleware menu user untuk akses create
          */
         Route::group(["middleware" => ["access.user:create"]], function () {
-            Route::post("/cek/user-form", [UserController::class, "cekUserForm"]);
-            Route::post("/cek/profile-form", [UserController::class, "cekProfileForm"]);
+            // Route::post("/cek/user-form", [UserController::class, "cekUserForm"]);
+            // Route::post("/cek/profile-form", [UserController::class, "cekProfileForm"]);
             Route::post("/", [UserController::class, "store"]);
             Route::post("/menu-access", [UserController::class, "createUserMenuAccess"]);
         });
@@ -101,21 +101,15 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     });
 
     /**
-     * Route group halaman master
+     * Route group halaman master items
      */
-    Route::group(["prefix" => "master"], function () {
-
-        /**
-         * Route group halaman master items
-         */
-        Route::group(["prefix" => "item-groups"], function () {
-            Route::get("/", [ItemGroupController::class, "index"])->middleware("access.item:read");
-            Route::get("/export", [ItemGroupController::class, "export"])->middleware("access.item:read");
-            Route::post("/", [ItemGroupController::class, "create"])->middleware("access.item:create");
-            Route::post("/import", [ItemGroupController::class, "import"])->middleware("access.item:create");
-            Route::delete("/", [ItemGroupController::class, "delete"])->middleware("access.item:delete");
-            Route::patch("/{item_group}", [ItemGroupController::class, "update"])->middleware("access.item:update");
-        });
+    Route::group(["prefix" => "item-groups"], function () {
+        Route::get("/", [ItemGroupController::class, "index"])->middleware("access.item:read");
+        Route::post("/", [ItemGroupController::class, "create"])->middleware("access.item:create");
+        Route::delete("/", [ItemGroupController::class, "delete"])->middleware("access.item:delete");
+        Route::patch("/{item_group}", [ItemGroupController::class, "update"])->middleware("access.item:update");
+        Route::post("/import", [ItemGroupController::class, "import"])->middleware("access.item:create");
+        Route::get("/export", [ItemGroupController::class, "export"])->middleware("access.item:read");
     });
 
     /**

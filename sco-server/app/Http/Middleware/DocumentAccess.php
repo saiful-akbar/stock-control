@@ -19,35 +19,35 @@ class DocumentAccess
      */
     public function handle(Request $request, Closure $next, $access)
     {
-        $menu = DB::table('menu_items')->where('menu_i_url', '/documents')->first();
+        $menu = DB::table('menu_sub_items')->where('menu_s_i_url', '/documents')->first();
         $user_access = User::find(Auth::user()->id)
-            ->menuItem()
-            ->where('menu_item_id', $menu->id)
+            ->menuSubItem()
+            ->where('menu_sub_item_id', $menu->id)
             ->first();
 
         if (!empty($user_access)) {
             if ($access == 'read') {
-                if ($user_access->pivot->user_m_i_read == 1) {
+                if ($user_access->pivot->user_m_s_i_read == 1) {
                     return $next($request);
                 }
             } else if ($access == 'create') {
-                if ($user_access->pivot->user_m_i_create == 1) {
+                if ($user_access->pivot->user_m_s_i_create == 1) {
                     return $next($request);
                 }
             } else if ($access == 'update') {
-                if ($user_access->pivot->user_m_i_update == 1) {
+                if ($user_access->pivot->user_m_s_i_update == 1) {
                     return $next($request);
                 }
             } else if ($access == 'delete') {
-                if ($user_access->pivot->user_m_i_delete == 1) {
+                if ($user_access->pivot->user_m_s_i_delete == 1) {
                     return $next($request);
                 }
             }
         }
 
         return response()->json(
-        ["message" => "Access is denied"],
-        403
+            ["message" => "Access is denied"],
+            403
         );
     }
 }

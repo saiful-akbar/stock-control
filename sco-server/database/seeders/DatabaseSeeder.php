@@ -98,7 +98,7 @@ class DatabaseSeeder extends Seeder
                 'menu_item_id'   => $this->getMenuItem('Master Data'),
                 'menu_s_i_icon'  => 'people',
                 'menu_s_i_title' => 'Users',
-                'menu_s_i_url'   => '/user',
+                'menu_s_i_url'   => '/users',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],

@@ -15,17 +15,19 @@ import {
   DialogTitle,
   useMediaQuery,
   Typography,
-  IconButton
+  IconButton,
+  Icon
 } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/styles';
+import CloseIcon from '@material-ui/icons/Close';
+import { Alert, Autocomplete } from '@material-ui/lab';
+import Toast from 'src/components/Toast';
+import BtnSubmit from 'src/components/BtnSubmit';
+import materialIcons from 'src/components/MaterialIcons';
 import {
   apiCreateMenuSubItem,
   apiUpdateMenuSubItem
 } from 'src/services/menuSubItem';
-import { Alert } from '@material-ui/lab';
-import { makeStyles, useTheme } from '@material-ui/styles';
-import Toast from 'src/components/Toast';
-import BtnSubmit from 'src/components/BtnSubmit';
-import CloseIcon from '@material-ui/icons/Close';
 
 /**
  * Style
@@ -40,6 +42,13 @@ const useStyles = makeStyles(theme => ({
   header: {
     margin: 0,
     padding: theme.spacing(2)
+  },
+  option: {
+    fontSize: 15,
+    '& > span': {
+      marginRight: 10,
+      fontSize: 18
+    }
   }
 }));
 
@@ -71,7 +80,7 @@ const MenuSubItemForm = props => {
 
   // logout
   const logout = () => {
-    window.location.href = 'logout';
+    window.location.href = '/logout';
   };
 
   // validasi form formik
@@ -83,39 +92,37 @@ const MenuSubItemForm = props => {
         .required('Title is required'),
       url: Yup.string()
         .max(128)
-        .required('Url is required')
+        .required('Url is required'),
+      icon: Yup.string()
+        .max(128)
+        .required('Icon is required')
     });
   };
 
   // submit form
   const handleSubmitForm = async (data, { setErrors }) => {
     setLoading(true);
-    try {
-      let res =
-        props.type === 'Create'
-          ? await apiCreateMenuSubItem(data)
-          : await apiUpdateMenuSubItem(props.data.id, data);
-      if (isMounted.current) {
-        setLoading(false);
-        setToast({ show: true, type: 'success', message: res.data.message });
-        props.reloadTable();
-        props.closeDialog();
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        setLoading(false);
-        if (err.status === 401) {
-          logout();
-        } else {
-          if (err.status === 422) setErrors(err.data.errors);
-          setAlert({ type: 'error', message: err.data.message });
-          setToast({
-            show: true,
-            type: 'error',
-            message: `#${err.status} ${err.data.message}`
-          });
-        }
-      }
+    let res =
+      props.type.toLowerCase() === 'create'
+        ? await apiCreateMenuSubItem(data).catch(err => err)
+        : await apiUpdateMenuSubItem(props.data.id, data).catch(err => err);
+
+    if (res.status === 200) {
+      setLoading(false);
+      setToast({ show: true, type: 'success', message: res.data.message });
+      props.reloadTable();
+      props.closeDialog();
+    } else if (res.status === 401) {
+      logout();
+    } else {
+      if (res.status === 422) setErrors(res.data.errors);
+      setLoading(false);
+      setAlert({ type: 'error', message: res.data.message });
+      setToast({
+        show: true,
+        type: 'error',
+        message: `#${res.status} ${res.data.message}`
+      });
     }
   };
 
@@ -134,15 +141,28 @@ const MenuSubItemForm = props => {
       <Dialog
         fullWidth
         fullScreen={fullScreen}
-        maxWidth="md"
+        maxWidth="lg"
         scroll="paper"
         open={props.open}
       >
         <Formik
           initialValues={{
-            menus: props.type === 'Update' ? props.data.menu_item_id : '',
-            title: props.type === 'Update' ? props.data.menu_s_i_title : '',
-            url: props.type === 'Update' ? props.data.menu_s_i_url : ''
+            menus:
+              props.type.toLowerCase() === 'edit'
+                ? props.data.menu_item_id
+                : '',
+            title:
+              props.type.toLowerCase() === 'edit'
+                ? props.data.menu_s_i_title
+                : '',
+            url:
+              props.type.toLowerCase() === 'edit'
+                ? props.data.menu_s_i_url
+                : '',
+            icon:
+              props.type.toLowerCase() === 'edit'
+                ? props.data.menu_s_i_icon
+                : ''
           }}
           validationSchema={getValidationSchema}
           onSubmit={handleSubmitForm}
@@ -153,7 +173,8 @@ const MenuSubItemForm = props => {
             handleChange,
             handleSubmit,
             touched,
-            values
+            values,
+            setFieldValue
           }) => (
             <React.Fragment>
               <DialogTitle disableTypography className={classes.header}>
@@ -174,7 +195,7 @@ const MenuSubItemForm = props => {
               <DialogContent dividers>
                 <form onSubmit={handleSubmit} autoComplete="off">
                   <Grid container spacing={2} mt={2} mb={2}>
-                    <Grid item xs={12}>
+                    <Grid item md={6} xs={12}>
                       <FormControl
                         required
                         fullWidth
@@ -240,6 +261,50 @@ const MenuSubItemForm = props => {
                         helperText={touched.url && errors.url}
                       />
                     </Grid>
+
+                    <Grid item md={6} xs={12}>
+                      <Autocomplete
+                        autoHighlight
+                        classes={{ option: classes.option }}
+                        disabled={loading}
+                        options={materialIcons}
+                        getOptionLabel={option => option.label}
+                        value={
+                          Boolean(
+                            props.type.toLowerCase() === 'edit' ||
+                              values.icon !== ''
+                          )
+                            ? { label: values.icon }
+                            : null
+                        }
+                        getOptionSelected={(options, value) =>
+                          Boolean(options.label === value.label)
+                        }
+                        onChange={(event, newValue) => {
+                          if (newValue === null) {
+                            setFieldValue('icon', values.icon);
+                          } else {
+                            setFieldValue('icon', newValue.label);
+                          }
+                        }}
+                        renderOption={option => (
+                          <React.Fragment>
+                            <Icon>{option.class}</Icon>
+                            {option.label}
+                          </React.Fragment>
+                        )}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            fullWidth
+                            label="Icon"
+                            variant="outlined"
+                            error={Boolean(touched.icon && errors.icon)}
+                            helperText={touched.icon && errors.icon}
+                          />
+                        )}
+                      />
+                    </Grid>
                   </Grid>
 
                   <button type="submit" style={{ display: 'none' }} />
@@ -248,7 +313,9 @@ const MenuSubItemForm = props => {
 
               <DialogActions>
                 <BtnSubmit
-                  title={props.type}
+                  title={
+                    props.type.toLowerCase() === 'edit' ? 'Update' : 'Create'
+                  }
                   loading={loading}
                   handleSubmit={handleSubmit}
                   handleCancel={handleCloseDialog}

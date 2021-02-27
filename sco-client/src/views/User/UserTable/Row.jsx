@@ -81,7 +81,7 @@ function Row(props) {
    */
   const goto = e => {
     e.preventDefault();
-    navigate(`/user/${row.id}`, { state });
+    navigate(`/users/${row.id}`);
   };
 
   return (
@@ -123,7 +123,7 @@ function Row(props) {
                 <Link
                   className={classes.link}
                   variant="body2"
-                  href={`/user/${row.id}`}
+                  href={`/users/${row.id}`}
                   onClick={e => goto(e)}
                 >
                   {row.profile_name}
@@ -155,8 +155,7 @@ function Row(props) {
 }
 
 Row.propTypes = {
-  row: PropTypes.object.isRequired,
-  state: PropTypes.object.isRequired
+  row: PropTypes.object.isRequired
 };
 
 export default Row;

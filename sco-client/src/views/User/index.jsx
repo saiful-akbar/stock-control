@@ -25,7 +25,7 @@ const User = props => {
   useEffect(() => {
     if (props.reduxUserLogin !== null) {
       props.reduxUserLogin.menu_sub_items.map(msi => {
-        return msi.menu_s_i_url === '/user' ? setUserAccess(msi.pivot) : null;
+        return msi.menu_s_i_url === '/users' ? setUserAccess(msi.pivot) : null;
       });
     }
   }, [props.reduxUserLogin]);
@@ -67,7 +67,6 @@ const User = props => {
 /* Redux State */
 function reduxState(state) {
   return {
-    reduxTheme: state.theme,
     reduxUserLogin: state.userLogin
   };
 }

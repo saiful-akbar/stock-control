@@ -159,7 +159,7 @@ function TheadActions({
                   </CustomTooltip>
                 </Box>
 
-                {userAccess !== null && userAccess.user_m_i_create === 1 && (
+                {userAccess !== null && userAccess.user_m_s_i_create === 1 && (
                   <Button
                     fullWidth
                     color="primary"

@@ -19,7 +19,7 @@ export const apiGetItemGroups = (
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: '/master/item-groups',
+      url: '/item-groups',
       params: {
         page: page,
         per_page: per_page,
@@ -44,7 +44,7 @@ export const apiAddItemGroup = data => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
-      url: '/master/item-groups',
+      url: '/item-groups',
       data: data
     })
       .then(res => resolve(res))
@@ -61,7 +61,7 @@ export const apiUpdateItemGroup = (id, data) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'PATCH',
-      url: `/master/item-groups/${id}`,
+      url: `/item-groups/${id}`,
       data: data
     })
       .then(res => resolve(res))
@@ -78,7 +78,7 @@ export const apiDeleteItemGroup = data => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: `/master/item-groups`,
+      url: `/item-groups`,
       data: data
     })
       .then(res => resolve(res))
@@ -95,7 +95,7 @@ export const apiExportItemGroup = (search = '') => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/master/item-groups/export`,
+      url: `/item-groups/export`,
       responseType: 'blob', //important
       params: {
         search: search
@@ -115,7 +115,7 @@ export const apiImportItemGroup = file => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
-      url: `/master/item-groups/import`,
+      url: `/item-groups/import`,
       data: file,
       headers: {
         'Content-Type': 'multipart/form-data'

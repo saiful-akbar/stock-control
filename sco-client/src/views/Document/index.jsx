@@ -40,8 +40,10 @@ function Document(props) {
   /* Ambil data user akses pada reduxUserLogin */
   React.useEffect(() => {
     if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_items.map(mi => {
-        return mi.menu_i_url === '/documents' ? setUserAccess(mi.pivot) : null;
+      props.reduxUserLogin.menu_sub_items.map(msi => {
+        return msi.menu_s_i_url === '/documents'
+          ? setUserAccess(msi.pivot)
+          : null;
       });
     }
   }, [props.reduxUserLogin]);

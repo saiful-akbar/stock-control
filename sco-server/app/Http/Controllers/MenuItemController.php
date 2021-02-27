@@ -42,18 +42,6 @@ class MenuItemController extends Controller
         $sort = "menu_i_title";
         if (isset($request->sort) && !empty($request->sort)) {
             switch ($request->sort) {
-                case 'menu_i_url':
-                    $sort = "menu_i_url";
-                    break;
-
-                case 'menu_i_icon':
-                    $sort = "menu_i_icon";
-                    break;
-
-                case 'menu_i_children':
-                    $sort = "menu_i_children";
-                    break;
-
                 case 'created_at':
                     $sort = "created_at";
                     break;
@@ -81,7 +69,8 @@ class MenuItemController extends Controller
 
         // Ambil data dari database
         $data = MenuItem::where("menu_i_title", "like", "%" . $search . "%")
-            ->orWhere("menu_i_url", "like", "%" . $search . "%")
+            ->orWhere("created_at", "like", "%" . $search . "%")
+            ->orWhere("updated_at", "like", "%" . $search . "%")
             ->orderBy($sort, $order_by)
             ->paginate($per_page);
 
@@ -104,38 +93,17 @@ class MenuItemController extends Controller
         // validasi form
         $request->validate([
             "title"    => "required|max:128|unique:menu_items,menu_i_title",
-            "url"      => "required|max:128|unique:menu_items,menu_i_url",
-            "icon"     => "required|max:128",
-            "children" => "required|boolean",
         ]);
 
-        // menambahkan "/" pada awal url dan merubah spasi menjadi "/"
-        $url = str_replace(" ", "/", $request->url);
-        $substr_url = substr($url, 0, 1);
-        if ($substr_url != "/") {
-            $url = "/" . $url;
-        }
+        // Simpan ke database
+        MenuItem::create([
+            "menu_i_title" => htmlspecialchars(ucwords($request->title)),
+        ]);
 
-        // cek url
-        if (MenuItem::where("menu_i_url", $url)->count() >= 1) {
-            return response()->json([
-                "errors" => ["url" => ["The url has already been taken."]],
-                "message" => "The given data was invalid."
-            ], 422);
-        } else {
-            // tambah kan menu item
-            MenuItem::create([
-                "menu_i_title"    => htmlspecialchars(ucwords($request->title)),
-                "menu_i_url"      => htmlspecialchars(strtolower($url)),
-                "menu_i_icon"     => htmlspecialchars($request->icon),
-                "menu_i_children" => htmlspecialchars($request->children),
-            ]);
-
-            // hasil kembali
-            return response()->json([
-                "message"    => "Menus created successfully"
-            ], 200);
-        }
+        // hasil kembali
+        return response()->json([
+            "message" => "Menus created successfully"
+        ], 200);
     }
 
     /**
@@ -150,27 +118,7 @@ class MenuItemController extends Controller
         // validasi form
         $request->validate([
             "title"    => "required|max:128",
-            "url"      => "required|max:128",
-            "icon"     => "required|max:128",
-            "children" => "required|boolean",
         ]);
-
-        // menambahkan "/" pada awal url dan merubah spasi menjadi "/"
-        $url = str_replace(" ", "/", $request->url);
-        $substr_url = substr($url, 0, 1);
-        if ($substr_url != "/") {
-            $url = "/" . $url;
-        }
-
-        // Cek url
-        if ($url != $menuItem->menu_i_url) {
-            if (MenuItem::where("menu_i_url", $url)->count() >= 1) {
-                return response()->json([
-                    "errors" => ["url" => ["The url has already been taken."]],
-                    "message" => "The given data was invalid."
-                ], 422);
-            }
-        }
 
         // Cek title
         if ($request->title != $menuItem->menu_i_title) {
@@ -183,16 +131,13 @@ class MenuItemController extends Controller
         }
 
         // Update menu item
-        $update = MenuItem::where("id", $menuItem->id)->update([
+        MenuItem::where("id", $menuItem->id)->update([
             "menu_i_title"    => htmlspecialchars(ucwords($request->title)),
-            "menu_i_url"      => htmlspecialchars(strtolower($url)),
-            "menu_i_icon"     => htmlspecialchars($request->icon),
-            "menu_i_children" => htmlspecialchars($request->children),
         ]);
 
         // hasil
         return response()->json([
-            "message" => "{$update} Menus updated successfully",
+            "message" => "Menus updated successfully",
         ], 200);
     }
 

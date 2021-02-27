@@ -19,7 +19,7 @@ class ItemAccess
      */
     public function handle(Request $request, Closure $next, $access)
     {
-        $menu = DB::table('menu_sub_items')->where('menu_s_i_url', '/master/items')->first();
+        $menu = DB::table('menu_sub_items')->where('menu_s_i_url', '/items')->first();
         $user_access = User::find(Auth::user()->id)
             ->menuSubItem()
             ->where('menu_sub_item_id', $menu->id)
