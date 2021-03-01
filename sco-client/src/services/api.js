@@ -1,35 +1,23 @@
 import Axios from 'axios';
-import {
-  setupCache
-} from 'axios-cache-adapter';
+import { setupCache } from 'axios-cache-adapter';
 import Cookies from 'universal-cookie';
 
-/**
- * cookie
- */
+/* cookie */
 const cookie = new Cookies();
 
-/**
- * Http cache
- */
+/* Http cache */
 const cache = setupCache({
   maxAge: 30 * 60 * 1000
 });
 
-
-/**
- * Inisialisasi default untuk request api
- */
+/* Inisialisasi default untuk request api */
 const api = Axios.create({
   baseURL: 'http://localhost:8000/api',
   headers: {
     Authorization: `Bearer ${cookie.get('auth_token')}`
-  },
+  }
 });
 
 api.defaults.withCredentials = true;
 
-export {
-  cache,
-  api,
-};
+export { cache, api };

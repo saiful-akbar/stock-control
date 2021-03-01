@@ -35,7 +35,7 @@ export const login = data => dispatch => {
 /**
  * ambil data user yang sedang login
  */
-export const userLogin = () => dispatch => {
+export const userIsLogin = () => dispatch => {
   return new Promise((resolve, reject) => {
     csrf().then(() => {
       api({

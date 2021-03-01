@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { withCookies } from 'react-cookie';
 import { connect } from 'react-redux';
-import { userLogin } from '../../services/auth';
+import { userIsLogin } from 'src/services/auth';
 import { makeStyles, CircularProgress } from '@material-ui/core';
 import { reduxAction } from 'src/config/redux/state';
 import Toast from 'src/components/Toast';
@@ -72,14 +72,12 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardLayout = ({
   cookies,
-  reduxUserLogin,
-  setReduxUserLogin,
+  setReduxUserIsLogin,
   reduxToast,
   setReduxToast
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const authToken = cookies.get('auth_token');
 
   /* State */
   const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
@@ -105,11 +103,11 @@ const DashboardLayout = ({
 
   /* Mengambil data user yang sedang login */
   const getUserIsLogin = async () => {
-    if (Boolean(authToken !== undefined || reduxUserLogin === null)) {
+    if (Boolean(cookies.get('auth_token'))) {
       try {
-        await setReduxUserLogin();
-      } catch (err) {
-        if (err.status === 401) {
+        await setReduxUserIsLogin();
+      } catch (error) {
+        if (error.status === 401) {
           window.location.href = '/logout';
         }
       }
@@ -169,7 +167,7 @@ const DashboardLayout = ({
 
 /* Redux reducer */
 const reduxReducer = dispatch => ({
-  setReduxUserLogin: () => dispatch(userLogin()),
+  setReduxUserIsLogin: () => dispatch(userIsLogin()),
   setReduxToast: (show, type, message) =>
     dispatch({
       type: reduxAction.toast,
@@ -183,7 +181,6 @@ const reduxReducer = dispatch => ({
 
 /* Redux state */
 const reduxState = state => ({
-  reduxUserLogin: state.userLogin,
   reduxToast: state.toast
 });
 

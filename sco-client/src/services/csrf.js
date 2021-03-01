@@ -1,13 +1,10 @@
-import {
-  api,
-  cache,
-} from './api';
+import { api } from './api';
 
 function csrf() {
   return api({
     method: 'GET',
-    url: '/csrf-cookie',
-    adapter: cache.adapter,
+    url: '/csrf-cookie'
   });
 }
+
 export default csrf;

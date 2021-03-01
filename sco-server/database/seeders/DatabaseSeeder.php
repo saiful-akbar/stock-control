@@ -204,7 +204,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id'                => Str::random(32),
                 'user_id'           => $this->getUser('admin'),
-                'menu_sub_item_id'  => $this->getMenuSubItem('/user'),
+                'menu_sub_item_id'  => $this->getMenuSubItem('/users'),
                 'user_m_s_i_create' => true,
                 'user_m_s_i_read'   => true,
                 'user_m_s_i_update' => true,

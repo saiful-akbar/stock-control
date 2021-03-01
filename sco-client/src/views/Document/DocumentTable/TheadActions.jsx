@@ -191,7 +191,9 @@ function TheadActions({
                         <SearchIcon />
                       </InputAdornment>
                     ),
-                    endAdornment: searchValue !== '' && search !== '' && (
+                    endAdornment: Boolean(
+                      searchValue !== '' && search !== ''
+                    ) && (
                       <InputAdornment position="end">
                         <IconButton size="small" onClick={handleClearSearch}>
                           <CancelOutlinedIcon fontSize="small" />
