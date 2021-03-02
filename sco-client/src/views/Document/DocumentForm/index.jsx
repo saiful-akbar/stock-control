@@ -133,7 +133,7 @@ function DocumentForm({
 
     setAlert({
       type: 'warning',
-      message: ['Processing...', "Don't leave or reload this page"]
+      message: ["Processing... Don't leave or reload this page"]
     });
 
     const formData = new FormData();

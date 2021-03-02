@@ -185,8 +185,7 @@ function ItemGroupImport({
           setLoading(false);
           setAlert({
             type: 'error',
-            message:
-              err.status === 422 ? err.data.errors.file : [err.data.message]
+            message: err.status === 422 ? err.data.errors : [err.data.message]
           });
         }
       });

@@ -27,7 +27,7 @@ const Page = forwardRef(
       <div
         ref={ref}
         className={classes.root}
-        style={{ paddingBottom: pb ? 100 : 20 }}
+        style={{ paddingBottom: pb ? 90 : 30 }}
       >
         <Helmet>
           <title>SCO{Boolean(title) && ` :: ${title}`}</title>

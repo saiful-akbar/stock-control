@@ -75,7 +75,7 @@ function UserCreate(props) {
 
   /* Render */
   return (
-    <Page title="Create User" pageTitle="Create New User">
+    <Page title="Create User" pageTitle="Create New User" pb={true}>
       <div className={classes.root}>
         <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
           {steps.map(label => (

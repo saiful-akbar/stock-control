@@ -89,7 +89,11 @@ const NavBar = ({
               to="/account"
               className={classes.avatar}
               component={RouterLink}
-              src={getAvatar(reduxUserLogin.profile.profile_avatar)}
+              src={
+                reduxUserLogin.profile.profile_avatar === null
+                  ? '/static/images/svg/default_avatar.svg'
+                  : getAvatar(reduxUserLogin.profile.profile_avatar)
+              }
             />
           ) : (
             <Skeleton variant="circle" className={classes.avatar} />

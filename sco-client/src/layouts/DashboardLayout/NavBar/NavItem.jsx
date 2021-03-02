@@ -132,6 +132,7 @@ const NavItem = ({ data, reduxUserLogin }) => {
     // eslint-disable-next-line
   }, []);
 
+  /* Render */
   return (
     <>
       <div className={clsx({ [classes.menuActive]: open })}>

@@ -24,6 +24,7 @@ import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { apiExportItemGroup } from 'src/services/itemGroups';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
+import moment from 'moment';
 
 /**
  * Style untuk komponen utama
@@ -53,7 +54,10 @@ const useStyles = makeStyles(theme => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)'
+    backgroundColor:
+      theme.palette.type === 'dark'
+        ? 'rgba(0, 0, 0, 0.6)'
+        : 'rgba(255, 255, 255, 0.6)'
   }
 }));
 
@@ -153,12 +157,11 @@ function TheadActions({
       if (isMounted.current) {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement('a');
-        const date = new Date();
 
         link.href = url;
         link.setAttribute(
           'download',
-          `Item Groups (${date.toLocaleString()}).xlsx`
+          `Item Groups (${moment().format('MMMM_Do_YYYY_h_mm_ss')}).xlsx`
         ); //or any other extension
         document.body.appendChild(link);
         link.click();
@@ -265,7 +268,9 @@ function TheadActions({
                         <SearchIcon />
                       </InputAdornment>
                     ),
-                    endAdornment: searchValue !== '' && search !== '' && (
+                    endAdornment: Boolean(
+                      searchValue !== '' && search !== ''
+                    ) && (
                       <InputAdornment position="end">
                         <IconButton size="small" onClick={handleClearSearch}>
                           <CancelOutlinedIcon fontSize="small" />

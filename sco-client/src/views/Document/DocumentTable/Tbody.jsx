@@ -62,6 +62,7 @@ function Tbody({
       }
     } catch (err) {
       if (isMounted.current) {
+        console.log(err);
         setLoading(false);
         setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
       }

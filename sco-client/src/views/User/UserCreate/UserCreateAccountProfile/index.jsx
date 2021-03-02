@@ -4,13 +4,15 @@ import {
   CardHeader,
   CardContent,
   Grid,
-  Paper,
-  TextField
+  Divider,
+  Box
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import FormCreateAccount from './FormCreateAccount';
+import BtnSubmit from 'src/components/BtnSubmit';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -25,13 +27,22 @@ const useStyles = makeStyles(theme => ({
 /* Komponent utama */
 function UserCreateAccountProfile(props) {
   const classes = useStyles();
+  const isMounted = React.useRef(true);
 
   /* State */
   const [loading, setLoading] = React.useState(false);
 
+  /* Mengatasi jika komponen dilapas saat request api belum selesai */
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
   /* Fungsi handle submit form */
-  const handleSubmitForm = (data, { setErrors }) => {
-    console.log(data);
+  const handleSubmitForm = async (data, { setErrors }) => {
+    console.log('Submitting', data);
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -59,7 +70,8 @@ function UserCreateAccountProfile(props) {
           .max(10),
         password: Yup.string()
           .required()
-          .max(200),
+          .max(200)
+          .min(6),
         is_active: Yup.boolean(),
         profile_avatar: Yup.mixed(),
         profile_name: Yup.string()
@@ -77,46 +89,53 @@ function UserCreateAccountProfile(props) {
         handleChange,
         handleSubmit,
         touched,
-        values
+        values,
+        resetForm
       }) => (
-        <Card elevation={3}>
-          <CardHeader
-            title="Account & Profile"
-            subheader="Create new user account and profile data"
-          />
-          <CardContent>
-            <form onSubmit={handleSubmit} autoComplete="off" novalidate>
+        <form onSubmit={handleSubmit} autoComplete="off" noValidate>
+          <Card elevation={3}>
+            <CardHeader
+              title="Account & Profile"
+              subheader="Create new user account and profile data"
+            />
+            <CardContent>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <Paper elevation={3} className={classes.alert}>
+                  <div className={classes.alert}>
                     <Alert severity="info">
                       Fields marked with <strong>*</strong> are required
                     </Alert>
-                  </Paper>
+                  </div>
                 </Grid>
 
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    fullWidth
-                    required
-                    margin="dense"
-                    label="Username"
-                    name="username"
-                    type="text"
-                    variant="outlined"
-                    disabled={loading}
-                    value={values.username}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    error={Boolean(touched.username && errors.username)}
-                    helperText={touched.username && errors.username}
+                <Grid item xs={12}>
+                  <FormCreateAccount
+                    loading={loading}
+                    values={values}
+                    handleBlur={handleBlur}
+                    handleChange={handleChange}
+                    touched={touched}
+                    errors={errors}
                   />
                 </Grid>
-                <Grid item md={6} xs={12}></Grid>
               </Grid>
-            </form>
-          </CardContent>
-        </Card>
+            </CardContent>
+
+            <Divider />
+
+            <Box p={2} display="flex" justifyContent="flex-end">
+              <BtnSubmit
+                title="Save"
+                variant="contained"
+                type="submit"
+                handleSubmit={handleSubmit}
+                handleCancel={resetForm}
+                disabled={loading}
+                loading={loading}
+              />
+            </Box>
+          </Card>
+        </form>
       )}
     </Formik>
   );
