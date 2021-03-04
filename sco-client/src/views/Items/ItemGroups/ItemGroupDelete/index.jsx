@@ -1,16 +1,9 @@
 import React from 'react';
-import BtnSubmit from 'src/components/BtnSubmit';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 import { apiDeleteItemGroup } from 'src/services/itemGroups';
+import DialogDelete from 'src/components/DialogDelete';
 
 /**
  * Komponent utama
@@ -79,38 +72,12 @@ function ItemGroupDelete(props) {
   };
 
   return (
-    <Dialog
+    <DialogDelete
       open={props.open}
+      loading={loading}
+      onDelete={handleSubmit}
       onClose={handleCloseDialog}
-      maxWidth="sm"
-      fullWidth={true}
-    >
-      <DialogTitle>{'Delete item group'}</DialogTitle>
-
-      <DialogContent>
-        <Alert severity="error">
-          <div>
-            <p>Are you sure you want to permanently delete this data ?</p>
-            <p>
-              All data related to this data will also be permanently deleted.
-            </p>
-            <p>Deleted data cannot be recovered.</p>
-          </div>
-        </Alert>
-      </DialogContent>
-
-      <DialogActions>
-        <BtnSubmit
-          size="small"
-          title="Delete"
-          color="primary"
-          variant="contained"
-          loading={loading}
-          handleSubmit={handleSubmit}
-          handleCancel={handleCloseDialog}
-        />
-      </DialogActions>
-    </Dialog>
+    />
   );
 }
 

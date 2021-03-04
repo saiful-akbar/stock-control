@@ -33,6 +33,14 @@ const useStyles = makeStyles(theme => ({
   header: {
     margin: 0,
     padding: theme.spacing(2)
+  },
+  content: {
+    padding: theme.spacing(2)
+  },
+  actions: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark
   }
 }));
 
@@ -133,7 +141,7 @@ const MenuItemForm = props => {
 
             <Alert severity={alert.type}>{alert.message}</Alert>
 
-            <DialogContent dividers>
+            <DialogContent className={classes.content}>
               <form onSubmit={handleSubmit} autoComplete="off">
                 <Grid container spacing={2} mt={2} mb={2}>
                   <Grid item xs={12}>
@@ -156,7 +164,7 @@ const MenuItemForm = props => {
               </form>
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions className={classes.actions}>
               <BtnSubmit
                 title="Create"
                 loading={loading}

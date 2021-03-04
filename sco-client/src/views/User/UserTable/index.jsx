@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2.5)
   },
   container: {
-    maxHeight: '70vh'
+    maxHeight: '80vh'
   },
   visuallyHidden: {
     border: 0,

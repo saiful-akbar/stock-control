@@ -1,26 +1,16 @@
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 import Toast from 'src/components/Toast';
-import BtnSubmit from 'src/components/BtnSubmit';
 import { apiDeleteMenuItem } from 'src/services/menuItem';
+import DialogDelete from 'src/components/DialogDelete';
 
 // Main component utama
-const MenuItemDelete = ({
-  open,
-  id,
-  closeDialog,
-  reloadTable,
-  ...props
-}) => {
+const MenuItemDelete = ({ open, id, closeDialog, reloadTable, ...props }) => {
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = React.useState({ show: false, type: null, message: '' });
-
+  const [toast, setToast] = React.useState({
+    show: false,
+    type: null,
+    message: ''
+  });
 
   // fungsi untuk submit form delete
   const handleSubmit = async () => {
@@ -33,8 +23,7 @@ const MenuItemDelete = ({
         type: 'success',
         message: res.data.message
       });
-    }
-    catch (err) {
+    } catch (err) {
       switch (err.status) {
         case 401:
           window.location.href = '/logout';
@@ -51,8 +40,7 @@ const MenuItemDelete = ({
     }
     setLoading(false);
     closeDialog();
-  }
-
+  };
 
   /**
    * Handle close dialog
@@ -63,39 +51,17 @@ const MenuItemDelete = ({
     } else {
       closeDialog();
     }
-  }
-
+  };
 
   // main render component
   return (
     <>
-      <Dialog
+      <DialogDelete
         open={open}
         onClose={handleClose}
-        maxWidth='sm'
-        fullWidth={true}
-        aria-labelledby='dialog-delete'
-      >
-        <DialogTitle>Delete menus</DialogTitle>
-
-        <DialogContent>
-          <Alert severity="error">
-            {'Once a menu item is deleted, it is permanently deleted along with all data related to this menu item. Deleting menu items cannot be undone.'}
-          </Alert>
-        </DialogContent>
-
-        <DialogActions>
-          <BtnSubmit
-            title='Delete'
-            color='primary'
-            loading={loading}
-            handleSubmit={handleSubmit}
-            handleCancel={() => closeDialog()}
-            variant='contained'
-            size='small'
-          />
-        </DialogActions>
-      </Dialog>
+        loading={loading}
+        onDelete={handleSubmit}
+      />
 
       <Toast
         open={toast.show}
@@ -104,7 +70,7 @@ const MenuItemDelete = ({
             show: false,
             type: toast.type,
             message: toast.message
-          })
+          });
         }}
         type={toast.type}
         message={toast.message}

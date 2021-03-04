@@ -4,21 +4,23 @@ import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundImage: 'url(/static/images/svg/work_tim.svg)',
     width: '100%',
-    height: theme.spacing(50),
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'auto 100%',
-    marginBottom: theme.spacing(10),
-    transform: 'rotateY(180deg)'
-  },
-  textBox: {
     transform: 'rotateY(180deg)',
-    padding: theme.spacing(3, 3, 15, 3),
+    [theme.breakpoints.up('md')]: {
+      height: theme.spacing(50),
+      marginBottom: theme.spacing(5),
+      backgroundImage: 'url(/static/images/svg/work_tim.svg)',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'auto 100%'
+    }
+  },
+  landingBox: {
+    transform: 'rotateY(180deg)',
+    padding: theme.spacing(3, 2),
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'flex-start'
   },
   text: {
@@ -31,20 +33,14 @@ const Landing = props => {
 
   return (
     <div className={classes.root} {...props}>
-      <Box className={classes.textBox}>
+      <Box className={classes.landingBox}>
         <Typography className={classes.text} variant="h4" color="textPrimary">
           <strong>Dashboard</strong>.
         </Typography>
 
-        <Box mt={3}>
-          <Typography
-            className={classes.text}
-            variant="h5"
-            color="textSecondary"
-          >
-            Welcome to <strong>Stock Control Aplication</strong>
-          </Typography>
-        </Box>
+        <Typography className={classes.text} variant="h5" color="textSecondary">
+          Welcome to <strong>Stock Control Aplication</strong>
+        </Typography>
       </Box>
     </div>
   );

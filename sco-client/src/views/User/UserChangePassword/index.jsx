@@ -37,6 +37,14 @@ const useStyles = makeStyles(theme => ({
   header: {
     margin: 0,
     padding: theme.spacing(2)
+  },
+  content: {
+    padding: theme.spacing(2)
+  },
+  actions: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark
   }
 }));
 
@@ -137,7 +145,7 @@ function UserChangePassword({
               </IconButton>
             </DialogTitle>
 
-            <DialogContent>
+            <DialogContent className={classes.content}>
               <DialogContentText>
                 {"Fill in the form below to change the user's password"}
               </DialogContentText>
@@ -186,7 +194,7 @@ function UserChangePassword({
               </FormControl>
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions className={classes.actions}>
               <BtnSubmit
                 title="Update"
                 color="primary"

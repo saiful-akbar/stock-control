@@ -62,6 +62,11 @@ const useStyles = makeStyles(theme => ({
   buttonFile: {
     textAlign: 'center',
     marginTop: 20
+  },
+  actions: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark
   }
 }));
 
@@ -218,7 +223,7 @@ function DocumentForm({
               </Box>
             </Alert>
 
-            <DialogContent dividers>
+            <DialogContent>
               <Loader show={false}>
                 <form
                   onSubmit={handleSubmit}
@@ -350,7 +355,7 @@ function DocumentForm({
               </Loader>
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions className={classes.actions}>
               <BtnSubmit
                 variant="contained"
                 title={type === 'Add' ? 'Add' : 'Update'}

@@ -5,11 +5,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Box,
   Typography,
   IconButton
 } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import BtnSubmit from 'src/components/BtnSubmit';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
@@ -25,6 +24,11 @@ const useStyles = makeStyles(theme => ({
   header: {
     margin: 0,
     padding: theme.spacing(2)
+  },
+  actions: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark
   }
 }));
 
@@ -60,32 +64,30 @@ function DialogDelete({
 
       <DialogContent>
         <Alert severity="error">
-          <Box ml={3}>
-            {contentText === null ? (
-              <ul>
-                <li>Are you sure you want to permanently delete this data ?</li>
-                <li>
-                  All data related to this data will also be permanently
-                  deleted.
-                </li>
-                <li>Deleted data cannot be recovered.</li>
-              </ul>
-            ) : (
-              contentText
-            )}
-          </Box>
+          <AlertTitle>Danger</AlertTitle>
+          {contentText === null ? (
+            <ul>
+              <li>Are you sure you want to permanently delete this data ?</li>
+              <li>
+                All data related to this data will also be permanently deleted.
+              </li>
+              <li>Deleted data cannot be recovered.</li>
+            </ul>
+          ) : (
+            contentText
+          )}
         </Alert>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions className={classes.actions}>
         <BtnSubmit
           title="Delete"
           color="primary"
+          variant="contained"
+          size="small"
           loading={loading}
           handleSubmit={onDelete}
           handleCancel={() => onClose(loading)}
-          variant="contained"
-          size="small"
         />
       </DialogActions>
     </Dialog>

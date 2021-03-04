@@ -32,6 +32,11 @@ const useStyles = makeStyles(theme => ({
   header: {
     margin: 0,
     padding: theme.spacing(2)
+  },
+  actions: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark
   }
 }));
 
@@ -222,7 +227,7 @@ function ItemGroupForm(props) {
               </form>
             </DialogContent>
 
-            <DialogActions>
+            <DialogActions className={classes.actions}>
               <BtnSubmit
                 variant="contained"
                 title={props.type === 'Add' ? 'Add' : 'Update'}

@@ -1,23 +1,14 @@
 import React, { Component } from 'react';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import BtnSubmit from 'src/components/BtnSubmit';
 import { reduxAction } from 'src/config/redux/state';
 import { connect } from 'react-redux';
 import { apiDeleteUser } from 'src/services/user';
-
+import DialogDelete from 'src/components/DialogDelete';
 
 class UserDelete extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      loading: false
     };
     this.mounted = true;
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,7 +18,6 @@ class UserDelete extends Component {
   componentWillUnmount() {
     this.mounted = false;
   }
-
 
   /**
    * Fungsi untuk submit form
@@ -50,8 +40,7 @@ class UserDelete extends Component {
       if (this.mounted) {
         if (err.status === 401) {
           window.location.href = '/logout';
-        }
-        else {
+        } else {
           this.setState({ loading: false });
           this.props.setReduxToast({
             show: true,
@@ -62,7 +51,6 @@ class UserDelete extends Component {
       }
     }
   }
-
 
   /**
    * Fungsi menutup dialog
@@ -75,53 +63,26 @@ class UserDelete extends Component {
     }
   }
 
-
   render() {
-    const { open, closeDialog } = this.props;
     return (
-      <Dialog
-        open={open}
+      <DialogDelete
+        open={this.props.open}
         onClose={this.handleClose}
-        maxWidth='sm'
-        fullWidth={true}
-        aria-labelledby='dialog-delete'
-        aria-describedby="delete-description"
-      >
-        <DialogTitle>{'Delete user'}</DialogTitle>
-
-        <DialogContent>
-          <Alert severity="error">
-            <DialogContentText id="delete-description">
-              {'Once a user is deleted, it is permanently deleted along with all data related to this user. Deleting user cannot be undone.'}
-            </DialogContentText>
-          </Alert>
-        </DialogContent>
-
-        <DialogActions>
-          <BtnSubmit
-            title='Delete'
-            color='primary'
-            loading={this.state.loading}
-            handleSubmit={this.handleSubmit}
-            handleCancel={() => closeDialog()}
-            variant='contained'
-            size='small'
-          />
-        </DialogActions>
-      </Dialog>
+        loading={this.state.loading}
+        onDelete={this.handleSubmit}
+      />
     );
   }
 }
 
-
 function reduxDispatch(dispatch) {
   return {
-    setReduxToast: (value) => dispatch({
-      type: reduxAction.toast,
-      value: value
-    })
-  }
+    setReduxToast: value =>
+      dispatch({
+        type: reduxAction.toast,
+        value: value
+      })
+  };
 }
-
 
 export default connect(null, reduxDispatch)(UserDelete);

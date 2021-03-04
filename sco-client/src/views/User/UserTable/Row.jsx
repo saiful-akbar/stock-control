@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 const StyledBadge = withStyles(theme => ({
   badge: {
     color: theme.palette.type === 'light' ? '#263238' : '#FFFFFF',
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    boxShadow: `0 0 0 2px ${theme.palette.primary.paper}`,
     '&::after': {
       position: 'absolute',
       width: '100%',
@@ -49,8 +49,12 @@ const StyledBadge = withStyles(theme => ({
  */
 const useRowStyles = makeStyles(theme => ({
   avatar: {
-    width: 50,
-    height: 50
+    width: 60,
+    height: 60,
+    cursor: 'pointer',
+    '&:hover': {
+      opacity: 0.5
+    }
   },
   red: {
     color: theme.palette.error.light
@@ -62,7 +66,7 @@ const useRowStyles = makeStyles(theme => ({
     color: 'inherit',
     fontWeight: 'bold',
     '&:hover': {
-      color: '#2196f3'
+      color: theme.palette.secondary.light
     }
   },
   tableCell: {
@@ -101,7 +105,7 @@ function Row(props) {
             <StyledBadge
               overlap="circle"
               variant="dot"
-              color={Boolean(row.token) ? 'primary' : 'error'}
+              color={Boolean(row.token) ? 'secondary' : 'error'}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right'
@@ -110,10 +114,11 @@ function Row(props) {
               <Avatar
                 className={classes.avatar}
                 alt={row.profile_name}
+                onClick={goto}
                 src={
                   Boolean(row.profile_avatar)
                     ? apiUrl(`/avatar/${row.profile_avatar}`)
-                    : ''
+                    : '/static/images/svg/default_avatar.svg'
                 }
               />
             </StyledBadge>
@@ -124,7 +129,7 @@ function Row(props) {
                   className={classes.link}
                   variant="body2"
                   href={`/users/${row.id}`}
-                  onClick={e => goto(e)}
+                  onClick={goto}
                 >
                   {row.profile_name}
                 </Link>

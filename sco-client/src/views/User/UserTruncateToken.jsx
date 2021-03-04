@@ -6,16 +6,41 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton
+  IconButton,
+  Typography
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiTruncateTokens } from 'src/services/user';
 import CustomTooltip from 'src/components/CustomTooltip';
+import CloseIcon from '@material-ui/icons/Close';
+import { makeStyles } from '@material-ui/styles';
+
+/* Style */
+const useStyles = makeStyles(theme => ({
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500]
+  },
+  header: {
+    margin: 0,
+    padding: theme.spacing(2)
+  },
+  actions: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark
+  }
+}));
 
 // Komponen utama
 function UserTruncateToken(props) {
   const isMounted = React.useRef(true);
+  const classes = useStyles();
+
+  /* State */
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState({
@@ -24,7 +49,7 @@ function UserTruncateToken(props) {
     After deleting all tokens requires all users to re-login`
   });
 
-  // Ubah isMounted mendaji false ketika komponen dilepas
+  /* Ubah isMounted mendaji false ketika komponen dilepas */
   React.useEffect(() => {
     return () => {
       isMounted.current = false;
@@ -38,7 +63,10 @@ function UserTruncateToken(props) {
       let res = await apiTruncateTokens();
       if (isMounted.current) {
         setLoading(false);
-        setAlert({ type: 'success', message: res.data.message });
+        setAlert({
+          type: 'success',
+          message: res.data.message
+        });
       }
     } catch (err) {
       if (isMounted.current) {
@@ -60,7 +88,10 @@ function UserTruncateToken(props) {
    */
   const handleClose = () => {
     if (!loading && alert.type !== 'success') {
-      setAlert({ type: 'error', message: 'Truncate all user tokens?' });
+      setAlert({
+        type: 'error',
+        message: 'Truncate all user tokens?'
+      });
       setOpen(false);
     } else {
       return;
@@ -75,23 +106,23 @@ function UserTruncateToken(props) {
         </IconButton>
       </CustomTooltip>
 
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        maxWidth="sm"
-        fullWidth={true}
-        aria-labelledby="dialog-truncate-title"
-        aria-describedby="dialog-truncate-description"
-      >
-        <DialogTitle id="dialog-truncate-title">
-          {'Truncate user tokens'}
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth={true}>
+        <DialogTitle className={classes.header}>
+          <Typography variant="h6">{'Truncate user tokens'}</Typography>
+          <IconButton
+            disabled={loading}
+            className={classes.closeButton}
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
 
         <DialogContent>
           <Alert severity={alert.type}>{alert.message}</Alert>
         </DialogContent>
 
-        <DialogActions>
+        <DialogActions className={classes.actions}>
           {alert.type === 'success' ? (
             <Button
               size="small"
@@ -102,7 +133,7 @@ function UserTruncateToken(props) {
             </Button>
           ) : (
             <BtnSubmit
-              title="Truncate"
+              title="Delete"
               color="primary"
               variant="contained"
               size="small"

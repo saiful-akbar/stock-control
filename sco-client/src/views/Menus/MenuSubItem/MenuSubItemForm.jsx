@@ -43,6 +43,14 @@ const useStyles = makeStyles(theme => ({
     margin: 0,
     padding: theme.spacing(2)
   },
+  content: {
+    padding: theme.spacing(2)
+  },
+  actions: {
+    margin: 0,
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.dark
+  },
   option: {
     fontSize: 15,
     '& > span': {
@@ -192,7 +200,7 @@ const MenuSubItemForm = props => {
 
               <Alert severity={alert.type}>{alert.message}</Alert>
 
-              <DialogContent dividers>
+              <DialogContent className={classes.content}>
                 <form onSubmit={handleSubmit} autoComplete="off">
                   <Grid container spacing={2} mt={2} mb={2}>
                     <Grid item md={6} xs={12}>
@@ -270,12 +278,7 @@ const MenuSubItemForm = props => {
                         options={materialIcons}
                         getOptionLabel={option => option.label}
                         value={
-                          Boolean(
-                            props.type.toLowerCase() === 'edit' ||
-                              values.icon !== ''
-                          )
-                            ? { label: values.icon }
-                            : null
+                          values.icon === '' ? null : { label: values.icon }
                         }
                         getOptionSelected={(options, value) =>
                           Boolean(options.label === value.label)
@@ -311,7 +314,7 @@ const MenuSubItemForm = props => {
                 </form>
               </DialogContent>
 
-              <DialogActions>
+              <DialogActions className={classes.actions}>
                 <BtnSubmit
                   title={
                     props.type.toLowerCase() === 'edit' ? 'Update' : 'Create'

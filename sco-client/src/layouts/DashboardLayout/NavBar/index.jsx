@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {
   Avatar,
   Box,
-  Button,
   Divider,
   Drawer,
   Hidden,
@@ -18,6 +17,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 import apiUrl from 'src/utils/apiUrl';
 import NavItem from './NavItem';
+import LogOut from './LogOut';
 
 // Style
 const useStyles = makeStyles(theme => ({
@@ -147,15 +147,7 @@ const NavBar = ({
       <Divider />
 
       <Box p={2} display="flex" justifyContent="center">
-        <Button
-          fullWidth
-          color="primary"
-          size="small"
-          variant="outlined"
-          onClick={() => (window.location.href = '/logout')}
-        >
-          {'Logout'}
-        </Button>
+        <LogOut />
       </Box>
     </Box>
   );

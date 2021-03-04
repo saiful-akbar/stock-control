@@ -17,7 +17,7 @@ const useStyles = makeStyles(() => ({
     height: '100%'
   },
   avatar: {
-    backgroundColor: colors.indigo[600],
+    backgroundColor: colors.indigo[400],
     height: 56,
     width: 56
   }
@@ -27,28 +27,14 @@ const TotalProfit = ({ className, ...rest }) => {
   const classes = useStyles();
 
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <Card elevation={3} className={clsx(classes.root, className)} {...rest}>
       <CardContent>
-        <Grid
-          container
-          justify="space-between"
-          spacing={3}
-        >
+        <Grid container justify="space-between" spacing={3}>
           <Grid item>
-            <Typography
-              color="textSecondary"
-              gutterBottom
-              variant="h6"
-            >
+            <Typography color="textSecondary" gutterBottom variant="subtitle2">
               TOTAL PROFIT
             </Typography>
-            <Typography
-              color="textPrimary"
-              variant="h3"
-            >
+            <Typography color="textPrimary" variant="h5">
               $23,200
             </Typography>
           </Grid>
