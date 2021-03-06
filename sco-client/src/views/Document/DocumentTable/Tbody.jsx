@@ -47,8 +47,8 @@ function Tbody({
   /* Fungsi untuk handle download file document */
   const handleDownload = async data => {
     setLoading(true);
-    try {
-      const res = await apiDownloadDocument(data.id);
+    const res = await apiDownloadDocument(data.id);
+    if (res.status === 200) {
       if (isMounted.current) {
         setLoading(false);
         const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -60,11 +60,10 @@ function Tbody({
         link.click();
         link.remove();
       }
-    } catch (err) {
+    } else {
       if (isMounted.current) {
-        console.log(err);
         setLoading(false);
-        setReduxToast(true, 'error', `(#${err.status}) ${err.statusText}`);
+        setReduxToast(true, 'error', `(#${res.status}) ${res.data.message}`);
       }
     }
   };

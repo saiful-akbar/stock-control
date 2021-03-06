@@ -9,7 +9,8 @@ import {
   Avatar,
   Icon,
   Badge,
-  Link
+  Link,
+  ButtonBase
 } from '@material-ui/core';
 import apiUrl from 'src/utils/apiUrl';
 import UserTableOptions from '../UserTableOptions';
@@ -51,10 +52,7 @@ const useRowStyles = makeStyles(theme => ({
   avatar: {
     width: 60,
     height: 60,
-    cursor: 'pointer',
-    '&:hover': {
-      opacity: 0.5
-    }
+    borderRadius: '50%'
   },
   red: {
     color: theme.palette.error.light
@@ -111,16 +109,17 @@ function Row(props) {
                 horizontal: 'right'
               }}
             >
-              <Avatar
-                className={classes.avatar}
-                alt={row.profile_name}
-                onClick={goto}
-                src={
-                  Boolean(row.profile_avatar)
-                    ? apiUrl(`/avatar/${row.profile_avatar}`)
-                    : '/static/images/svg/default_avatar.svg'
-                }
-              />
+              <ButtonBase onClick={goto} className={classes.avatar}>
+                <Avatar
+                  className={classes.avatar}
+                  alt={row.profile_name}
+                  src={
+                    Boolean(row.profile_avatar)
+                      ? apiUrl(`/avatar/${row.profile_avatar}`)
+                      : '/static/images/svg/default_avatar.svg'
+                  }
+                />
+              </ButtonBase>
             </StyledBadge>
 
             <div style={{ marginLeft: 10 }}>

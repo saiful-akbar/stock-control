@@ -10,6 +10,9 @@ import CustomTooltip from 'src/components/CustomTooltip';
 import { Fab, Box } from '@material-ui/core';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import UserCreateAccountProfile from './UserCreateAccountProfile';
+import { apiGetDataUserCreate } from 'src/services/user';
+import { reduxAction } from 'src/config/redux/state';
+import UserCreateMenuAccess from './UserCreateMenuAccess';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -28,8 +31,18 @@ const useStyles = makeStyles(theme => ({
 function UserCreate(props) {
   const navigate = useNavigate();
   const classes = useStyles();
+  const isMounted = React.useRef(true);
   const [steps] = React.useState(['Account & Profile', 'Menu Access']);
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(1);
+  const [dataMenus, setDataMenus] = React.useState(null);
+
+  /* Merubah maunted menjadi false ketika komponen dilepas */
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+    // eslint-disble-next-line
+  }, []);
 
   /**
    * Ambil data userLogin dari redux
@@ -48,6 +61,27 @@ function UserCreate(props) {
     }
   }, [props.reduxUserLogin, navigate]);
 
+  /* Mengambil data menus pada server dari api */
+  React.useState(() => {
+    if (dataMenus === null) {
+      apiGetDataUserCreate()
+        .then(res => {
+          if (isMounted.current) {
+            setDataMenus(res.data);
+          }
+        })
+        .catch(err => {
+          if (isMounted.current) {
+            props.setReduxToast(
+              true,
+              'error',
+              `(#${err.status}) ${err.data.message}`
+            );
+          }
+        });
+    }
+  }, [dataMenus]);
+
   /* Fungsi next step */
   const handleNext = () => {
     setActiveStep(1);
@@ -62,10 +96,11 @@ function UserCreate(props) {
   const getStepContent = stepIndex => {
     switch (stepIndex) {
       case 1:
-        return 'Menu Access';
+        return <UserCreateMenuAccess dataMenus={dataMenus} />;
       default:
         return (
           <UserCreateAccountProfile
+            dataMenus={dataMenus}
             onNextStep={() => handleNext()}
             onBackStep={() => handleBack()}
           />
@@ -108,4 +143,19 @@ function reduxState(state) {
   };
 }
 
-export default connect(reduxState, null)(UserCreate);
+/* redux reducer */
+function reduxReducer(dispatch) {
+  return {
+    setReduxToast: (show, type, message) =>
+      dispatch({
+        type: reduxAction.toast,
+        value: {
+          show: show,
+          type: type,
+          message: message
+        }
+      })
+  };
+}
+
+export default connect(reduxState, reduxReducer)(UserCreate);

@@ -54,50 +54,39 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
      * Route group untuk user
      */
     Route::group(["prefix" => "user"], function () {
+        Route::get("/", [UserController::class, "index"])->middleware("access.user:read");
 
-        /**
-         * Route middleware menu user untuk akses read
-         */
-        Route::group(["middleware" => ["access.user:read"]], function () {
-            Route::get("/", [UserController::class, "index"]);
-            Route::get("/menu", [UserController::class, "getMenus"]);
-            Route::get("/{user}", [UserController::class, "show"]);
-        });
+        Route::get("/create", [UserController::class, "create"])->middleware("access.user:create");
+        Route::post("/", [UserController::class, "storeUserProfile"])->middleware("access.user:create");
+        Route::post("/menu-access", [UserController::class, "createUserMenuAccess"])->middleware("access.user:create");
 
-        /**
-         * Route middleware menu user untuk akses create
-         */
-        Route::group(["middleware" => ["access.user:create"]], function () {
-            // Route::post("/cek/user-form", [UserController::class, "cekUserForm"]);
-            // Route::post("/cek/profile-form", [UserController::class, "cekProfileForm"]);
-            Route::post("/", [UserController::class, "store"]);
-            Route::post("/menu-access", [UserController::class, "createUserMenuAccess"]);
-        });
+        // Route::get("/menu", [UserController::class, "getMenus"]);
+        // Route::get("/{user}", [UserController::class, "show"]);
 
         /**
          * Route middleware menu user untuk akses update
          */
-        Route::group(["middleware" => ["access.user:update"]], function () {
-            Route::get("/{id}/edit", [UserController::class, "editProfile"]);
-            Route::get("/{user}/account", [UserController::class, "editAccount"]);
-            Route::patch("/{id}", [UserController::class, "updateProfile"]);
-            Route::patch("/{user}/account", [UserController::class, "updateAccount"]);
-            Route::get("/menu/{id}", [UserController::class, "getUserMenuItems"]);
-            Route::post("/menu/{id}", [UserController::class, "addUserMenuItem"]);
-            Route::delete("/menu/{id}", [UserController::class, "deleteUserMenuItem"]);
-            Route::get("/submenu/{id}", [UserController::class, "getUserMenuSubItems"]);
-            Route::post("/submenu/{id}", [UserController::class, "addUserMenuSubItems"]);
-            Route::delete("/submenu/{id}", [UserController::class, "deleteUserMenuSubItems"]);
-            Route::patch("/password/{id}", [UserController::class, "updatePassword"]);
-        });
+        // Route::group(["middleware" => ["access.user:update"]], function () {
+        //     Route::get("/{id}/edit", [UserController::class, "editProfile"]);
+        //     Route::get("/{user}/account", [UserController::class, "editAccount"]);
+        //     Route::patch("/{id}", [UserController::class, "updateProfile"]);
+        //     Route::patch("/{user}/account", [UserController::class, "updateAccount"]);
+        //     Route::get("/menu/{id}", [UserController::class, "getUserMenuItems"]);
+        //     Route::post("/menu/{id}", [UserController::class, "addUserMenuItem"]);
+        //     Route::delete("/menu/{id}", [UserController::class, "deleteUserMenuItem"]);
+        //     Route::get("/submenu/{id}", [UserController::class, "getUserMenuSubItems"]);
+        //     Route::post("/submenu/{id}", [UserController::class, "addUserMenuSubItems"]);
+        //     Route::delete("/submenu/{id}", [UserController::class, "deleteUserMenuSubItems"]);
+        //     Route::patch("/password/{id}", [UserController::class, "updatePassword"]);
+        // });
 
         /**
          * Route middleware menu user untuk akses delete
          */
-        Route::group(["middleware" => ["access.user:delete"]], function () {
-            Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"]);
-            Route::delete("/{id}/delete", [UserController::class, "destroy"]);
-        });
+        // Route::group(["middleware" => ["access.user:delete"]], function () {
+        //     Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"]);
+        //     Route::delete("/{id}/delete", [UserController::class, "destroy"]);
+        // });
     });
 
     /**
