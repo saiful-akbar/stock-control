@@ -25,8 +25,8 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     cursor: 'pointer',
     borderRadius: '50%',
-    width: theme.spacing(35),
-    height: theme.spacing(35),
+    width: theme.spacing(37),
+    height: theme.spacing(37),
     [theme.breakpoints.down('xs')]: {
       width: theme.spacing(20),
       height: theme.spacing(20)
@@ -89,10 +89,7 @@ function FormCreateProfile({
 
   return (
     <Card variant="outlined">
-      <CardHeader
-        title="Profile Form"
-        subheader="This data is used for user profile information"
-      />
+      <CardHeader title="Profile Form" />
 
       <CardContent>
         <Grid container spacing={3}>

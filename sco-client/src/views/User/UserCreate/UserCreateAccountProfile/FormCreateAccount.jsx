@@ -30,10 +30,7 @@ function FormCreateAccount({
 
   return (
     <Card variant="outlined">
-      <CardHeader
-        title="Account Form"
-        subheader="This data is used for user authentication"
-      />
+      <CardHeader title="Account Form" />
 
       <CardContent>
         <Grid container spacing={3}>

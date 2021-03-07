@@ -166,8 +166,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        $menu_items = DB::table("menu_items")->get();
-        $menu_sub_items = DB::table('menu_sub_items')->get();
+        $menu_items = DB::table("menu_items")->orderBy("menu_i_title", "asc")->get();
+        $menu_sub_items = DB::table('menu_sub_items')->orderBy("menu_s_i_title", "asc")->get();
 
         return response()->json([
             "menu_items" => $menu_items,
