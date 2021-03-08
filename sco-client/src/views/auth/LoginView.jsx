@@ -100,41 +100,33 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
     // eslint-disable-next-line
   }, []);
 
-  const handleFormikSubmit = async (data, { setErrors }) => {
+  const handleFormikSubmit = (data, { setErrors }) => {
     setLoading(true);
-    try {
-      const res = await loginUser(data);
-
-      const date = new Date();
-      date.setTime(date.getTime() + 30 * 24 * 60 * 60 * 1000);
-      cookies.set('auth_token', res.data.auth_token, {
-        path: '/',
-        expires: date
-      });
-      window.location.href = '/dashboard';
-    } catch (err) {
-      setLoading(false);
-      if (err.status === 422) {
-        setErrors(err.data.errors);
-        setToast({
-          show: true,
-          type: 'error',
-          message: err.data.errors.username
+    loginUser(data)
+      .then(res => {
+        const date = new Date();
+        date.setTime(date.getTime() + 30 * 24 * 60 * 60 * 1000);
+        cookies.set('auth_token', res.data.auth_token, {
+          path: '/',
+          expires: date
         });
-      } else {
+        window.location.href = '/dashboard';
+      })
+      .catch(err => {
+        Boolean(err.status === 422) && setErrors(err.data.errors);
+        setLoading(false);
         setToast({
           show: true,
           type: 'error',
           message: `(#${err.status}) ${err.data.message}`
         });
-      }
-    }
+      });
   };
 
   return (
     <div>
       <Helmet>
-        <title>SCO :: Login</title>
+        <title>SCO - Login</title>
       </Helmet>
 
       <Grid
@@ -174,17 +166,10 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
 
             <Formik
               onSubmit={handleFormikSubmit}
-              initialValues={{
-                username: '',
-                password: ''
-              }}
+              initialValues={{ username: '', password: '' }}
               validationSchema={Yup.object().shape({
-                username: Yup.string()
-                  .max(200)
-                  .required(),
-                password: Yup.string()
-                  .max(200)
-                  .required()
+                username: Yup.string().required(),
+                password: Yup.string().required()
               })}
             >
               {({
@@ -203,7 +188,6 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                 >
                   <TextField
                     fullWidth
-                    autoFocus
                     label="Username"
                     margin="normal"
                     name="username"
@@ -224,6 +208,7 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                     error={Boolean(touched.password && errors.password)}
                   >
                     <InputLabel htmlFor="password">{'Password'}</InputLabel>
+
                     <OutlinedInput
                       label="Password"
                       id="password"
@@ -243,10 +228,9 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                             >
                               <IconButton
                                 color="primary"
-                                aria-label="toggle password visibility"
+                                edge="end"
                                 onClick={() => setShowPassword(!showPassword)}
                                 onMouseDown={e => e.preventDefault()}
-                                edge="end"
                               >
                                 {showPassword ? (
                                   <VisibilityOff />
@@ -259,6 +243,7 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                         )
                       }
                     />
+
                     <FormHelperText>
                       {touched.password && errors.password}
                     </FormHelperText>
@@ -267,10 +252,10 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                   <Box mt={3}>
                     <Button
                       fullWidth
-                      color="primary"
-                      variant="contained"
                       size="large"
                       type="submit"
+                      color="primary"
+                      variant="contained"
                       disabled={loading}
                       className={classes.buttonSubmit}
                     >
@@ -281,29 +266,31 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                           style={{ marginRight: '10px' }}
                         />
                       )}
+
                       {loading ? 'Logged In...' : 'Login'}
                     </Button>
+
                     <Copyright />
                   </Box>
                 </form>
               )}
             </Formik>
-
-            <Toast
-              open={toast.show}
-              handleClose={() => {
-                setToast({
-                  show: false,
-                  type: toast.type,
-                  message: toast.message
-                });
-              }}
-              type={toast.type}
-              message={toast.message}
-            />
           </div>
         </Grid>
       </Grid>
+
+      <Toast
+        open={toast.show}
+        type={toast.type}
+        message={toast.message}
+        handleClose={() => {
+          setToast({
+            show: false,
+            type: toast.type,
+            message: toast.message
+          });
+        }}
+      />
     </div>
   );
 }

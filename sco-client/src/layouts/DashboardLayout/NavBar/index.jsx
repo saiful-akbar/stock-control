@@ -17,7 +17,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
 import apiUrl from 'src/utils/apiUrl';
 import NavItem from './NavItem';
-import LogOut from './LogOut';
+import LogoutConfirm from './LogutConfirm';
 
 // Style
 const useStyles = makeStyles(theme => ({
@@ -147,7 +147,7 @@ const NavBar = ({
       <Divider />
 
       <Box p={2} display="flex" justifyContent="center">
-        <LogOut />
+        <LogoutConfirm />
       </Box>
     </Box>
   );

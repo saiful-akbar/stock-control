@@ -93,7 +93,7 @@ function UserCreateMenuAccess(props) {
                     {dataMenus.menu_sub_items.map(
                       (menuSubItem, key) =>
                         menuSubItem.menu_item_id === menuItem.id && (
-                          <Grid item sm={6} xs={12} key={key}>
+                          <Grid item md={4} sm={6} xs={12} key={key}>
                             <Paper variant="outlined">
                               <List
                                 subheader={
@@ -154,7 +154,7 @@ function UserCreateMenuAccess(props) {
 
         <Grid item xs={12}>
           <Box display="flex" justifyContent="flex-end">
-            <BtnSubmit title="Save" variant="contained" />
+            <BtnSubmit title="Save" variant="contained" size="large" />
           </Box>
         </Grid>
       </Grid>

@@ -47,8 +47,7 @@ const MainLayout = ({ reduxToast, setReduxToast }) => {
    */
   useEffect(() => {
     window.onload = () => {
-      const preloader = document.getElementById('preloader');
-      preloader.remove();
+      document.getElementById('preloader').remove();
     };
 
     // eslint-disable-next-line

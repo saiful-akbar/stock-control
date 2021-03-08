@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Profile;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -29,14 +28,13 @@ class DatabaseSeeder extends Seeder
     {
         $user = User::create([
             'username'   => 'admin',
-            'password'   => Hash::make('admin'),
+            'password'   => Hash::make('admin123456'),
             'is_active'  => true,
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
-        Profile::create([
-            'user_id'          => $user->id,
+        $user->Profile()->create([
             'profile_avatar'   => null,
             'profile_name'     => 'Super Administrator',
             'profile_email'    => 'admin@mail.com',

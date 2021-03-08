@@ -12,10 +12,6 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '100%',
     paddingTop: theme.spacing(2),
     flexGrow: 1
-  },
-  pageTitle: {
-    color: theme.palette.text.secondary,
-    marginBottom: theme.spacing(3)
   }
 }));
 
@@ -30,26 +26,31 @@ const Page = forwardRef(
         style={{ paddingBottom: pb ? 90 : 30 }}
       >
         <Helmet>
-          <title>SCO{Boolean(title) && ` :: ${title}`}</title>
+          <title>SCO{Boolean(title) && ` - ${title}`}</title>
         </Helmet>
 
         <Container maxWidth={false}>
           {pageTitle !== null && (
             <Box
-              className={classes.pageTitle}
+              mb={3}
               dispalay="flex"
               justifyContent="flex-start"
               alignItems="center"
             >
               {reduxUserLogin === null ? (
                 <Skeleton variant="text">
-                  <Typography variant="h5">{pageTitle}</Typography>
+                  <Typography variant="h5" color="textSecondary">
+                    {pageTitle}
+                  </Typography>
                 </Skeleton>
               ) : (
-                <Typography variant="h5">{pageTitle}</Typography>
+                <Typography variant="h5" color="textSecondary">
+                  {pageTitle}
+                </Typography>
               )}
             </Box>
           )}
+
           {children}
         </Container>
       </div>

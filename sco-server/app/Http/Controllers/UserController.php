@@ -163,6 +163,7 @@ class UserController extends Controller
 
     /**
      * Method create
+     * Method untuk mengambil data untuk kebutuhan create new user
      */
     public function create()
     {
@@ -213,7 +214,6 @@ class UserController extends Controller
 
         // Menambahkan profile sesuai dengan user yang baru dibuat
         $user->profile()->create([
-            "user_id"          => $user->id,
             "profile_avatar"   => $avatar,
             "profile_name"     => $this->clearStr($request->name, "proper"),
             "profile_division" => $this->clearStr($request->division, "proper"),

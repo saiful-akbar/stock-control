@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class UserLog extends Model
 {
     use HasFactory, Uuid;
-    protected $fillable = ['user_id', 'ip', 'ip2', 'browser', 'device', 'os', 'logged_at'];
+    protected $fillable = ['user_id', 'ip', 'ip2', 'browser', 'device', 'os', 'log_desc'];
 
     /**
      * Relasi one to one dengan model user

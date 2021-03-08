@@ -59,7 +59,7 @@ const DialogActions = withStyles(theme => ({
 }))(MuiDialogActions);
 
 /* Komponen utama */
-function LogOut(props) {
+function LogoutConfirm(props) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -68,6 +68,7 @@ function LogOut(props) {
   const handleClose = () => {
     setOpen(false);
   };
+
   /* Render */
   return (
     <React.Fragment>
@@ -106,4 +107,4 @@ function LogOut(props) {
   );
 }
 
-export default LogOut;
+export default LogoutConfirm;

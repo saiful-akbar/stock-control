@@ -8,31 +8,23 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\MenuItemController;
 use App\Http\Controllers\MenuSubItemController;
 
-/**
- * Route yang tidak perlu login
- * Route untuk login user dan mengambil avatar user
- */
-Route::any("/login", [AuthController::class, "login"]);
-Route::any("/avatar/{avatar}", [AuthController::class, "userAvatar"]);
+/* Login route */
 
-/**
- * Route group middleware untuk user yang sudah login
- */
+Route::post("/login", [AuthController::class, "login"]);
+
+/* Route untuk mangambil avatar */
+Route::get("/avatar/{avatar}", [AuthController::class, "userAvatar"]);
+
+/* Route group middleware untuk user yang sudah login */
 Route::group(["middleware" => ["auth:sanctum"]], function () {
 
-    /**
-     * Route fungsi logout
-     */
+    /* Route fungsi logout */
     Route::get("/logout", [AuthController::class, "logout"]);
 
-    /**
-     * Route untuk fungsi cek apakah user sudah login dengan benar atau belum
-     */
+    /* Route untuk fungsi cek apakah user sudah login dengan benar atau belum */
     Route::get("/login/user", [AuthController::class, "userIsLogin"]);
 
-    /**
-     * Route group untuk menu item
-     */
+    /* Route group untuk menu item */
     Route::group(["prefix" => "menu"], function () {
         Route::get("/", [MenuItemController::class, "index"])->middleware("access.menu:read");
         Route::post("/", [MenuItemController::class, "store"])->middleware("access.menu:create");
@@ -40,9 +32,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::delete("/{menuItem}", [MenuItemController::class, "destroy"])->middleware("access.menu:delete");
     });
 
-    /**
-     * Route group untuk menu sub item
-     */
+    /* Route group untuk menu sub item */
     Route::group(["prefix" => "submenu"], function () {
         Route::get("/", [MenuSubItemController::class, "index"])->middleware("access.menu:read");
         Route::post("/", [MenuSubItemController::class, "store"])->middleware("access.menu:create");
@@ -50,12 +40,9 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::delete("/{menuSubItem}", [MenuSubItemController::class, "destroy"])->middleware("access.menu:delete");
     });
 
-    /**
-     * Route group untuk user
-     */
+    /* Route group untuk user */
     Route::group(["prefix" => "user"], function () {
         Route::get("/", [UserController::class, "index"])->middleware("access.user:read");
-
         Route::get("/create", [UserController::class, "create"])->middleware("access.user:create");
         Route::post("/", [UserController::class, "storeUserProfile"])->middleware("access.user:create");
         Route::post("/menu-access", [UserController::class, "createUserMenuAccess"])->middleware("access.user:create");
@@ -89,9 +76,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         // });
     });
 
-    /**
-     * Route group halaman master items
-     */
+    /* Route group halaman master items */
     Route::group(["prefix" => "item-groups"], function () {
         Route::get("/", [ItemGroupController::class, "index"])->middleware("access.item:read");
         Route::post("/", [ItemGroupController::class, "create"])->middleware("access.item:create");
@@ -101,9 +86,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::get("/export", [ItemGroupController::class, "export"])->middleware("access.item:read");
     });
 
-    /**
-     * Route group document
-     */
+    /* Route group document */
     Route::group(['prefix' => 'documents'], function () {
         Route::get("/", [DocumentController::class, "index"])->middleware("access.document:read");
         Route::post("/", [DocumentController::class, "store"])->middleware("access.document:read");

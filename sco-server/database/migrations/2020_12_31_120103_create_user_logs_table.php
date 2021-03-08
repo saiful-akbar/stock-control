@@ -21,7 +21,7 @@ class CreateUserLogsTable extends Migration
             $table->string('browser', 64);
             $table->string('device', 64);
             $table->text('os');
-            $table->timestamp('logged_at', $precision = 0);
+            $table->text('log_desc');
             $table->timestamps();
 
             $table->foreign('user_id')
