@@ -45,7 +45,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::get("/", [UserController::class, "index"])->middleware("access.user:read");
         Route::get("/create", [UserController::class, "create"])->middleware("access.user:create");
         Route::post("/", [UserController::class, "storeUserProfile"])->middleware("access.user:create");
-        Route::post("/menu-access", [UserController::class, "createUserMenuAccess"])->middleware("access.user:create");
+        Route::post("/menu-access", [UserController::class, "storeUserMenuAccess"])->middleware("access.user:create");
 
         // Route::get("/menu", [UserController::class, "getMenus"]);
         // Route::get("/{user}", [UserController::class, "show"]);

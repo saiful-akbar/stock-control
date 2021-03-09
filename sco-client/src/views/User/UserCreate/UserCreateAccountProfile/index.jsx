@@ -71,6 +71,7 @@ function UserCreateAccountProfile(props) {
       .then(res => {
         if (isMounted.current) {
           setLoading(false);
+          props.onChangeUserId(res.data.user_id);
           props.onNextStep();
         }
       })
@@ -86,8 +87,6 @@ function UserCreateAccountProfile(props) {
             setErrors(err.data.errors);
           } else if (err.status === 401) {
             window.location.href = '/logout';
-          } else if (err.status === 404) {
-            navigate('/error/notfound');
           } else if (err.status === 403) {
             navigate('/error/forbidden');
           }

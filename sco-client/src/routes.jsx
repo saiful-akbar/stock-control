@@ -23,14 +23,10 @@ const UserEditMenuAccess = React.lazy(() =>
 );
 const UserDetail = React.lazy(() => import('src/views/User/UserDetail'));
 const Items = React.lazy(() => import('src/views/Items'));
-const Consignee = React.lazy(() => import('src/views/Consignee'));
 const Document = React.lazy(() => import('src/views/Document'));
-const Purchase = React.lazy(() => import('src/views/Purchase'));
 const Return = React.lazy(() => import('src/views/Return'));
-const TakeIn = React.lazy(() => import('src/views/TakeIn'));
 const Store = React.lazy(() => import('src/views/Store'));
 const DeliveryNote = React.lazy(() => import('src/views/DeliveryNote'));
-const TakeOut = React.lazy(() => import('src/views/TakeOut'));
 
 /* routes */
 const routes = [
@@ -79,36 +75,16 @@ const routes = [
         element: <Items />
       },
       {
-        path: '/consignee',
-        element: <Consignee />
-      },
-      {
         path: '/store',
         element: <Store />
-      },
-      {
-        path: '/purchase',
-        element: <Purchase />
       },
       {
         path: '/return',
         element: <Return />
       },
       {
-        path: '/takein',
-        element: <TakeIn />
-      },
-      {
         path: '/delivery-note',
         element: <DeliveryNote />
-      },
-      {
-        path: '/takeout',
-        element: <TakeOut />
-      },
-      {
-        path: '/store',
-        element: <Store />
       },
       {
         path: '/',

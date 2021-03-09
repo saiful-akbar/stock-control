@@ -216,10 +216,10 @@ class UserController extends Controller
         $user->profile()->create([
             "profile_avatar"   => $avatar,
             "profile_name"     => $this->clearStr($request->name, "proper"),
-            "profile_division" => $this->clearStr($request->division, "proper"),
-            "profile_email"    => $this->clearStr($request->email, "lower"),
-            "profile_phone"    => $this->clearStr($request->phone, "lower"),
-            "profile_address"  => $this->clearStr($request->address),
+            "profile_division" => !empty($request->division) ? $this->clearStr($request->division, "proper") : null,
+            "profile_email"    => !empty($request->email) ? $this->clearStr($request->email, "lower") : null,
+            "profile_phone"    => !empty($request->phone) ? $this->clearStr($request->phone, "lower") : null,
+            "profile_address"  => !empty($request->address) ? $this->clearStr($request->address) : null,
         ]);
 
         // response berhasil
@@ -231,102 +231,46 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Method untuk membuat menu akses user
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
      */
-    // public function cekUserForm(Request $request)
-    // {
-    //     $request->validate([
-    //         "username"  => "required|string|unique:users,username|max:200",
-    //         "password"  => "required|string|min:4|max:200",
-    //         "is_active" => "required|boolean"
-    //     ]);
+    public function storeUserMenuAccess(Request $request)
+    {
+        $menu_items = [];
+        foreach ($request->user_menu_item as $key => $value) {
+            $menu_items[$key] = [
+                "id"              => Str::random(32),
+                "user_id"         => $value["user_id"],
+                "menu_item_id"    => $value["menu_item_id"],
+                "user_m_i_read"   => $value["read"],
+                "created_at"      => now(),
+                "updated_at"      => now(),
+            ];
+        }
 
-    //     return response()->json([
-    //         "message" => "success",
-    //         "form_data" => [
-    //             "username"  => htmlspecialchars($request->username),
-    //             "password"  => htmlspecialchars($request->password),
-    //             "is_active" => $request->is_active ? "1" : "0",
-    //             "id"        => Str::random(32),
-    //         ]
-    //     ], 200);
-    // }
+        $menu_sub_items = [];
+        foreach ($request->user_menu_sub_item as $key_sub_item => $sub_item) {
+            $menu_sub_items[$key_sub_item] = [
+                "id"                => Str::random(32),
+                "user_id"           => $sub_item["user_id"],
+                "menu_sub_item_id"  => $sub_item["menu_sub_item_id"],
+                "user_m_s_i_read"   => $sub_item["read"],
+                "user_m_s_i_create" => $sub_item["create"],
+                "user_m_s_i_update" => $sub_item["update"],
+                "user_m_s_i_delete" => $sub_item["delete"],
+                "created_at"        => now(),
+                "updated_at"        => now(),
+            ];
+        }
 
-    /**
-     * Cek form user profile
-     */
-    // public function cekProfileForm(Request $request)
-    // {
-    //     $request->validate([
-    //         "user_id"          => "required|string",
-    //         "profile_avatar"   => "nullable|image|mimes:jpeg,jpg,png|max:1000",
-    //         "profile_name"     => "required|string|max:200",
-    //         "profile_division" => "nullable|string|max:128",
-    //         "profile_email"    => "nullable|email:filter|unique:profiles,profile_email|max:200",
-    //         "profile_phone"    => "nullable|string|max:32",
-    //         "profile_address"  => "nullable|string",
-    //     ]);
+        DB::table("user_menu_item")->insert($menu_items);
+        DB::table("user_menu_sub_item")->insert($menu_sub_items);
 
-    //     $avatar = false;
-    //     if ($request->hasFile("profile_avatar")) {
-    //         $avatar = true;
-    //     }
-
-    //     return response()->json([
-    //         "message" => "success",
-    //         "form_data" => [
-    //             "user_id"          => htmlspecialchars($request->user_id),
-    //             "profile_avatar"   => $avatar,
-    //             "profile_name"     => htmlspecialchars(ucwords($request->profile_name)),
-    //             "profile_division" => htmlspecialchars(ucwords($request->profile_division)),
-    //             "profile_email"    => htmlspecialchars($request->profile_email),
-    //             "profile_phone"    => htmlspecialchars($request->profile_phone),
-    //             "profile_address"  => htmlspecialchars($request->profile_address),
-    //         ]
-    //     ], 200);
-    // }
-
-    // public function createUserMenuAccess(Request $request)
-    // {
-    //     $menu_items = [];
-    //     foreach ($request->user_menu_item as $key => $value) {
-    //         $menu_items[$key] = [
-    //             "id"              => Str::random(32),
-    //             "user_id"         => $value["user_id"],
-    //             "menu_item_id"    => $value["menu_item_id"],
-    //             "user_m_i_read"   => $value["user_m_i_read"],
-    //             "user_m_i_create" => $value["user_m_i_create"],
-    //             "user_m_i_update" => $value["user_m_i_update"],
-    //             "user_m_i_delete" => $value["user_m_i_delete"],
-    //             "created_at"      => now(),
-    //             "updated_at"      => now(),
-    //         ];
-    //     }
-
-    //     $menu_sub_items = [];
-    //     foreach ($request->user_menu_sub_item as $key_sub_item => $sub_item) {
-    //         $menu_sub_items[$key_sub_item] = [
-    //             "id"                => Str::random(32),
-    //             "user_id"           => $sub_item["user_id"],
-    //             "menu_sub_item_id"  => $sub_item["menu_sub_item_id"],
-    //             "user_m_s_i_read"   => $sub_item["user_m_s_i_read"],
-    //             "user_m_s_i_create" => $sub_item["user_m_s_i_create"],
-    //             "user_m_s_i_update" => $sub_item["user_m_s_i_update"],
-    //             "user_m_s_i_delete" => $sub_item["user_m_s_i_delete"],
-    //             "created_at"        => now(),
-    //             "updated_at"        => now(),
-    //         ];
-    //     }
-
-    //     DB::table("user_menu_item")->insert($menu_items);
-    //     DB::table("user_menu_sub_item")->insert($menu_sub_items);
-
-    //     return response()->json([
-    //         "message" => "Created succcessfully",
-    //     ], 200);
-    // }
+        return response()->json([
+            "message" => "1 User created succcessfully",
+        ], 200);
+    }
 
 
     // /**

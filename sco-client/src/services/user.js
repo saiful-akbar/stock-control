@@ -66,47 +66,6 @@ export const apiCreateUserAccountProfile = formData => {
 };
 
 /**
- * **
- * Fungsi yang belum di cek
- * **
- */
-
-/**
- * Fungsi api untuk cek form user dengan server
- * @param {value dari form user} data
- */
-export const apiCekUserFrom = data => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'POST',
-      url: '/user/cek/user-form',
-      data: data
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk cek form profile dengan server
- * @param {value dari form profile} data
- */
-export const apiCekProfileFrom = data => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'POST',
-      url: '/user/cek/profile-form',
-      data: data,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
  * Fungsi api untuk menambahkan akses menu pada user
  * @param {array} menuItems
  * @param {array} menuSubItems
@@ -125,6 +84,47 @@ export const apiCreateUserMenuAccess = (menuItems, menuSubItems) => {
       .catch(err => reject(err.response));
   });
 };
+
+/**
+ * ------------------------
+ * Fungsi yang belum di cek
+ * ------------------------
+ */
+
+// /**
+//  * Fungsi api untuk cek form user dengan server
+//  * @param {value dari form user} data
+//  */
+// export const apiCekUserFrom = data => {
+//   return new Promise((resolve, reject) => {
+//     api({
+//       method: 'POST',
+//       url: '/user/cek/user-form',
+//       data: data
+//     })
+//       .then(res => resolve(res))
+//       .catch(err => reject(err.response));
+//   });
+// };
+
+// /**
+//  * Fungsi api untuk cek form profile dengan server
+//  * @param {value dari form profile} data
+//  */
+// export const apiCekProfileFrom = data => {
+//   return new Promise((resolve, reject) => {
+//     api({
+//       method: 'POST',
+//       url: '/user/cek/profile-form',
+//       data: data,
+//       headers: {
+//         'Content-Type': 'multipart/form-data'
+//       }
+//     })
+//       .then(res => resolve(res))
+//       .catch(err => reject(err.response));
+//   });
+// };
 
 /**
  * Fungsi api untuk mereset ulang table personal_access_tokens

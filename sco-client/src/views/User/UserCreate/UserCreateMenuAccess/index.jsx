@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { reduxAction } from 'src/config/redux/state';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -17,8 +18,16 @@ import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import { Grid, Box, FormControlLabel, Paper } from '@material-ui/core';
-import BtnSubmit from 'src/components/BtnSubmit';
+import {
+  Grid,
+  Box,
+  FormControlLabel,
+  Paper,
+  Button,
+  CircularProgress
+} from '@material-ui/core';
+import { apiCreateUserMenuAccess } from 'src/services/user';
+import { useNavigate } from 'react-router';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -30,16 +39,35 @@ const useStyles = makeStyles(theme => ({
 /* Komponen utama */
 function UserCreateMenuAccess(props) {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const isMounted = React.useRef(true);
   const { dataMenus } = props;
 
   const [menuItemValues, setMenuItemValues] = React.useState([]);
+  const [menuSubItemValues, setMenuSubItemValues] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
+  /* Merubah maunted menjadi false ketika komponen dilepas */
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+    // eslint-disble-next-line
+  }, []);
+
+  /* FUngsi untuk menghendel saat menu item dipilih */
   const handleChangeMenuItem = id => {
-    const selectedIndex = menuItemValues.findIndex(index => index['id'] === id);
     let selected = [];
+    const selectedIndex = menuItemValues.findIndex(
+      index => index['menu_item_id'] === id
+    );
 
     if (selectedIndex === -1) {
-      selected = selected.concat(menuItemValues, { id: id, read: true });
+      selected = selected.concat(menuItemValues, {
+        user_id: props.userId,
+        menu_item_id: id,
+        read: true
+      });
     } else if (selectedIndex === 0) {
       selected = selected.concat(menuItemValues.slice(1));
     } else if (selectedIndex === menuItemValues.length - 1) {
@@ -53,13 +81,75 @@ function UserCreateMenuAccess(props) {
     setMenuItemValues(selected);
   };
 
+  /* FUngsi untuk menutup atau membuka acordion menu item */
   const isExpanded = id => {
-    let value = menuItemValues.filter(value => Boolean(value.id === id));
+    let value = menuItemValues.filter(value =>
+      Boolean(value.menu_item_id === id)
+    );
     return Boolean(value.length > 0);
   };
 
+  /* Fungsi handle saat menu sub item dipilih */
+  const handleChangeMenuSubItem = event => {
+    const { checked, name } = event.target;
+    const type = name.split('_')[0];
+    const id = name.split('_')[1];
+
+    let selected = [];
+    const selectedIndex = menuSubItemValues.findIndex(
+      i => i['menu_sub_item_id'] === id
+    );
+
+    if (selectedIndex === -1) {
+      selected = selected.concat(menuSubItemValues, {
+        user_id: props.userId,
+        menu_sub_item_id: id,
+        read: type === 'read' ? checked : false,
+        create: type === 'create' ? checked : false,
+        update: type === 'update' ? checked : false,
+        delete: type === 'delete' ? checked : false
+      });
+    } else {
+      const updateSelected = menuSubItemValues.map(value => {
+        if (value.menu_sub_item_id === id) {
+          value[type] = checked;
+        }
+        return value;
+      });
+      selected = selected.concat(updateSelected);
+    }
+
+    setMenuSubItemValues(selected);
+  };
+
+  /* Fungsi utuk submit */
+  const handleSubmit = e => {
+    e.preventDefault();
+    setLoading(true);
+
+    apiCreateUserMenuAccess(menuItemValues, menuSubItemValues)
+      .then(res => {
+        if (isMounted.current) {
+          setLoading(false);
+          props.setReduxToast(true, 'success', res.data.message);
+          navigate('/users');
+        }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          console.log(err);
+          setLoading(false);
+          if (err.status === 401) {
+            window.location.href = '/logout';
+          } else if (err.status === 403) {
+            navigate('/error/forbidden');
+          }
+        }
+      });
+  };
+
   return (
-    <div className={classes.root}>
+    <form className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography noWrap variant="h5" color="textPrimary">
@@ -79,11 +169,13 @@ function UserCreateMenuAccess(props) {
                 expanded={isExpanded(menuItem.id)}
                 onChange={() => handleChangeMenuItem(menuItem.id)}
                 elevation={3}
+                disabled={loading}
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <FormControlLabel
                     control={<Switch />}
                     checked={isExpanded(menuItem.id)}
+                    disabled={loading}
                     label={menuItem.menu_i_title}
                   />
                 </AccordionSummary>
@@ -108,7 +200,12 @@ function UserCreateMenuAccess(props) {
                                   </ListItemIcon>
                                   <ListItemText primary="Read" />
                                   <ListItemSecondaryAction>
-                                    <Switch edge="end" />
+                                    <Switch
+                                      edge="end"
+                                      disabled={loading}
+                                      name={`read_${menuSubItem.id}`}
+                                      onChange={handleChangeMenuSubItem}
+                                    />
                                   </ListItemSecondaryAction>
                                 </ListItem>
 
@@ -118,7 +215,12 @@ function UserCreateMenuAccess(props) {
                                   </ListItemIcon>
                                   <ListItemText primary="Create" />
                                   <ListItemSecondaryAction>
-                                    <Switch edge="end" />
+                                    <Switch
+                                      edge="end"
+                                      disabled={loading}
+                                      name={`create_${menuSubItem.id}`}
+                                      onChange={handleChangeMenuSubItem}
+                                    />
                                   </ListItemSecondaryAction>
                                 </ListItem>
 
@@ -128,7 +230,12 @@ function UserCreateMenuAccess(props) {
                                   </ListItemIcon>
                                   <ListItemText primary="Update" />
                                   <ListItemSecondaryAction>
-                                    <Switch edge="end" />
+                                    <Switch
+                                      edge="end"
+                                      disabled={loading}
+                                      name={`update_${menuSubItem.id}`}
+                                      onChange={handleChangeMenuSubItem}
+                                    />
                                   </ListItemSecondaryAction>
                                 </ListItem>
 
@@ -138,7 +245,12 @@ function UserCreateMenuAccess(props) {
                                   </ListItemIcon>
                                   <ListItemText primary="Delete" />
                                   <ListItemSecondaryAction>
-                                    <Switch edge="end" />
+                                    <Switch
+                                      edge="end"
+                                      disabled={loading}
+                                      name={`delete_${menuSubItem.id}`}
+                                      onChange={handleChangeMenuSubItem}
+                                    />
                                   </ListItemSecondaryAction>
                                 </ListItem>
                               </List>
@@ -153,13 +265,41 @@ function UserCreateMenuAccess(props) {
         </Grid>
 
         <Grid item xs={12}>
-          <Box display="flex" justifyContent="flex-end">
-            <BtnSubmit title="Save" variant="contained" size="large" />
+          <Box display="flex" justifyContent="center" alignItems="center">
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={handleSubmit}
+                disabled={Boolean(
+                  menuItemValues.length === 0 || menuSubItemValues.length === 0
+                )}
+              >
+                Save
+              </Button>
+            )}
           </Box>
         </Grid>
       </Grid>
-    </div>
+    </form>
   );
 }
 
-export default connect(null, null)(UserCreateMenuAccess);
+function mapDispatchToProps(dispatch) {
+  return {
+    setReduxToast: (show, type, message) =>
+      dispatch({
+        type: reduxAction.toast,
+        value: {
+          show: show,
+          type: type,
+          message: message
+        }
+      })
+  };
+}
+
+export default connect(null, mapDispatchToProps)(UserCreateMenuAccess);

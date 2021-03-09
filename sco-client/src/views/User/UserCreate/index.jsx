@@ -33,8 +33,9 @@ function UserCreate(props) {
   const classes = useStyles();
   const isMounted = React.useRef(true);
   const [steps] = React.useState(['Account & Profile', 'Menu Access']);
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
   const [dataMenus, setDataMenus] = React.useState(null);
+  const [userId, setUserId] = React.useState(null);
 
   /* Merubah maunted menjadi false ketika komponen dilepas */
   React.useEffect(() => {
@@ -96,11 +97,12 @@ function UserCreate(props) {
   const getStepContent = stepIndex => {
     switch (stepIndex) {
       case 1:
-        return <UserCreateMenuAccess dataMenus={dataMenus} />;
+        return <UserCreateMenuAccess dataMenus={dataMenus} userId={userId} />;
       default:
         return (
           <UserCreateAccountProfile
             dataMenus={dataMenus}
+            onChangeUserId={id => setUserId(id)}
             onNextStep={() => handleNext()}
             onBackStep={() => handleBack()}
           />
