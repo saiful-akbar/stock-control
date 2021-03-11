@@ -74,6 +74,9 @@ const useStyles = makeStyles(theme => ({
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'auto 100%'
+  },
+  boxInput: {
+    cursor: 'pointer'
   }
 }));
 
@@ -183,10 +186,16 @@ function ItemGroupImport({
           setLoading(false);
           setAlert({
             type: 'error',
-            message: err.status === 422 ? err.data.errors : [err.data.message]
+            message:
+              err.status === 422 ? err.data.errors.file : [err.data.message]
           });
         }
       });
+  };
+
+  const handleDrop = event => {
+    event.preventDefault();
+    setValue(event.dataTransfer.files[0]);
   };
 
   return (
@@ -214,7 +223,11 @@ function ItemGroupImport({
       <DialogContent dividers>
         <Loader show={loading}>
           <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <label htmlFor="file">
+            <label
+              htmlFor="file"
+              onDrop={handleDrop}
+              onDragOver={e => e.preventDefault()}
+            >
               <input
                 hidden
                 type="file"
@@ -230,7 +243,7 @@ function ItemGroupImport({
                 justifyContent="center"
                 alignItems="center"
                 height="100%"
-                style={{ cursor: 'pointer' }}
+                className={classes.boxInput}
               >
                 <img
                   src="/static/images/svg/add_file.svg"
@@ -239,7 +252,7 @@ function ItemGroupImport({
                 />
 
                 <Typography variant="h5" noWrap>
-                  {value === '' ? 'Select files' : value.name}
+                  {value === '' ? 'Select or drop files' : value.name}
                 </Typography>
 
                 <Button

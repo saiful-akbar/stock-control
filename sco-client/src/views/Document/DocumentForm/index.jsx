@@ -233,13 +233,24 @@ function DocumentForm({
                 >
                   <Grid container spacing={1}>
                     <Grid item xs={12}>
-                      <label htmlFor="file">
+                      <label
+                        htmlFor="file"
+                        onDragOver={event => event.preventDefault()}
+                        onDrop={event => {
+                          event.preventDefault();
+                          setFieldValue(
+                            'document_file',
+                            event.dataTransfer.files[0]
+                          );
+                        }}
+                      >
                         <input
                           hidden
                           type="file"
                           id="file"
-                          disabled={loading}
                           name="document_file"
+                          accept=".xlsx,.xls,.csv,.pdf,.docx,.doc"
+                          disabled={loading}
                           onChange={event => {
                             setFieldValue(
                               'document_file',
@@ -272,7 +283,7 @@ function DocumentForm({
                             <Grid item zeroMinWidth>
                               <Typography variant="h6" noWrap>
                                 {values.document_file === ''
-                                  ? 'Select files'
+                                  ? 'Select or drop files here'
                                   : values.document_file.name}
                               </Typography>
 

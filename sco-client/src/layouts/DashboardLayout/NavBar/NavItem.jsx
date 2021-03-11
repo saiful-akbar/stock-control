@@ -12,7 +12,6 @@ import {
   List,
   Divider
 } from '@material-ui/core';
-import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { connect } from 'react-redux';
 
@@ -74,8 +73,9 @@ function NavSubItem({ url, icon, title, handleActiveParent, ...rest }) {
 // Style untuk komponen NavItem
 const useStyleNavItem = makeStyles(theme => ({
   menu: {
-    paddingTop: 13,
-    paddingBottom: 13
+    paddingTop: 8,
+    paddingBottom: 8,
+    minHeight: 57
   },
   menuTitle: {
     '& span': {
@@ -94,6 +94,13 @@ const useStyleNavItem = makeStyles(theme => ({
         ? 'rgba(255, 255, 255, 0.03)'
         : 'rgba(0, 0, 0, 0.03)',
     paddingBottom: 20
+  },
+  expandedIcon: {
+    transform: 'rotate(180deg)',
+    transition: 'transform 0.5s'
+  },
+  minimized: {
+    transition: 'transform 0.5s'
   }
 }));
 
@@ -156,7 +163,11 @@ const NavItem = ({ data, reduxUserLogin }) => {
               )
             }
           />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          <ExpandMore
+            className={clsx(classes.minimized, {
+              [classes.expandedIcon]: open
+            })}
+          />
         </ListItem>
 
         <Collapse in={open} timeout={0} unmountOnExit>

@@ -54,7 +54,10 @@ function ElevationScroll(props) {
   return React.cloneElement(children, {
     elevation: trigger ? (Boolean(theme.palette.type === 'light') ? 5 : 4) : 0,
     style: {
-      backgroundColor: trigger ? theme.palette.background.dark : 'transparent'
+      backgroundColor: trigger
+        ? theme.palette.background.topBar
+        : 'transparent',
+      transition: '0.5s'
     }
   });
 }
