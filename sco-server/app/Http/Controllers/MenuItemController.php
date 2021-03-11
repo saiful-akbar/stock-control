@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\MenuItem;
 use Illuminate\Http\Request;
+use App\Traits\ClearStrTrait;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class MenuItemController extends Controller
 {
+    use ClearStrTrait;
+
+
     /**
      * Display a listing of the resource.
      *
@@ -23,15 +28,12 @@ class MenuItemController extends Controller
                 case 250:
                     $per_page = 250;
                     break;
-
                 case 100:
                     $per_page = 100;
                     break;
-
                 case 50:
                     $per_page = 50;
                     break;
-
                 default:
                     $per_page = 25;
                     break;
@@ -41,7 +43,7 @@ class MenuItemController extends Controller
         // Cek sort
         $sort = "menu_i_title";
         if (isset($request->sort) && !empty($request->sort)) {
-            switch ($request->sort) {
+            switch ($this->clearStr($request->sort, "lower")) {
                 case 'created_at':
                     $sort = "created_at";
                     break;
@@ -59,26 +61,27 @@ class MenuItemController extends Controller
         // Cek orderby
         $order_by = 'asc';
         if (isset($request->orderby) && !empty($request->orderby)) {
-            if ($request->orderby === 'asc' || $request->orderby === 'desc') {
-                $order_by = htmlspecialchars($request->orderby);
+            if ($this->clearStr($request->orderby, "lower") === 'asc' || $this->clearStr($request->orderby, "lower") === 'desc') {
+                $order_by = $this->clearStr($request->orderby, "lower");
             }
         }
 
         // Cek search
-        $search = isset($request->search) ? htmlspecialchars($request->search) : "";
+        $search = isset($request->search) ? $this->clearStr($request->search) : "";
 
         // Ambil data dari database
-        $data = MenuItem::where("menu_i_title", "like", "%" . $search . "%")
-            ->orWhere("created_at", "like", "%" . $search . "%")
-            ->orWhere("updated_at", "like", "%" . $search . "%")
-            ->orderBy($sort, $order_by)
+        $data = MenuItem::where("menu_i_title", "like", "%" . $this->clearStr($search) . "%")
+            ->orWhere("created_at", "like", "%" . $this->clearStr($search) . "%")
+            ->orWhere("updated_at", "like", "%" . $this->clearStr($search) . "%")
+            ->orderBy($this->clearStr($sort, "lower"), $this->clearStr($order_by, "lower"))
             ->paginate($per_page);
 
+        // response berhasil
         return response()->json([
             "menu_items" => $data,
-            "search" => $search,
-            "sort" => $sort,
-            "order_by" => $order_by
+            "search"     => $search,
+            "sort"       => $sort,
+            "order_by"   => $order_by
         ], 200);
     }
 
@@ -92,13 +95,18 @@ class MenuItemController extends Controller
     {
         // validasi form
         $request->validate([
-            "title"    => "required|max:128|unique:menu_items,menu_i_title",
+            "title" => "required|max:128|unique:menu_items,menu_i_title",
         ]);
 
         // Simpan ke database
-        MenuItem::create([
-            "menu_i_title" => htmlspecialchars(ucwords($request->title)),
+        $new_menu_item = MenuItem::create([
+            "menu_i_title" => $this->clearStr($request->title, "proper"),
         ]);
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Create a new menu ({$new_menu_item->menu_i_title})"]);
 
         // hasil kembali
         return response()->json([
@@ -132,8 +140,13 @@ class MenuItemController extends Controller
 
         // Update menu item
         MenuItem::where("id", $menuItem->id)->update([
-            "menu_i_title"    => htmlspecialchars(ucwords($request->title)),
+            "menu_i_title"    => $this->clearStr($request->title, "proper"),
         ]);
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Update menu (" . $menuItem->menu_i_title . " => " . $this->clearStr($request->title, "proper") . ")"]);
 
         // hasil
         return response()->json([
@@ -150,6 +163,12 @@ class MenuItemController extends Controller
     public function destroy(MenuItem $menuItem)
     {
         $delete = MenuItem::destroy($menuItem->id);
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Delete menu ({$menuItem->menu_i_title})"]);
+
         return response()->json([
             "message" => "{$delete} Menus deleted successfully",
         ], 200);

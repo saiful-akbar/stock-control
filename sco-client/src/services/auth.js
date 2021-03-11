@@ -11,7 +11,7 @@ export const login = data => dispatch => {
     csrf()
       .then(() => {
         api({
-          method: 'POST',
+          method: 'post',
           url: '/login',
           data: data
         })
@@ -37,27 +37,31 @@ export const login = data => dispatch => {
  */
 export const userIsLogin = () => dispatch => {
   return new Promise((resolve, reject) => {
-    csrf().then(() => {
-      api({
-        method: 'GET',
-        url: '/login/user',
-        adapter: cache.adapter
-      })
-        .then(res => {
-          resolve(res);
-          dispatch({
-            type: reduxAction.userLogin,
-            value: res.data
-          });
-          dispatch({
-            type: reduxAction.loading,
-            value: false
-          });
+    csrf()
+      .then(() => {
+        api({
+          method: 'get',
+          url: '/login/user',
+          adapter: cache.adapter
         })
-        .catch(err => {
-          reject(err.response);
-        });
-    });
+          .then(res => {
+            resolve(res);
+            dispatch({
+              type: reduxAction.userLogin,
+              value: res.data
+            });
+            dispatch({
+              type: reduxAction.loading,
+              value: false
+            });
+          })
+          .catch(err => {
+            reject(err.response);
+          });
+      })
+      .catch(csrfErr => {
+        reject(csrfErr.response);
+      });
   });
 };
 
@@ -67,8 +71,8 @@ export const userIsLogin = () => dispatch => {
 export const logout = () => {
   return new Promise((resolve, reject) => {
     api({
-      method: 'GET',
-      url: '/logout/'
+      method: 'get',
+      url: '/logout'
     })
       .then(res => {
         resolve(res);

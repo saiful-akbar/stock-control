@@ -6,9 +6,11 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     transform: 'rotateY(180deg)',
+    marginBottom: theme.spacing(5),
     [theme.breakpoints.up('md')]: {
-      height: theme.spacing(50),
-      marginBottom: theme.spacing(5),
+      marginTop: -64,
+      paddingTop: 64,
+      height: theme.spacing(60),
       backgroundImage: 'url(/static/images/svg/work_tim.svg)',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -17,7 +19,6 @@ const useStyles = makeStyles(theme => ({
   },
   landingBox: {
     transform: 'rotateY(180deg)',
-    padding: theme.spacing(3, 2),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
@@ -38,7 +39,7 @@ const Landing = props => {
           <strong>Dashboard</strong>.
         </Typography>
 
-        <Typography className={classes.text} variant="h5" color="textSecondary">
+        <Typography className={classes.text} variant="h6" color="textSecondary">
           Welcome to <strong>Stock Control Aplication</strong>
         </Typography>
       </Box>

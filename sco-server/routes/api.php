@@ -46,6 +46,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::get("/create", [UserController::class, "create"])->middleware("access.user:create");
         Route::post("/", [UserController::class, "storeUserProfile"])->middleware("access.user:create");
         Route::post("/menu-access", [UserController::class, "storeUserMenuAccess"])->middleware("access.user:create");
+        Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"])->middleware("access.user:delete");
 
         // Route::get("/menu", [UserController::class, "getMenus"]);
         // Route::get("/{user}", [UserController::class, "show"]);

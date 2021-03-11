@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
     {
         $user = User::create([
             'username'   => 'admin',
-            'password'   => Hash::make('admin123456'),
+            'password'   => Hash::make('admin1234'),
             'is_active'  => true,
             'created_at' => now(),
             'updated_at' => now()
@@ -105,7 +105,7 @@ class DatabaseSeeder extends Seeder
                 'menu_item_id'   => $this->getMenuItem('Master Data'),
                 'menu_s_i_icon'  => 'list',
                 'menu_s_i_title' => 'Menu Management',
-                'menu_s_i_url'   => '/menus',
+                'menu_s_i_url'   => '/menu-management',
                 'created_at'     => now(),
                 'updated_at'     => now()
             ],

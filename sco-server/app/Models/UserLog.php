@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Traits\Uuid;
+use \App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class UserLog extends Model
 {
     use HasFactory, Uuid;
+
     protected $fillable = ['user_id', 'ip', 'ip2', 'browser', 'device', 'os', 'log_desc'];
 
     /**
      * Relasi one to one dengan model user
-     *
      * @return User
      */
     public function user()
@@ -23,7 +23,6 @@ class UserLog extends Model
 
     /**
      * Merubah format waktu created at
-     *
      * @return Carbon
      */
     public function getCreatedAtAttribute()
@@ -33,7 +32,6 @@ class UserLog extends Model
 
     /**
      * Merubah format waktu updated at
-     *
      * @return Carbon
      */
     public function getUpdatedAtAttribute()
@@ -43,7 +41,6 @@ class UserLog extends Model
 
     /**
      * Merubah format waktu logged at
-     *
      * @return Carbon
      */
     public function getLoggedAtAttribute()

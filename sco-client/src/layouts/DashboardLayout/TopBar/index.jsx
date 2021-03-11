@@ -22,7 +22,7 @@ import { useTheme } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.dark,
+    // backgroundColor: theme.palette.background.dark,
     zIndex: theme.zIndex.drawer + 1
   },
   avatar: {
@@ -53,7 +53,10 @@ function ElevationScroll(props) {
   });
 
   return React.cloneElement(children, {
-    elevation: trigger ? (Boolean(theme.palette.type === 'light') ? 5 : 4) : 0
+    elevation: trigger ? (Boolean(theme.palette.type === 'light') ? 5 : 4) : 0,
+    style: {
+      backgroundColor: trigger ? theme.palette.background.dark : 'transparent'
+    }
   });
 }
 

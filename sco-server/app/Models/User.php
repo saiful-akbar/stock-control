@@ -16,6 +16,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, Uuid;
 
+    protected $fillable = ['username', 'password', 'is_active'];
+    protected $hidden = ['password'];
+
     /**
      * Get the value indicating whether the IDs are incrementing.
      *
@@ -35,24 +38,6 @@ class User extends Authenticatable
     {
         return 'string';
     }
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'id', 'username', 'password', 'is_active'
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-    ];
 
     /**
      * Relasi dengan table profile

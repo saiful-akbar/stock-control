@@ -2,42 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\ItemGroup;
 use Illuminate\Http\Request;
+use App\Traits\ClearStrTrait;
 use App\Exports\ItemGroupsExport;
 use App\Imports\ItemGroupsImport;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ItemGroupController extends Controller
 {
-    /**
-     * Fungsi untuk membersihkan string
-     *
-     * @param string $type
-     * @param string $string
-     *
-     * @return String
-     */
-    private function clearStr(string $string, string $type = null)
-    {
-        switch (strtolower($type)) {
-            case "upper":
-                return htmlspecialchars(trim(strtoupper($string)));
-                break;
-
-            case "proper":
-                return htmlspecialchars(trim(ucwords($string)));
-                break;
-
-            case "lower":
-                return htmlspecialchars(trim(strtolower($string)));
-                break;
-
-            default:
-                return htmlspecialchars(trim($string));
-                break;
-        }
-    }
+    use ClearStrTrait;
 
     /**
      * Fungsi unutk mengambil semua data item groups dari database
@@ -133,10 +109,15 @@ class ItemGroupController extends Controller
         ]);
 
         // proses menambah data baru
-        ItemGroup::create([
+        $item_group = ItemGroup::create([
             "item_g_code" => $this->clearStr($request->group_code, "upper"),
             "item_g_name" => $this->clearStr($request->group_name),
         ]);
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Create a new item group ({$item_group->item_g_code})"]);
 
         // response berhasil
         return response()->json([
@@ -181,6 +162,13 @@ class ItemGroupController extends Controller
             "item_g_name" => $this->clearStr($request->group_name),
         ]);
 
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create([
+                "log_desc" => "Update item group (" . $item_group->item_g_code . " => " . $this->clearStr($request->group_code, "proper") . ")"
+            ]);
+
         // response berhasil
         return response()->json([
             "message" => "Item group updated successfully"
@@ -198,9 +186,14 @@ class ItemGroupController extends Controller
     public function delete(Request $request)
     {
         $deleted = ItemGroup::destroy($request->all());
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Delete {$deleted} item groups"]);
+
         return response()->json([
             "message" => "{$deleted} Item group deleted successfully",
-            "request" => $request->all()
         ], 200);
     }
 
@@ -230,6 +223,11 @@ class ItemGroupController extends Controller
         ]);
 
         Excel::import(new ItemGroupsImport, $request->file("file"));
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Import a new item groups"]);
 
         return response()->json([
             "message" => "Item group successfully imported"

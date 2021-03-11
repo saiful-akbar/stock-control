@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\MenuItem;
 use App\Models\MenuSubItem;
 use Illuminate\Http\Request;
+use App\Traits\ClearStrTrait;
+use Illuminate\Support\Facades\Auth;
 
 class MenuSubItemController extends Controller
 {
+    use ClearStrTrait;
+
+
     /**
      * Display a listing of the resource.
      *
@@ -128,12 +134,17 @@ class MenuSubItemController extends Controller
         }
 
         // propses menambahkan data baru
-        MenuSubItem::create([
-            "menu_item_id"   => htmlspecialchars($request->menus),
-            "menu_s_i_title" => htmlspecialchars(ucwords($request->title)),
-            "menu_s_i_url"   => htmlspecialchars(strtolower($url)),
-            "menu_s_i_icon"  => htmlspecialchars(strtolower($request->icon)),
+        $menu_sub_item = MenuSubItem::create([
+            "menu_item_id"   => $this->clearStr($request->menus),
+            "menu_s_i_title" => $this->clearStr($request->title, "proper"),
+            "menu_s_i_url"   => $this->clearStr($url, "lower"),
+            "menu_s_i_icon"  => $this->clearStr($request->icon, "lower"),
         ]);
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Create a new sub menu ({$menu_sub_item->menu_s_i_title})"]);
 
         return response()->json(["message" => "Sub menus created successfuly"], 200);
     }
@@ -189,12 +200,18 @@ class MenuSubItemController extends Controller
         }
 
         // simpan ke database
-        MenuSubItem::where("id", $menuSubItem->id)->update([
-            "menu_item_id"   => htmlspecialchars($request->menus),
-            "menu_s_i_title" => htmlspecialchars(ucwords($request->title)),
-            "menu_s_i_url"   => htmlspecialchars(strtolower($url)),
-            "menu_s_i_icon"  => htmlspecialchars(strtolower($request->icon)),
+        $new_menu_sub_item = MenuSubItem::where("id", $menuSubItem->id)->update([
+            "menu_item_id"   => $this->clearStr($request->menus),
+            "menu_s_i_title" => $this->clearStr($request->title, "proper"),
+            "menu_s_i_url"   => $this->clearStr($url, "lower"),
+            "menu_s_i_icon"  => $this->clearStr($request->icon, "lower"),
         ]);
+
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create([
+                "log_desc" => "Update sub menu (" . $menuSubItem->menu_s_i_title . " => " . $this->clearStr($request->title, "proper") . ")"
+            ]);
 
         return response()->json(["message" => "Sub menus updated successfuly"], 200);
     }
@@ -208,6 +225,12 @@ class MenuSubItemController extends Controller
     public function destroy(MenuSubItem $menuSubItem)
     {
         MenuSubItem::destroy($menuSubItem->id);
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Delete sub menu ({$menuSubItem->menu_s_i_title})"]);
+
         return response()->json([
             "message" => "Sub menus deleted successfuly"
         ], 200);

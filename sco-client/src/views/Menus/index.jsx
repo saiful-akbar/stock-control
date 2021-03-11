@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-import { useTheme } from '@material-ui/core/styles';
-import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import TabContext from '@material-ui/lab/TabContext';
+import TabList from '@material-ui/lab/TabList';
+import TabPanel from '@material-ui/lab/TabPanel';
 
 import Page from 'src/components/Page';
 import MenuItem from 'src/views/Menus/MenuItem';
@@ -13,59 +13,36 @@ import MenuSubItem from 'src/views/Menus/MenuSubItem';
 
 import { apiGetAllMenuItem } from 'src/services/menuItem';
 import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
-import { Box, Divider } from '@material-ui/core';
+import { Divider } from '@material-ui/core';
 import queryString from 'query-string';
+import { makeStyles } from '@material-ui/core/styles';
 
-/**
- * Component Tabpanel
- * @param {props} props
- */
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && children}
-    </div>
-  );
-}
-
-/**
- * default value component TabPanel
- */
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired
-};
-
-/**
- * props pada component Tab
- * @param {index tabs} index
- */
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`
-  };
-}
+/* Style untuk komponen Menus */
+const useStyles = makeStyles(theme => ({
+  tabList: {
+    position: 'sticky',
+    top: 64,
+    backgroundColor: theme.palette.background.dark,
+    zIndex: theme.zIndex.appBar + 1,
+    [theme.breakpoints.down('sm')]: {
+      top: 56
+    }
+  }
+}));
 
 /**
  * Main component
  * @param {props} props
  */
 function Menus(props) {
-  const [value, setValue] = useState(0);
-  const [userAccess, setUserAccess] = useState(null);
-  const isMounted = React.useRef(true);
-  const theme = useTheme();
+  const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
+  const { pathname } = location;
+
+  const [value, setValue] = useState('menus');
+  const [userAccess, setUserAccess] = useState(null);
+  const isMounted = React.useRef(true);
 
   React.useEffect(() => {
     return () => {
@@ -74,23 +51,19 @@ function Menus(props) {
     // eslint-disable-next-line
   }, []);
 
-  /**
-   * Cek apakah state bernilai null & state read bernilai 1
-   */
+  /* Cek apakah state bernilai null & state read bernilai 1 */
   useEffect(() => {
     if (props.reduxUserLogin !== null) {
       props.reduxUserLogin.menu_sub_items.map(
-        msi => msi.menu_s_i_url === '/menus' && setUserAccess(msi.pivot)
+        msi => msi.menu_s_i_url === pathname && setUserAccess(msi.pivot)
       );
     }
-  }, [props.reduxUserLogin]);
+  }, [props.reduxUserLogin, pathname]);
 
-  /**
-   * Menangkap nilai query sting "tab" untuk menemtukan tab yang aktif
-   */
+  /* Menangkap nilai query sting "tab" untuk menemtukan tab yang aktif */
   useEffect(() => {
     const parsed = queryString.parse(location.search);
-    setValue(parsed.tab === 'menuSubItems' ? 1 : 0);
+    parsed.tab === 'subMenus' ? setValue('subMenus') : setValue('menus');
   }, [location.search, setValue]);
 
   /**
@@ -100,32 +73,34 @@ function Menus(props) {
    */
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    navigate(`/menus?tab=${newValue === 0 ? 'menuItems' : 'menuSubItems'}`);
+    navigate(`${pathname}?tab=${newValue}`);
   };
 
   return (
     <Page title="Menu Managemen" pageTitle="Menu Management">
-      <Box mb={3}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="Menus"
-        >
-          <Tab label="Menus" {...a11yProps(0)} />
-          <Tab label="Sub Menus" {...a11yProps(1)} />
-        </Tabs>
-        <Divider />
-      </Box>
+      <TabContext value={value}>
+        <div className={classes.tabList}>
+          <TabList
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="on"
+          >
+            <Tab label="Menus" value="menus" />
+            <Tab label="Sub Menus" value="subMenus" />
+          </TabList>
+          <Divider />
+        </div>
 
-      <TabPanel value={value} index={0} dir={theme.direction}>
-        <MenuItem state={userAccess} />
-      </TabPanel>
+        <TabPanel value="menus">
+          <MenuItem state={userAccess} />
+        </TabPanel>
 
-      <TabPanel value={value} index={1} dir={theme.direction}>
-        <MenuSubItem state={userAccess} />
-      </TabPanel>
+        <TabPanel value="subMenus">
+          <MenuSubItem state={userAccess} />
+        </TabPanel>
+      </TabContext>
     </Page>
   );
 }

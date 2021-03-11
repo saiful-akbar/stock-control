@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -11,7 +11,8 @@ import {
   Typography,
   makeStyles,
   Grid,
-  SwipeableDrawer
+  SwipeableDrawer,
+  ButtonBase
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { connect } from 'react-redux';
@@ -35,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden'
   },
   avatar: {
-    cursor: 'pointer',
+    borderRadius: '50%',
     width: theme.spacing(7),
     height: theme.spacing(7)
   },
@@ -58,6 +59,7 @@ const NavBar = ({
 }) => {
   const classes = useStyles();
   const location = useLocation();
+  const navigate = useNavigate();
   const [collapseIsActive, setCollapseIsActive] = useState(null);
 
   useEffect(() => {
@@ -85,16 +87,19 @@ const NavBar = ({
       >
         <Grid item>
           {reduxUserLogin !== null ? (
-            <Avatar
-              to="/account"
+            <ButtonBase
               className={classes.avatar}
-              component={RouterLink}
-              src={
-                reduxUserLogin.profile.profile_avatar === null
-                  ? '/static/images/svg/default_avatar.svg'
-                  : getAvatar(reduxUserLogin.profile.profile_avatar)
-              }
-            />
+              onClick={() => navigate('/account')}
+            >
+              <Avatar
+                className={classes.avatar}
+                src={
+                  reduxUserLogin.profile.profile_avatar === null
+                    ? '/static/images/svg/default_avatar.svg'
+                    : getAvatar(reduxUserLogin.profile.profile_avatar)
+                }
+              />
+            </ButtonBase>
           ) : (
             <Skeleton variant="circle" className={classes.avatar} />
           )}

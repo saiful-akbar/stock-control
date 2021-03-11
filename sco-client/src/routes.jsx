@@ -47,7 +47,7 @@ const routes = [
         element: <AccountView />
       },
       {
-        path: '/menus',
+        path: '/menu-management',
         element: <Menus />
       },
       {

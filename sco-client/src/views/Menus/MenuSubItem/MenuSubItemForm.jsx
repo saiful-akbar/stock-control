@@ -116,14 +116,14 @@ const MenuSubItemForm = props => {
         : await apiUpdateMenuSubItem(props.data.id, data).catch(err => err);
 
     if (res.status === 200) {
+      props.reloadTable();
       setLoading(false);
       setToast({ show: true, type: 'success', message: res.data.message });
-      props.reloadTable();
-      props.closeDialog();
+      handleCloseDialog();
     } else if (res.status === 401) {
       logout();
     } else {
-      if (res.status === 422) setErrors(res.data.errors);
+      Boolean(res.status === 422) && setErrors(res.data.errors);
       setLoading(false);
       setAlert({ type: 'error', message: res.data.message });
       setToast({

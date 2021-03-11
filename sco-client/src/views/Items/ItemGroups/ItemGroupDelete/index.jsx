@@ -31,8 +31,6 @@ function ItemGroupDelete(props) {
   const handleCloseDialog = e => {
     if (!loading) {
       props.onClose();
-    } else {
-      e.preventDefault();
     }
   };
 

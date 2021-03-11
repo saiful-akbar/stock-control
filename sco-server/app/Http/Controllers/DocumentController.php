@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Document;
 use Illuminate\Http\Request;
+use App\Traits\ClearStrTrait;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
+    use ClearStrTrait;
+
     /**
      * @param Request $request
      */
@@ -55,7 +60,7 @@ class DocumentController extends Controller
         // Cek order_by
         $order_by = "asc";
         if (isset($request->order_by) && !empty($request->order_by)) {
-            if ($request->order_by === "asc" || $request->order_by === "desc") {
+            if ($this->clearStr($request->order_by, "lower") === "asc" || $this->clearStr($request->order_by, "lower") === "desc") {
                 $order_by = $this->clearStr($request->order_by, "lower");
             }
         }
@@ -82,35 +87,6 @@ class DocumentController extends Controller
     }
 
     /**
-     * Fungsi untuk membersihkan string
-     *
-     * @param string $type
-     * @param string $string
-     *
-     * @return String
-     */
-    private function clearStr(string $string, string $type = null)
-    {
-        switch (strtolower($type)) {
-            case "upper":
-                return htmlspecialchars(trim(strtoupper($string)));
-                break;
-
-            case "proper":
-                return htmlspecialchars(trim(ucwords($string)));
-                break;
-
-            case "lower":
-                return htmlspecialchars(trim(strtolower($string)));
-                break;
-
-            default:
-                return htmlspecialchars(trim($string));
-                break;
-        }
-    }
-
-    /**
      * @param Request $request
      *
      * @return Json
@@ -131,11 +107,16 @@ class DocumentController extends Controller
         $request->file('document_file')->storeAs('documents', $file_name); // simpan ke storage
 
         // simpan documnet
-        Document::create([
+        $document = Document::create([
             'document_title'       => $this->clearStr($request->document_title, "proper"),
             'document_description' => $this->clearStr($request->document_description, "lower"),
             'document_path'        => $file_name
         ]);
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Create a new document ({$document->document_title})"]);
 
         // Response berhasil
         return response()->json([
@@ -170,6 +151,13 @@ class DocumentController extends Controller
             'document_path'        => $file_name
         ]);
 
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create([
+                "log_desc" => "Update document (" . $document->document_title . " => " . $this->clearStr($request->document_title, "proper") . ")"
+            ]);
+
         // response berhasil
         return response()->json([
             "message" => "document updated successfully"
@@ -197,6 +185,13 @@ class DocumentController extends Controller
 
         // hapus dari database
         $deleted = Document::destroy($request->all());
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create([
+                "log_desc" => "Delete {$deleted} documents"
+            ]);
 
         // response berhasil
         return response()->json([

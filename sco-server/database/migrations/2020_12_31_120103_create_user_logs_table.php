@@ -16,12 +16,12 @@ class CreateUserLogsTable extends Migration
         Schema::create('user_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->ipAddress('ip');
-            $table->ipAddress('ip2');
-            $table->string('browser', 64);
-            $table->string('device', 64);
-            $table->text('os');
-            $table->text('log_desc');
+            $table->ipAddress('ip')->nullable();
+            $table->ipAddress('ip2')->nullable();
+            $table->string('browser', 64)->nullable();
+            $table->string('device', 64)->nullable();
+            $table->text('os')->nullable();
+            $table->text('log_desc')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')

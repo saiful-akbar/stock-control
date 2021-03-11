@@ -126,8 +126,6 @@ function ItemGroupImport({
     if (!loading) {
       setValue('');
       onClose();
-    } else {
-      e.preventDefault();
     }
   };
 
@@ -165,7 +163,7 @@ function ItemGroupImport({
     setLoading(true);
     setAlert({
       type: 'warning',
-      message: ['Importing...', 'Do not reload or leave this page.']
+      message: ['Importing... Do not reload or leave this page.']
     });
 
     let formData = new FormData();
@@ -266,8 +264,8 @@ function ItemGroupImport({
         <BtnSubmit
           variant="contained"
           title="Import now"
-          loading={loading}
           disabled={Boolean(loading || value === '')}
+          loading={loading}
           handleCancel={handleClose}
           handleSubmit={handleSubmit}
         />
