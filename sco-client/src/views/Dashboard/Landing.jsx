@@ -8,8 +8,8 @@ const useStyles = makeStyles(theme => ({
     transform: 'rotateY(180deg)',
     marginBottom: theme.spacing(5),
     [theme.breakpoints.up('md')]: {
-      marginTop: -64,
-      paddingTop: 64,
+      marginTop: -48,
+      paddingTop: 48,
       height: theme.spacing(60),
       backgroundImage: 'url(/static/images/svg/work_tim.svg)',
       backgroundPosition: 'center',

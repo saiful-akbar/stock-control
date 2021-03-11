@@ -19,13 +19,14 @@ import { connect } from 'react-redux';
 // Style untuk komponen NavSubItem
 const useStyleNavSubItem = makeStyles(theme => ({
   subMenu: {
-    paddingTop: 5,
-    paddingBottom: 5
+    paddingTop: 5.5,
+    paddingBottom: 5.5
   },
   subMenuIcon: {
     display: 'inline-flex',
     minWidth: '30px',
-    flexShrink: 0
+    flexShrink: 0,
+    marginRight: 5
   },
   icon: {
     fontSize: 20,
@@ -73,9 +74,8 @@ function NavSubItem({ url, icon, title, handleActiveParent, ...rest }) {
 // Style untuk komponen NavItem
 const useStyleNavItem = makeStyles(theme => ({
   menu: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    minHeight: 58
+    paddingTop: 13,
+    paddingBottom: 13
   },
   menuTitle: {
     '& span': {
@@ -159,7 +159,7 @@ const NavItem = ({ data, reduxUserLogin }) => {
           {open ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
 
-        <Collapse in={open} timeout={1} unmountOnExit>
+        <Collapse in={open} timeout={0} unmountOnExit>
           <List component="div" disablePadding>
             {menuSubItems.map(
               (msi, key) =>

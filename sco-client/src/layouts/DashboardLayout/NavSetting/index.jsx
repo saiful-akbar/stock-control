@@ -14,7 +14,7 @@ import CustomTooltip from 'src/components/CustomTooltip';
 // Style
 const useStyles = makeStyles(theme => ({
   root: {
-    width: 500,
+    width: 450,
     overflow: 'hidden',
     fontWeight: 500,
     [theme.breakpoints.down('xs')]: {
@@ -22,14 +22,27 @@ const useStyles = makeStyles(theme => ({
     }
   },
   header: {
-    padding: '8px 10px',
-    // backgroundColor: theme.palette.background.topBar,
-    color: '#FFFFFF'
+    padding: theme.spacing(1)
+  },
+  img: {
+    position: 'relative',
+    zIndex: 1,
+    height: 'calc(100% - 80px)',
+    width: '100%',
+    backgroundImage: 'url(/static/images/svg/settings.svg)',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'auto 250px'
+    // opacity: '50%'
   },
   list: {
-    height: 'calc(100% - 80px)',
+    width: '100%',
+    height: 'calc(100% - 64px)',
+    position: 'absolute',
+    top: 64,
+    zIndex: 2,
     overflowX: 'hidden',
-    padding: '8px 10px'
+    padding: theme.spacing(1)
   }
 }));
 
@@ -63,6 +76,8 @@ function NavSetting({ onToggle, open, setReduxTheme, reduxTheme, ...props }) {
       </Box>
 
       <Divider />
+
+      <div className={classes.img} />
 
       <Box className={classes.list}>
         <Appearance />

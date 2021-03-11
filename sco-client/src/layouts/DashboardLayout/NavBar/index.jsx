@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 import apiUrl from 'src/utils/apiUrl';
 import NavItem from './NavItem';
 import LogoutConfirm from './LogutConfirm';
+import NavItemDashboard from './NavItemDashboard';
 
 // Style
 const useStyles = makeStyles(theme => ({
@@ -29,8 +30,8 @@ const useStyles = makeStyles(theme => ({
   },
   desktopDrawer: {
     width: 256,
-    top: 64,
-    height: 'calc(100% - 64px)',
+    top: 48,
+    height: 'calc(100% - 48px)',
     backgroundColor: theme.palette.background.dark,
     borderRight: 'none',
     overflow: 'hidden'
@@ -136,6 +137,8 @@ const NavBar = ({
           <Skeleton variant="rect" height="100%" />
         ) : (
           <List component="div" disablePadding>
+            <NavItemDashboard />
+
             {reduxUserLogin.menu_items.map((item, key) => (
               <NavItem
                 key={key}

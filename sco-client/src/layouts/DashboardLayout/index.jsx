@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%'
   },
   wrapper: {
-    paddingTop: 64,
+    paddingTop: 48,
     [theme.breakpoints.up('lg')]: {
       paddingLeft: drawerWidth
     }

@@ -21,12 +21,9 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   tabList: {
     position: 'sticky',
-    top: 64,
+    top: 48,
     backgroundColor: theme.palette.background.dark,
-    zIndex: theme.zIndex.appBar + 1,
-    [theme.breakpoints.down('sm')]: {
-      top: 56
-    }
+    zIndex: theme.zIndex.appBar + 1
   }
 }));
 

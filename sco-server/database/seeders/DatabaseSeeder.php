@@ -126,7 +126,7 @@ class DatabaseSeeder extends Seeder
                 'id'             => Str::random(32),
                 'menu_item_id'   => $this->getMenuItem('Outgoing'),
                 'menu_s_i_icon'  => 'local_shipping',
-                'menu_s_i_title' => 'Deliveri Note (Surat Jalan)',
+                'menu_s_i_title' => 'Delivery Note (Surat Jalan)',
                 'menu_s_i_url'   => '/delivery-note',
                 'created_at'     => now(),
                 'updated_at'     => now()

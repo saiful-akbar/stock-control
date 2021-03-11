@@ -22,7 +22,6 @@ import { useTheme } from '@material-ui/core/styles';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.dark,
     zIndex: theme.zIndex.drawer + 1
   },
   avatar: {
@@ -81,14 +80,18 @@ const TopBar = ({
     <React.Fragment>
       <ElevationScroll {...rest}>
         <AppBar className={clsx(classes.root, className)}>
-          <Toolbar>
+          <Toolbar variant="dense">
             <Hidden mdDown>
               <CustomTooltip
                 title={openDesktopNav ? 'Close menu' : 'Open menu'}
                 placement="bottom"
               >
                 <IconButton onClick={onDesktopNavOpen} color="default">
-                  {openDesktopNav ? <MenuOpenIcon /> : <MenuIcon />}
+                  {openDesktopNav ? (
+                    <MenuOpenIcon fontSize="small" />
+                  ) : (
+                    <MenuIcon fontSize="small" />
+                  )}
                 </IconButton>
               </CustomTooltip>
             </Hidden>
@@ -96,7 +99,7 @@ const TopBar = ({
             <Hidden lgUp>
               <CustomTooltip title="Open menu" placement="bottom">
                 <IconButton onClick={onMobileNavOpen} color="default">
-                  <MenuIcon />
+                  <MenuIcon fontSize="small" />
                 </IconButton>
               </CustomTooltip>
             </Hidden>
@@ -113,7 +116,7 @@ const TopBar = ({
 
             <CustomTooltip title="Open setting">
               <IconButton color="default" onClick={onSettingOpen}>
-                <SettingsOutlinedIcon />
+                <SettingsOutlinedIcon fontSize="small" />
               </IconButton>
             </CustomTooltip>
           </Toolbar>
