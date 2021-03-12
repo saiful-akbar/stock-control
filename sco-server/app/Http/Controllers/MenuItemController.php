@@ -23,26 +23,21 @@ class MenuItemController extends Controller
     {
         // Cek baris perhalaman
         $per_page = 25;
-        if (isset($request->perpage) && !empty($request->perpage)) {
-            switch ($request->perpage) {
-                case 250:
+        if (isset($request->per_page)) {
+            if (isset($request->per_page)) {
+                if ($request->per_page >= 250) {
                     $per_page = 250;
-                    break;
-                case 100:
+                } else if ($request->per_page >= 100) {
                     $per_page = 100;
-                    break;
-                case 50:
+                } else if ($request->per_page >= 50) {
                     $per_page = 50;
-                    break;
-                default:
-                    $per_page = 25;
-                    break;
+                }
             }
         }
 
         // Cek sort
         $sort = "menu_i_title";
-        if (isset($request->sort) && !empty($request->sort)) {
+        if (isset($request->sort)) {
             switch ($this->clearStr($request->sort, "lower")) {
                 case 'created_at':
                     $sort = "created_at";
@@ -60,9 +55,9 @@ class MenuItemController extends Controller
 
         // Cek orderby
         $order_by = 'asc';
-        if (isset($request->orderby) && !empty($request->orderby)) {
-            if ($this->clearStr($request->orderby, "lower") === 'asc' || $this->clearStr($request->orderby, "lower") === 'desc') {
-                $order_by = $this->clearStr($request->orderby, "lower");
+        if (isset($request->order_by)) {
+            if ($this->clearStr($request->order_by, "lower") === 'desc') {
+                $order_by = "desc";
             }
         }
 
@@ -70,10 +65,10 @@ class MenuItemController extends Controller
         $search = isset($request->search) ? $this->clearStr($request->search) : "";
 
         // Ambil data dari database
-        $data = MenuItem::where("menu_i_title", "like", "%" . $this->clearStr($search) . "%")
-            ->orWhere("created_at", "like", "%" . $this->clearStr($search) . "%")
-            ->orWhere("updated_at", "like", "%" . $this->clearStr($search) . "%")
-            ->orderBy($this->clearStr($sort, "lower"), $this->clearStr($order_by, "lower"))
+        $data = MenuItem::where("menu_i_title", "like", "%{$search}%")
+            ->orWhere("created_at", "like", "%{$search}%")
+            ->orWhere("updated_at", "like", "%{$search}%")
+            ->orderBy($sort, $order_by)
             ->paginate($per_page);
 
         // response berhasil

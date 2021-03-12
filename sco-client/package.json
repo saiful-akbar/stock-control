@@ -3,7 +3,8 @@
   "author": "Saiful Akbar",
   "licence": "MIT",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
+  "homepage": "/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

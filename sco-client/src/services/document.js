@@ -21,11 +21,11 @@ export const apiGetDocuments = (
       method: 'get',
       url: '/documents',
       params: {
-        page: page,
-        per_page: per_page,
-        sort: sort,
-        order_by: order_by,
-        search: search
+        page,
+        per_page,
+        sort,
+        order_by,
+        search
       }
     })
       .then(res => resolve(res))

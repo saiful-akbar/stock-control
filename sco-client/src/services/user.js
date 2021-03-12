@@ -10,21 +10,21 @@ import { api } from './api';
  */
 export const apiGetAllUser = (
   page = 1,
-  perpage = 10,
-  query = '',
+  per_page = 10,
+  search = '',
   sort = 'id',
-  orderby = 'asc'
+  order_by = 'asc'
 ) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
       url: '/user',
       params: {
-        page: page,
-        perpage: perpage,
-        sort: sort,
-        orderby: orderby,
-        search: query
+        page,
+        per_page,
+        search,
+        sort,
+        order_by
       }
     })
       .then(res => resolve(res))
@@ -100,12 +100,6 @@ export const apiTruncateTokens = () => {
 };
 
 /**
- * ------------------------
- * Fungsi yang belum di cek
- * ------------------------
- */
-
-/**
  * Fungsi api untuk menghapus user
  * @param {string} id
  */
@@ -113,12 +107,35 @@ export const apiDeleteUser = id => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: `/user/${id}/delete`
+      url: `/user/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
   });
 };
+
+/**
+ * Fungsi api untuk merubah password user
+ * @param {string} id
+ * @param {obj} data
+ */
+export const apiUpdateUserPassword = (id, data) => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'PATCH',
+      data: data,
+      url: `/user/${id}/password`
+    })
+      .then(res => resolve(res))
+      .catch(err => reject(err.response));
+  });
+};
+
+/**
+ * -------------------------
+ * Fungsi yang belum di cek
+ * -------------------------
+ */
 
 /**
  * Fungsi api untuk mengambil semua data akses menu item pada user yang dipilih
@@ -210,23 +227,6 @@ export const apiDeleteUserMenuSubItems = (id, data) => {
       method: 'DELETE',
       data: data,
       url: `/user/submenu/${id}`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk merubah password user
- * @param {string} id
- * @param {obj} data
- */
-export const apiUpdateUserPassword = (id, data) => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'PATCH',
-      data: data,
-      url: `/user/password/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));

@@ -1,11 +1,12 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\ItemGroupController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\MenuItemController;
+use App\Http\Controllers\ItemGroupController;
 use App\Http\Controllers\MenuSubItemController;
 
 /* Login route */
@@ -40,44 +41,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::delete("/{menuSubItem}", [MenuSubItemController::class, "destroy"])->middleware("access.menu:delete");
     });
 
-    /* Route group untuk user */
-    Route::group(["prefix" => "user"], function () {
-        Route::get("/", [UserController::class, "index"])->middleware("access.user:read");
-        Route::get("/create", [UserController::class, "create"])->middleware("access.user:create");
-        Route::post("/", [UserController::class, "storeUserProfile"])->middleware("access.user:create");
-        Route::post("/menu-access", [UserController::class, "storeUserMenuAccess"])->middleware("access.user:create");
-        Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"])->middleware("access.user:delete");
-
-        // Route::get("/menu", [UserController::class, "getMenus"]);
-        // Route::get("/{user}", [UserController::class, "show"]);
-
-        /**
-         * Route middleware menu user untuk akses update
-         */
-        // Route::group(["middleware" => ["access.user:update"]], function () {
-        //     Route::get("/{id}/edit", [UserController::class, "editProfile"]);
-        //     Route::get("/{user}/account", [UserController::class, "editAccount"]);
-        //     Route::patch("/{id}", [UserController::class, "updateProfile"]);
-        //     Route::patch("/{user}/account", [UserController::class, "updateAccount"]);
-        //     Route::get("/menu/{id}", [UserController::class, "getUserMenuItems"]);
-        //     Route::post("/menu/{id}", [UserController::class, "addUserMenuItem"]);
-        //     Route::delete("/menu/{id}", [UserController::class, "deleteUserMenuItem"]);
-        //     Route::get("/submenu/{id}", [UserController::class, "getUserMenuSubItems"]);
-        //     Route::post("/submenu/{id}", [UserController::class, "addUserMenuSubItems"]);
-        //     Route::delete("/submenu/{id}", [UserController::class, "deleteUserMenuSubItems"]);
-        //     Route::patch("/password/{id}", [UserController::class, "updatePassword"]);
-        // });
-
-        /**
-         * Route middleware menu user untuk akses delete
-         */
-        // Route::group(["middleware" => ["access.user:delete"]], function () {
-        //     Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"]);
-        //     Route::delete("/{id}/delete", [UserController::class, "destroy"]);
-        // });
-    });
-
-    /* Route group halaman master items */
+    /* Route group items */
     Route::group(["prefix" => "item-groups"], function () {
         Route::get("/", [ItemGroupController::class, "index"])->middleware("access.item:read");
         Route::post("/", [ItemGroupController::class, "create"])->middleware("access.item:create");
@@ -95,4 +59,37 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::patch("/{document}", [DocumentController::class, "update"])->middleware("access.document:update");
         Route::get("/{document}/download", [DocumentController::class, "download"])->middleware("access.document:read");
     });
+
+    /* Route group untuk user */
+    Route::group(["prefix" => "user"], function () {
+        Route::get("/", [UserController::class, "index"])->middleware("access.user:read");
+        Route::get("/create", [UserController::class, "create"])->middleware("access.user:create");
+        Route::get("/{user}", [UserController::class, "show"])->middleware("access.user:read");
+        // Route::get("/{user}/edit", [UserController::class, "edit"])->middleware("access.user:update");
+
+        Route::post("/", [UserController::class, "storeUserProfile"])->middleware("access.user:create");
+        Route::post("/menu-access", [UserController::class, "storeUserMenuAccess"])->middleware("access.user:create");
+
+        // Route::patch("/{user}", [UserController::class, "update"])->middleware("access.user:update");
+        Route::patch("/{user}/password", [UserController::class, "updatePassword"])->middleware("access.user:update");
+        // Route::patch("/{user}/menu-access", [UserController::class, "updateMenuAccess"])->middleware("access.user:update");
+
+        Route::delete("/{user}", [UserController::class, "destroy"])->middleware("access.user:delete");
+        Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"])->middleware("access.user:delete");
+    });
+});
+
+
+Route::post('/test', function (Request $request) {
+    $input = $request->only(['account.username', 'account.password']);
+    $username = $request->input("account.username");
+    $password = $request->input("account.password");
+
+    return response()->json([
+        "request" => $input,
+        "account" => [
+            "username" => $username,
+            "password" => $password
+        ]
+    ]);
 });

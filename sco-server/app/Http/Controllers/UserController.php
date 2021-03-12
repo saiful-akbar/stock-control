@@ -37,127 +37,6 @@ class UserController extends Controller
         ], 200);
     }
 
-    /**
-     * Method untuk mengambil data logs pada client
-     *
-     * @param String $log_desc
-     * @param String|null $type
-     *
-     * @return String|Array
-     */
-    function getClientLogs(String $log_desc = "Login", String $type = null)
-    {
-        // Cek dan abil ip menggunakan getenv()
-        $ip = "IP address not recognized";
-        if (getenv("HTTP_CLIENT_IP")) {
-            $ip = getenv("HTTP_CLIENT_IP");
-        } else if (getenv("HTTP_X_FORWARDED_FOR")) {
-            $ip = getenv("HTTP_X_FORWARDED_FOR");
-        } else if (getenv("HTTP_X_FORWARDED")) {
-            $ip = getenv("HTTP_X_FORWARDED");
-        } else if (getenv("HTTP_FORWARDED_FOR")) {
-            $ip = getenv("HTTP_FORWARDED_FOR");
-        } else if (getenv("HTTP_FORWARDED")) {
-            $ip = getenv("HTTP_FORWARDED");
-        } else if (getenv("REMOTE_ADDR")) {
-            $ip = getenv("REMOTE_ADDR");
-        }
-
-
-        // Cek dan ambil ip menggunakan $_SERVER["]
-        $ip2 = "IP address not recognized";
-        if (isset($_SERVER["HTTP_CLIENT_IP"])) {
-            $ip2 = $_SERVER["HTTP_CLIENT_IP"];
-        } else if (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
-            $ip2 = $_SERVER["HTTP_X_FORWARDED_FOR"];
-        } else if (isset($_SERVER["HTTP_X_FORWARDED"])) {
-            $ip2 = $_SERVER["HTTP_X_FORWARDED"];
-        } else if (isset($_SERVER["HTTP_FORWARDED_FOR"])) {
-            $ip2 = $_SERVER["HTTP_FORWARDED_FOR"];
-        } else if (isset($_SERVER["HTTP_FORWARDED"])) {
-            $ip2 = $_SERVER["HTTP_FORWARDED"];
-        } else if (isset($_SERVER["REMOTE_ADDR"])) {
-            $ip2 = $_SERVER["REMOTE_ADDR"];
-        }
-
-
-        // Cek dan ambil browser
-        $browser = "Another browser";
-        if (strpos($_SERVER["HTTP_USER_AGENT"], "Netscape")) {
-            $browser = "Netscape";
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Firefox")) {
-            $browser = "Firefox";
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Chrome")) {
-            $browser = "Chrome";
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Opera")) {
-            $browser = "Opera";
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "MSIE")) {
-            $browser = "Internet Explorer";
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Safari")) {
-            $browser = "Safari";
-        }
-
-
-        // Cek dan ambil device
-        $device = "";
-        if (strpos($_SERVER["HTTP_USER_AGENT"], "Mobile")) {
-            if (strpos($_SERVER["HTTP_USER_AGENT"], "Android")) {
-                $device = "Andoid";
-            } else if (strpos($_SERVER["HTTP_USER_AGENT"], "iPhone")) {
-                $device = "iPhone";
-            } else if (strpos($_SERVER["HTTP_USER_AGENT"], "iPad")) {
-                $device = "iPad";
-            } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Windows Phone")) {
-                $device = "Windows Phone";
-            }
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Windows")) {
-            $device = "Windows";
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Linux")) {
-            $device = "Linux";
-        } else if (strpos($_SERVER["HTTP_USER_AGENT"], "Mac OS")) {
-            $device = "Mac OS";
-        } else {
-            $device = "Another device";
-        }
-
-        switch ($type) {
-            case trim(strtolower('ip')):
-                return $ip;
-                break;
-
-            case trim(strtolower('ip2')):
-                return $ip2;
-                break;
-
-            case trim(strtolower('browser')):
-                return $browser;
-                break;
-
-            case trim(strtolower('device')):
-                return $device;
-                break;
-
-            case trim(strtolower('os')):
-                return $_SERVER["HTTP_USER_AGENT"];
-                break;
-
-            case trim(strtolower('logged_at')):
-                return $log_desc;
-                break;
-
-            default:
-                return [
-                    "ip"        => $ip,
-                    "ip2"       => $ip2,
-                    "browser"   => $browser,
-                    "device"    => $device,
-                    "os"        => $_SERVER["HTTP_USER_AGENT"],
-                    "log_desc"  => $log_desc,
-                ];
-                break;
-        }
-    }
-
 
     /**
      * Display a listing of the resource.
@@ -168,29 +47,19 @@ class UserController extends Controller
     {
         // Cek baris perhalaman
         $per_page = 25;
-        if (isset($request->perpage) && !empty($request->perpage)) {
-            switch ($this->clearStr($request->perpage)) {
-                case 250:
-                    $per_page = 250;
-                    break;
-
-                case 100:
-                    $per_page = 100;
-                    break;
-
-                case 50:
-                    $per_page = 50;
-                    break;
-
-                default:
-                    $per_page = 25;
-                    break;
+        if (isset($request->per_page)) {
+            if ($request->per_page >= 250) {
+                $per_page = 250;
+            } else if ($request->per_page >= 100) {
+                $per_page = 100;
+            } else if ($request->per_page >= 50) {
+                $per_page = 50;
             }
         }
 
         // Cek sort
         $sort = "profile_name";
-        if (isset($request->sort) && !empty($request->sort)) {
+        if (isset($request->sort)) {
             switch ($this->clearStr($request->sort)) {
                 case 'profile_name':
                     $sort = "profile_name";
@@ -220,9 +89,9 @@ class UserController extends Controller
 
         // Cek orderby
         $order_by = 'asc';
-        if (isset($request->orderby) && !empty($request->orderby)) {
-            if ($this->clearStr($request->orderby, "lower") === 'asc' || $this->clearStr($request->orderby, "lower") === 'desc') {
-                $order_by = $this->clearStr($request->orderby, "lower");
+        if (isset($request->order_by)) {
+            if ($this->clearStr($request->order_by, "lower") === 'desc') {
+                $order_by = "desc";
             }
         }
 
@@ -243,9 +112,9 @@ class UserController extends Controller
                 "profiles.profile_division",
                 "personal_access_tokens.token",
             )
-            ->where("users.username", "like", "%" . $search . "%")
-            ->orWhere("profiles.profile_name", "like", "%" . $search . "%")
-            ->orWhere("profiles.profile_division", "like", "%" . $search . "%")
+            ->where("users.username", "like", "%{$search}%")
+            ->orWhere("profiles.profile_name", "like", "%{$search}%")
+            ->orWhere("profiles.profile_division", "like", "%{$search}%")
             ->orderBy($sort, $order_by)
             ->paginate($per_page);
 
@@ -324,7 +193,7 @@ class UserController extends Controller
         // Buat user log
         User::find(Auth::user()->id)
             ->userLog()
-            ->create($this->getClientLogs("Create a new user ({$user->username})"));
+            ->create(["log_desc" => "Create a new user ({$user->username})"]);
 
         // response berhasil
         return response()->json([
@@ -388,7 +257,7 @@ class UserController extends Controller
         // Buat user log
         User::find(Auth::user()->id)
             ->userLog()
-            ->create($this->getClientLogs("Deletes all user tokens"));
+            ->create(["log_desc" => "Deletes all user tokens"]);
 
         // Response berhasil
         return response()->json([
@@ -396,87 +265,88 @@ class UserController extends Controller
         ], 200);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(User $user)
+    {
+        $avatar = User::find($user->id)->profile()->first(); // Ambil data avatar
+        if ($avatar->profile_avatar !== null) { // cek apakah avatar ada atau bernilai null
+            Storage::delete("img/avatars/" . $avatar->profile_avatar); // jika ada hapus dari storage
+        }
 
-    // /**
-    //  * @param User $user
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function show(Request $request, User $user)
-    // {
-    //     // Ambil data user account
-    //     $account = User::find($user->id);
+        User::destroy($user->id); // hapus data user beserta selusuh relasinya
 
-    //     // Ambil data user profile
-    //     $profile = Profile::where("user_id", "=", $user->id)->first();
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Delete user ({$user->username})"]);
 
-    //     // Ambil data user menu items
-    //     $menu_items = DB::table("user_menu_item")
-    //         ->leftJoin("menu_items", "menu_items.id", "=", "user_menu_item.menu_item_id")
-    //         ->where("user_menu_item.user_id", "=", $user->id)
-    //         ->select(
-    //             "menu_items.id",
-    //             "menu_items.menu_i_title",
-    //             "menu_items.menu_i_url",
-    //             "menu_items.menu_i_icon",
-    //             "menu_items.menu_i_children",
-    //             "user_menu_item.user_m_i_create",
-    //             "user_menu_item.user_m_i_read",
-    //             "user_menu_item.user_m_i_update",
-    //             "user_menu_item.user_m_i_delete",
-    //             "user_menu_item.created_at",
-    //             "user_menu_item.updated_at",
-    //         )
-    //         ->orderBy("menu_items.menu_i_title", "asc")
-    //         ->get();
+        // response berhasil
+        return response()->json(["message" => "User deleted successfuly",], 200);
+    }
 
-    //     $result_menus = [];
-    //     foreach ($menu_items as $key => $value) {
-    //         $result_menus[$key] = [
-    //             "id"              => $value->id,
-    //             "menu_i_title"    => $value->menu_i_title,
-    //             "menu_i_url"      => $value->menu_i_url,
-    //             "menu_i_icon"     => $value->menu_i_icon,
-    //             "menu_i_children" => $value->menu_i_children,
-    //             "user_m_i_create" => $value->user_m_i_create,
-    //             "user_m_i_read"   => $value->user_m_i_read,
-    //             "user_m_i_update" => $value->user_m_i_update,
-    //             "user_m_i_delete" => $value->user_m_i_delete,
-    //             "created_at"      => $value->created_at,
-    //             "updated_at"      => $value->updated_at,
-    //             "sub_menus"       => DB::table("menu_sub_items")
-    //                 ->leftJoin("user_menu_sub_item", "menu_sub_items.id", "=", "user_menu_sub_item.menu_sub_item_id")
-    //                 ->where([
-    //                     ["menu_sub_items.menu_item_id", "=", $value->id],
-    //                     ["user_menu_sub_item.user_id", "=", $user->id]
-    //                 ])
-    //                 ->select(
-    //                     "menu_sub_items.id",
-    //                     "menu_sub_items.menu_item_id",
-    //                     "menu_sub_items.menu_s_i_title",
-    //                     "menu_sub_items.menu_s_i_url",
-    //                     "user_menu_sub_item.user_m_s_i_create",
-    //                     "user_menu_sub_item.user_m_s_i_read",
-    //                     "user_menu_sub_item.user_m_s_i_update",
-    //                     "user_menu_sub_item.user_m_s_i_delete",
-    //                     "user_menu_sub_item.created_at",
-    //                     "user_menu_sub_item.updated_at",
-    //                 )
-    //                 ->orderBy("menu_sub_items.menu_s_i_title", "asc")
-    //                 ->get(),
-    //         ];
-    //     }
+    /**
+     * @param Request $request
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function updatePassword(Request $request, User $user)
+    {
+        // validasi request
+        $request->validate(["password"  => "required|string|min:6|max:200"]);
 
-    //     $logs = UserLog::where('user_id', $user->id)->limit(10)->orderBy('logged_at', 'desc')->get();
+        // update password
+        User::where("id", $user->id)->update(["password" => bcrypt($this->clearStr($request->password))]);
 
-    //     // response
-    //     return response()->json([
-    //         "user"    => $account,
-    //         "profile" => $profile,
-    //         "menus"   => $result_menus,
-    //         "logs"    => $logs,
-    //     ], 200);
-    // }
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Update user password ({$user->username})"]);
+
+        // response password berhasil di update
+        return response()->json([
+            "message" => "Password {$user->username} updated successfully"
+        ], 200);
+    }
+
+
+    /**
+     * @param User $user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show(User $user)
+    {
+        $account = User::findOrFail($user->id); // ambil data user
+        $profile = User::findOrFail($user->id)->profile()->first(); // ambil data profile
+
+        // ambil data menu item
+        $menu_items = DB::table("user_menu_item")
+            ->leftJoin("menu_items", "user_menu_item.menu_item_id", "menu_items.id")
+            ->where("user_menu_item.user_id", $user->id)
+            ->get();
+
+        // ambil data menu sub item
+        $menu_sub_items = DB::table("user_menu_sub_item")
+            ->leftJoin("menu_sub_items", "user_menu_sub_item.menu_sub_item_id", "menu_sub_items.id")
+            ->where("user_menu_sub_item.user_id", $user->id)
+            ->get();
+
+        // response berhasil
+        return response()->json([
+            "account" => $account,
+            "profile" => $profile,
+            "menu_access" => [
+                "menu_items" => $menu_items,
+                "menu_sub_items" => $menu_sub_items
+            ]
+        ], 200);
+    }
 
     // /**
     //  * Show the form for editing the specified resource.
@@ -628,23 +498,6 @@ class UserController extends Controller
     //         "message"   => "User account updated successfully",
     //         "user_data" => User::find($user->id),
     //     ], 200);
-    // }
-
-    // /**
-    //  * Remove the specified resource from storage.
-    //  *
-    //  * @param  int  $id
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function destroy($id)
-    // {
-    //     $avatar = User::find($id)->profile()->first();
-    //     if ($avatar->profile_avatar !== null) {
-    //         Storage::delete("img/avatars/" . $avatar->profile_avatar);
-    //     }
-
-    //     User::destroy($id);
-    //     return response()->json(["message" => "User deleted successfuly",], 200);
     // }
 
 
@@ -882,40 +735,5 @@ class UserController extends Controller
     //         "message"  => "{$delete} Sub menus deleted successfully",
     //         "response" => $this->getUserMenuSubItems($id),
     //     ]);
-    // }
-
-
-    // /**
-    //  * @param Request $request
-    //  * @param string $id
-    //  *
-    //  * @return Response
-    //  */
-    // public function updatePassword(Request $request, string $id)
-    // {
-    //     // cek method yang dikirim
-    //     if ($request->isMethod("patch")) {
-
-    //         // validasi request
-    //         $request->validate([
-    //             "password" => "required|string|max:128"
-    //         ]);
-
-    //         // update password
-    //         User::where("id", htmlspecialchars($id))->update([
-    //             "password" => bcrypt(htmlspecialchars($request->password))
-    //         ]);
-
-    //         // response password berhasil di update
-    //         return response()->json([
-    //             "message" => "Password updated successfully"
-    //         ], 200);
-    //     } else {
-
-    //         // response method tidak sesuai permintaan
-    //         return response()->json([
-    //             "message" => "Method not allowed"
-    //         ], 405);
-    //     }
     // }
 }

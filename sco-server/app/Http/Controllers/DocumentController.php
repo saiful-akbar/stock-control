@@ -21,19 +21,19 @@ class DocumentController extends Controller
     {
         // Cek baris perhalaman
         $per_page = 25;
-        if (isset($request->per_page) && !empty($request->per_page)) {
+        if (isset($request->per_page)) {
             if ($request->per_page >= 250) {
                 $per_page = 250;
-            } else if ($request->per_page >= 100 && $request->per_page < 250) {
+            } else if ($request->per_page >= 100) {
                 $per_page = 100;
-            } else if ($request->per_page >= 50 && $request->per_page < 100) {
+            } else if ($request->per_page >= 50) {
                 $per_page = 50;
             }
         }
 
         // Cek sort
         $sort = "document_title";
-        if (isset($request->sort) && !empty($request->sort)) {
+        if (isset($request->sort)) {
             switch ($this->clearStr($request->sort, "lower")) {
                 case "document_title":
                     $sort = "document_title";
@@ -59,9 +59,9 @@ class DocumentController extends Controller
 
         // Cek order_by
         $order_by = "asc";
-        if (isset($request->order_by) && !empty($request->order_by)) {
-            if ($this->clearStr($request->order_by, "lower") === "asc" || $this->clearStr($request->order_by, "lower") === "desc") {
-                $order_by = $this->clearStr($request->order_by, "lower");
+        if (isset($request->order_by)) {
+            if ($this->clearStr($request->order_by, "lower") === "desc") {
+                $order_by = "desc";
             }
         }
 
@@ -69,10 +69,10 @@ class DocumentController extends Controller
         $search = (isset($request->search)) ? $this->clearStr($request->search) : "";
 
         // Ambil data item group dari database
-        $data = Document::where("document_title", "like", "%" . $search . "%")
-            ->orWhere("document_description", "like", "%" . $search . "%")
-            ->orWhere("created_at", "like", "%" . $search . "%")
-            ->orWhere("updated_at", "like", "%" . $search . "%")
+        $data = Document::where("document_title", "like", "%{$search}%")
+            ->orWhere("document_description", "like", "%{$search}%")
+            ->orWhere("created_at", "like", "%{$search}%")
+            ->orWhere("updated_at", "like", "%{$search}%")
             ->orderBy($sort, $order_by)
             ->paginate($per_page);
 
@@ -139,8 +139,7 @@ class DocumentController extends Controller
             Storage::delete("documents/{$document->document_path}"); // hapus file dari storage
             $title = $this->clearStr($request->document_title, "lower"); // ambil title dari request
             $file_extension = $request->file('document_file')->extension(); // ambil extensi
-            $file_name = str_replace(" ", "_", $title) . "_" . date('ymdHis'); // buat nama file baru
-            $file_name .= ".{$file_extension}"; // tambahkan extensi file
+            $file_name = str_replace(" ", "_", $title) . "_" . date('ymdHis') . "." . $file_extension; // buat nama file baru
             $request->file('document_file')->storeAs('documents', $file_name); // simpan file baru pada storage
         }
 

@@ -23,30 +23,22 @@ class MenuSubItemController extends Controller
     {
         // Cek baris perhalaman
         $per_page = 25;
-        if (isset($request->perpage) && !empty($request->perpage)) {
-            switch ($request->perpage) {
-                case 250:
+        if (isset($request->per_page)) {
+            if (isset($request->per_page)) {
+                if ($request->per_page >= 250) {
                     $per_page = 250;
-                    break;
-
-                case 100:
+                } else if ($request->per_page >= 100) {
                     $per_page = 100;
-                    break;
-
-                case 50:
+                } else if ($request->per_page >= 50) {
                     $per_page = 50;
-                    break;
-
-                default:
-                    $per_page = 25;
-                    break;
+                }
             }
         }
 
         // Cek sort
         $sort = "menu_i_title";
-        if (isset($request->sort) && !empty($request->sort)) {
-            switch ($request->sort) {
+        if (isset($request->sort)) {
+            switch ($this->clearStr($request->sort, "lower")) {
                 case 'menu_s_i_title':
                     $sort = "menu_s_i_title";
                     break;
@@ -71,14 +63,14 @@ class MenuSubItemController extends Controller
 
         // Cek orderby
         $order_by = 'asc';
-        if (isset($request->orderby) && !empty($request->orderby)) {
-            if ($request->orderby === 'asc' || $request->orderby === 'desc') {
-                $order_by = htmlspecialchars($request->orderby);
+        if (isset($request->order_by)) {
+            if ($this->clearStr($request->order_by, "lower") === 'desc') {
+                $order_by = "desc";
             }
         }
 
         // Cek search
-        $search = isset($request->search) ? htmlspecialchars($request->search) : '';
+        $search = isset($request->search) ? $this->clearStr($request->search) : '';
 
         // Ambil data dari database
         $data = MenuSubItem::leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
@@ -91,19 +83,19 @@ class MenuSubItemController extends Controller
                 "menu_sub_items.menu_s_i_url",
                 "menu_sub_items.created_at",
                 "menu_sub_items.updated_at"
-            )->where("menu_items.menu_i_title", "like", "%" . $search . "%")
-            ->orWhere("menu_sub_items.menu_s_i_title", "like", "%" . $search . "%")
-            ->orWhere("menu_sub_items.menu_s_i_url", "like", "%" . $search . "%")
+            )->where("menu_items.menu_i_title", "like", "%{$search}%")
+            ->orWhere("menu_sub_items.menu_s_i_title", "like", "%{$search}%")
+            ->orWhere("menu_sub_items.menu_s_i_url", "like", "%{$search}%")
             ->orderBy($sort, $order_by)
             ->paginate($per_page);
 
         // response
         return response()->json([
             "menu_sub_items" => $data,
-            "menu_items" => MenuItem::all(),
-            "search" => $search,
-            "sort" => $sort,
-            "order_by" => $order_by
+            "menu_items"     => MenuItem::all(),
+            "search"         => $search,
+            "sort"           => $sort,
+            "order_by"       => $order_by
         ], 200);
     }
 
@@ -123,14 +115,10 @@ class MenuSubItemController extends Controller
             "icon"  => "required|max:128",
         ]);
 
-        /**
-         * mengganti spasi dengan "/"
-         * cek apakah karakter pertama "/" atau bukan
-         * jika bukan tabahkan "/"
-         */
-        $url = str_replace(" ", "/", $request->url);
-        if (substr($url, 0, 1) != "/") {
-            $url = "/{$url}";
+        // Cek request url
+        $url = str_replace(" ", "/", $request->url); // mengganti spasi dengan "/"
+        if (substr($url, 0, 1) != "/") { // cek apakah karakter pertama "/" atau bukan
+            $url = "/{$url}"; // jika bukan tabahkan "/"
         }
 
         // propses menambahkan data baru
@@ -146,6 +134,7 @@ class MenuSubItemController extends Controller
             ->userLog()
             ->create(["log_desc" => "Create a new sub menu ({$menu_sub_item->menu_s_i_title})"]);
 
+        // Response berhasil
         return response()->json(["message" => "Sub menus created successfuly"], 200);
     }
 
@@ -166,14 +155,10 @@ class MenuSubItemController extends Controller
             "icon"  => "required|max:128",
         ]);
 
-        /**
-         * mengganti spasi dengan "/"
-         * cek apakah karakter pertama "/" atau bukan
-         * jika bukan tabahkan "/"
-         */
-        $url = str_replace(" ", "/", $request->url);
-        if (substr($url, 0, 1) != "/") {
-            $url = "/{$url}";
+        // Cek request url
+        $url = str_replace(" ", "/", $request->url); // mengganti spasi dengan "/"
+        if (substr($url, 0, 1) != "/") { // cek apakah karakter pertama "/" atau bukan
+            $url = "/{$url}"; //jika bukan tabahkan "/"
         }
 
         /**
@@ -183,8 +168,8 @@ class MenuSubItemController extends Controller
         if ($url != $menuSubItem->menu_s_i_url) {
             if (MenuSubItem::where("menu_s_i_url", $url)->count() >= 1) {
                 return response()->json([
-                    "errors" => ["url" => ["The url has already been taken."]],
-                    "message" => "The given data was invalid."
+                    "message" => "The given data was invalid.",
+                    "errors"  => ["url" => ["The url has already been taken."]]
                 ], 422);
             }
         }
@@ -200,7 +185,7 @@ class MenuSubItemController extends Controller
         }
 
         // simpan ke database
-        $new_menu_sub_item = MenuSubItem::where("id", $menuSubItem->id)->update([
+        MenuSubItem::where("id", $menuSubItem->id)->update([
             "menu_item_id"   => $this->clearStr($request->menus),
             "menu_s_i_title" => $this->clearStr($request->title, "proper"),
             "menu_s_i_url"   => $this->clearStr($url, "lower"),
@@ -224,6 +209,7 @@ class MenuSubItemController extends Controller
      */
     public function destroy(MenuSubItem $menuSubItem)
     {
+        // Hapus dari database
         MenuSubItem::destroy($menuSubItem->id);
 
         // Buat user log
@@ -231,6 +217,7 @@ class MenuSubItemController extends Controller
             ->userLog()
             ->create(["log_desc" => "Delete sub menu ({$menuSubItem->menu_s_i_title})"]);
 
+        // Response berhasil
         return response()->json([
             "message" => "Sub menus deleted successfuly"
         ], 200);

@@ -3,21 +3,21 @@ import { api } from './api';
 // Fungsi api untuk mengambil semua data menu items
 export const apiGetAllMenuItem = (
   page = 1,
-  perpage = 10,
+  per_page = 10,
   search = '',
   sort = 'id',
-  orderby = 'asc'
+  order_by = 'asc'
 ) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
       url: '/menu',
       params: {
-        page: page,
-        perpage: perpage,
-        sort: sort,
-        orderby: orderby,
-        search: search
+        page,
+        per_page,
+        search,
+        sort,
+        order_by
       }
     })
       .then(res => resolve(res))
