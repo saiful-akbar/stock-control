@@ -24,7 +24,7 @@ import NavItemDashboard from './NavItemDashboard';
 // Style
 const useStyles = makeStyles(theme => ({
   mobileDrawer: {
-    backgroundColor: theme.palette.background.dark,
+    backgroundColor: theme.palette.background.paper,
     width: 256,
     overflow: 'hidden'
   },
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     top: 48,
     height: 'calc(100% - 48px)',
     backgroundColor: theme.palette.background.dark,
-    borderRight: 'none',
+    border: 'none',
     overflow: 'hidden'
   },
   avatar: {

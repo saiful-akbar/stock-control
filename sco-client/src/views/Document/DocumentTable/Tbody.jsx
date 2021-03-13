@@ -13,6 +13,7 @@ import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined'
 import { apiDownloadDocument } from 'src/services/document';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
+import { useNavigate } from 'react-router';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -33,6 +34,7 @@ function Tbody({
 }) {
   const classes = useStyles();
   const isMounted = React.useRef(true);
+  const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
 
   /* handle jika komponen dilepas saat request api belum selesai. */
@@ -45,27 +47,48 @@ function Tbody({
   }, []);
 
   /* Fungsi untuk handle download file document */
-  const handleDownload = async data => {
+  const handleDownload = data => {
     setLoading(true);
-    const res = await apiDownloadDocument(data.id);
-    if (res.status === 200) {
-      if (isMounted.current) {
-        setLoading(false);
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement('a');
+    apiDownloadDocument(data.id)
+      .then(res => {
+        if (isMounted.current) {
+          setLoading(false);
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement('a');
 
-        link.href = url;
-        link.setAttribute('download', data.document_path); //or any other extension
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      }
-    } else {
-      if (isMounted.current) {
-        setLoading(false);
-        setReduxToast(true, 'error', `(#${res.status}) ${res.data.message}`);
-      }
-    }
+          link.href = url;
+          link.setAttribute('download', data.document_path); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              navigate('/logout');
+              break;
+
+            case 403:
+              navigate('/error/forbiden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              setReduxToast(
+                true,
+                'error',
+                `(#${err.status}) ${err.data.message}`
+              );
+              break;
+          }
+        }
+      });
   };
 
   /* Render komponen utama */

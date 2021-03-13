@@ -77,18 +77,31 @@ function UserCreateAccountProfile(props) {
       })
       .catch(err => {
         if (isMounted.current) {
-          setLoading(false);
-          setAlert({
-            type: 'error',
-            message: `(#${err.status}) ${err.data.message}`
-          });
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
 
-          if (err.status === 422) {
-            setErrors(err.data.errors);
-          } else if (err.status === 401) {
-            window.location.href = '/logout';
-          } else if (err.status === 403) {
-            navigate('/error/forbidden');
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            case 422:
+              setLoading(false);
+              setErrors(err.data.errors);
+              break;
+
+            default:
+              setLoading(false);
+              setAlert({
+                type: 'error',
+                message: `(#${err.status}) ${err.data.message}`
+              });
+              break;
           }
         }
       });

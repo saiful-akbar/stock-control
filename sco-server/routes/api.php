@@ -61,7 +61,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
     });
 
     /* Route group untuk user */
-    Route::group(["prefix" => "user"], function () {
+    Route::group(["prefix" => "users"], function () {
         Route::get("/", [UserController::class, "index"])->middleware("access.user:read");
         Route::get("/create", [UserController::class, "create"])->middleware("access.user:create");
         Route::get("/{user}", [UserController::class, "show"])->middleware("access.user:read");
@@ -70,12 +70,12 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
         Route::post("/", [UserController::class, "storeUserProfile"])->middleware("access.user:create");
         Route::post("/menu-access", [UserController::class, "storeUserMenuAccess"])->middleware("access.user:create");
 
-        // Route::patch("/{user}", [UserController::class, "update"])->middleware("access.user:update");
         Route::patch("/{user}/password", [UserController::class, "updatePassword"])->middleware("access.user:update");
+        // Route::patch("/{user}", [UserController::class, "update"])->middleware("access.user:update");
         // Route::patch("/{user}/menu-access", [UserController::class, "updateMenuAccess"])->middleware("access.user:update");
 
-        Route::delete("/{user}", [UserController::class, "destroy"])->middleware("access.user:delete");
         Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"])->middleware("access.user:delete");
+        Route::delete("/{user}", [UserController::class, "destroy"])->middleware("access.user:delete");
     });
 });
 

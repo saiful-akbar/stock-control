@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconButton, Typography } from '@material-ui/core';
+import {
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  ListItemIcon
+} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import CustomTooltip from 'src/components/CustomTooltip';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
 
 // Componen utama
 const UserTableOptions = ({
@@ -35,14 +43,6 @@ const UserTableOptions = ({
   };
 
   /**
-   * Link menu akses
-   */
-  const handleChangeUserMenus = () => {
-    handleCloseMenu();
-    navigate(`/users/${userData.id}/menus`);
-  };
-
-  /**
    * handle edit user
    */
   const handleEdit = () => {
@@ -69,7 +69,7 @@ const UserTableOptions = ({
   /**
    * handle view user
    */
-  const handleViewDetail = () => {
+  const handleViewDetails = () => {
     handleCloseMenu();
     navigate(`/users/${userData.id}`);
   };
@@ -92,32 +92,38 @@ const UserTableOptions = ({
         onClose={handleCloseMenu}
       >
         {state !== null && state.user_m_s_i_update === 1 && (
-          <MenuItem onClick={handleChangeUserMenus}>
-            <Typography variant="inherit">{'Access Menu'}</Typography>
-          </MenuItem>
-        )}
-
-        {state !== null && state.user_m_s_i_update === 1 && (
           <MenuItem onClick={handleChangePassword}>
+            <ListItemIcon>
+              <LockOutlinedIcon fontSize="small" />
+            </ListItemIcon>
             <Typography variant="inherit">{'Change password'}</Typography>
           </MenuItem>
         )}
 
         {state !== null && state.user_m_s_i_delete === 1 && (
           <MenuItem onClick={handleDelete}>
+            <ListItemIcon>
+              <DeleteOutlinedIcon fontSize="small" />
+            </ListItemIcon>
             <Typography variant="inherit">{'Delete'}</Typography>
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleViewDetail}>
-          <Typography variant="inherit">{'Detail info'}</Typography>
-        </MenuItem>
-
         {state !== null && state.user_m_s_i_update === 1 && (
           <MenuItem onClick={handleEdit}>
+            <ListItemIcon>
+              <EditOutlinedIcon fontSize="small" />
+            </ListItemIcon>
             <Typography variant="inherit">{'Edit'}</Typography>
           </MenuItem>
         )}
+
+        <MenuItem onClick={handleViewDetails}>
+          <ListItemIcon>
+            <VisibilityOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="inherit">{'View details'}</Typography>
+        </MenuItem>
       </Menu>
     </React.Fragment>
   );

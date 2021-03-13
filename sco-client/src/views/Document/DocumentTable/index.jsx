@@ -122,7 +122,7 @@ function DocumentTable(props) {
    * @param {string} order_by
    * @param {string} search
    */
-  const getData = async (
+  const getData = (
     page = 1, // page
     per_page = 25, // rows per page
     sort = 'item_g_code', // sortir
@@ -130,37 +130,41 @@ function DocumentTable(props) {
     search = '' // search
   ) => {
     setLoading(true);
-
-    try {
-      let res = await apiGetDocuments(page, per_page, sort, order_by, search);
-      if (isMounted.current) {
-        props.onReloadTable(false);
-        setLoading(false);
-        setRowData(res.data);
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        props.onReloadTable(false);
-        setLoading(false);
-        switch (err.status) {
-          case 401:
-            navigate('/logout');
-            break;
-
-          case 403:
-            navigate('/error/forbiden');
-            break;
-
-          default:
-            props.setReduxToast(
-              true,
-              'error',
-              `(#${err.status}) ${err.data.message}`
-            );
-            break;
+    apiGetDocuments(page, per_page, sort, order_by, search)
+      .then(res => {
+        if (isMounted.current) {
+          props.onReloadTable(false);
+          setLoading(false);
+          setRowData(res.data);
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              navigate('/logout');
+              break;
+
+            case 403:
+              navigate('/error/forbiden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              props.onReloadTable(false);
+              props.setReduxToast(
+                true,
+                'error',
+                `(#${err.status}) ${err.data.message}`
+              );
+              break;
+          }
+        }
+      });
   };
 
   /**

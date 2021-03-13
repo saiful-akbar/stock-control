@@ -1,78 +1,82 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { reduxAction } from 'src/config/redux/state';
 import { connect } from 'react-redux';
 import { apiDeleteUser } from 'src/services/user';
 import DialogDelete from 'src/components/DialogDelete';
+import { useNavigate } from 'react-router';
 
-class UserDelete extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false
+function UserDelete(props) {
+  const [loading, setLoading] = React.useState(false);
+  const isMounted = React.useRef(true);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
     };
-    this.mounted = true;
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
+    // eslint-disable-next-line
+  }, []);
 
-  componentWillUnmount() {
-    this.mounted = false;
-  }
+  /* Fungsi untuk submit form */
+  const handleSubmit = () => {
+    setLoading(true);
 
-  /**
-   * Fungsi untuk submit form
-   */
-  async handleSubmit() {
-    this.setState({ loading: true });
-    try {
-      let res = await apiDeleteUser(this.props.userId);
-      if (this.mounted) {
-        this.setState({ loading: false });
-        this.props.reloadTable();
-        this.props.setReduxToast({
-          show: true,
-          type: 'success',
-          message: res.data.message
-        });
-        this.props.closeDialog();
-      }
-    } catch (err) {
-      if (this.mounted) {
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else {
-          this.setState({ loading: false });
-          this.props.setReduxToast({
+    apiDeleteUser(props.userId)
+      .then(res => {
+        if (isMounted.current) {
+          setLoading(false);
+          props.setReduxToast({
             show: true,
-            type: 'error',
-            message: `(#${err.status}) ${err.data.message}`
+            type: 'success',
+            message: res.data.message
           });
+          props.reloadTable();
+          props.closeDialog();
         }
-      }
-    }
-  }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
 
-  /**
-   * Fungsi menutup dialog
-   */
-  handleClose() {
-    if (!this.state.loading) {
-      this.props.closeDialog();
-    } else {
-      return;
-    }
-  }
+            case 403:
+              navigate('/error/forbidden');
+              break;
 
-  render() {
-    return (
-      <DialogDelete
-        open={this.props.open}
-        onClose={this.handleClose}
-        loading={this.state.loading}
-        onDelete={this.handleSubmit}
-      />
-    );
-  }
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              props.setReduxToast({
+                show: true,
+                type: 'error',
+                message: `(#${err.status}) ${err.data.message}`
+              });
+              break;
+          }
+        }
+      });
+  };
+
+  /* Fungsi menutup dialog */
+  const handleClose = () => {
+    if (!loading) {
+      props.closeDialog();
+    }
+  };
+
+  return (
+    <DialogDelete
+      open={props.open}
+      onClose={handleClose}
+      loading={loading}
+      onDelete={handleSubmit}
+    />
+  );
 }
 
 function reduxDispatch(dispatch) {

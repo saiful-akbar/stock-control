@@ -1,26 +1,13 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Page from 'src/components/Page';
-import {
-  Grid,
-  Fab,
-  Typography,
-  AccordionDetails,
-  AccordionSummary,
-  Accordion
-} from '@material-ui/core';
+import { Grid, Fab, Typography, Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import UserDetailProfile from './UserDetailProfile';
 import { apiGetUserDetail } from 'src/services/user';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CustomTooltip from 'src/components/CustomTooltip';
-import UserDetailAccount from './UserDetailAccount';
-import { Skeleton } from '@material-ui/lab';
-import UserDetailMenu from './UserDetailMenu';
-import UserSeesion from './UserSession';
 
 // Style
 const useStyle = makeStyles(theme => ({
@@ -42,30 +29,27 @@ const useStyle = makeStyles(theme => ({
 function UserDetail(props) {
   const classes = useStyle();
   const navigate = useNavigate();
-  const location = useLocation();
   const { id } = useParams();
 
   const isMounted = React.useRef(true);
+
   const [userData, setUserData] = React.useState(null);
-  const [expanded, setExpanded] = React.useState('panel1');
 
   /**
-   * Expanded acordion
-   * @param {string} panel
-   */
-  const handleAccordionChange = panel => (e, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
-  /**
-   * Cek apakah state bernilai null atau tidak & state.update bernilai 1 atau tidak
-   * Jika tidak arahkan ke halaman 404
+   * Ambil data userLogin dari redux
+   * Cek user access
+   * Jika user access read === 0 (false) maka alihkan ke halaman forbidden
    */
   React.useEffect(() => {
-    if (location.state === null || location.state.read !== 1) {
-      navigate('/404');
+    if (props.reduxUserLogin !== null) {
+      props.reduxUserLogin.menu_sub_items.filter(
+        value =>
+          Boolean(
+            value.menu_s_i_url === '/users' && value.pivot.user_m_s_i_read !== 1
+          ) && navigate('/error/forbidden')
+      );
     }
-  }, [location.state, navigate]);
+  }, [props.reduxUserLogin, navigate]);
 
   /**
    * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
@@ -82,135 +66,61 @@ function UserDetail(props) {
   /**
    * Fungsi untuk mengambil data user dari api
    */
-  const getData = async () => {
-    try {
-      let res = await apiGetUserDetail(id);
-      if (isMounted.current) {
-        setUserData({
-          user: res.data.user,
-          profile: res.data.profile,
-          menus: res.data.menus,
-          logs: res.data.logs
-        });
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else {
-          props.setReduxToast(
-            true,
-            'error',
-            `(#${err.status}) ${err.data.message}`
-          );
+  const getData = () => {
+    apiGetUserDetail(id)
+      .then(res => {
+        if (isMounted.current) {
+          setUserData(res.data);
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            default:
+              props.setReduxToast(
+                true,
+                'error',
+                `(#${err.status}) ${err.data.message}`
+              );
+              break;
+          }
+        }
+      });
   };
 
   /**
    * Render Komponen utama
    */
   return (
-    <Page pb title="Detailed User Info" pageTitle="Detailed User Info">
-      <Grid
-        spacing={3}
-        container
-        direction="row"
-        justify="center"
-        alignItems="flex-start"
-      >
-        <Grid item lg={8} md={10} xs={12}>
-          <Accordion
-            expanded={expanded === 'panel1'}
-            onChange={handleAccordionChange('panel1')}
-          >
-            <AccordionSummary
-              expandIcon={
-                userData === null ? (
-                  <Skeleton variant="circle" width={20} height={20} />
-                ) : (
-                  <ExpandMoreIcon />
-                )
-              }
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              {userData === null ? (
-                <Skeleton variant="text">
-                  <Typography className={classes.heading}>
-                    {'Account Info'}
-                  </Typography>
-                </Skeleton>
-              ) : (
-                <Typography className={classes.heading}>
-                  {'Account Info'}
-                </Typography>
-              )}
-            </AccordionSummary>
-
-            <AccordionDetails>
-              <UserDetailAccount
-                data={userData === null ? null : userData.user}
-              />
-            </AccordionDetails>
-          </Accordion>
-
-          <Accordion
-            expanded={expanded === 'panel2'}
-            onChange={handleAccordionChange('panel2')}
-          >
-            <AccordionSummary
-              expandIcon={
-                userData === null ? (
-                  <Skeleton variant="circle" width={20} height={20} />
-                ) : (
-                  <ExpandMoreIcon />
-                )
-              }
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              {userData === null ? (
-                <Skeleton variant="text">
-                  <Typography className={classes.heading}>
-                    {'Profile Info'}
-                  </Typography>
-                </Skeleton>
-              ) : (
-                <Typography className={classes.heading}>
-                  {'Profile Info'}
-                </Typography>
-              )}
-            </AccordionSummary>
-
-            <AccordionDetails>
-              <UserDetailProfile
-                data={userData === null ? null : userData.profile}
-              />
-            </AccordionDetails>
-          </Accordion>
+    <Page pb title="View user details" pageTitle="View user details">
+      <Container maxWidth="md">
+        <Grid spacing={3} container>
+          <Grid item md={12} xs={12}>
+            <Typography color="textPrimary">
+              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Non at
+              ducimus suscipit quasi amet excepturi sint repudiandae vel? Minus
+              tenetur facere aspernatur sapiente. Repudiandae harum vitae iusto
+              dolorum eveniet nihil?
+            </Typography>
+          </Grid>
         </Grid>
-
-        <Grid item xs={12}>
-          <UserDetailMenu data={userData === null ? null : userData.menus} />
-        </Grid>
-
-        <Grid item xs={12}>
-          <UserSeesion data={userData === null ? null : userData.logs} />
-        </Grid>
-      </Grid>
+      </Container>
 
       <div className={classes.fab}>
         <CustomTooltip title="Return to the user page" placement="left">
-          <Fab
-            color="secondary"
-            arial-label="Return to the user page"
-            disabled={false}
-            onClick={() => {
-              navigate('/user', { state: location.state });
-            }}
-          >
+          <Fab color="secondary" onClick={() => navigate('/users')}>
             <RotateLeftIcon />
           </Fab>
         </CustomTooltip>
@@ -225,7 +135,7 @@ function UserDetail(props) {
  */
 function reduxDispatch(dispatch) {
   return {
-    setReduxToast: (show = false, type = 'success', message = '') =>
+    setReduxToast: (show, type, message) =>
       dispatch({
         type: reduxAction.toast,
         value: {
@@ -237,4 +147,11 @@ function reduxDispatch(dispatch) {
   };
 }
 
-export default connect(null, reduxDispatch)(UserDetail);
+/* Redux State */
+function reduxState(state) {
+  return {
+    reduxUserLogin: state.userLogin
+  };
+}
+
+export default connect(reduxState, reduxDispatch)(UserDetail);

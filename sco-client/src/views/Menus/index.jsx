@@ -13,7 +13,7 @@ import MenuSubItem from 'src/views/Menus/MenuSubItem';
 
 import { apiGetAllMenuItem } from 'src/services/menuItem';
 import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
-import { Divider } from '@material-ui/core';
+import { Divider, Container } from '@material-ui/core';
 import queryString from 'query-string';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -75,29 +75,31 @@ function Menus(props) {
 
   return (
     <Page title="Menu Managemen" pageTitle="Menu Management">
-      <TabContext value={value}>
-        <div className={classes.tabList}>
-          <TabList
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons="on"
-          >
-            <Tab label="Menus" value="menus" />
-            <Tab label="Sub Menus" value="subMenus" />
-          </TabList>
-          <Divider />
-        </div>
+      <Container>
+        <TabContext value={value}>
+          <div className={classes.tabList}>
+            <TabList
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="on"
+            >
+              <Tab label="Menus" value="menus" />
+              <Tab label="Sub Menus" value="subMenus" />
+            </TabList>
+            <Divider />
+          </div>
 
-        <TabPanel value="menus">
-          <MenuItem state={userAccess} />
-        </TabPanel>
+          <TabPanel value="menus">
+            <MenuItem state={userAccess} />
+          </TabPanel>
 
-        <TabPanel value="subMenus">
-          <MenuSubItem state={userAccess} />
-        </TabPanel>
-      </TabContext>
+          <TabPanel value="subMenus">
+            <MenuSubItem state={userAccess} />
+          </TabPanel>
+        </TabContext>
+      </Container>
     </Page>
   );
 }

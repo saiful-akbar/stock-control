@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Grid } from '@material-ui/core';
+import { Grid, Container } from '@material-ui/core';
 import Page from 'src/components/Page';
 import DocumentTable from './DocumentTable';
 import DocumentForm from './DocumentForm';
@@ -49,101 +49,102 @@ function Document(props) {
   }, [props.reduxUserLogin]);
 
   /* Handle delete document */
-  const handleDelete = async data => {
+  const handleDelete = () => {
     setLoading(true);
-
-    try {
-      let res = await apiDeleteDocument(dialogDelete.data);
-
-      if (isMounted.current) {
-        setReloadTable(true);
-        setLoading(false);
-        setDialogDelete({ open: false, data: [] });
-        props.setReduxToast(true, 'success', res.data.message);
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        setLoading(false);
-        switch (err.status) {
-          case 401:
-            window.location.href = '/logout';
-            break;
-
-          case 403:
-            navigate('/error/forbidden');
-            break;
-
-          case 404:
-            navigate('/error/notfound');
-            break;
-
-          default:
-            props.setReduxToast(
-              true,
-              'error',
-              `(#${err.status}) ${err.data.message}`
-            );
-            break;
+    apiDeleteDocument(dialogDelete.data)
+      .then(res => {
+        if (isMounted.current) {
+          setReloadTable(true);
+          setLoading(false);
+          setDialogDelete({ open: false, data: [] });
+          props.setReduxToast(true, 'success', res.data.message);
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              props.setReduxToast(
+                true,
+                'error',
+                `(#${err.status}) ${err.data.message}`
+              );
+              break;
+          }
+        }
+      });
   };
 
   /* Render */
   return (
     <Page title="Documents" pageTitle="Documents">
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <DocumentTable
-            userAccess={userAccess}
-            reload={isReloadTable}
-            selectedRows={dialogDelete.data}
-            onReloadTable={bool => setReloadTable(bool)}
-            onAdd={() => {
-              setForm({
-                open: true,
-                type: 'Add',
-                data: null
-              });
-            }}
-            onEdit={value => {
-              setForm({
-                open: true,
-                type: 'Edit',
-                data: value
-              });
-            }}
-            onDelete={selected => {
-              setDialogDelete({
-                open: true,
-                data: selected
-              });
-            }}
-          />
+      <Container>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <DocumentTable
+              userAccess={userAccess}
+              reload={isReloadTable}
+              selectedRows={dialogDelete.data}
+              onReloadTable={bool => setReloadTable(bool)}
+              onAdd={() => {
+                setForm({
+                  open: true,
+                  type: 'Add',
+                  data: null
+                });
+              }}
+              onEdit={value => {
+                setForm({
+                  open: true,
+                  type: 'Edit',
+                  data: value
+                });
+              }}
+              onDelete={selected => {
+                setDialogDelete({
+                  open: true,
+                  data: selected
+                });
+              }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
 
-      <DocumentForm
-        open={form.open}
-        type={form.type}
-        data={form.data}
-        onReloadTable={bool => setReloadTable(bool)}
-        onClose={() => {
-          setForm({
-            open: false,
-            type: form.type,
-            data: null
-          });
-        }}
-      />
+        <DocumentForm
+          open={form.open}
+          type={form.type}
+          data={form.data}
+          onReloadTable={bool => setReloadTable(bool)}
+          onClose={() => {
+            setForm({
+              open: false,
+              type: form.type,
+              data: null
+            });
+          }}
+        />
 
-      <DialogDelete
-        title="Delete document"
-        open={dialogDelete.open}
-        onDelete={handleDelete}
-        loading={loading}
-        onClose={bool => setDialogDelete({ open: bool, data: [] })}
-      />
+        <DialogDelete
+          title="Delete document"
+          open={dialogDelete.open}
+          onDelete={handleDelete}
+          loading={loading}
+          onClose={bool => setDialogDelete({ open: bool, data: [] })}
+        />
+      </Container>
     </Page>
   );
 }

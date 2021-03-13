@@ -138,7 +138,7 @@ const UserTable = props => {
    * @param {string} sort
    * @param {string "asc/desc"} orderBy
    */
-  const getData = async (
+  const getData = (
     page = rowData.users.current_page,
     perPage = rowData.users.per_page,
     query = search,
@@ -146,28 +146,41 @@ const UserTable = props => {
     orderBy = rowData.order_by
   ) => {
     setLoading(true);
-    try {
-      const res = await apiGetAllUser(page, perPage, query, sort, orderBy);
-      if (isMounted.current) {
-        setRowData(res.data);
-        props.setReload(false);
-        setLoading(false);
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        props.setReload(false);
-        setLoading(false);
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else {
-          props.setReduxToast(
-            true,
-            'error',
-            `(#${err.status}) ${err.data.message}`
-          );
+    apiGetAllUser(page, perPage, query, sort, orderBy)
+      .then(res => {
+        if (isMounted.current) {
+          setRowData(res.data);
+          setLoading(false);
+          props.setReload(false);
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              props.setReload(false);
+              props.setReduxToast(
+                true,
+                'error',
+                `(#${err.status}) ${err.data.message}`
+              );
+              break;
+          }
+        }
+      });
   };
 
   /**

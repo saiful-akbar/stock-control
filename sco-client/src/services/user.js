@@ -18,7 +18,7 @@ export const apiGetAllUser = (
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: '/user',
+      url: '/users',
       params: {
         page,
         per_page,
@@ -39,7 +39,7 @@ export const apiGetDataUserCreate = () => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: '/user/create'
+      url: '/users/create'
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -54,7 +54,7 @@ export const apiCreateUserAccountProfile = formData => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
-      url: '/user',
+      url: '/users',
       data: formData,
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -74,7 +74,7 @@ export const apiCreateUserMenuAccess = (menuItems, menuSubItems) => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
-      url: `/user/menu-access`,
+      url: `/users/menu-access`,
       data: {
         user_menu_item: menuItems,
         user_menu_sub_item: menuSubItems
@@ -92,7 +92,7 @@ export const apiTruncateTokens = () => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: '/user/truncate-tokens'
+      url: '/users/truncate-tokens'
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -107,7 +107,7 @@ export const apiDeleteUser = id => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
-      url: `/user/${id}`
+      url: `/users/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -124,7 +124,22 @@ export const apiUpdateUserPassword = (id, data) => {
     api({
       method: 'PATCH',
       data: data,
-      url: `/user/${id}/password`
+      url: `/users/${id}/password`
+    })
+      .then(res => resolve(res))
+      .catch(err => reject(err.response));
+  });
+};
+
+/**
+ * Fungsi api untuk mengambil data detail user
+ * @param {string} id
+ */
+export const apiGetUserDetail = id => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'GET',
+      url: `/users/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -145,7 +160,7 @@ export const apiGetUserMenuItems = id => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/menu/${id}`
+      url: `/users/menu/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -162,7 +177,7 @@ export const apiAddUserMenuItem = (id, data) => {
     api({
       method: 'POST',
       data: data,
-      url: `/user/menu/${id}`
+      url: `/users/menu/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -178,7 +193,7 @@ export const apiDeleteUserMenuItem = (id, data) => {
     api({
       method: 'DELETE',
       data: data,
-      url: `/user/menu/${id}`
+      url: `/users/menu/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -193,7 +208,7 @@ export const apiGetUserMenuSubItems = id => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/submenu/${id}`
+      url: `/users/submenu/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -210,7 +225,7 @@ export const apiAddUserMenuSubItem = (id, data) => {
     api({
       method: 'POST',
       data: data,
-      url: `/user/submenu/${id}`
+      url: `/users/submenu/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -226,7 +241,7 @@ export const apiDeleteUserMenuSubItems = (id, data) => {
     api({
       method: 'DELETE',
       data: data,
-      url: `/user/submenu/${id}`
+      url: `/users/submenu/${id}`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -241,7 +256,7 @@ export const apiEditUserProfile = id => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/${id}/edit`
+      url: `/users/${id}/edit`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -258,7 +273,7 @@ export const apiUpdateUserProfile = (id, data) => {
     api({
       data: data,
       method: 'POST',
-      url: `/user/${id}`,
+      url: `/users/${id}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
@@ -276,7 +291,7 @@ export const apiEditUserAccount = id => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
-      url: `/user/${id}/account`
+      url: `/users/${id}/account`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
@@ -293,28 +308,9 @@ export const apiUpdateUserAccount = (id, data) => {
     api({
       data: data,
       method: 'PATCH',
-      url: `/user/${id}/account`
+      url: `/users/${id}/account`
     })
       .then(res => resolve(res))
       .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk mengambil data detail user
- * @param {string} id
- */
-export const apiGetUserDetail = id => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'GET',
-      url: `/user/${id}`
-    })
-      .then(res => {
-        resolve(res);
-      })
-      .catch(err => {
-        reject(err.response);
-      });
   });
 };

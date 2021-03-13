@@ -4,7 +4,7 @@ import Tab from '@material-ui/core/Tab';
 import TabContext from '@material-ui/lab/TabContext';
 import TabList from '@material-ui/lab/TabList';
 import TabPanel from '@material-ui/lab/TabPanel';
-import { Divider } from '@material-ui/core';
+import { Divider, Container } from '@material-ui/core';
 import queryString from 'query-string';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ItemGroups from './ItemGroups';
@@ -15,8 +15,8 @@ const useStyles = makeStyles(theme => ({
   tabList: {
     position: 'sticky',
     top: 48,
-    backgroundColor: theme.palette.background.dark,
-    zIndex: theme.zIndex.appBar + 1
+    zIndex: theme.zIndex.appBar + 1,
+    backgroundColor: theme.palette.background.dark
   }
 }));
 
@@ -71,33 +71,34 @@ function Items(props) {
    */
   return (
     <Page title="Items" pageTitle="Items">
-      <TabContext value={value}>
-        <div className={classes.tabList}>
-          <TabList
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons="on"
-          >
-            <Tab label="Item Groups" value="itemGroups" />
-            <Tab label="Item Sub Groups" value="itemSubGroups" />
-            <Tab label="Item List" value="itemList" />
-          </TabList>
+      <Container>
+        <TabContext value={value}>
+          <div className={classes.tabList}>
+            <TabList
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="on"
+            >
+              <Tab label="Item Groups" value="itemGroups" />
+              <Tab label="Item Sub Groups" value="itemSubGroups" />
+              <Tab label="Item List" value="itemList" />
+            </TabList>
+            <Divider />
+          </div>
 
-          <Divider />
-        </div>
+          <TabPanel value="itemGroups">
+            <ItemGroups />
+          </TabPanel>
 
-        <TabPanel value="itemGroups">
-          <ItemGroups />
-        </TabPanel>
+          <TabPanel value="itemSubGroups">
+            <ItemSubGroup />
+          </TabPanel>
 
-        <TabPanel value="itemSubGroups">
-          <ItemSubGroup />
-        </TabPanel>
-
-        <TabPanel value="itemList">{'Item List'}</TabPanel>
-      </TabContext>
+          <TabPanel value="itemList">{'Item List'}</TabPanel>
+        </TabContext>
+      </Container>
     </Page>
   );
 }

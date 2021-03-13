@@ -7,7 +7,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import CustomTooltip from 'src/components/CustomTooltip';
-import { Fab, Box } from '@material-ui/core';
+import { Fab, Box, Container } from '@material-ui/core';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import UserCreateAccountProfile from './UserCreateAccountProfile';
 import { apiGetDataUserCreate } from 'src/services/user';
@@ -73,11 +73,27 @@ function UserCreate(props) {
         })
         .catch(err => {
           if (isMounted.current) {
-            props.setReduxToast(
-              true,
-              'error',
-              `(#${err.status}) ${err.data.message}`
-            );
+            switch (err.status) {
+              case 401:
+                window.location.href = '/logout';
+                break;
+
+              case 403:
+                navigate('/error/forbidden');
+                break;
+
+              case 404:
+                navigate('/error/notfound');
+                break;
+
+              default:
+                props.setReduxToast(
+                  true,
+                  'error',
+                  `(#${err.status}) ${err.data.message}`
+                );
+                break;
+            }
           }
         });
     }
@@ -113,27 +129,29 @@ function UserCreate(props) {
   /* Render */
   return (
     <Page title="Create User" pageTitle="Create New User" pb={true}>
-      <div className={classes.root}>
-        <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
-          {steps.map(label => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+      <Container>
+        <div className={classes.root}>
+          <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
+            {steps.map(label => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
-        <div id="step-content">
-          <Box mt={3}>{getStepContent(activeStep)}</Box>
+          <div id="step-content">
+            <Box mt={3}>{getStepContent(activeStep)}</Box>
+          </div>
         </div>
-      </div>
 
-      <div className={classes.fab}>
-        <CustomTooltip title="Return to the user page" placement="left">
-          <Fab color="secondary" onClick={() => navigate('/users')}>
-            <RotateLeftIcon />
-          </Fab>
-        </CustomTooltip>
-      </div>
+        <div className={classes.fab}>
+          <CustomTooltip title="Return to the user page" placement="left">
+            <Fab color="secondary" onClick={() => navigate('/users')}>
+              <RotateLeftIcon />
+            </Fab>
+          </CustomTooltip>
+        </div>
+      </Container>
     </Page>
   );
 }

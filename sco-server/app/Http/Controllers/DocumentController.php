@@ -139,7 +139,8 @@ class DocumentController extends Controller
             Storage::delete("documents/{$document->document_path}"); // hapus file dari storage
             $title = $this->clearStr($request->document_title, "lower"); // ambil title dari request
             $file_extension = $request->file('document_file')->extension(); // ambil extensi
-            $file_name = str_replace(" ", "_", $title) . "_" . date('ymdHis') . "." . $file_extension; // buat nama file baru
+            $file_name = str_replace(" ", "_", $title) . "_" . date('ymdHis'); // buat nama file baru
+            $file_name .= ".{$file_extension}"; // tambahkan extensi file
             $request->file('document_file')->storeAs('documents', $file_name); // simpan file baru pada storage
         }
 

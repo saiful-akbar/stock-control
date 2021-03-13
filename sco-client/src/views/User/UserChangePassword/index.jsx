@@ -23,8 +23,9 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined';
+import { useNavigate } from 'react-router';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -60,10 +61,11 @@ function UserChangePassword({
   ...props
 }) {
   const classes = useStyles();
+  const isMounted = useRef(true);
+  const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const isMounted = useRef(true);
 
   useEffect(() => {
     return () => {
@@ -81,30 +83,52 @@ function UserChangePassword({
     }
   };
 
-  const handleSubmitForm = async (data, { resetForm }) => {
+  const handleSubmitForm = (data, { setErrors, resetForm }) => {
     setLoading(true);
-    try {
-      let res = await apiUpdateUserPassword(userId, data);
-      if (isMounted.current) {
-        setLoading(false);
-        resetForm();
-        props.setReduxToast(true, 'success', res.data.message);
-        onClose();
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else {
+    apiUpdateUserPassword(userId, data)
+      .then(res => {
+        if (isMounted.current) {
+          props.setReduxToast({
+            show: true,
+            type: 'success',
+            message: res.data.message
+          });
           setLoading(false);
-          props.setReduxToast(
-            true,
-            'error',
-            `(#${err.status}) ${err.data.message}`
-          );
+          resetForm();
+          onClose();
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            case 422:
+              setLoading(false);
+              setErrors(err.data.errors);
+              break;
+
+            default:
+              setLoading(false);
+              props.setReduxToast({
+                show: true,
+                type: 'error',
+                message: `(#${err.status}) ${err.data.message}`
+              });
+              break;
+          }
+        }
+      });
   };
 
   return (
@@ -115,24 +139,17 @@ function UserChangePassword({
       aria-labelledby="form-dialog-title"
     >
       <Formik
+        onSubmit={handleSubmitForm}
         initialValues={{
           password: ''
         }}
         validationSchema={Yup.object().shape({
           password: Yup.string()
-            .max(128)
-            .required('Password is required')
+            .required()
+            .max(200)
         })}
-        onSubmit={handleSubmitForm}
       >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          values
-        }) => (
+        {({ errors, handleChange, handleSubmit, values }) => (
           <form onSubmit={handleSubmit} autoComplete="off" noValidate>
             <DialogTitle disableTypography className={classes.header}>
               <Typography variant="h6">{'Change User Password'}</Typography>
@@ -156,34 +173,35 @@ function UserChangePassword({
                 variant="outlined"
                 error={Boolean(errors.password)}
               >
-                <InputLabel id="password">New Password</InputLabel>
+                <InputLabel id="label-password">New Password</InputLabel>
                 <OutlinedInput
-                  labelid="password"
+                  labelid="label-password"
                   label="New Password"
-                  id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  disabled={isSubmitting}
+                  disabled={loading}
                   value={values.password}
                   onChange={handleChange}
-                  onBlur={handleBlur}
                   endAdornment={
                     values.password !== '' && (
                       <InputAdornment position="end">
                         <CustomTooltip
                           title={
-                            showPassword ? 'Hide Password' : 'Show Password'
+                            showPassword ? 'Hide password' : 'Show password'
                           }
                         >
                           <IconButton
                             color="primary"
                             size="small"
-                            aria-label="toggle password visibility"
                             edge="end"
-                            disabled={isSubmitting}
+                            disabled={loading}
                             onClick={() => setShowPassword(!showPassword)}
                           >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                            {showPassword ? (
+                              <VisibilityOffOutlinedIcon />
+                            ) : (
+                              <VisibilityOutlinedIcon />
+                            )}
                           </IconButton>
                         </CustomTooltip>
                       </InputAdornment>
@@ -238,14 +256,10 @@ UserChangePassword.defaultProps = {
  */
 function reduxDispatch(dispatch) {
   return {
-    setReduxToast: (show = false, type = 'success', message = '') =>
+    setReduxToast: value =>
       dispatch({
         type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
+        value: value
       })
   };
 }

@@ -15,6 +15,7 @@ import { apiTruncateTokens } from 'src/services/user';
 import CustomTooltip from 'src/components/CustomTooltip';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
+import { useNavigate } from 'react-router';
 
 /* Style */
 const useStyles = makeStyles(theme => ({
@@ -39,6 +40,7 @@ const useStyles = makeStyles(theme => ({
 function UserTruncateToken(props) {
   const isMounted = React.useRef(true);
   const classes = useStyles();
+  const navigate = useNavigate();
 
   /* State */
   const [open, setOpen] = React.useState(false);
@@ -57,30 +59,44 @@ function UserTruncateToken(props) {
     // eslint-disable-next-line
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setLoading(true);
-    try {
-      let res = await apiTruncateTokens();
-      if (isMounted.current) {
-        setLoading(false);
-        setAlert({
-          type: 'success',
-          message: res.data.message
-        });
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        setLoading(false);
-        if (err.status === 401) {
-          window.location.href = 'logout';
-        } else {
+    apiTruncateTokens()
+      .then(res => {
+        if (isMounted.current) {
+          setLoading(false);
           setAlert({
-            type: 'error',
-            message: `(#${err.status}) ${err.data.message}`
+            type: 'success',
+            message: res.data.message
           });
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 403:
+              navigate('error/forbidden');
+              break;
+
+            case 404:
+              navigate('error/notfound');
+
+              break;
+
+            default:
+              setLoading(false);
+              setAlert({
+                type: 'error',
+                message: `(#${err.status}) ${err.data.message}`
+              });
+              break;
+          }
+        }
+      });
   };
 
   /**
@@ -107,7 +123,7 @@ function UserTruncateToken(props) {
       </CustomTooltip>
 
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth={true}>
-        <DialogTitle className={classes.header}>
+        <DialogTitle disableTypography className={classes.header}>
           <Typography variant="h6">{'Truncate user tokens'}</Typography>
           <IconButton
             disabled={loading}

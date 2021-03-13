@@ -134,23 +134,37 @@ function UserCreateMenuAccess(props) {
   const handleSubmit = e => {
     e.preventDefault();
     setLoading(true);
-
     apiCreateUserMenuAccess(menuItemValues, menuSubItemValues)
       .then(res => {
         if (isMounted.current) {
-          setLoading(false);
           props.setReduxToast(true, 'success', res.data.message);
+          setLoading(false);
           navigate('/users');
         }
       })
       .catch(err => {
         if (isMounted.current) {
-          console.log(err);
-          setLoading(false);
-          if (err.status === 401) {
-            window.location.href = '/logout';
-          } else if (err.status === 403) {
-            navigate('/error/forbidden');
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              props.setReduxToast(
+                true,
+                'err',
+                `(${err.status}) ${err.data.message}`
+              );
+              break;
           }
         }
       });

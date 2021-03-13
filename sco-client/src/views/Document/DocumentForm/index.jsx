@@ -24,6 +24,7 @@ import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { apiAddDocument, apiUpdateDocument } from 'src/services/document';
 import Loader from 'src/components/Loader';
+import { useNavigate } from 'react-router';
 
 /* Style ItemGroupImport */
 const useStyles = makeStyles(theme => ({
@@ -84,10 +85,14 @@ function DocumentForm({
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
 
   /* State */
   const [loading, setLoading] = React.useState(false);
-  const [alert, setAlert] = React.useState({ type: '', message: [] });
+  const [alert, setAlert] = React.useState({
+    type: 'info',
+    message: 'Form with * is required'
+  });
 
   /* Skema validasi untuk form */
   const validationSchema = () => {
@@ -115,20 +120,14 @@ function DocumentForm({
     // eslint-disable-next-line
   }, []);
 
-  /* Handle set alert */
-  React.useEffect(() => {
-    setAlert({
-      type: 'info',
-      message: ['Form with * is required']
-    });
-  }, [open, setAlert]);
-
   /* Handle close dialog */
   const handleClose = e => {
     if (!loading) {
+      setAlert({
+        type: 'info',
+        message: 'Form with * is required'
+      });
       onClose();
-    } else {
-      e.preventDefault();
     }
   };
 
@@ -138,7 +137,7 @@ function DocumentForm({
 
     setAlert({
       type: 'warning',
-      message: ["Processing... Don't leave or reload this page"]
+      message: "Processing... Don't leave or reload this page"
     });
 
     const formData = new FormData();
@@ -160,12 +159,36 @@ function DocumentForm({
       }
     } catch (err) {
       if (isMounted.current) {
-        setLoading(false);
-        setErrors(err.data.errors);
-        setAlert({
-          type: 'error',
-          message: [err.data.message]
-        });
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
+
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          case 422:
+            setLoading(false);
+            setErrors(err.data.errors);
+            setAlert({
+              type: 'error',
+              message: err.data.message
+            });
+            break;
+
+          default:
+            setLoading(false);
+            setAlert({
+              type: 'error',
+              message: err.data.message
+            });
+            break;
+        }
       }
     }
   };
@@ -213,15 +236,7 @@ function DocumentForm({
               </IconButton>
             </DialogTitle>
 
-            <Alert severity={alert.type}>
-              <Box ml={3}>
-                <ul>
-                  {alert.message.map((m, key) => (
-                    <li key={key}>{m}</li>
-                  ))}
-                </ul>
-              </Box>
-            </Alert>
+            <Alert severity={alert.type}>{alert.message}</Alert>
 
             <DialogContent>
               <Loader show={false}>
