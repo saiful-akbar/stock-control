@@ -142,45 +142,49 @@ function ItemGroupTable(props) {
    * @param {string} order_by
    * @param {string} search
    */
-  const getData = async (
-    page = 1,
-    per_page = 25,
-    sort = 'item_g_code',
-    order_by = 'asc',
-    search = ''
+  const getData = (
+    page = 1, // halaman pada tabel
+    per_page = 25, // jumah baris perhamalan pada tabel
+    sort = 'item_g_code', // sortir tabel
+    order_by = 'asc', // urutan pada tabel secara ascending atau descending
+    search = '' // pencarian pada tabel
   ) => {
     setLoading(true);
-
-    try {
-      let res = await apiGetItemGroups(page, per_page, sort, order_by, search);
-      if (is_mounted.current) {
-        props.onReloadTable(false);
-        setLoading(false);
-        setRowData(res.data);
-      }
-    } catch (err) {
-      if (is_mounted.current) {
-        props.onReloadTable(false);
-        setLoading(false);
-        switch (err.status) {
-          case 401:
-            navigate('/logout');
-            break;
-
-          case 403:
-            navigate('/error/forbiden');
-            break;
-
-          default:
-            props.setReduxToast(
-              true,
-              'error',
-              `(#${err.status}) ${err.data.message}`
-            );
-            break;
+    apiGetItemGroups(page, per_page, sort, order_by, search)
+      .then(res => {
+        if (is_mounted.current) {
+          props.onReloadTable(false);
+          setLoading(false);
+          setRowData(res.data);
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (is_mounted.current) {
+          switch (err.status) {
+            case 401:
+              navigate('/logout');
+              break;
+
+            case 403:
+              navigate('/error/forbiden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              props.onReloadTable(false);
+              props.setReduxToast(
+                true,
+                'error',
+                `(#${err.status}) ${err.data.message}`
+              );
+              break;
+          }
+        }
+      });
   };
 
   /**

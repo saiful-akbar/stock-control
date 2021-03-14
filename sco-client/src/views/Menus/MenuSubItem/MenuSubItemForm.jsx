@@ -28,6 +28,7 @@ import {
   apiCreateMenuSubItem,
   apiUpdateMenuSubItem
 } from 'src/services/menuSubItem';
+import { useNavigate } from 'react-router';
 
 /**
  * Style
@@ -66,7 +67,11 @@ const MenuSubItemForm = props => {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
 
+  /**
+   * State
+   */
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = React.useState({
     show: false,
@@ -110,27 +115,57 @@ const MenuSubItemForm = props => {
   // submit form
   const handleSubmitForm = async (data, { setErrors }) => {
     setLoading(true);
+    setAlert({
+      type: 'warning',
+      message: `Processing ... don't leave or reload the page`
+    });
+
     let res =
       props.type.toLowerCase() === 'create'
         ? await apiCreateMenuSubItem(data).catch(err => err)
         : await apiUpdateMenuSubItem(props.data.id, data).catch(err => err);
 
-    if (res.status === 200) {
-      props.reloadTable();
-      setLoading(false);
-      setToast({ show: true, type: 'success', message: res.data.message });
-      handleCloseDialog();
-    } else if (res.status === 401) {
-      logout();
-    } else {
-      Boolean(res.status === 422) && setErrors(res.data.errors);
-      setLoading(false);
-      setAlert({ type: 'error', message: res.data.message });
-      setToast({
-        show: true,
-        type: 'error',
-        message: `#${res.status} ${res.data.message}`
-      });
+    if (isMounted.current) {
+      if (res.status === 200) {
+        setToast({
+          show: true,
+          type: 'success',
+          message: res.data.message
+        });
+        props.reloadTable();
+        setLoading(false);
+        handleCloseDialog();
+      } else {
+        setLoading(false);
+        switch (res.status) {
+          case 401:
+            logout();
+            break;
+
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          case 422:
+            setErrors(res.data.errors);
+            setAlert({
+              type: 'error',
+              message: `(#${res.status}) ${res.data.message}`
+            });
+            break;
+
+          default:
+            setAlert({
+              type: 'error',
+              message: `(#${res.status}) ${res.data.message}`
+            });
+            break;
+        }
+      }
     }
   };
 
@@ -139,8 +174,6 @@ const MenuSubItemForm = props => {
     if (!loading) {
       setAlert({ type: 'info', message: 'Fields marked with * are required' });
       props.closeDialog();
-    } else {
-      return;
     }
   };
 

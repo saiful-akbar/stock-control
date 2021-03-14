@@ -91,8 +91,6 @@ function ItemGroupForm(props) {
     if (!loading) {
       setAlert({ type: 'info', message: 'Form with * is required' });
       props.onClose();
-    } else {
-      e.preventDefault();
     }
   };
 
@@ -109,29 +107,35 @@ function ItemGroupForm(props) {
           : await apiUpdateItemGroup(props.data.id, values);
 
       if (is_mounted.current) {
-        setLoading(false);
         props.setReduxToast(true, 'success', res.data.message);
         props.onReloadTable(true);
+        setLoading(false);
         handleClose();
       }
     } catch (err) {
       if (is_mounted.current) {
         setLoading(false);
-        props.setReduxToast(
-          true,
-          'error',
-          `(#${err.status}) ${err.data.message}`
-        );
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
 
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else if (err.status === 403) {
-          navigate('/error/forbidden');
-        } else if (err.status === 404) {
-          navigate('/error/notfound');
-        } else if (err.status === 422) {
-          setAlert({ type: 'error', message: err.data.message });
-          setErrors(err.data.errors);
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          case 422:
+            setAlert({ type: 'error', message: err.data.message });
+            setErrors(err.data.errors);
+            break;
+
+          default:
+            setAlert({ type: 'error', message: err.data.message });
+            break;
         }
       }
     }
@@ -139,11 +143,11 @@ function ItemGroupForm(props) {
 
   return (
     <Dialog
+      open={props.open}
       fullScreen={fullScreen}
       fullWidth
       scroll="paper"
       maxWidth="md"
-      open={props.open}
     >
       <Formik
         onSubmit={handleSubmitForm}

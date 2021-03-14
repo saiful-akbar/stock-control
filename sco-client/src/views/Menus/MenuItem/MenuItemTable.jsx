@@ -26,6 +26,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import Toast from 'src/components/Toast';
 import Loader from 'src/components/Loader';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import { useNavigate } from 'react-router';
 
 /**
  * style
@@ -72,6 +73,7 @@ const useStyles = makeStyles(theme => ({
 const MenuItemTable = props => {
   const classes = useStyles();
   const isMounted = useRef(true);
+  const navigate = useNavigate();
 
   /**
    * State
@@ -157,34 +159,46 @@ const MenuItemTable = props => {
    * @param {'asc/desc'} orderBy
    */
   const getData = async (
-    page = rowData.menu_items.current_page,
-    perPage = rowData.menu_items.per_page,
-    query = search,
-    sort = rowData.sort,
-    orderBy = rowData.order_by
+    page = rowData.menu_items.current_page, // halaman pada tabel
+    perPage = rowData.menu_items.per_page, // baris perhalaman pad atabel
+    query = search, // pencarian pada tabel
+    sort = rowData.sort, // sortir tabel
+    orderBy = rowData.order_by // urut tabel berdasarkan ascending atau descending
   ) => {
     setLoading(true);
     try {
       const res = await apiGetAllMenuItem(page, perPage, query, sort, orderBy);
       if (isMounted.current) {
+        props.stopReload();
+        setLoading(false);
         setRowData(res.data);
       }
     } catch (err) {
       if (isMounted.current) {
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else {
-          setToast({
-            show: true,
-            type: 'error',
-            message: `(#${err.status}) ${err.data.message}`
-          });
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
+
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            props.stopReload();
+            setLoading(false);
+            setToast({
+              show: true,
+              type: 'error',
+              message: `(#${err.status}) ${err.data.message}`
+            });
+            break;
         }
       }
-    }
-    if (isMounted.current) {
-      setLoading(false);
-      props.stopReload();
     }
   };
 

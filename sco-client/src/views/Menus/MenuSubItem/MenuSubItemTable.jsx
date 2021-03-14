@@ -29,7 +29,9 @@ import Loader from 'src/components/Loader';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import Icon from '@material-ui/core/Icon';
 
-// style
+/**
+ * style
+ */
 const useStyles = makeStyles(theme => ({
   root: {
     flexShrink: 0,
@@ -58,13 +60,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// component utama
+/**
+ * component utama
+ */
 const MenuSubItemTable = props => {
   const classes = useStyles();
   const isMounted = useRef(true);
   const navigate = useNavigate();
 
-  // state
+  /**
+   * state
+   */
   const [toast, setToast] = React.useState({
     show: false,
     type: null,
@@ -86,7 +92,9 @@ const MenuSubItemTable = props => {
     order_by: 'asc'
   });
 
-  // daftar kolom untuk tabel
+  /**
+   * daftar kolom untuk tabel
+   */
   const columns = [
     { field: 'menu_i_title', label: 'Menus Title', align: 'left' },
     { field: 'menu_s_i_title', label: 'Sub Menus Title', align: 'left' },
@@ -96,7 +104,9 @@ const MenuSubItemTable = props => {
     { field: 'updated_at', label: 'Updated At', align: 'left' }
   ];
 
-  // inisialisasi awal untuk mengambil data dari api
+  /**
+   * inisialisasi awal untuk mengambil data dari api
+   */
   useEffect(() => {
     if (rowData.menu_sub_items.data.length <= 0) {
       getData();
@@ -107,7 +117,9 @@ const MenuSubItemTable = props => {
     // eslint-disable-next-line
   }, []);
 
-  // reload table setelah terjadi aksi
+  /**
+   * reload table setelah terjadi aksi
+   */
   useEffect(() => {
     if (props.reload) {
       getData();
@@ -115,7 +127,9 @@ const MenuSubItemTable = props => {
     // eslint-disable-next-line
   }, [props.reload]);
 
-  // Fungsi untuk mengambil data dari api
+  /**
+   * Fungsi untuk mengambil data dari api
+   */
   const getData = async (
     page = rowData.menu_sub_items.current_page,
     perPage = rowData.menu_sub_items.per_page,
@@ -132,34 +146,45 @@ const MenuSubItemTable = props => {
         sort,
         orderBy
       );
+
       if (isMounted.current) {
-        setRowData(res.data);
+        props.stopReload();
         props.setMenuItems(res.data.menu_items);
+        setRowData(res.data);
+        setLoading(false);
       }
     } catch (err) {
       if (isMounted.current) {
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else {
-          if (err.status === 403) {
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
+
+          case 403:
             navigate('/error/forbidden');
-          } else {
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            props.stopReload();
+            setLoading(false);
             setToast({
               show: true,
               type: 'error',
               message: `(#${err.status}) ${err.data.message}`
             });
-          }
+            break;
         }
       }
     }
-    if (isMounted.current) {
-      setLoading(false);
-      props.stopReload();
-    }
   };
 
-  // fungsi sortir tabel
+  /**
+   * fungsi sortir tabel
+   */
   const handleSortTable = sort => {
     let orderBy = 'asc';
     if (rowData.sort === sort) {
@@ -176,13 +201,17 @@ const MenuSubItemTable = props => {
     );
   };
 
-  // fungsi submit form pencarian
+  /**
+   * fungsi submit form pencarian
+   */
   const handleSubmitSearch = e => {
     e.preventDefault();
     getData(1, rowData.menu_sub_items.per_page, search);
   };
 
-  // fungsi handle blur pada form pencarian
+  /**
+   * fungsi handle blur pada form pencarian
+   */
   const handleBlur = e => {
     if (rowData.search === '' && search === '') {
       e.preventDefault();
@@ -203,12 +232,16 @@ const MenuSubItemTable = props => {
     );
   };
 
-  // fungsi handle refresh pada table
+  /**
+   * fungsi handle refresh pada table
+   */
   const handleRefresh = () => {
     getData();
   };
 
-  // fungsi untuk merubah baris perhalaman pada tabel
+  /**
+   * fungsi untuk merubah baris perhalaman pada tabel
+   */
   const handleChangeRowsPerPage = event => {
     let newRowData = { ...rowData };
     newRowData.menu_sub_items['per_page'] = event.target.value;
@@ -217,22 +250,30 @@ const MenuSubItemTable = props => {
     getData(1, event.target.value);
   };
 
-  // fungsi untuk kembali kehalaman pertama pada tabel
+  /**
+   * fungsi untuk kembali kehalaman pertama pada tabel
+   */
   const handleFirstPageButtonClick = event => {
     getData(1);
   };
 
-  // fungsi untuk kembali 1 halaman pada tabel
+  /**
+   * fungsi untuk kembali 1 halaman pada tabel
+   */
   const handleBackButtonClick = event => {
     getData(rowData.menu_sub_items.current_page - 1);
   };
 
-  // fungsi untuk maju 1 halamnn pada tabel
+  /**
+   * fungsi untuk maju 1 halamnn pada tabel
+   */
   const handleNextButtonClick = event => {
     getData(rowData.menu_sub_items.current_page + 1);
   };
 
-  // fungsi untuk maju ke halamn terakhir pada tabel
+  /**
+   * fungsi untuk maju ke halamn terakhir pada tabel
+   */
   const handleLastPageButtonClick = event => {
     getData(
       Math.max(
@@ -244,7 +285,9 @@ const MenuSubItemTable = props => {
     );
   };
 
-  // component custom untuk tabel pagination
+  /**
+   * component custom untuk tabel pagination
+   */
   const TablePaginationActions = props => {
     return (
       <div className={classes.root}>
@@ -527,6 +570,8 @@ const MenuSubItemTable = props => {
 
       <Toast
         open={toast.show}
+        type={toast.type}
+        message={toast.message}
         handleClose={() => {
           setToast({
             show: false,
@@ -534,8 +579,6 @@ const MenuSubItemTable = props => {
             message: toast.message
           });
         }}
-        type={toast.type}
-        message={toast.message}
       />
     </>
   );

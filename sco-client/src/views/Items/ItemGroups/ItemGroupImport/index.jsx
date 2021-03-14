@@ -16,6 +16,7 @@ import Loader from 'src/components/Loader';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import { apiImportItemGroup } from 'src/services/itemGroups';
 import BtnSubmit from 'src/components/BtnSubmit';
+import { useNavigate } from 'react-router';
 
 // Style DialogTitle
 const styles = theme => ({
@@ -92,19 +93,21 @@ function ItemGroupImport({
   const isMounted = React.useRef(true);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
 
-  // State
+  /**
+   * State
+   */
   const [loading, setLoading] = React.useState(false);
   const [value, setValue] = React.useState('');
   const [alert, setAlert] = React.useState({
     type: 'info',
-    message: [
-      'Import can only support files with the .xlsx or .xls extension.',
-      'The maximum size is 1000 kilobytes.'
-    ]
+    message: 'Import can only support files with the .xlsx or .xls extension.'
   });
 
-  // Handle jika komponen dilepas saat request api belum selesai
+  /**
+   * Handle jika komponen dilepas saat request api belum selesai
+   */
   React.useEffect(() => {
     return () => {
       isMounted.current = false;
@@ -115,18 +118,17 @@ function ItemGroupImport({
   // Set alert saat dialog pertama kali dibuka
   React.useEffect(() => {
     if (open) {
-      setAlert({
-        type: 'info',
-        message: [
-          'Import can only support files with the .xlsx or .xls extension.'
-        ]
-      });
     }
   }, [open]);
 
   // Handle close dialog
   const handleClose = e => {
     if (!loading) {
+      setAlert({
+        type: 'info',
+        message:
+          'Import can only support files with the .xlsx or .xls extension.'
+      });
       setValue('');
       onClose();
     }
@@ -135,25 +137,25 @@ function ItemGroupImport({
   // Handle input change
   const handleChange = e => {
     const file = e.target.files[0];
+    const xls = 'application/vnd.ms-excel';
     const xlsx =
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    const xls = 'application/vnd.ms-excel';
 
     if (Boolean(file)) {
       if (file.type !== xlsx && file.type !== xls) {
         setAlert({
           type: 'error',
-          message: ['The file must be a file of type xlsx or xls.']
+          message: 'The file must be a file of type xlsx or xls.'
         });
       } else if (Math.ceil(file.size / 1000) > 1000) {
         setAlert({
           type: 'error',
-          message: ['The file may not be greater than 1000 kilobytes']
+          message: 'The file may not be greater than 1000 kilobytes'
         });
       } else {
         setAlert({
           type: 'success',
-          message: ['File ready to import']
+          message: 'File ready to import'
         });
         setValue(file);
       }
@@ -166,7 +168,7 @@ function ItemGroupImport({
     setLoading(true);
     setAlert({
       type: 'warning',
-      message: ['Importing... Do not reload or leave this page.']
+      message: 'Importing... Do not reload or leave this page.'
     });
 
     let formData = new FormData();
@@ -183,12 +185,30 @@ function ItemGroupImport({
       })
       .catch(err => {
         if (isMounted.current) {
-          setLoading(false);
-          setAlert({
-            type: 'error',
-            message:
-              err.status === 422 ? err.data.errors.file : [err.data.message]
-          });
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              setAlert({
+                type: 'error',
+                message:
+                  err.status === 422
+                    ? err.data.errors.join('')
+                    : [err.data.message]
+              });
+              break;
+          }
         }
       });
   };
@@ -210,24 +230,16 @@ function ItemGroupImport({
         {'Import from excel'}
       </DialogTitle>
 
-      <Alert severity={alert.type}>
-        <Box ml={3}>
-          <ul>
-            {alert.message.map((m, key) => (
-              <li key={key}>{m}</li>
-            ))}
-          </ul>
-        </Box>
-      </Alert>
+      <Alert severity={alert.type}>{alert.message}</Alert>
 
-      <DialogContent dividers>
+      <DialogContent
+        dividers
+        onDrop={handleDrop}
+        onDragOver={e => e.preventDefault()}
+      >
         <Loader show={loading}>
           <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <label
-              htmlFor="file"
-              onDrop={handleDrop}
-              onDragOver={e => e.preventDefault()}
-            >
+            <label htmlFor="file">
               <input
                 hidden
                 type="file"

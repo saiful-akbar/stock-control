@@ -19,6 +19,7 @@ import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
+import { useNavigate } from 'react-router';
 
 /**
  * Style
@@ -51,6 +52,8 @@ const MenuItemForm = props => {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
+  const isMounted = React.useRef(true);
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState({
@@ -58,9 +61,23 @@ const MenuItemForm = props => {
     message: 'Fields marked with * are required'
   });
 
+  /**
+   * mengatasi jika komponen dilepas saat request api belum selesai
+   */
+  React.useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
   // Handle close dialog
   const handleCloseDialog = () => {
     if (!loading) {
+      setAlert({
+        type: 'info',
+        message: 'Fields marked with * are required'
+      });
       props.onClose();
     }
   };
@@ -68,30 +85,53 @@ const MenuItemForm = props => {
   // Handle submit form
   const handleSubmitForm = async (values, { setErrors }) => {
     setLoading(true);
+    setAlert({
+      type: 'warning',
+      message: `Processing ... don't leave or reload the page`
+    });
+
     let res =
       props.type.toLowerCase() === 'create'
         ? await apiCreateMenuItem(values).catch(err => err)
         : await apiUpdateMenuItem(props.data.id, values).catch(err => err);
 
-    if (res.status === 200) {
-      props.setReduxToast(true, 'success', res.data.message);
-      props.onReloadTable();
-      setLoading(false);
-      handleCloseDialog();
-    } else if (res.status === 401) {
-      window.location.href = '/logout';
-    } else {
-      res.status === 422 && setErrors(res.data.errors);
-      setLoading(false);
-      setAlert({
-        type: 'error',
-        message: `(#${res.status}) ${res.data.message}`
-      });
-      props.setReduxToast(
-        true,
-        'success',
-        `(#${res.status}) ${res.data.message}`
-      );
+    if (isMounted.current) {
+      if (res.status === 200) {
+        props.setReduxToast(true, 'success', res.data.message);
+        props.onReloadTable();
+        setLoading(false);
+        handleCloseDialog();
+      } else {
+        setLoading(false);
+        switch (res.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
+
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          case 422:
+            setErrors(res.data.errors);
+            setAlert({
+              type: 'error',
+              message: `(#${res.status}) ${res.data.message}`
+            });
+            break;
+
+          default:
+            setAlert({
+              type: 'error',
+              message: `(#${res.status}) ${res.data.message}`
+            });
+            break;
+        }
+      }
     }
   };
 

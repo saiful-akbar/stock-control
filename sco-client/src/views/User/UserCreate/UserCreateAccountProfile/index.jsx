@@ -53,7 +53,7 @@ function UserCreateAccountProfile(props) {
     setLoading(true);
     setAlert({
       type: 'warning',
-      message: 'Processing... Do not reload or leave this page'
+      message: "Processing ... don't leave or reload the page"
     });
 
     const newData = new FormData();
@@ -77,6 +77,7 @@ function UserCreateAccountProfile(props) {
       })
       .catch(err => {
         if (isMounted.current) {
+          setLoading(false);
           switch (err.status) {
             case 401:
               window.location.href = '/logout';
@@ -91,12 +92,14 @@ function UserCreateAccountProfile(props) {
               break;
 
             case 422:
-              setLoading(false);
               setErrors(err.data.errors);
+              setAlert({
+                type: 'error',
+                message: `(#${err.status}) ${err.data.message}`
+              });
               break;
 
             default:
-              setLoading(false);
               setAlert({
                 type: 'error',
                 message: `(#${err.status}) ${err.data.message}`
@@ -208,6 +211,7 @@ function UserCreateAccountProfile(props) {
               ) : (
                 <BtnSubmit
                   title="Save"
+                  titleCancel="Reset"
                   variant="contained"
                   type="submit"
                   handleSubmit={handleSubmit}

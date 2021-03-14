@@ -55,7 +55,7 @@ const themeDark = createMuiTheme({
       main: '#2196F3'
     },
     error: {
-      main: '#F44336'
+      main: '#ef5350'
     },
     success: {
       main: '#4CAF50'

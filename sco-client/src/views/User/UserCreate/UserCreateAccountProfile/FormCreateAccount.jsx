@@ -10,8 +10,8 @@ import {
   FormControlLabel,
   Switch
 } from '@material-ui/core';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined';
 import CustomTooltip from 'src/components/CustomTooltip';
 import { Skeleton } from '@material-ui/lab';
 
@@ -85,7 +85,11 @@ function FormCreateAccount({
                           <IconButton
                             onClick={() => setShowPassword(!showPassword)}
                           >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                            {showPassword ? (
+                              <VisibilityOutlinedIcon />
+                            ) : (
+                              <VisibilityOffOutlinedIcon />
+                            )}
                           </IconButton>
                         </CustomTooltip>
                       )}

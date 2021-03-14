@@ -51,19 +51,27 @@ function ItemGroupDelete(props) {
       }
     } catch (err) {
       if (isMounted.current) {
-        props.setReduxToast(
-          true,
-          'error',
-          `(#${err.status}) ${err.data.message}`
-        );
-        setLoading(false);
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
 
-        if (err.status === 401) {
-          window.location.href = '/logout';
-        } else if (err.status === 403) {
-          navigate('/error/forbidden');
-        } else if (err.status === 404) {
-          navigate('/error/notfound');
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            setLoading(false);
+            props.setReduxToast(
+              true,
+              'error',
+              `(#${err.status}) ${err.data.message}`
+            );
+            break;
         }
       }
     }
