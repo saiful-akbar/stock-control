@@ -64,7 +64,7 @@ const useRowStyles = makeStyles(theme => ({
     color: 'inherit',
     fontWeight: 'bold',
     '&:hover': {
-      color: theme.palette.secondary.light
+      color: theme.palette.info.main
     }
   },
   tableCell: {

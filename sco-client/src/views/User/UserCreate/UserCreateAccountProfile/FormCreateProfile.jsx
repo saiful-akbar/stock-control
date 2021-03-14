@@ -89,7 +89,10 @@ function FormCreateProfile({
 
   return (
     <Card variant="outlined">
-      <CardHeader title="Profile Form" />
+      <CardHeader
+        title="Profile Form"
+        subheader="Profile data will be used as user identity"
+      />
 
       <CardContent>
         <Grid container spacing={3}>
