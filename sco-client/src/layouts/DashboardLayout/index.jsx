@@ -18,7 +18,7 @@ const fallbackStyle = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '89vh'
+    height: 'calc(100vh - 48px)'
   }
 }));
 

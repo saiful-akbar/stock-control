@@ -24,20 +24,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     zIndex: theme.zIndex.drawer + 1
   },
-  avatar: {
-    width: 60,
-    height: 60
-  },
   clock: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1)
-  },
-  skeletonClock: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
-  },
-  title: {
-    flexGrow: 1
   }
 }));
 

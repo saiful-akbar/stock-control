@@ -1,3 +1,11 @@
+body {
+  background-color: #f2f3f5;
+}
+
+body.dark {
+  background-color: #1c2025;
+}
+
 table thead tr th,
 table tbody tr td {
   white-space: nowrap !important;
@@ -103,16 +111,6 @@ body.dark ::-webkit-scrollbar-corner {
   overflow: hidden;
 }
 
-@keyframes preloader {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 #preloader div {
   box-sizing: border-box;
   display: block;
@@ -124,6 +122,15 @@ body.dark ::-webkit-scrollbar-corner {
   animation: preloader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border: 6px solid #7289da;
   border-color: #7289da transparent transparent transparent;
+}
+
+body.dark #preloader {
+  background-color: #1c2025;
+}
+
+body.dark #preloader div {
+  border: 6px solid #8a85ff;
+  border-color: #8a85ff transparent transparent transparent;
 }
 
 #preloader div:nth-child(1) {
@@ -138,13 +145,14 @@ body.dark ::-webkit-scrollbar-corner {
   animation-delay: -0.15s;
 }
 
-.loader-dark {
-  background-color: #1c2025 !important;
-}
+@keyframes preloader {
+  0% {
+    transform: rotate(0deg);
+  }
 
-.loader-dark div {
-  border: 6px solid #8a85ff !important;
-  border-color: #8a85ff transparent transparent transparent !important;
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /*

@@ -264,7 +264,7 @@ function ItemGroupImport({
                 />
 
                 <Typography variant="h5" noWrap>
-                  {value === '' ? 'Select or drop files' : value.name}
+                  {value === '' ? 'Select or drag files' : value.name}
                 </Typography>
 
                 <Button

@@ -45,6 +45,10 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     [theme.breakpoints.down('xs')]: {
       textAlign: 'center'
+    },
+    '&:hover': {
+      border: `1px solid ${theme.palette.type === 'dark' ? '#fff' : '#000'}`,
+      opacity: 0.6
     }
   },
   inputFileError: {
@@ -298,7 +302,7 @@ function DocumentForm({
                             <Grid item zeroMinWidth>
                               <Typography variant="h6" noWrap>
                                 {values.document_file === ''
-                                  ? 'Select or drop files here'
+                                  ? 'Select or drag files here'
                                   : values.document_file.name}
                               </Typography>
 

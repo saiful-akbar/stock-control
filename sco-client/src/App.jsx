@@ -23,23 +23,32 @@ const App = props => {
 
   React.useEffect(() => {
     const theme = cookie.get('theme');
-    if (Boolean(theme)) {
-      if (theme !== 'dark' && theme !== 'light') {
-        setReduxTheme(prefersDarkMode ? 'dark' : 'light');
+    const body = document.querySelector('body');
+
+    if (theme !== undefined) {
+      switch (theme) {
+        case 'dark':
+          setReduxTheme('dark');
+          body.classList.add('dark');
+          break;
+
+        case 'light':
+          setReduxTheme('light');
+          body.classList.remove('dark');
+          break;
+
+        default:
+          setReduxTheme(prefersDarkMode ? 'dark' : 'light');
+          prefersDarkMode
+            ? body.classList.add('dark')
+            : body.classList.remove('dark');
+          break;
       }
     } else {
       setReduxTheme(prefersDarkMode ? 'dark' : 'light');
-    }
-
-    const body = document.querySelector('body');
-    if (theme === 'dark') {
-      body.classList.add('dark');
-    } else {
-      if (theme !== 'light' && prefersDarkMode) {
-        body.classList.add('dark');
-      } else {
-        body.classList.remove('dark');
-      }
+      prefersDarkMode
+        ? body.classList.add('dark')
+        : body.classList.remove('dark');
     }
 
     // eslint-disable-next-line

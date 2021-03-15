@@ -1,12 +1,9 @@
 (function() {
   const body = document.querySelector('body');
-  const preloader = document.getElementById('preloader');
-  const cookie = document.cookie
-    .split(';')
-    .some(value => value.trim() === 'theme=dark');
+  const cookies = document.cookie;
+  const isDarkMode = cookies.split(';').some(v => v.trim() === 'theme=dark');
 
-  if (cookie) {
+  if (isDarkMode) {
     body.classList.add('dark');
-    preloader.classList.add('loader-dark');
   }
 })();

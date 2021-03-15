@@ -22,7 +22,7 @@
 ## Fitur
 
 - Pengaturan
-  - Tema
+  - Pengaturan Tema
     - Dapat dirubah menjadi mode gelap, terang atau sesuai tema os
 - Otentikasi pengguna
 - Document
@@ -38,13 +38,10 @@
 - Pengguna / User
   - Menambahkan pengguna baru
   - Menggapus semua token pengguna
-  - Memperbarui akses menu pada setiap pengguna
-    - Menambah akses menu pada pengguna
-    - menghapus akses menu pada pengguna
   - Memperbarui password pengguna
-  - Menghapus permanen data pengguna
-  - Memperbarui data profil setiap pengguna
-  - Melihat detail profil pengguna
+  - Menghapus data pengguna
+  - Memperbarui data setiap pengguna
+  - Melihat detail pengguna
 - Data Master
   - Items
     - Item Groups
