@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  Snackbar,
-  Slide
-} from '@material-ui/core';
-import {
-  Alert,
-  // AlertTitle
-} from '@material-ui/lab';
+import { Snackbar, Slide } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
 /**
  * Aniimasi slide
@@ -19,7 +13,7 @@ function SlideTransition(props) {
  * Main component
  */
 const Toast = ({ open, handleClose, type, message }) => {
-  const handleCloseToast = (reason) => {
+  const handleCloseToast = reason => {
     if (reason === 'clickaway') {
       return;
     }
@@ -40,12 +34,14 @@ const Toast = ({ open, handleClose, type, message }) => {
     >
       <Alert
         elevation={5}
-        variant='filled'
+        variant="filled"
         onClose={handleCloseToast}
         severity={type}
-      >{message}</Alert>
+      >
+        {message}
+      </Alert>
     </Snackbar>
   );
-}
+};
 
 export default Toast;

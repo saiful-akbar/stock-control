@@ -28,8 +28,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@material-ui/icons/VisibilityOffOutlined';
+
+// Logo
+import logoLight from 'src/assets/images/logo/logo-light.png';
+import logoDark from 'src/assets/images/logo/logo-dark.png';
+import { useTheme } from '@material-ui/styles';
 
 function Copyright() {
   return (
@@ -49,9 +54,9 @@ const useStyles = makeStyles(theme => ({
     minHeight: '100vh',
     backgroundImage: 'url(https://source.unsplash.com/random)',
     backgroundRepeat: 'no-repeat',
-    backgroundColor: theme.palette.background.default,
     backgroundSize: 'cover',
-    backgroundPosition: 'center'
+    backgroundPosition: 'center',
+    backgroundColor: theme.palette.background.dark
   },
   paper: {
     display: 'flex',
@@ -75,13 +80,20 @@ const useStyles = makeStyles(theme => ({
   paperForm: {
     backgroundColor:
       theme.palette.type === 'light'
-        ? 'rgba(255, 255, 255, 0.8)'
-        : 'rgba(0, 0, 0, 0.8)',
+        ? 'rgba(255, 255, 255, 0.9)'
+        : 'rgba(0, 0, 0, 0.9)',
     padding: theme.spacing(4)
   }
 }));
 
-function LoginView({ cookies, loginUser, reduxTheme }) {
+function LoginView({ cookies, loginUser }) {
+  const classes = useStyles();
+  const navigate = useNavigate();
+  const theme = useTheme();
+
+  /**
+   * State
+   */
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [toast, setToast] = React.useState({
@@ -90,9 +102,10 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
     message: ''
   });
 
-  const classes = useStyles();
-  const navigate = useNavigate();
-
+  /**
+   * Cek apakah ada cookie auth_token atau tidak
+   * Jika ada alihkan ke halaman dahsboard
+   */
   React.useEffect(() => {
     if (cookies.get('auth_token') !== undefined) {
       navigate('/dashboard');
@@ -100,7 +113,13 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
     // eslint-disable-next-line
   }, []);
 
-  const handleFormikSubmit = (data, { setErrors }) => {
+  /**
+   * FUngsi handle submit form login
+   *
+   * @param {Object} data
+   * @param {Object} param1
+   */
+  const handleSubmitLoginForm = (data, { setErrors }) => {
     setLoading(true);
     loginUser(data)
       .then(res => {
@@ -113,7 +132,7 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
         window.location.href = '/dashboard';
       })
       .catch(err => {
-        Boolean(err.status === 422) && setErrors(err.data.errors);
+        if (err.status === 422) setErrors(err.data.errors);
         setLoading(false);
         setToast({
           show: true,
@@ -123,6 +142,9 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
       });
   };
 
+  /**
+   * Render komponen utama
+   */
   return (
     <div>
       <Helmet>
@@ -150,7 +172,7 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
           <div className={classes.paper}>
             <Avatar
               alt="Logo"
-              src={`/static/images/logo/logo-${reduxTheme}-1.webp`}
+              src={theme.palette.type === 'dark' ? logoDark : logoLight}
               className={classes.avatar}
             />
 
@@ -165,21 +187,14 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
             </Box>
 
             <Formik
-              onSubmit={handleFormikSubmit}
+              onSubmit={handleSubmitLoginForm}
               initialValues={{ username: '', password: '' }}
               validationSchema={Yup.object().shape({
                 username: Yup.string().required(),
                 password: Yup.string().required()
               })}
             >
-              {({
-                errors,
-                handleBlur,
-                handleChange,
-                handleSubmit,
-                touched,
-                values
-              }) => (
+              {({ errors, handleChange, handleSubmit, touched, values }) => (
                 <form
                   noValidate
                   autoComplete="off"
@@ -195,7 +210,6 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                     variant="outlined"
                     disabled={loading}
                     value={values.username}
-                    onBlur={handleBlur}
                     onChange={handleChange}
                     helperText={touched.username && errors.username}
                     error={Boolean(touched.username && errors.username)}
@@ -217,7 +231,6 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                       type={showPassword ? 'text' : 'password'}
                       value={values.password}
                       onChange={handleChange}
-                      onBlur={handleBlur}
                       endAdornment={
                         values.password !== '' && (
                           <InputAdornment position="end">
@@ -233,9 +246,9 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                                 onMouseDown={e => e.preventDefault()}
                               >
                                 {showPassword ? (
-                                  <VisibilityOff />
+                                  <VisibilityOffOutlinedIcon />
                                 ) : (
-                                  <Visibility />
+                                  <VisibilityOutlinedIcon />
                                 )}
                               </IconButton>
                             </CustomTooltip>
@@ -259,15 +272,11 @@ function LoginView({ cookies, loginUser, reduxTheme }) {
                       disabled={loading}
                       className={classes.buttonSubmit}
                     >
-                      {loading && (
-                        <CircularProgress
-                          color="inherit"
-                          size={23}
-                          style={{ marginRight: '10px' }}
-                        />
+                      {loading ? (
+                        <CircularProgress color="primary" size={26} />
+                      ) : (
+                        'Login'
                       )}
-
-                      {loading ? 'Logged In...' : 'Login'}
                     </Button>
 
                     <Copyright />
@@ -301,10 +310,4 @@ function reduxDispatch(dispatch) {
   };
 }
 
-function reduxState(state) {
-  return {
-    reduxTheme: state.theme
-  };
-}
-
-export default connect(reduxState, reduxDispatch)(withCookies(LoginView));
+export default connect(null, reduxDispatch)(withCookies(LoginView));

@@ -17,6 +17,7 @@ import { makeStyles, useTheme } from '@material-ui/styles';
 import { apiImportItemGroup } from 'src/services/itemGroups';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { useNavigate } from 'react-router';
+import addFileImage from 'src/assets/images/ilustration/add_file.svg';
 
 // Style DialogTitle
 const styles = theme => ({
@@ -258,7 +259,7 @@ function ItemGroupImport({
                 className={classes.boxInput}
               >
                 <img
-                  src="/static/images/svg/add_file.svg"
+                  src={addFileImage}
                   alt="Add File"
                   className={classes.image}
                 />

@@ -16,7 +16,7 @@ import {
 import Alert from '@material-ui/lab/Alert';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiAddItemGroup, apiUpdateItemGroup } from 'src/services/itemGroups';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
@@ -49,6 +49,7 @@ function ItemGroupForm(props) {
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const dispatch = useDispatch();
 
   /**
    * State
@@ -107,7 +108,14 @@ function ItemGroupForm(props) {
           : await apiUpdateItemGroup(props.data.id, values);
 
       if (is_mounted.current) {
-        props.setReduxToast(true, 'success', res.data.message);
+        dispatch({
+          type: reduxAction.toast,
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
         props.onReloadTable(true);
         setLoading(false);
         handleClose();

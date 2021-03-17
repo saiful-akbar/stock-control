@@ -324,6 +324,11 @@ class UserController extends Controller
     {
         $account = User::findOrFail($user->id); // ambil data user
         $profile = User::findOrFail($user->id)->profile()->first(); // ambil data profile
+        $logs = User::findOrFail($user->id)->userLog()
+            ->offset(0)
+            ->limit(50)
+            ->orderBy("created_at", "desc")
+            ->get(); // ambil data user logs
 
         // ambil data menu item
         $menu_items = DB::table("user_menu_item")
@@ -341,6 +346,7 @@ class UserController extends Controller
         return response()->json([
             "account" => $account,
             "profile" => $profile,
+            "logs" => $logs,
             "menu_access" => [
                 "menu_items" => $menu_items,
                 "menu_sub_items" => $menu_sub_items

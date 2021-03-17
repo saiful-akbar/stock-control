@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import landingImage from 'src/assets/images/ilustration/work_tim.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -11,7 +12,7 @@ const useStyles = makeStyles(theme => ({
       marginTop: -48,
       paddingTop: 48,
       height: theme.spacing(60),
-      backgroundImage: 'url(/static/images/svg/work_tim.svg)',
+      backgroundImage: `url(${landingImage})`,
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'auto 100%'

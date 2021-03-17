@@ -1,13 +1,17 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Page from 'src/components/Page';
-import { Grid, Fab, Typography, Container } from '@material-ui/core';
+import { Grid, Fab, Container, Box, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import { apiGetUserDetail } from 'src/services/user';
 import { connect } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import CustomTooltip from 'src/components/CustomTooltip';
+import apiUrl from 'src/utils/apiUrl';
+import UserDetailProfile from './UserDetailProfile';
+import UserDetailMenuAccess from './UserDetailMenuAccess';
+import UserDetailLogs from './UserDetailLogs';
 
 // Style
 const useStyle = makeStyles(theme => ({
@@ -20,6 +24,19 @@ const useStyle = makeStyles(theme => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular
+  },
+  avatar: {
+    border: `10px solid ${theme.palette.background.paper}`,
+    width: theme.spacing(60),
+    height: theme.spacing(60),
+    [theme.breakpoints.down('sm')]: {
+      width: theme.spacing(50),
+      height: theme.spacing(50)
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: theme.spacing(30),
+      height: theme.spacing(30)
+    }
   }
 }));
 
@@ -63,6 +80,10 @@ function UserDetail(props) {
     // eslint-disable-next-line
   }, []);
 
+  React.useEffect(() => {
+    console.log('userData: ', userData);
+  }, [userData]);
+
   /**
    * Fungsi untuk mengambil data user dari api
    */
@@ -105,15 +126,48 @@ function UserDetail(props) {
    */
   return (
     <Page pb title="View user details" pageTitle="View user details">
-      <Container maxWidth="md">
-        <Grid spacing={3} container>
-          <Grid item md={12} xs={12}>
-            <Typography color="textPrimary">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Non at
-              ducimus suscipit quasi amet excepturi sint repudiandae vel? Minus
-              tenetur facere aspernatur sapiente. Repudiandae harum vitae iusto
-              dolorum eveniet nihil?
-            </Typography>
+      <Container>
+        <Grid
+          spacing={3}
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item md={7} xs={12}>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <Avatar
+                alt="Avatar"
+                className={classes.avatar}
+                src={
+                  userData !== null
+                    ? userData.profile.profile_avatar !== null
+                      ? apiUrl(`/avatar/${userData.profile.profile_avatar}`)
+                      : '/static/images/svg/default_avatar.svg'
+                    : ''
+                }
+              />
+            </Box>
+          </Grid>
+
+          <Grid item md={5} xs={12}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <UserDetailProfile data={userData} />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid item xs={12}>
+            <UserDetailMenuAccess
+              data={
+                userData !== null ? userData.menu_access.menu_sub_items : null
+              }
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <UserDetailLogs data={userData !== null ? userData.logs : null} />
           </Grid>
         </Grid>
       </Container>

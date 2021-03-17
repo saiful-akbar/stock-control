@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import { useNavigate } from 'react-router-dom';
+import notFoundImage from 'src/assets/images/ilustration/404.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,11 +42,7 @@ const NotFound = () => {
           </Typography>
 
           <Box textAlign="center">
-            <img
-              alt="404"
-              className={classes.image}
-              src="/static/images/svg/404.svg"
-            />
+            <img alt="404" className={classes.image} src={notFoundImage} />
 
             <Box textAlign="center" pt={5}>
               <Button

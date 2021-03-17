@@ -25,6 +25,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { apiAddDocument, apiUpdateDocument } from 'src/services/document';
 import Loader from 'src/components/Loader';
 import { useNavigate } from 'react-router';
+import addFileImage from 'src/assets/images/ilustration/add_file.svg';
 
 /* Style ItemGroupImport */
 const useStyles = makeStyles(theme => ({
@@ -39,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2)
   },
   inputFile: {
-    border: `1px solid ${theme.palette.divider}`,
+    border: `3px dashed ${theme.palette.divider}`,
     borderRadius: 5,
     cursor: 'pointer',
     padding: theme.spacing(2),
@@ -47,12 +48,11 @@ const useStyles = makeStyles(theme => ({
       textAlign: 'center'
     },
     '&:hover': {
-      border: `1px solid ${theme.palette.type === 'dark' ? '#fff' : '#000'}`,
-      opacity: 0.6
+      opacity: 0.5
     }
   },
   inputFileError: {
-    border: `1px solid #F44336`,
+    border: `3px dashed ${theme.palette.error.main}`,
     borderRadius: 5,
     cursor: 'pointer',
     padding: theme.spacing(2),
@@ -293,8 +293,8 @@ function DocumentForm({
                           >
                             <Grid item>
                               <img
-                                src="/static/images/svg/add_file.svg"
                                 alt="Add File"
+                                src={addFileImage}
                                 className={classes.image}
                               />
                             </Grid>

@@ -4,12 +4,13 @@ import Page from 'src/components/Page';
 import UserDelete from './UserDelete';
 import UserChangePassword from './UserChangePassword';
 import { Grid, Container } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 // Componen utama
 const User = props => {
   const navigate = useNavigate();
+  const userLogin = useSelector(state => state.userLogin);
 
   const [userAccess, setUserAccess] = React.useState(null);
   const [reloadTable, setReloadTable] = useState(false);
@@ -21,6 +22,10 @@ const User = props => {
     open: false,
     userId: null
   });
+
+  React.useEffect(() => {
+    console.log(userLogin);
+  }, [userLogin]);
 
   /* Ambil data user akses pada reduxUserLogin */
   useEffect(() => {
