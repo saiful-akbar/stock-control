@@ -354,6 +354,23 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function clearUserLogs(User $user)
+    {
+
+        // Hapus user log berdasarkan user yang dipilih
+        User::findOrFail($user->id)->userLog()->delete();
+
+        // Buat user log
+        User::find(Auth::user()->id)
+            ->userLog()
+            ->create(["log_desc" => "Cleaning up the {$user->username} logs"]);
+
+        // response berhasil
+        return response()->json([
+            "message" => "All the logs from {$user->username} have been cleared"
+        ], 200);
+    }
+
     // /**
     //  * Show the form for editing the specified resource.
     //  *

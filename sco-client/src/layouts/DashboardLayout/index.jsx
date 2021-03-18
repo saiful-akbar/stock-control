@@ -96,25 +96,23 @@ const DashboardLayout = ({
 
   /* Cek apakah user sudah login atau belum */
   React.useEffect(() => {
+    async function getUserIsLogin() {
+      if (Boolean(cookies.get('auth_token'))) {
+        try {
+          await setReduxUserIsLogin();
+        } catch (error) {
+          if (error.status === 401) {
+            window.location.href = '/logout';
+          }
+        }
+      } else {
+        navigate('/login');
+      }
+    }
     getUserIsLogin();
 
     // eslint-disable-next-line
   }, []);
-
-  /* Mengambil data user yang sedang login */
-  const getUserIsLogin = async () => {
-    if (Boolean(cookies.get('auth_token'))) {
-      try {
-        await setReduxUserIsLogin();
-      } catch (error) {
-        if (error.status === 401) {
-          window.location.href = '/logout';
-        }
-      }
-    } else {
-      navigate('/login');
-    }
-  };
 
   /* Render */
   return (

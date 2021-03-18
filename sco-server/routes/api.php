@@ -76,6 +76,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function () {
 
         Route::delete("/truncate-tokens", [UserController::class, "truncateTokens"])->middleware("access.user:delete");
         Route::delete("/{user}", [UserController::class, "destroy"])->middleware("access.user:delete");
+        Route::delete("/{user}/logs", [UserController::class, "clearUserLogs"])->middleware("access.user:delete");
     });
 });
 

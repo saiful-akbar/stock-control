@@ -147,9 +147,24 @@ export const apiGetUserDetail = id => {
 };
 
 /**
- * -------------------------
+ * Fungsi api untuk menghapus log dari user
+ * @param {String} id
+ */
+export const apiClearUserLogs = id => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'delete',
+      url: `users/${id}/logs`
+    })
+      .then(res => resolve(res))
+      .catch(err => reject(err.response));
+  });
+};
+
+/**
+ * -----------------------------------------------
  * Fungsi yang belum di cek
- * -------------------------
+ * -----------------------------------------------
  */
 
 /**

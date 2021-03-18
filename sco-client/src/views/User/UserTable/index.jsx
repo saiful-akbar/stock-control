@@ -462,6 +462,7 @@ const UserTable = props => {
                           row={row}
                           state={props.state}
                           onDelete={() => props.onDelete(row.id)}
+                          onClearLogs={() => props.onClearLogs(row.id)}
                           onChangePassword={() =>
                             props.onChangePassword(row.id)
                           }

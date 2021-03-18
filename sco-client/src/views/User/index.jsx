@@ -4,17 +4,22 @@ import Page from 'src/components/Page';
 import UserDelete from './UserDelete';
 import UserChangePassword from './UserChangePassword';
 import { Grid, Container } from '@material-ui/core';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import UserClearLogs from './UserClearLogs';
 
 // Componen utama
 const User = props => {
   const navigate = useNavigate();
-  const userLogin = useSelector(state => state.userLogin);
+  const { userLogin } = useSelector(state => state);
 
   const [userAccess, setUserAccess] = React.useState(null);
   const [reloadTable, setReloadTable] = useState(false);
   const [dialogDelete, setDialogDelete] = useState({
+    open: false,
+    userId: null
+  });
+  const [dialogClearLogs, setDialogClearLogs] = useState({
     open: false,
     userId: null
   });
@@ -23,18 +28,14 @@ const User = props => {
     userId: null
   });
 
-  React.useEffect(() => {
-    console.log(userLogin);
-  }, [userLogin]);
-
   /* Ambil data user akses pada reduxUserLogin */
   useEffect(() => {
-    if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.map(msi =>
+    if (userLogin !== null) {
+      userLogin.menu_sub_items.map(msi =>
         msi.menu_s_i_url === '/users' ? setUserAccess(msi.pivot) : null
       );
     }
-  }, [props.reduxUserLogin]);
+  }, [userLogin]);
 
   /* Cek akses read pada user */
   React.useEffect(() => {
@@ -59,6 +60,9 @@ const User = props => {
               onChangePassword={userId =>
                 setChangePassword({ open: true, userId: userId })
               }
+              onClearLogs={userId =>
+                setDialogClearLogs({ open: true, userId: userId })
+              }
             />
           </Grid>
         </Grid>
@@ -66,8 +70,17 @@ const User = props => {
         <UserDelete
           open={dialogDelete.open}
           userId={dialogDelete.userId}
-          reloadTable={() => setReloadTable(true)}
-          closeDialog={() => setDialogDelete({ open: false, userId: null })}
+          onReloadTable={() => setReloadTable(true)}
+          onCloseDialog={() => setDialogDelete({ open: false, userId: null })}
+        />
+
+        <UserClearLogs
+          open={dialogClearLogs.open}
+          userId={dialogClearLogs.userId}
+          onReloadTable={() => setReloadTable(true)}
+          onCloseDialog={() =>
+            setDialogClearLogs({ open: false, userId: null })
+          }
         />
 
         <UserChangePassword
@@ -81,11 +94,4 @@ const User = props => {
   );
 };
 
-/* Redux State */
-function reduxState(state) {
-  return {
-    reduxUserLogin: state.userLogin
-  };
-}
-
-export default connect(reduxState, null)(User);
+export default User;

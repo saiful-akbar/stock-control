@@ -3,11 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Page from 'src/components/Page';
 import { Grid, Fab, Container, Box, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import { apiGetUserDetail } from 'src/services/user';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { reduxAction } from 'src/config/redux/state';
 import CustomTooltip from 'src/components/CustomTooltip';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import apiUrl from 'src/utils/apiUrl';
 import UserDetailProfile from './UserDetailProfile';
 import UserDetailMenuAccess from './UserDetailMenuAccess';
@@ -47,9 +47,10 @@ function UserDetail(props) {
   const classes = useStyle();
   const navigate = useNavigate();
   const { id } = useParams();
+  const { userLogin } = useSelector(state => state);
+  const dispatch = useDispatch();
 
   const isMounted = React.useRef(true);
-
   const [userData, setUserData] = React.useState(null);
 
   /**
@@ -58,68 +59,71 @@ function UserDetail(props) {
    * Jika user access read === 0 (false) maka alihkan ke halaman forbidden
    */
   React.useEffect(() => {
-    if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.filter(
+    if (userLogin !== null) {
+      userLogin.menu_sub_items.filter(
         value =>
           Boolean(
             value.menu_s_i_url === '/users' && value.pivot.user_m_s_i_read !== 1
           ) && navigate('/error/forbidden')
       );
     }
-  }, [props.reduxUserLogin, navigate]);
+  }, [userLogin, navigate]);
+
+  const handleShowToast = (show, type, message) => {
+    dispatch({
+      type: reduxAction.toast,
+      value: {
+        show: show,
+        type: type,
+        message: message
+      }
+    });
+  };
 
   /**
+   * mengambil data user dari api
    * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
-   * Dan untuk menjalankan fungsi getData() untuk mengambil data user
    */
-  React.useEffect(props => {
-    userData === null && getData();
+  React.useEffect(() => {
+    if (userData === null) {
+      apiGetUserDetail(id)
+        .then(res => {
+          if (isMounted.current) {
+            setUserData(res.data);
+          }
+        })
+        .catch(err => {
+          if (isMounted.current) {
+            switch (err.status) {
+              case 401:
+                window.location.href = '/logout';
+                break;
+
+              case 404:
+                navigate('/error/notfound');
+                break;
+
+              case 403:
+                navigate('/error/forbidden');
+                break;
+
+              default:
+                handleShowToast(
+                  true,
+                  'error',
+                  `(#${err.status}) ${err.data.message}`
+                );
+                break;
+            }
+          }
+        });
+    }
+
     return () => {
       isMounted.current = false;
     };
     // eslint-disable-next-line
   }, []);
-
-  React.useEffect(() => {
-    console.log('userData: ', userData);
-  }, [userData]);
-
-  /**
-   * Fungsi untuk mengambil data user dari api
-   */
-  const getData = () => {
-    apiGetUserDetail(id)
-      .then(res => {
-        if (isMounted.current) {
-          setUserData(res.data);
-        }
-      })
-      .catch(err => {
-        if (isMounted.current) {
-          switch (err.status) {
-            case 401:
-              window.location.href = '/logout';
-              break;
-
-            case 404:
-              navigate('/error/notfound');
-              break;
-
-            case 403:
-              navigate('/error/forbidden');
-              break;
-
-            default:
-              props.setReduxToast(
-                true,
-                'error',
-                `(#${err.status}) ${err.data.message}`
-              );
-              break;
-          }
-        }
-      });
-  };
 
   /**
    * Render Komponen utama
@@ -140,11 +144,12 @@ function UserDetail(props) {
                 alt="Avatar"
                 className={classes.avatar}
                 src={
-                  userData !== null
-                    ? userData.profile.profile_avatar !== null
-                      ? apiUrl(`/avatar/${userData.profile.profile_avatar}`)
-                      : '/static/images/svg/default_avatar.svg'
-                    : ''
+                  Boolean(
+                    userData !== null &&
+                      userData.profile.profile_avatar !== null
+                  )
+                    ? apiUrl(`/avatar/${userData.profile.profile_avatar}`)
+                    : null
                 }
               />
             </Box>
@@ -183,29 +188,4 @@ function UserDetail(props) {
   );
 }
 
-/**
- * Redux dispatch
- * @param {obj} dispatch
- */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-/* Redux State */
-function reduxState(state) {
-  return {
-    reduxUserLogin: state.userLogin
-  };
-}
-
-export default connect(reduxState, reduxDispatch)(UserDetail);
+export default UserDetail;

@@ -1,7 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/styles';
-import { Avatar } from '@material-ui/core';
+import { Avatar, useTheme } from '@material-ui/core';
+import logoDark from 'src/assets/images/logo/logo-dark.png';
+import logoLight from 'src/assets/images/logo/logo-light.png';
 
 const useStyle = makeStyles(theme => ({
   root: {
@@ -13,11 +15,12 @@ const useStyle = makeStyles(theme => ({
 
 const Logo = ({ reduxTheme, ...props }) => {
   const classes = useStyle();
+  const theme = useTheme();
 
   return (
     <Avatar
       alt="Logo"
-      src={`/static/images/logo/logo-${reduxTheme}-1.webp`}
+      src={theme.palette.type === 'dark' ? logoDark : logoLight}
       className={classes.root}
     />
   );

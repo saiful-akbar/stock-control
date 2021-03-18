@@ -40,7 +40,10 @@ function DialogDelete({
   loading,
   title,
   contentText,
-  ...props
+  buttonTitle,
+  buttonVariant,
+  buttonSize,
+  buttonColor
 }) {
   const classes = useStyles();
 
@@ -81,10 +84,10 @@ function DialogDelete({
 
       <DialogActions className={classes.actions}>
         <BtnSubmit
-          title="Delete"
-          color="primary"
-          variant="contained"
-          size="small"
+          title={buttonTitle}
+          color={buttonColor}
+          variant={buttonVariant}
+          size={buttonSize}
           loading={loading}
           handleSubmit={onDelete}
           handleCancel={() => onClose(loading)}
@@ -102,6 +105,10 @@ DialogDelete.defaultProps = {
   loading: false,
   title: 'Delete',
   contentText: null,
+  buttonTitle: 'Delete',
+  buttonVariant: 'contained',
+  buttonSize: 'medium',
+  buttonColor: 'primary',
   onDelete: () => {},
   onClose: () => {}
 };
@@ -115,7 +122,11 @@ DialogDelete.propTypes = {
   onClose: PropTypes.func,
   loading: PropTypes.bool,
   title: PropTypes.string,
-  contentText: PropTypes.string
+  contentText: PropTypes.string,
+  buttonTitle: PropTypes.string,
+  buttonVariant: PropTypes.string,
+  buttonSize: PropTypes.string,
+  buttonColor: PropTypes.string
 };
 
 export default DialogDelete;

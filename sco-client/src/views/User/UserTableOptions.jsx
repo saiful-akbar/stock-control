@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
+import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
 
 // Componen utama
 const UserTableOptions = ({
@@ -20,7 +21,7 @@ const UserTableOptions = ({
   state,
   onDelete,
   onChangePassword,
-  ...props
+  onClearLogs
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -45,7 +46,7 @@ const UserTableOptions = ({
   /**
    * handle edit user
    */
-  const handleEdit = () => {
+  const handleEditUser = () => {
     handleCloseMenu();
     navigate(`/users/${userData.id}/edit`);
   };
@@ -53,7 +54,7 @@ const UserTableOptions = ({
   /**
    * Handle delete
    */
-  const handleDelete = () => {
+  const handleDeleteUser = () => {
     onDelete();
     handleCloseMenu();
   };
@@ -69,9 +70,17 @@ const UserTableOptions = ({
   /**
    * handle view user
    */
-  const handleViewDetails = () => {
+  const handleGoToViewDetails = () => {
     handleCloseMenu();
     navigate(`/users/${userData.id}`);
+  };
+
+  /**
+   * Menghapus user logs
+   */
+  const handleClearUserLogs = () => {
+    onClearLogs();
+    handleCloseMenu();
   };
 
   /**
@@ -91,7 +100,7 @@ const UserTableOptions = ({
         open={open}
         onClose={handleCloseMenu}
       >
-        {state !== null && state.user_m_s_i_update === 1 && (
+        {Boolean(state !== null && state.user_m_s_i_update === 1) && (
           <MenuItem onClick={handleChangePassword}>
             <ListItemIcon>
               <LockOutlinedIcon fontSize="small" />
@@ -100,8 +109,17 @@ const UserTableOptions = ({
           </MenuItem>
         )}
 
-        {state !== null && state.user_m_s_i_delete === 1 && (
-          <MenuItem onClick={handleDelete}>
+        {Boolean(state !== null && state.user_m_s_i_delete === 1) && (
+          <MenuItem onClick={handleClearUserLogs}>
+            <ListItemIcon>
+              <DeleteSweepOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <Typography variant="inherit">{'Clear logs'}</Typography>
+          </MenuItem>
+        )}
+
+        {Boolean(state !== null && state.user_m_s_i_delete === 1) && (
+          <MenuItem onClick={handleDeleteUser}>
             <ListItemIcon>
               <DeleteOutlinedIcon fontSize="small" />
             </ListItemIcon>
@@ -109,8 +127,8 @@ const UserTableOptions = ({
           </MenuItem>
         )}
 
-        {state !== null && state.user_m_s_i_update === 1 && (
-          <MenuItem onClick={handleEdit}>
+        {Boolean(state !== null && state.user_m_s_i_update === 1) && (
+          <MenuItem onClick={handleEditUser}>
             <ListItemIcon>
               <EditOutlinedIcon fontSize="small" />
             </ListItemIcon>
@@ -118,12 +136,14 @@ const UserTableOptions = ({
           </MenuItem>
         )}
 
-        <MenuItem onClick={handleViewDetails}>
-          <ListItemIcon>
-            <VisibilityOutlinedIcon fontSize="small" />
-          </ListItemIcon>
-          <Typography variant="inherit">{'View details'}</Typography>
-        </MenuItem>
+        {Boolean(state !== null && state.user_m_s_i_read === 1) && (
+          <MenuItem onClick={handleGoToViewDetails}>
+            <ListItemIcon>
+              <VisibilityOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <Typography variant="inherit">{'View details'}</Typography>
+          </MenuItem>
+        )}
       </Menu>
     </React.Fragment>
   );

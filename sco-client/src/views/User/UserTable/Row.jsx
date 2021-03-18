@@ -73,7 +73,7 @@ const useRowStyles = makeStyles(theme => ({
 }));
 
 function Row(props) {
-  const { row, onDelete, state, onChangePassword } = props;
+  const { row, onDelete, onClearLogs, state, onChangePassword } = props;
   const classes = useRowStyles();
   const navigate = useNavigate();
 
@@ -93,8 +93,9 @@ function Row(props) {
           <UserTableOptions
             userData={row}
             state={state}
-            onDelete={() => onDelete(row.id)}
-            onChangePassword={() => onChangePassword(row.id)}
+            onDelete={() => onDelete()}
+            onClearLogs={() => onClearLogs()}
+            onChangePassword={() => onChangePassword()}
           />
         </TableCell>
 
@@ -114,9 +115,9 @@ function Row(props) {
                   className={classes.avatar}
                   alt={row.profile_name}
                   src={
-                    Boolean(row.profile_avatar)
+                    row.profile_avatar !== null
                       ? apiUrl(`/avatar/${row.profile_avatar}`)
-                      : '/static/images/svg/default_avatar.svg'
+                      : null
                   }
                 />
               </ButtonBase>

@@ -30,8 +30,8 @@ function UserDelete(props) {
             type: 'success',
             message: res.data.message
           });
-          props.reloadTable();
-          props.closeDialog();
+          props.onReloadTable();
+          props.onCloseDialog();
         }
       })
       .catch(err => {
@@ -63,11 +63,7 @@ function UserDelete(props) {
   };
 
   /* Fungsi menutup dialog */
-  const handleClose = () => {
-    if (!loading) {
-      props.closeDialog();
-    }
-  };
+  const handleClose = () => Boolean(!loading) && props.onCloseDialog();
 
   return (
     <DialogDelete

@@ -50,7 +50,7 @@ function UserDetailMenuAccess({ data }) {
 
       <CardContent>
         <TableContainer>
-          <Table className={classes.table} aria-label="simple table">
+          <Table className={classes.table}>
             <TableHead>
               <TableRow>
                 {columns.map((column, key) => (
