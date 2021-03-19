@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/saiful-akbar/stock-control/main/sco-client/public/static/images/logo/logo-dark-1.png" width="200">
+  <img src="https://github.com/saiful-akbar/stock-control/blob/main/sco-client/src/assets/images/logo/logo-light.png?raw=true" alt="SCO Logo" width="200">
 </p>
 
 # Stock Control
@@ -21,43 +21,27 @@
 
 ## Fitur
 
-- Pengaturan
-  - Pengaturan Tema
-    - Dapat dirubah menjadi mode gelap, terang atau sesuai tema os
-- Otentikasi pengguna
-- Document
-  - Berisi format template file excel untuk diimport dan dokumen lainnya
-  - Menambahkan data document baru
-  - Memperbarui data
-  - Menghapus data
-  - Mendownload file dokumen
-- Manajemen menu
-  - Menambahkan data menu baru
-  - Merubah data menu
-  - Menghapus data menu
-- Pengguna / User
+- **Otentikasi pengguna**
+- **Panel Setting**
+  - Dapat mengatur tema manjadi mode terang dan gelap
+- **Halaman Document**
+  - Dapat melihat dan mendownload file document
+  - Membuat/menambahkan, merubah dan menghapus data dokumen
+- **Halaman Menu manajemen**
+  - Dapat melihat, menambahkan, merubah serta menghapus data menu
+- **Halaman Pengguna/Users**
   - Menambahkan pengguna baru
   - Menggapus semua token pengguna
   - Memperbarui password pengguna
   - Menghapus data pengguna
+  - Menghapus log pengguna
   - Memperbarui data setiap pengguna
-  - Melihat detail pengguna
-- Data Master
-  - Items
-    - Item Groups
-      - Melihat data item groups,
-      - Membuat data baru
-      - Memperbarui,
-      - Menghapus,
-      - Import dari file excel,
-      - Export kedalam bentuk file excel
-    - Item Sub Groups
-      - Melihat data item sub groups,
-      - Membuat data baru
-      - Memperbarui
-      - Menghapus
-      - Import dari file excel,
-      - Export kedalam bentuk file excel
+  - Melihat detail pengguna  
+ - **Halaman Items**
+   - **Tab Item Groups**
+     - Dapat melihat, membuat/manambahkan, memperbarui serta menghapus data item groups
+     - Import dari file excel,
+     - Export menjadi file excel
 
 ## Instalasi
 
