@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-import Toast from 'src/components/Toast';
-import { Helmet } from 'react-helmet';
 import Cookies from 'universal-cookie';
-import { login } from 'src/services/auth';
-import { connect } from 'react-redux';
+import { apiLogin } from 'src/services/auth';
+import { useDispatch, useSelector } from 'react-redux';
 import CustomTooltip from 'src/components/CustomTooltip';
 
 import Avatar from '@material-ui/core/Avatar';
@@ -86,31 +84,42 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function LoginView({ loginUser }) {
+function Login({ loginUser }) {
   const classes = useStyles();
   const navigate = useNavigate();
   const theme = useTheme();
+  const isMounted = React.useRef(true);
   const cookies = new Cookies();
+
+  /**
+   * Redux
+   */
+  const { userLogin } = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
 
   /**
    * State
    */
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
-  const [toast, setToast] = React.useState({
-    show: false,
-    type: null,
-    message: ''
-  });
 
   /**
-   * Cek apakah ada cookie auth_token atau tidak
-   * Jika ada alihkan ke halaman dahsboard
+   * Handle pertama saat halaman selesai di render
    */
   React.useEffect(() => {
-    if (cookies.get('auth_token') !== undefined) {
+    // membuat title
+    document.title = 'SCO - Login';
+
+    // Cek apakah ada auth_token pada cookie
+    if (cookies.get('auth_token') !== undefined || userLogin.account !== null) {
       navigate('/dashboard');
     }
+
+    // Handle jika komponen dilepas saat request api belum selesai
+    return () => {
+      isMounted.current = false;
+    };
+
     // eslint-disable-next-line
   }, []);
 
@@ -120,27 +129,27 @@ function LoginView({ loginUser }) {
    * @param {Object} data
    * @param {Object} param1
    */
-  const handleSubmitLoginForm = (data, { setErrors }) => {
+  const handleSubmitLoginForm = async (data, { setErrors }) => {
     setLoading(true);
-    loginUser(data)
-      .then(res => {
+
+    try {
+      const res = await dispatch(apiLogin(data));
+
+      if (isMounted.current) {
+        setLoading(true);
         const date = new Date();
-        date.setTime(date.getTime() + 30 * 24 * 60 * 60 * 1000);
-        cookies.set('auth_token', res.data.auth_token, {
-          path: '/',
-          expires: date
-        });
+        const { auth_token } = res.data;
+
+        date.setTime(date.getTime() + 1000 * 60 * 60 * 24 * 7);
+        cookies.set('auth_token', auth_token, { path: '/', expires: date });
         window.location.href = '/dashboard';
-      })
-      .catch(err => {
-        if (err.status === 422) setErrors(err.data.errors);
+      }
+    } catch (err) {
+      if (isMounted.current) {
         setLoading(false);
-        setToast({
-          show: true,
-          type: 'error',
-          message: `(#${err.status}) ${err.data.message}`
-        });
-      });
+        if (err.status === 422) setErrors(err.data.errors);
+      }
+    }
   };
 
   /**
@@ -148,10 +157,6 @@ function LoginView({ loginUser }) {
    */
   return (
     <div>
-      <Helmet>
-        <title>SCO - Login</title>
-      </Helmet>
-
       <Grid
         container
         direction="row-reverse"
@@ -288,27 +293,8 @@ function LoginView({ loginUser }) {
           </div>
         </Grid>
       </Grid>
-
-      <Toast
-        open={toast.show}
-        type={toast.type}
-        message={toast.message}
-        handleClose={() => {
-          setToast({
-            show: false,
-            type: toast.type,
-            message: toast.message
-          });
-        }}
-      />
     </div>
   );
 }
 
-function reduxDispatch(dispatch) {
-  return {
-    loginUser: data => dispatch(login(data))
-  };
-}
-
-export default connect(null, reduxDispatch)(LoginView);
+export default Login;

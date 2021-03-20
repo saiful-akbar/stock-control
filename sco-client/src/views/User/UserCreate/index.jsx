@@ -50,8 +50,8 @@ function UserCreate(props) {
    * Jika user access create === 0 (false) maka alihkan ke halaman forbidden
    */
   React.useEffect(() => {
-    if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.filter(
+    if (props.reduxUserLogin.menuSubItems !== null) {
+      props.reduxUserLogin.menuSubItems.filter(
         value =>
           Boolean(
             value.menu_s_i_url === '/users' &&

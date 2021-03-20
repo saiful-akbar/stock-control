@@ -83,7 +83,7 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
         className={classes.profile}
       >
         <Grid item>
-          {userLogin !== null ? (
+          {userLogin.profile !== null ? (
             <ButtonBase
               className={classes.avatar}
               onClick={() => navigate('/account')}
@@ -103,7 +103,7 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
         </Grid>
 
         <Grid item xs zeroMinWidth>
-          {userLogin !== null ? (
+          {userLogin.profile !== null ? (
             <>
               <Typography color="textPrimary" variant="h6" noWrap>
                 {userLogin.profile.profile_name}
@@ -129,13 +129,13 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
       <Box flexGrow={1} />
 
       <Box className={classes.menu}>
-        {userLogin === null ? (
+        {userLogin.menuItems.length <= 0 ? (
           <Skeleton variant="rect" height="100%" />
         ) : (
           <List component="div" disablePadding>
             <NavItemDashboard />
 
-            {userLogin.menu_items.map((item, key) => (
+            {userLogin.menuItems.map((item, key) => (
               <NavItem
                 key={key}
                 data={item}

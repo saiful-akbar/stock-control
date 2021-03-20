@@ -1,5 +1,10 @@
 const initialState = {
-  userLogin: null
+  userLogin: {
+    account: null,
+    profile: null,
+    menuItems: [],
+    menuSubItems: []
+  }
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -7,7 +12,12 @@ export const authReducer = (state = initialState, action) => {
     case 'SET_USER_LOGIN':
       return {
         ...state,
-        userLogin: action.value
+        userLogin: {
+          account: action.value.account,
+          profile: action.value.profile,
+          menuItems: action.value.menuItems,
+          menuSubItems: action.value.menuSubItems
+        }
       };
 
     default:

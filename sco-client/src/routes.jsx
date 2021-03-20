@@ -1,34 +1,42 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-/* Layouts */
+/**
+ * Layouts
+ */
 import DashboardLayout from 'src/layouts/DashboardLayout';
 import MainLayout from 'src/layouts/MainLayout';
-import Logout from 'src/views/Logout';
+import Logout from 'src/views/auth/Logout';
 
-/* views MalinLayout */
-const LoginView = React.lazy(() => import('src/views/auth/LoginView'));
+/**
+ * views MainLayout
+ */
+const Login = React.lazy(() => import('src/views/auth/Login'));
 const NotFound = React.lazy(() => import('src/views/errors/NotFound'));
 const Forbidden = React.lazy(() => import('src/views/errors/Forbidden'));
 
-/* views DashboardLayout */
+/**
+ * views DashboardLayout
+ */
 const Dashboard = React.lazy(() => import('src/views/Dashboard'));
 const AccountView = React.lazy(() => import('src/views/account/AccountView'));
 const Menus = React.lazy(() => import('src/views/Menus'));
-const User = React.lazy(() => import('src/views/User'));
-const UserCreate = React.lazy(() => import('src/views/User/UserCreate'));
-const UserEdit = React.lazy(() => import('src/views/User/UserEdit'));
-const UserEditMenuAccess = React.lazy(() =>
-  import('src/views/User/UserEditMenuAccess')
-);
-const UserDetail = React.lazy(() => import('src/views/User/UserDetail'));
 const Items = React.lazy(() => import('src/views/Items'));
 const Document = React.lazy(() => import('src/views/Document'));
 const Return = React.lazy(() => import('src/views/Return'));
 const Store = React.lazy(() => import('src/views/Store'));
 const DeliveryNote = React.lazy(() => import('src/views/DeliveryNote'));
+const User = React.lazy(() => import('src/views/User'));
+const UserCreate = React.lazy(() => import('src/views/User/UserCreate'));
+const UserEdit = React.lazy(() => import('src/views/User/UserEdit'));
+const UserDetail = React.lazy(() => import('src/views/User/UserDetail'));
+const UserEditMenuAccess = React.lazy(() =>
+  import('src/views/User/UserEditMenuAccess')
+);
 
-/* routes */
+/**
+ * Routes
+ */
 const routes = [
   {
     path: '/',
@@ -102,7 +110,7 @@ const routes = [
     children: [
       {
         path: '/',
-        element: <LoginView />
+        element: <Login />
       },
       {
         path: '*',

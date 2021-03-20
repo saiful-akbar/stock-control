@@ -48,8 +48,8 @@ function Menus(props) {
 
   /* Cek apakah state bernilai null & state read bernilai 1 */
   useEffect(() => {
-    if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.map(
+    if (props.reduxUserLogin.menuSubItems !== null) {
+      props.reduxUserLogin.menuSubItems.map(
         msi => msi.menu_s_i_url === pathname && setUserAccess(msi.pivot)
       );
     }

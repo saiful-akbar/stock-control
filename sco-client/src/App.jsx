@@ -1,5 +1,3 @@
-import 'react-perfect-scrollbar/dist/css/styles.css';
-
 import React from 'react';
 import GlobalStyles from './components/GlobalStyles';
 import routes from './routes';

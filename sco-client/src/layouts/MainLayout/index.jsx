@@ -47,9 +47,8 @@ const MainLayout = () => {
    * Menghapus preloader
    */
   useEffect(() => {
-    window.onload = () => {
-      document.getElementById('preloader').remove();
-    };
+    const preloader = document.getElementById('preloader');
+    if (Boolean(preloader)) preloader.remove();
 
     // eslint-disable-next-line
   }, []);

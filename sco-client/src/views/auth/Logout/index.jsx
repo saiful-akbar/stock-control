@@ -1,20 +1,24 @@
 import React from 'react';
-import { logout } from 'src/services/auth';
+import { apiLogout } from 'src/services/auth';
 import Cookies from 'universal-cookie';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
 
 /**
  * Componen utama
  * @param {*} param0
  */
 function Logout({ cookies, ...props }) {
-  const is_mounted = React.useRef(true);
+  const isMounted = React.useRef(true);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cookie = new Cookies();
 
   React.useEffect(() => {
     handleLogout();
 
     return () => {
-      is_mounted.current = false;
+      isMounted.current = false;
     };
 
     // eslint-disable-next-line
@@ -22,14 +26,14 @@ function Logout({ cookies, ...props }) {
 
   /* Request logout */
   const handleLogout = () => {
-    logout()
+    apiLogout()
       .then(() => {
-        if (is_mounted.current) {
+        if (isMounted.current) {
           removeToken();
         }
       })
       .catch(() => {
-        if (is_mounted.current) {
+        if (isMounted.current) {
           removeToken();
         }
       });
@@ -38,7 +42,16 @@ function Logout({ cookies, ...props }) {
   /* remove cookie auth_token */
   const removeToken = () => {
     cookie.remove('auth_token');
-    window.location.href = '/login';
+    dispatch({
+      type: 'SET_USER_LOGIN',
+      value: {
+        account: null,
+        profile: null,
+        menuItems: [],
+        menuSubItems: []
+      }
+    });
+    navigate('/login');
   };
 
   /* Render component utama */

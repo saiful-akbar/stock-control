@@ -8,7 +8,7 @@ import ItemGroupImport from './ItemGroupImport';
 /**
  * Komponent utama
  */
-function ItemGroups(props) {
+function ItemGroups({ reduxUserLogin }) {
   const [userAccess, setUserAccess] = React.useState(null);
   const [isOpenDialogImport, setOpenDialogImport] = React.useState(false);
   const [form, setForm] = React.useState({
@@ -25,12 +25,12 @@ function ItemGroups(props) {
    * Ambil data user akses pada reduxUserLogin
    */
   React.useEffect(() => {
-    if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.map(msi => {
+    if (reduxUserLogin.menuSubItems !== null) {
+      reduxUserLogin.menuSubItems.map(msi => {
         return msi.menu_s_i_url === '/items' ? setUserAccess(msi.pivot) : null;
       });
     }
-  }, [props.reduxUserLogin]);
+  }, [reduxUserLogin]);
 
   /**
    * Render komponent utama

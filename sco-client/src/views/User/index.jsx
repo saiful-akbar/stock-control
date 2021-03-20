@@ -30,8 +30,8 @@ const User = props => {
 
   /* Ambil data user akses pada reduxUserLogin */
   useEffect(() => {
-    if (userLogin !== null) {
-      userLogin.menu_sub_items.map(msi =>
+    if (userLogin.menuSubItems !== null) {
+      userLogin.menuSubItems.map(msi =>
         msi.menu_s_i_url === '/users' ? setUserAccess(msi.pivot) : null
       );
     }

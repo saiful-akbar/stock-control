@@ -58,8 +58,8 @@ function UserDetail(props) {
    * Jika user access read === 0 (false) maka alihkan ke halaman forbidden
    */
   React.useEffect(() => {
-    if (userLogin !== null) {
-      userLogin.menu_sub_items.filter(
+    if (userLogin.menuSubItems !== null) {
+      userLogin.menuSubItems.filter(
         value =>
           Boolean(
             value.menu_s_i_url === '/users' && value.pivot.user_m_s_i_read !== 1

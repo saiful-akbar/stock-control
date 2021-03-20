@@ -115,16 +115,15 @@ const NavItem = ({ data, reduxUserLogin }) => {
   const [MenuSecondaryTitle, SetMenuSecondaryTitle] = React.useState([]);
 
   React.useEffect(() => {
-    if (reduxUserLogin !== null) {
-      /* Simpan data menu sub item */
-      setMenuSubItems(reduxUserLogin.menu_sub_items);
+    if (reduxUserLogin.menuSubItems.length > 0) {
+      setMenuSubItems(reduxUserLogin.menuSubItems); // Simpan data menu sub item
 
       /*
        * Ambil title dari menu sub item
        * Cek menu item yang aktif saat aplikasi pertama kali di muat
        */
       let titles = [];
-      reduxUserLogin.menu_sub_items.map(msi => {
+      reduxUserLogin.menuSubItems.map(msi => {
         if (msi.menu_item_id === data.id) {
           if (msi.menu_s_i_url === pathname.slice(0, msi.menu_s_i_url.length)) {
             setOpen(true);

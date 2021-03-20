@@ -40,8 +40,8 @@ function Document(props) {
 
   /* Ambil data user akses pada reduxUserLogin */
   React.useEffect(() => {
-    if (userLogin !== null) {
-      userLogin.menu_sub_items.map(msi => {
+    if (userLogin.menuSubItems !== null) {
+      userLogin.menuSubItems.map(msi => {
         return msi.menu_s_i_url === '/documents'
           ? setUserAccess(msi.pivot)
           : null;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { userIsLogin } from 'src/services/auth';
+import { useSelector, useDispatch } from 'react-redux';
+import { apiGetDataUserLogin } from 'src/services/auth';
 import { makeStyles, CircularProgress } from '@material-ui/core';
 import Toast from 'src/components/Toast';
 import TopBar from './TopBar';
@@ -69,49 +69,52 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DashboardLayout = ({
-  setReduxUserIsLogin,
-  reduxToast,
-  setReduxToast
-}) => {
+function DashboardLayout() {
   const classes = useStyles();
   const navigate = useNavigate();
   const cookie = new Cookies();
+  const dispatch = useDispatch();
+  const { userLogin } = useSelector(state => state.authReducer);
+  const { toast } = useSelector(state => state.globalReducer);
 
   /* State */
   const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
   const [isDesktopNavOpen, setDesktopNavOpen] = React.useState(true);
   const [isSettingOpen, setSettingOpen] = React.useState(false);
+  const preloader = document.getElementById('preloader');
 
   /* Menghapus preloader */
   React.useEffect(() => {
-    window.onload = () => {
-      const preloader = document.getElementById('preloader');
-      preloader.remove();
-    };
-
     // eslint-disable-next-line
   }, []);
 
-  /* Cek apakah user sudah login atau belum */
+  /* Ambil data user login sari server via api */
   React.useEffect(() => {
-    async function getUserIsLogin() {
-      if (Boolean(cookie.get('auth_token'))) {
-        try {
-          await setReduxUserIsLogin();
-        } catch (error) {
-          if (error.status === 401) {
-            window.location.href = '/logout';
-          }
-        }
+    if (userLogin.account === null) {
+      if (cookie.get('auth_token') !== undefined) {
+        getUserIsLogin();
       } else {
         navigate('/login');
       }
+    } else {
+      if (Boolean(preloader)) preloader.remove();
     }
-    getUserIsLogin();
 
     // eslint-disable-next-line
-  }, []);
+  }, [userLogin]);
+
+  /**
+   * Fungsi untuk mengambil data user yang sedang login
+   */
+  const getUserIsLogin = async () => {
+    try {
+      await dispatch(apiGetDataUserLogin());
+    } catch (error) {
+      if (error.status === 401) {
+        window.location.href = '/logout';
+      }
+    }
+  };
 
   /* Render */
   return (
@@ -151,34 +154,22 @@ const DashboardLayout = ({
       </div>
 
       <Toast
-        open={reduxToast.show}
-        type={reduxToast.type}
-        message={reduxToast.message}
-        handleClose={() =>
-          setReduxToast(false, reduxToast.type, reduxToast.message)
-        }
+        open={toast.show}
+        type={toast.type}
+        message={toast.message}
+        handleClose={() => {
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: false,
+              type: toast.type,
+              message: toast.message
+            }
+          });
+        }}
       />
     </div>
   );
-};
+}
 
-/* Redux reducer */
-const reduxReducer = dispatch => ({
-  setReduxUserIsLogin: () => dispatch(userIsLogin()),
-  setReduxToast: (show, type, message) =>
-    dispatch({
-      type: 'SET_TOAST',
-      value: {
-        show: show,
-        type: type,
-        message: message
-      }
-    })
-});
-
-/* Redux state */
-const reduxState = state => ({
-  reduxToast: state.globalReducer.toast
-});
-
-export default connect(reduxState, reduxReducer)(DashboardLayout);
+export default DashboardLayout;

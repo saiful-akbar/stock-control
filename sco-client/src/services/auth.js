@@ -5,7 +5,7 @@ import csrf from './csrf';
  * Fungsi untuk login user
  * @param {username & password} data
  */
-export const login = data => dispatch => {
+export const apiLogin = data => dispatch => {
   return new Promise((resolve, reject) => {
     csrf()
       .then(() => {
@@ -17,16 +17,35 @@ export const login = data => dispatch => {
           .then(res => {
             resolve(res);
             dispatch({
-              type: 'SET_LOADING',
-              value: res.data
+              type: 'SET_USER_LOGIN',
+              value: {
+                account: res.data.data,
+                profile: res.data.profile,
+                menuItems: res.data.menu_items,
+                menuSubItems: res.data.menu_sub_items
+              }
             });
           })
           .catch(err => {
-            reject(err.response);
+            if (err.response) {
+              reject(err.response);
+              dispatch({
+                type: 'SET_TOAST',
+                value: {
+                  show: true,
+                  type: 'error',
+                  message: `(#${err.response.status} ${err.response.data.message})`
+                }
+              });
+            }
           });
       })
-      .catch(csrfErr => {
-        reject(csrfErr.response);
+      .catch(errorCsrf => {
+        if (errorCsrf.response) {
+          reject(errorCsrf.response);
+        } else if (errorCsrf.request) {
+          reject(errorCsrf.request);
+        }
       });
   });
 };
@@ -34,7 +53,7 @@ export const login = data => dispatch => {
 /**
  * ambil data user yang sedang login
  */
-export const userIsLogin = () => dispatch => {
+export const apiGetDataUserLogin = () => dispatch => {
   return new Promise((resolve, reject) => {
     csrf()
       .then(() => {
@@ -47,19 +66,28 @@ export const userIsLogin = () => dispatch => {
             resolve(res);
             dispatch({
               type: 'SET_USER_LOGIN',
-              value: res.data
-            });
-            dispatch({
-              type: 'SET_LOADING',
-              value: false
+              value: {
+                account: res.data.data,
+                profile: res.data.profile,
+                menuItems: res.data.menu_items,
+                menuSubItems: res.data.menu_sub_items
+              }
             });
           })
           .catch(err => {
-            reject(err.response);
+            if (err.response) {
+              reject(err.response);
+            } else if (err.request) {
+              reject(err.request);
+            }
           });
       })
-      .catch(csrfErr => {
-        reject(csrfErr.response);
+      .catch(errorCsrf => {
+        if (errorCsrf.response) {
+          reject(errorCsrf.response);
+        } else if (errorCsrf.request) {
+          reject(errorCsrf.request);
+        }
       });
   });
 };
@@ -67,17 +95,13 @@ export const userIsLogin = () => dispatch => {
 /**
  * logout
  */
-export const logout = () => {
+export const apiLogout = () => {
   return new Promise((resolve, reject) => {
     api({
       method: 'get',
       url: '/logout'
     })
-      .then(res => {
-        resolve(res);
-      })
-      .catch(err => {
-        reject(err.response);
-      });
+      .then(res => resolve(res))
+      .catch(err => reject(err.response));
   });
 };

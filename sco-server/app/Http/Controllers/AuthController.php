@@ -27,25 +27,28 @@ class AuthController extends Controller
 
             // Cek apakah user aktif atau tidak
             if (Auth::user()->is_active == 1) {
-
-                // Ambil data user
-                $user = User::find(Auth::user()->id);
+                $user = User::find(Auth::user()->id); // Ambil data user
 
                 // Jika ada token sebelumnya hapus tokennya
                 if (!empty($user->tokens())) {
                     $user->tokens()->delete();
                 }
 
-                // Buat token baru
-                $auth_token = $user->createToken("auth_token", ['server:auth']);
-
-                // buat log login user
-                $user->userLog()->create(["log_desc" => "Login"]);
+                $auth_token = $user->createToken("auth_token", ['server:auth']); // Buat token baru
+                $profile = $user->profile()->first(); // Ambil data profile user,
+                $menu_items = $user->menuItem()->orderBy("menu_i_title", "asc")->get(); // Ambil data menu items user
+                $menu_sub_items = $user->menuSubItem()->orderBy("menu_s_i_title", "asc")->get(); // Ambil data menu sub items user
+                $user->userLog()->create(["log_desc" => "Login"]); // buat log login user
 
                 // Response login berhasil
-                return response()->json(["auth_token" => $auth_token->plainTextToken], 200);
+                // Response berhasil
+                return (new UserResource($user))->additional([
+                    "profile"        => $profile,
+                    "menu_items"     => $menu_items,
+                    "menu_sub_items" => $menu_sub_items,
+                    "auth_token"     => $auth_token->plainTextToken
+                ]);
             } else {
-
                 // response jika akun tidak aktif
                 return response()->json([
                     "errors"  => ["username" => ["Your account is inactive"]],
@@ -53,7 +56,6 @@ class AuthController extends Controller
                 ], 422);
             }
         }
-
         // Response jika username atau password salah
         return response()->json([
             "errors"  => ["username" => ["Incorrect username or password"]],
@@ -79,7 +81,7 @@ class AuthController extends Controller
     /*
     * Get avatar user is login
     */
-    public function userAvatar(Request $request, $avatar)
+    public function userAvatar($avatar)
     {
         $file     = Storage::get("img/avatars/{$avatar}");
         $mimeType = Storage::mimeType("img/avatars/{$avatar}");
@@ -95,20 +97,14 @@ class AuthController extends Controller
      */
     public function userIsLogin()
     {
-        // Ambil data user yang sedang login
-        $user = User::find(Auth::user()->id);
-
-        // Ambil data profile user,
-        $profile = $user->profile()->first();
-
-        // Ambil data menu items user
-        $menu_items = $user->menuItem()->orderBy("menu_i_title", "asc")->get();
-
-        // Ambil data menu sub items user
-        $menu_sub_items = $user->menuSubItem()->orderBy("menu_s_i_title", "asc")->get();
+        $user = User::find(Auth::user()->id); // Ambil data user yang sedang login
+        $profile = $user->profile()->first(); // Ambil data profile user
+        $menu_items = $user->menuItem()->orderBy("menu_i_title", "asc")->get(); // Ambil data menu items user
+        $menu_sub_items = $user->menuSubItem()->orderBy("menu_s_i_title", "asc")->get(); // Ambil data menu sub items user
 
         // Response berhasil
         return (new UserResource($user))->additional([
+            "account"        => $user,
             "profile"        => $profile,
             "menu_items"     => $menu_items,
             "menu_sub_items" => $menu_sub_items,

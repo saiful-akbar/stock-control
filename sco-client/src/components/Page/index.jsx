@@ -1,5 +1,4 @@
 import React, { forwardRef } from 'react';
-import { Helmet } from 'react-helmet';
 import { Container, Typography, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -16,16 +15,16 @@ const useStyles = makeStyles(theme => ({
 const Page = forwardRef(({ children, title, pageTitle, pb }, ref) => {
   const classes = useStyles();
 
+  React.useEffect(() => {
+    document.title = title === null ? 'Stock Control' : `SCO - ${title}`;
+  }, [title]);
+
   return (
     <div
       ref={ref}
       className={classes.root}
       style={{ paddingBottom: pb ? 90 : 30 }}
     >
-      <Helmet>
-        <title>{title !== null ? `SCO - ${title}` : 'SCO'}</title>
-      </Helmet>
-
       {pageTitle !== null && (
         <Container>
           <Box mb={3}>
