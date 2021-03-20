@@ -24,7 +24,6 @@ import { apiGetAllUser } from 'src/services/user';
 import { connect } from 'react-redux';
 import UserTruncateToken from '../UserTruncateToken';
 import Row from './Row';
-import { reduxAction } from 'src/config/redux/state';
 import Loader from 'src/components/Loader';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 
@@ -497,7 +496,7 @@ const UserTable = props => {
  */
 function reduxState(state) {
   return {
-    reduxUserLogin: state.userLogin
+    reduxUserLogin: state.authReducer.userLogin
   };
 }
 
@@ -509,7 +508,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: (show = false, type = 'success', message = '') =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

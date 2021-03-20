@@ -1,6 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
+import { useDispatch, useSelector } from 'react-redux';
 import { apiGetDocuments } from 'src/services/document';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -59,40 +58,22 @@ function DocumentTable(props) {
   const navigate = useNavigate();
   const classes = useStyles();
 
+  /**
+   * Redux
+   */
+  const dispatch = useDispatch();
+  const { documents } = useSelector(state => state.documentsReducer);
+
   /* State */
   const [selected, setSelected] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [rowData, setRowData] = React.useState({
-    documents: {
-      current_page: 1,
-      data: [],
-      first_page_url: null,
-      from: 1,
-      last_page: 1,
-      last_page_url: null,
-      links: [],
-      next_page_url: null,
-      path: null,
-      per_page: 100,
-      prev_page_url: null,
-      to: 1,
-      total: 1
-    },
-    page: null,
-    sort: 'document_title',
-    order_by: 'asc',
-    search: ''
-  });
+  const [loading, setLoading] = React.useState(false);
 
   /**
    * FUngsi untuk Ambil data document saat halaman dimuat.
    * dan jika komponen dilepas saat request api belum selesai.
    */
   React.useEffect(() => {
-    if (rowData.documents.data.length === 0) {
-      getData();
-    }
-
+    if (documents.data === null) getDataDocuments();
     return () => {
       isMounted.current = false;
     };
@@ -100,71 +81,49 @@ function DocumentTable(props) {
     // eslint-disable-next-line
   }, []);
 
-  /* handle jika table di reload saat aksi sukses atau berhasil. */
-  React.useEffect(() => {
-    if (props.reload) {
-      handleReload();
-    }
-    // eslint-disable-next-line
-  }, [props.reload]);
-
-  /* Handle slected rows, saat dialog delete di tutup */
-  React.useEffect(() => {
-    setSelected(props.selectedRows);
-  }, [props.selectedRows, setSelected]);
-
   /**
    * Fungsi untuk mengambil data documents
    *
    * @param {integer} page
-   * @param {integer} per_page
+   * @param {integer} perPage
    * @param {string} sort
-   * @param {string} order_by
+   * @param {string} orderBy
    * @param {string} search
    */
-  const getData = (
-    page = 1, // page
-    per_page = 25, // rows per page
-    sort = 'item_g_code', // sortir
-    order_by = 'asc', // order by
-    search = '' // search
+  const getDataDocuments = async (
+    data = {
+      page: 1, // page
+      perPage: 25, // rows per page
+      sort: 'document_title', // sortir
+      orderBy: 'asc', // order by
+      search: '' // search
+    }
   ) => {
     setLoading(true);
-    apiGetDocuments(page, per_page, sort, order_by, search)
-      .then(res => {
-        if (isMounted.current) {
-          props.onReloadTable(false);
-          setLoading(false);
-          setRowData(res.data);
+    try {
+      await dispatch(apiGetDocuments(data));
+      if (isMounted.current) setLoading(false);
+    } catch (err) {
+      if (isMounted.current) {
+        switch (err.status) {
+          case 401:
+            navigate('/logout');
+            break;
+
+          case 403:
+            navigate('/error/forbiden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            setLoading(false);
+            break;
         }
-      })
-      .catch(err => {
-        if (isMounted.current) {
-          switch (err.status) {
-            case 401:
-              navigate('/logout');
-              break;
-
-            case 403:
-              navigate('/error/forbiden');
-              break;
-
-            case 404:
-              navigate('/error/notfound');
-              break;
-
-            default:
-              setLoading(false);
-              props.onReloadTable(false);
-              props.setReduxToast(
-                true,
-                'error',
-                `(#${err.status}) ${err.data.message}`
-              );
-              break;
-          }
-        }
-      });
+      }
+    }
   };
 
   /**
@@ -174,17 +133,17 @@ function DocumentTable(props) {
    */
   const handleSort = sort => {
     let orderBy = 'asc';
-    if (rowData.sort === sort && rowData.order_by === 'asc') {
+    if (documents.sort === sort && documents.orderBy === 'asc') {
       orderBy = 'desc';
     }
 
-    getData(
-      rowData.documents.current_page, // current_page
-      rowData.documents.per_page, // per_page
-      sort, // sort
-      orderBy, // order_by
-      rowData.search // search
-    );
+    getDataDocuments({
+      sort: sort, // sort
+      orderBy: orderBy, // orderBy
+      page: documents.currentPage, // currentPage
+      perPage: documents.perPage, // perPage
+      search: documents.search // search
+    });
   };
 
   /**
@@ -193,38 +152,37 @@ function DocumentTable(props) {
    * @param {number} newPage
    */
   const handleChangePage = (e, newPage) => {
-    getData(
-      newPage + 1, // current_page
-      rowData.documents.per_page, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      rowData.search // search
-    );
+    e.preventDefault();
+    getDataDocuments({
+      page: newPage + 1, // currentPage
+      perPage: documents.perPage, // perPage
+      sort: documents.sort, // sort
+      orderBy: documents.orderBy, // orderBy
+      search: documents.search // search
+    });
   };
 
   /* Hanlde ketika jumlah baris per halaman di rubah */
   const handleChangeRowsPerPage = e => {
-    const newData = { ...rowData };
-    newData.documents['current_page'] = 1;
-    newData.documents['per_page'] = e.target.value;
-    setRowData(newData);
-    getData(
-      1, // current_page
-      e.target.value, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      rowData.search // searrch
-    );
+    const newDocuments = { ...documents };
+    newDocuments['currentPage'] = 1;
+    newDocuments['perPage'] = e.target.value;
+    getDataDocuments(newDocuments);
   };
+
+  /* Handle slected rows, saat dialog delete di tutup */
+  React.useEffect(() => {
+    setSelected(props.selectedRows);
+  }, [props.selectedRows, setSelected]);
 
   /* Fungsi select semua checkbox */
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = rowData.documents.data.map(n => n.id);
+      const newSelecteds = documents.data.map(row => row.id);
       setSelected(newSelecteds);
-      return;
+    } else {
+      setSelected([]);
     }
-    setSelected([]);
   };
 
   /**
@@ -261,42 +219,33 @@ function DocumentTable(props) {
     setSelected(newSelected);
   };
 
-  /* Fungsi untuk reload table */
+  /**
+   * Fungsi untuk reload table
+   */
   const handleReload = () => {
-    getData(
-      rowData.documents.current_page, // current_page
-      rowData.documents.per_page, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      rowData.search // search
-    );
+    getDataDocuments({ ...documents });
   };
 
   /* Fungsi untuk pencarian table */
   const handleSearch = value => {
-    getData(
-      1, // current_page
-      rowData.documents.per_page, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      value // search
-    );
+    const newDocuments = { ...documents };
+    newDocuments['currentPage'] = 1;
+    newDocuments['search'] = value;
+    getDataDocuments(newDocuments);
   };
 
   /* Render */
   return (
-    <Card className={classes.root} elevation={3} variant="elevation">
+    <Card className={classes.root} elevation={3}>
       <CardContent>
         <TheadActions
           selected={selected}
-          searchValue={rowData.search}
           loading={loading}
           userAccess={props.userAccess}
           onReload={handleReload}
           onSearch={value => handleSearch(value)}
           onAdd={() => props.onAdd()}
           onDelete={() => props.onDelete(selected)}
-          onImport={() => props.onImport()}
         />
 
         <Loader show={Boolean(props.userAccess === null || loading)}>
@@ -312,18 +261,16 @@ function DocumentTable(props) {
                       <CustomTooltip placement="bottom" title="Select">
                         <Checkbox
                           color="primary"
+                          onChange={handleSelectAllClick}
                           indeterminate={Boolean(
                             selected.length > 0 &&
-                              selected.length < rowData.documents.data.length
+                              selected.length < documents.data.length
                           )}
                           checked={Boolean(
-                            rowData.documents.data.length > 0 &&
-                              selected.length === rowData.documents.data.length
+                            documents.data !== null &&
+                              documents.data.length > 0 &&
+                              selected.length === documents.data.length
                           )}
-                          inputProps={{
-                            'aria-label': 'select all desserts'
-                          }}
-                          onChange={handleSelectAllClick}
                         />
                       </CustomTooltip>
                     </TableCell>
@@ -333,29 +280,23 @@ function DocumentTable(props) {
                     <Thead
                       key={key}
                       column={col}
-                      data={rowData}
+                      data={documents}
                       onSort={field => handleSort(field)}
                       className={classes.tableCell}
                       padding={
-                        Boolean(
-                          props.userAccess !== null &&
-                            props.userAccess.user_m_s_i_delete === 1
-                        )
+                        props.userAccess !== null &&
+                        props.userAccess.user_m_s_i_delete === 1
                           ? 'checkbox'
                           : 'default'
                       }
                     />
                   ))}
-
                   <TableCell padding="checkbox" />
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {Boolean(
-                  rowData.documents.data.length === 0 ||
-                    props.userAccess === null
-                ) ? (
+                {documents.data === null || documents.data.length <= 0 ? (
                   <TableRow hover>
                     <TableCell
                       align="center"
@@ -374,7 +315,7 @@ function DocumentTable(props) {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  rowData.documents.data.map((row, key) => {
+                  documents.data.map((row, key) => {
                     const isItemSelected = isSelected(row.id);
                     return (
                       <Tbody
@@ -401,9 +342,9 @@ function DocumentTable(props) {
           <TablePagination
             component="div"
             rowsPerPageOptions={[25, 50, 100, 250]}
-            count={rowData.documents.total}
-            rowsPerPage={Number(rowData.documents.per_page)}
-            page={rowData.documents.current_page - 1}
+            count={documents.totalData}
+            rowsPerPage={documents.perPage}
+            page={documents.currentPage - 1}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             ActionsComponent={TpaginationActions}
@@ -414,24 +355,4 @@ function DocumentTable(props) {
   );
 }
 
-/* Default props untuk komponent DocumentTable */
-DocumentTable.defaultProps = {
-  onReloadTable: e => {}
-};
-
-/* Redux dispatch */
-function reduxReducer(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(null, reduxReducer)(DocumentTable);
+export default DocumentTable;

@@ -19,7 +19,6 @@ import {
 import Alert from '@material-ui/lab/Alert';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { apiAddDocument, apiUpdateDocument } from 'src/services/document';
@@ -415,7 +414,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: (show, type, message) =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

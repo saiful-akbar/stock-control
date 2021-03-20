@@ -1,5 +1,4 @@
 import React from 'react';
-import { reduxAction } from 'src/config/redux/state';
 import { connect } from 'react-redux';
 import { apiDeleteUser } from 'src/services/user';
 import DialogDelete from 'src/components/DialogDelete';
@@ -79,7 +78,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: value =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: value
       })
   };

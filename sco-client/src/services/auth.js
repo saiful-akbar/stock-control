@@ -1,5 +1,4 @@
 import { api, cache } from './api';
-import { reduxAction } from 'src/config/redux/state';
 import csrf from './csrf';
 
 /**
@@ -18,7 +17,7 @@ export const login = data => dispatch => {
           .then(res => {
             resolve(res);
             dispatch({
-              type: reduxAction.userLogin,
+              type: 'SET_LOADING',
               value: res.data
             });
           })
@@ -47,11 +46,11 @@ export const userIsLogin = () => dispatch => {
           .then(res => {
             resolve(res);
             dispatch({
-              type: reduxAction.userLogin,
+              type: 'SET_USER_LOGIN',
               value: res.data
             });
             dispatch({
-              type: reduxAction.loading,
+              type: 'SET_LOADING',
               value: false
             });
           })

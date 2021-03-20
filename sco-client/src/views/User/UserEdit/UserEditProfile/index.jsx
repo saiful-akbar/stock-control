@@ -21,10 +21,8 @@ import {
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiEditUserProfile, apiUpdateUserProfile } from 'src/services/user';
-import { reduxAction } from 'src/config/redux/state';
 import apiUrl from 'src/utils/apiUrl';
 import { Skeleton } from '@material-ui/lab';
-import MaskedInput from 'react-text-mask';
 
 /**
  * Small chip untuk avatar
@@ -64,41 +62,6 @@ function ViewAvatar({ file = '', ...props }) {
     >
       <Avatar alt="Avatar" src={thumb} {...props} />
     </Badge>
-  );
-}
-
-/**
- * Input text maks
- * @param {*} props
- */
-function TextMaskCustom(props) {
-  const { inputRef, ...other } = props;
-
-  return (
-    <MaskedInput
-      {...other}
-      ref={ref => {
-        inputRef(ref ? ref.inputElement : null);
-      }}
-      mask={[
-        /[0-9]/,
-        /\d/,
-        /\d/,
-        /\d/,
-        '-',
-        /\d/,
-        /\d/,
-        /\d/,
-        /\d/,
-        '-',
-        /\d/,
-        /\d/,
-        /\d/,
-        /\d/
-      ]}
-      // placeholderChar={'\u2000'}
-      showMask
-    />
   );
 }
 
@@ -426,13 +389,8 @@ function UserEditProfile({ userId, setReduxToast, ...props }) {
                       value={values.profile_phone}
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      error={Boolean(
-                        touched.profile_phone && errors.profile_phone
-                      )}
+                      error={touched.profile_phone && errors.profile_phone}
                       helperText={touched.profile_phone && errors.profile_phone}
-                      InputProps={{
-                        inputComponent: TextMaskCustom
-                      }}
                     />
                   )}
                 </Grid>
@@ -513,7 +471,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: (show = false, type = 'success', message = '') =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

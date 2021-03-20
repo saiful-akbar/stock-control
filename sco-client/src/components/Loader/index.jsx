@@ -24,14 +24,7 @@ const useStyles = makeStyles(theme => ({
 /**
  * Komponent utama
  */
-function Loader({
-  children,
-  show,
-  size,
-  circularProgress,
-  progressColor,
-  ...props
-}) {
+function Loader({ children, show, size, progress, progressColor, ...props }) {
   const classes = useStyles();
 
   /**
@@ -40,7 +33,7 @@ function Loader({
   return (
     <div className={classes.tableWrapper}>
       <Backdrop className={classes.backdrop} open={show}>
-        {circularProgress ? (
+        {progress ? (
           <CircularProgress color={progressColor} size={size} {...props} />
         ) : null}
       </Backdrop>
@@ -55,7 +48,7 @@ function Loader({
 Loader.propTypes = {
   children: PropTypes.node.isRequired,
   show: PropTypes.bool,
-  circularProgress: PropTypes.bool,
+  progress: PropTypes.bool,
   progressColor: PropTypes.string
 };
 
@@ -65,7 +58,7 @@ Loader.propTypes = {
 Loader.defaultProps = {
   show: false,
   size: 50,
-  circularProgress: true,
+  progress: true,
   progressColor: 'primary'
 };
 

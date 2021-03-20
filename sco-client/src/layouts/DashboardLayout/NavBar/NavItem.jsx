@@ -203,7 +203,7 @@ NavItem.propTypes = {
 };
 
 const reduxState = state => ({
-  reduxUserLogin: state.userLogin
+  reduxUserLogin: state.authReducer.userLogin
 });
 
 export default connect(reduxState, null)(NavItem);

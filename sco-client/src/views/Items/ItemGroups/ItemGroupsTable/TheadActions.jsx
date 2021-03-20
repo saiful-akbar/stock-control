@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Grid,
   Button,
@@ -22,9 +22,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { apiExportItemGroup } from 'src/services/itemGroups';
-import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
-import moment from 'moment';
+import { connect, useSelector } from 'react-redux';
 
 /**
  * Style untuk komponen utama
@@ -67,33 +65,41 @@ const useStyles = makeStyles(theme => ({
 function TheadActions({
   selected,
   loading,
-  searchValue,
   onReload,
   onSearch,
   onAdd,
   onDelete,
   userAccess,
   setReduxToast,
-  onImport,
-  ...props
+  onImport
 }) {
-  /* State */
-  const [search, setSearch] = React.useState('');
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [isOpenBackdrop, setOpenBackdrop] = React.useState(false);
-
-  const open = Boolean(anchorEl);
   const classes = useStyles();
-  const isMounted = React.useRef(true);
+  const isMounted = useRef(true);
+
+  /**
+   * Redux
+   */
+  const { itemGroups } = useSelector(state => state.itemGroupsReducer);
+
+  /* State */
+  const [search, setSearch] = useState('');
+  const [isOpenBackdrop, setOpenBackdrop] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
   /* handle jika komponen dilepas saat request api belum selesai. */
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       isMounted.current = false;
     };
 
     // eslint-disable-next-line
   }, []);
+
+  /* Set setch value sesuai data itemGroupsReducer.search */
+  useEffect(() => {
+    setSearch(itemGroups.search);
+  }, [itemGroups.search]);
 
   /**
    * handle saat menu di klik
@@ -122,11 +128,8 @@ function TheadActions({
    * Handle blur form search
    */
   const handleBlurSearch = e => {
-    if (searchValue !== search) {
-      onSearch(search);
-    } else {
-      e.preventDefault();
-    }
+    e.preventDefault();
+    if (itemGroups.search !== search) onSearch(search);
   };
 
   /**
@@ -157,11 +160,12 @@ function TheadActions({
       if (isMounted.current) {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement('a');
+        const date = new Date();
 
         link.href = url;
         link.setAttribute(
           'download',
-          `Item Groups (${moment().format('MMMM_Do_YYYY_h_mm_ss')}).xlsx`
+          `Item Groups (${date.toLocaleString()}).xlsx`
         ); //or any other extension
         document.body.appendChild(link);
         link.click();
@@ -187,7 +191,7 @@ function TheadActions({
         })}
       >
         {selected.length > 0 ? (
-          <React.Fragment>
+          <>
             <Typography
               className={classes.title}
               color="inherit"
@@ -202,7 +206,7 @@ function TheadActions({
                 <DeleteOutlineOutlinedIcon />
               </IconButton>
             </CustomTooltip>
-          </React.Fragment>
+          </>
         ) : (
           <Grid
             container
@@ -212,17 +216,8 @@ function TheadActions({
             spacing={3}
           >
             <Grid item lg={4} md={6} xs={12}>
-              <Box
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="center"
-              >
-                <Box
-                  mr={1}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
+              <Box display="flex" justifyContent="space-between">
+                <Box mr={1} display="flex" justifyContent="center">
                   <CustomTooltip title="Export or import" placement="bottom">
                     <IconButton onClick={handleClickMenu}>
                       <ImportExportIcon />
@@ -253,7 +248,7 @@ function TheadActions({
               <form onSubmit={handleSubmitSearch} autoComplete="off">
                 <TextField
                   fullWidth
-                  placeholder="Search by groups code or groups name"
+                  placeholder="Search item groups"
                   variant="outlined"
                   margin="dense"
                   name="search"
@@ -269,7 +264,7 @@ function TheadActions({
                       </InputAdornment>
                     ),
                     endAdornment: Boolean(
-                      searchValue !== '' && search !== ''
+                      itemGroups.search !== '' && search !== ''
                     ) && (
                       <InputAdornment position="end">
                         <IconButton size="small" onClick={handleClearSearch}>
@@ -316,7 +311,6 @@ TheadActions.defaultProps = {
   selected: [],
   loading: false,
   userAccess: null,
-  searchValue: '',
   onAdd: e => e.preventDefault(),
   onReload: e => e.preventDefault(),
   onSearch: e => e.preventDefault(),
@@ -331,7 +325,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: (show, type, message) =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

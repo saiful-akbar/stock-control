@@ -5,7 +5,6 @@ import { Grid, Fab, Container, Box, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { apiGetUserDetail } from 'src/services/user';
 import { useSelector, useDispatch } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import CustomTooltip from 'src/components/CustomTooltip';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import apiUrl from 'src/utils/apiUrl';
@@ -47,7 +46,7 @@ function UserDetail(props) {
   const classes = useStyle();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { userLogin } = useSelector(state => state);
+  const { userLogin } = useSelector(state => state.authReducer);
   const dispatch = useDispatch();
 
   const isMounted = React.useRef(true);
@@ -71,7 +70,7 @@ function UserDetail(props) {
 
   const handleShowToast = (show, type, message) => {
     dispatch({
-      type: reduxAction.toast,
+      type: 'SET_TOAST',
       value: {
         show: show,
         type: type,

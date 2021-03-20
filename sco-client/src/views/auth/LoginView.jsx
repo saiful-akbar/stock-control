@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 
 import Toast from 'src/components/Toast';
 import { Helmet } from 'react-helmet';
-import { withCookies } from 'react-cookie';
+import Cookies from 'universal-cookie';
 import { login } from 'src/services/auth';
 import { connect } from 'react-redux';
 import CustomTooltip from 'src/components/CustomTooltip';
@@ -86,10 +86,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function LoginView({ cookies, loginUser }) {
+function LoginView({ loginUser }) {
   const classes = useStyles();
   const navigate = useNavigate();
   const theme = useTheme();
+  const cookies = new Cookies();
 
   /**
    * State
@@ -310,4 +311,4 @@ function reduxDispatch(dispatch) {
   };
 }
 
-export default connect(null, reduxDispatch)(withCookies(LoginView));
+export default connect(null, reduxDispatch)(LoginView);

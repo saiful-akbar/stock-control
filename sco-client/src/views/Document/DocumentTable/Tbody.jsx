@@ -12,7 +12,6 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import CloudDownloadOutlinedIcon from '@material-ui/icons/CloudDownloadOutlined';
 import { apiDownloadDocument } from 'src/services/document';
 import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import { useNavigate } from 'react-router';
 
 /* Style */
@@ -164,7 +163,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: (show, type, message) =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

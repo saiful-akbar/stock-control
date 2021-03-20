@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import PropTypes from 'prop-types';
 import BtnSubmit from 'src/components/BtnSubmit';
 import * as Yup from 'yup';
@@ -258,7 +257,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: value =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: value
       })
   };

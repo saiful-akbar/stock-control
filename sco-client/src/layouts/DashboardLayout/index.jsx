@@ -1,16 +1,15 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { withCookies } from 'react-cookie';
 import { connect } from 'react-redux';
 import { userIsLogin } from 'src/services/auth';
 import { makeStyles, CircularProgress } from '@material-ui/core';
-import { reduxAction } from 'src/config/redux/state';
 import Toast from 'src/components/Toast';
 import TopBar from './TopBar';
 import NavBar from './NavBar';
 import clsx from 'clsx';
 import ErrorBoundary from 'src/components/ErrorBoundary';
 import NavSetting from './NavSetting';
+import Cookies from 'universal-cookie';
 
 /* Style untuk komponen lodingSuspense */
 const fallbackStyle = makeStyles(theme => ({
@@ -71,13 +70,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DashboardLayout = ({
-  cookies,
   setReduxUserIsLogin,
   reduxToast,
   setReduxToast
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const cookie = new Cookies();
 
   /* State */
   const [isMobileNavOpen, setMobileNavOpen] = React.useState(false);
@@ -97,7 +96,7 @@ const DashboardLayout = ({
   /* Cek apakah user sudah login atau belum */
   React.useEffect(() => {
     async function getUserIsLogin() {
-      if (Boolean(cookies.get('auth_token'))) {
+      if (Boolean(cookie.get('auth_token'))) {
         try {
           await setReduxUserIsLogin();
         } catch (error) {
@@ -168,7 +167,7 @@ const reduxReducer = dispatch => ({
   setReduxUserIsLogin: () => dispatch(userIsLogin()),
   setReduxToast: (show, type, message) =>
     dispatch({
-      type: reduxAction.toast,
+      type: 'SET_TOAST',
       value: {
         show: show,
         type: type,
@@ -179,7 +178,7 @@ const reduxReducer = dispatch => ({
 
 /* Redux state */
 const reduxState = state => ({
-  reduxToast: state.toast
+  reduxToast: state.globalReducer.toast
 });
 
-export default connect(reduxState, reduxReducer)(withCookies(DashboardLayout));
+export default connect(reduxState, reduxReducer)(DashboardLayout);

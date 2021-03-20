@@ -11,7 +11,6 @@ import { Fab, Box, Container } from '@material-ui/core';
 import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import UserCreateAccountProfile from './UserCreateAccountProfile';
 import { apiGetDataUserCreate } from 'src/services/user';
-import { reduxAction } from 'src/config/redux/state';
 import UserCreateMenuAccess from './UserCreateMenuAccess';
 
 /* Style */
@@ -159,7 +158,7 @@ function UserCreate(props) {
 /* Redux State */
 function reduxState(state) {
   return {
-    reduxUserLogin: state.userLogin
+    reduxUserLogin: state.authReducer.userLogin
   };
 }
 
@@ -168,7 +167,7 @@ function reduxReducer(dispatch) {
   return {
     setReduxToast: (show, type, message) =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

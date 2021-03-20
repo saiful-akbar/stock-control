@@ -11,8 +11,6 @@ import Page from 'src/components/Page';
 import MenuItem from 'src/views/Menus/MenuItem';
 import MenuSubItem from 'src/views/Menus/MenuSubItem';
 
-import { apiGetAllMenuItem } from 'src/services/menuItem';
-import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
 import { Divider, Container } from '@material-ui/core';
 import queryString from 'query-string';
 import { makeStyles } from '@material-ui/core/styles';
@@ -109,20 +107,8 @@ function Menus(props) {
  */
 function reduxState(state) {
   return {
-    reduxMenuItemData: state.menuItemData,
-    reduxMenuSubItemData: state.menuSubItemData,
-    reduxUserLogin: state.userLogin
+    reduxUserLogin: state.authReducer.userLogin
   };
 }
 
-/**
- * Redux dispatch
- */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxMenuItemData: () => dispatch(apiGetAllMenuItem()),
-    setReduxMenuSubItemData: () => dispatch(apiGetAllMenuSubItem())
-  };
-}
-
-export default connect(reduxState, reduxDispatch)(Menus);
+export default connect(reduxState, null)(Menus);

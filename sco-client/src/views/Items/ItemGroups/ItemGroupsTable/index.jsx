@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import { apiGetItemGroups } from 'src/services/itemGroups';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -18,10 +16,10 @@ import {
 } from '@material-ui/core';
 import Thead from './Thead';
 import Tbody from './Tbody';
-import TpaginationActions from './TpaginationActions';
 import CustomTooltip from 'src/components/CustomTooltip';
 import TheadActions from './TheadActions';
 import Loader from 'src/components/Loader';
+import { useDispatch, useSelector } from 'react-redux';
 
 /**
  * Daftar kolom untuk tabel
@@ -69,171 +67,151 @@ const useStyles = makeStyles(theme => ({
  * Komponen utama
  */
 function ItemGroupTable(props) {
-  const is_mounted = React.useRef(true);
+  const isMounted = React.useRef(true);
   const navigate = useNavigate();
   const classes = useStyles();
+
+  /**
+   * Redux state
+   */
+  const { itemGroups } = useSelector(state => state.itemGroupsReducer);
+  const dispatch = useDispatch();
 
   /**
    * State
    */
   const [selected, setSelected] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [rowData, setRowData] = React.useState({
-    item_groups: {
-      current_page: 1,
-      from: 1,
-      last_page: 0,
-      per_page: 25,
-      to: 0,
-      total: 0,
-      data: [],
-      links: [],
-      path: '',
-      first_page_url: '',
-      last_page_url: '',
-      next_page_url: '',
-      prev_page_url: null
-    },
-    sort: 'item_g_code',
-    order_by: 'asc',
-    search: ''
-  });
 
   /**
-   * handle mengambil data item group untuk pertama kalinya.
-   * handle jika table di reload saat aksi sukses atau berhasil.
+   * Jika data item groups pada redux bernilai null maka ambil data dari api.
    * handle jika komponen dilepas saat request api belum selesai.
    */
   React.useEffect(() => {
-    if (rowData.item_groups.data.length === 0) {
-      getData();
-    }
-
+    if (itemGroups.data === null) getDataItemGroups();
     return () => {
-      is_mounted.current = false;
+      isMounted.current = false;
     };
 
     // eslint-disable-next-line
   }, []);
 
   /**
-   * handle jika table di reload saat aksi sukses atau berhasil.
-   */
-  React.useEffect(() => {
-    if (props.reload) {
-      handleReload();
-    }
-    // eslint-disable-next-line
-  }, [props.reload]);
-
-  /**
-   * Handle slected rows saat dialog delete di tutup
-   */
-  React.useEffect(() => {
-    setSelected(props.selectedRows);
-  }, [props.selectedRows, setSelected]);
-
-  /**
    * Fungsi untuk mengambil data item groups
    *
-   * @param {integer} page
-   * @param {integer} per_page
-   * @param {string} sort
-   * @param {string} order_by
-   * @param {string} search
+   * @param {Object} data
    */
-  const getData = (
-    page = 1, // halaman pada tabel
-    per_page = 25, // jumah baris perhamalan pada tabel
-    sort = 'item_g_code', // sortir tabel
-    order_by = 'asc', // urutan pada tabel secara ascending atau descending
-    search = '' // pencarian pada tabel
+  const getDataItemGroups = async (
+    data = {
+      page: 1, // halaman pada tabel
+      perPage: 25, // jumah baris perhamalan pada tabel
+      sort: 'item_g_code', // sortir tabel
+      orderBy: 'asc', // urutan pada tabel secara ascending atau descending
+      search: '' // pencarian pada tabel
+    }
   ) => {
     setLoading(true);
-    apiGetItemGroups(page, per_page, sort, order_by, search)
-      .then(res => {
-        if (is_mounted.current) {
-          props.onReloadTable(false);
-          setLoading(false);
-          setRowData(res.data);
+    try {
+      await dispatch(apiGetItemGroups(data));
+      if (isMounted.current) setLoading(false);
+    } catch (err) {
+      if (isMounted.current) {
+        switch (err.status) {
+          case 401:
+            navigate('/logout');
+            break;
+
+          case 403:
+            navigate('/error/forbiden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            setLoading(false);
+            dispatch({
+              type: 'SET_TOAST',
+              value: {
+                show: true,
+                type: 'error',
+                message: `(#${err.status}) ${err.data.message}`
+              }
+            });
+            break;
         }
-      })
-      .catch(err => {
-        if (is_mounted.current) {
-          switch (err.status) {
-            case 401:
-              navigate('/logout');
-              break;
-
-            case 403:
-              navigate('/error/forbiden');
-              break;
-
-            case 404:
-              navigate('/error/notfound');
-              break;
-
-            default:
-              setLoading(false);
-              props.onReloadTable(false);
-              props.setReduxToast(
-                true,
-                'error',
-                `(#${err.status}) ${err.data.message}`
-              );
-              break;
-          }
-        }
-      });
+      }
+    }
   };
 
   /**
    * Hanlde sort table
+   *
    * @param {string|field columns} sort
    */
-  const handleSort = sort => {
-    let order_by = 'asc';
-    if (rowData.sort === sort && rowData.order_by === 'asc') {
-      order_by = 'desc';
+  const handleSort = newSort => {
+    let orderBy = 'asc';
+
+    if (itemGroups.sort === newSort && itemGroups.orderBy === 'asc') {
+      orderBy = 'desc';
     }
 
-    getData(
-      rowData.item_groups.current_page, // current_page
-      rowData.item_groups.per_page, // per_page
-      sort, // sort
-      order_by, // order_by
-      rowData.search // search
-    );
+    getDataItemGroups({
+      sort: newSort, // sort
+      orderBy: orderBy, // orderBy
+      page: itemGroups.currentPage, // page
+      perPage: itemGroups.perPage, // perPage
+      search: itemGroups.search // search
+    });
   };
 
   /**
-   * Hanlde ketika halaman di rubah
+   * Fungsi untuk next atau prev halaman tabel
+   * @param {*} e
+   * @param {*} newPage
    */
-  const handleChangePage = (e, new_page) => {
-    getData(
-      new_page + 1, // current_page
-      rowData.item_groups.per_page, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      rowData.search // search
-    );
+  const handleChangePage = (e, newPage) => {
+    getDataItemGroups({
+      page: newPage + 1, // page
+      perPage: itemGroups.perPage, // perPage
+      sort: itemGroups.sort, // sort
+      orderBy: itemGroups.orderBy, // orderBy
+      search: itemGroups.search // search
+    });
   };
 
   /**
    * Hanlde ketika jumlah baris per halaman di rubah
+   *
+   * @param {event} e
    */
   const handleChangeRowsPerPage = e => {
-    const new_data = { ...rowData };
-    new_data.item_groups['current_page'] = 1;
-    new_data.item_groups['per_page'] = e.target.value;
-    setRowData(new_data);
-    getData(
-      1, // current_page
-      e.target.value, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      rowData.search // searrch
-    );
+    getDataItemGroups({
+      page: 1, // page
+      perPage: e.target.value, // perPage
+      sort: itemGroups.sort, // sort
+      orderBy: itemGroups.orderBy, // orderBy
+      search: itemGroups.search // search
+    });
+  };
+
+  /**
+   * Fungsi untuk reload table
+   */
+  const handleReloadTable = () => {
+    getDataItemGroups({ ...itemGroups });
+  };
+
+  /**
+   * Fungsi untuk pencarian table
+   */
+  const handleSearch = value => {
+    let newItemGroups = { ...itemGroups };
+    newItemGroups['search'] = value;
+    newItemGroups['currenPage'] = 1;
+
+    getDataItemGroups(newItemGroups);
   };
 
   /**
@@ -243,15 +221,23 @@ function ItemGroupTable(props) {
    */
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelecteds = rowData.item_groups.data.map(n => n.id);
+      const newSelecteds = itemGroups.data.map(value => value.id);
       setSelected(newSelecteds);
-      return;
+    } else {
+      setSelected([]);
     }
-    setSelected([]);
   };
 
   /**
+   * Handle slected rows saat dialog delete di tutup
+   */
+  React.useEffect(() => {
+    setSelected(props.selectedRows);
+  }, [props.selectedRows, setSelected]);
+
+  /**
    * Fungsi untuk mengecek baris tabel yang terpilih
+   *
    * @param {string} id
    */
   const isSelected = id => {
@@ -283,43 +269,16 @@ function ItemGroupTable(props) {
   };
 
   /**
-   * Fungsi untuk reload table
-   */
-  const handleReload = () => {
-    getData(
-      rowData.item_groups.current_page, // current_page
-      rowData.item_groups.per_page, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      rowData.search // search
-    );
-  };
-
-  /**
-   * Fungsi untuk pencarian table
-   */
-  const handleSearch = value => {
-    getData(
-      1, // current_page
-      rowData.item_groups.per_page, // per_page
-      rowData.sort, // sort
-      rowData.order_by, // order_by
-      value // search
-    );
-  };
-
-  /**
    * Render komponen utama
    */
   return (
-    <Card className={classes.root} elevation={3} variant="elevation">
+    <Card className={classes.root} elevation={3}>
       <CardContent>
         <TheadActions
           selected={selected}
-          searchValue={rowData.search}
           loading={loading}
           userAccess={props.userAccess}
-          onReload={handleReload}
+          onReload={handleReloadTable}
           onSearch={value => handleSearch(value)}
           onAdd={() => props.onAdd()}
           onDelete={() => props.onDelete(selected)}
@@ -339,19 +298,16 @@ function ItemGroupTable(props) {
                       <CustomTooltip placement="bottom" title="Select">
                         <Checkbox
                           color="primary"
+                          onChange={handleSelectAllClick}
                           indeterminate={Boolean(
                             selected.length > 0 &&
-                              selected.length < rowData.item_groups.data.length
+                              selected.length < itemGroups.data.length
                           )}
                           checked={Boolean(
-                            rowData.item_groups.data.length > 0 &&
-                              selected.length ===
-                                rowData.item_groups.data.length
+                            itemGroups.data !== null &&
+                              itemGroups.data.length > 0 &&
+                              selected.length === itemGroups.data.length
                           )}
-                          inputProps={{
-                            'aria-label': 'select all desserts'
-                          }}
-                          onChange={handleSelectAllClick}
                         />
                       </CustomTooltip>
                     </TableCell>
@@ -361,7 +317,7 @@ function ItemGroupTable(props) {
                     <Thead
                       key={key}
                       column={col}
-                      data={rowData}
+                      data={itemGroups}
                       onSort={field => handleSort(field)}
                       className={classes.tableCell}
                       padding={
@@ -384,38 +340,33 @@ function ItemGroupTable(props) {
               </TableHead>
 
               <TableBody>
-                {Boolean(
-                  rowData.item_groups.data.length === 0 ||
-                    props.userAccess === null
-                ) ? (
+                {itemGroups.data === null || itemGroups.data.length <= 0 ? (
                   <TableRow hover>
                     <TableCell
                       align="center"
                       colSpan={6}
                       className={classes.tableCell}
                       padding={
-                        Boolean(
-                          props.userAccess !== null &&
-                            props.userAccess.user_m_s_i_delete === 1
-                        )
+                        props.userAccess !== null &&
+                        props.userAccess.user_m_s_i_delete === 1
                           ? 'checkbox'
                           : 'default'
                       }
                     >
-                      {Boolean(props.userAccess === null || loading)
+                      {props.userAccess === null || loading
                         ? 'Loading...'
                         : 'No data in table'}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  rowData.item_groups.data.map((row, key) => {
+                  itemGroups.data.map((row, key) => {
                     const isItemSelected = isSelected(row.id);
                     return (
                       <Tbody
                         hover
-                        key={key}
                         role="checkbox"
                         color="primary"
+                        key={key}
                         row={row}
                         columns={columns}
                         userAccess={props.userAccess}
@@ -435,12 +386,11 @@ function ItemGroupTable(props) {
           <TablePagination
             component="div"
             rowsPerPageOptions={[25, 50, 100, 250]}
-            count={rowData.item_groups.total}
-            rowsPerPage={Number(rowData.item_groups.per_page)}
-            page={rowData.item_groups.current_page - 1}
+            count={itemGroups.totalData}
+            rowsPerPage={itemGroups.perPage}
+            page={itemGroups.currentPage - 1}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
-            ActionsComponent={TpaginationActions}
           />
         </Loader>
       </CardContent>
@@ -448,21 +398,4 @@ function ItemGroupTable(props) {
   );
 }
 
-/**
- * Redux dispatch
- */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(null, reduxDispatch)(ItemGroupTable);
+export default ItemGroupTable;

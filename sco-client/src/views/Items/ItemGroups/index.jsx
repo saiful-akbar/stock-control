@@ -10,7 +10,7 @@ import ItemGroupImport from './ItemGroupImport';
  */
 function ItemGroups(props) {
   const [userAccess, setUserAccess] = React.useState(null);
-  const [isReloadTable, setReloadTable] = React.useState(false);
+  const [isOpenDialogImport, setOpenDialogImport] = React.useState(false);
   const [form, setForm] = React.useState({
     open: false,
     type: 'Add',
@@ -18,9 +18,8 @@ function ItemGroups(props) {
   });
   const [dialogDelete, setDialogDelete] = React.useState({
     open: false,
-    data: []
+    selected: []
   });
-  const [isOpenDialogImport, setOpenDialogImport] = React.useState(false);
 
   /**
    * Ambil data user akses pada reduxUserLogin
@@ -40,9 +39,7 @@ function ItemGroups(props) {
     <React.Fragment>
       <ItemGroupsTable
         userAccess={userAccess}
-        reload={isReloadTable}
-        selectedRows={dialogDelete.data}
-        onReloadTable={bool => setReloadTable(bool)}
+        selectedRows={dialogDelete.selected}
         onImport={() => setOpenDialogImport(true)}
         onAdd={() => {
           setForm({
@@ -61,7 +58,7 @@ function ItemGroups(props) {
         onDelete={selected => {
           setDialogDelete({
             open: true,
-            data: selected
+            selected: selected
           });
         }}
       />
@@ -70,7 +67,6 @@ function ItemGroups(props) {
         open={form.open}
         type={form.type}
         data={form.data}
-        onReloadTable={bool => setReloadTable(bool)}
         onClose={() => {
           setForm({
             open: false,
@@ -82,12 +78,11 @@ function ItemGroups(props) {
 
       <ItemGroupDelete
         open={dialogDelete.open}
-        data={dialogDelete.data}
-        onReloadTable={bool => setReloadTable(bool)}
+        selected={dialogDelete.selected}
         onClose={() => {
           setDialogDelete({
             open: false,
-            data: []
+            selected: []
           });
         }}
       />
@@ -95,7 +90,6 @@ function ItemGroups(props) {
       <ItemGroupImport
         open={isOpenDialogImport}
         onClose={() => setOpenDialogImport(false)}
-        onReloadTable={() => setReloadTable(true)}
       />
     </React.Fragment>
   );
@@ -106,8 +100,7 @@ function ItemGroups(props) {
  */
 function reduxState(state) {
   return {
-    reduxTheme: state.theme,
-    reduxUserLogin: state.userLogin
+    reduxUserLogin: state.authReducer.userLogin
   };
 }
 

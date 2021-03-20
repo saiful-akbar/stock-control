@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
+import { useDispatch } from 'react-redux';
 import { apiDeleteItemGroup } from 'src/services/itemGroups';
 import DialogDelete from 'src/components/DialogDelete';
 
@@ -11,6 +10,7 @@ import DialogDelete from 'src/components/DialogDelete';
 function ItemGroupDelete(props) {
   const navigate = useNavigate();
   const isMounted = React.useRef(true);
+  const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
 
   /**
@@ -29,9 +29,7 @@ function ItemGroupDelete(props) {
    * @param {*} e
    */
   const handleCloseDialog = e => {
-    if (!loading) {
-      props.onClose();
-    }
+    if (!loading) props.onClose();
   };
 
   /**
@@ -39,13 +37,9 @@ function ItemGroupDelete(props) {
    */
   const handleSubmit = async () => {
     setLoading(true);
-
     try {
-      const res = await apiDeleteItemGroup(props.data);
-
+      await dispatch(apiDeleteItemGroup(props.selected));
       if (isMounted.current) {
-        props.setReduxToast(true, 'success', res.data.message);
-        props.onReloadTable(true);
         setLoading(false);
         handleCloseDialog();
       }
@@ -66,11 +60,6 @@ function ItemGroupDelete(props) {
 
           default:
             setLoading(false);
-            props.setReduxToast(
-              true,
-              'error',
-              `(#${err.status}) ${err.data.message}`
-            );
             break;
         }
       }
@@ -89,28 +78,8 @@ function ItemGroupDelete(props) {
 
 ItemGroupDelete.defaultProps = {
   open: false,
-  data: [],
-  onClose: e => e.preventDefault(),
-  onReloadTable: e => e.preventDefault()
+  selected: [],
+  onClose: () => {}
 };
 
-/**
- * Redux dispatch
- *
- * @param {*} dispatch
- */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(null, reduxDispatch)(ItemGroupDelete);
+export default ItemGroupDelete;

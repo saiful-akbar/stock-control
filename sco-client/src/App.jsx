@@ -8,7 +8,6 @@ import { useRoutes } from 'react-router-dom';
 import { ThemeProvider, useMediaQuery } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { themeLight, themeDark } from './theme';
-import { reduxAction } from './config/redux/state';
 
 /**
  * Komponen utama
@@ -68,12 +67,12 @@ const App = props => {
  * @param {*} state
  */
 const reduxState = state => ({
-  reduxTheme: state.theme
+  reduxTheme: state.globalReducer.theme
 });
 
 // Redux reducer
 const reduxReducer = dispatch => ({
-  setReduxTheme: value => dispatch({ type: reduxAction.theme, value: value })
+  setReduxTheme: value => dispatch({ type: 'SET_THEME', value: value })
 });
 
 export default connect(reduxState, reduxReducer)(App);

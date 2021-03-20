@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import {
   Card,
   CardHeader,
@@ -317,7 +316,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: (show = false, type = 'success', message = '') =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

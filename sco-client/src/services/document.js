@@ -10,26 +10,54 @@ import { api } from './api';
  * @param {string} search
  */
 export const apiGetDocuments = (
-  page = 1,
-  per_page = 25,
-  sort = 'document_title',
-  order_by = 'asc',
-  search = ''
-) => {
+  data = {
+    page: 1,
+    perPage: 25,
+    sort: 'document_title',
+    orderBy: 'asc',
+    search: ''
+  }
+) => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'get',
       url: '/documents',
       params: {
-        page,
-        per_page,
-        sort,
-        order_by,
-        search
+        page: data.page,
+        per_page: data.perPage,
+        sort: data.sort,
+        order_by: data.orderBy,
+        search: data.search
       }
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        resolve(res);
+        dispatch({
+          type: 'SET_DOCUMENTS',
+          value: {
+            data: res.data.documents.data,
+            totalData: res.data.documents.total,
+            currentPage: res.data.documents.current_page,
+            perPage: res.data.documents.per_page,
+            sort: res.data.sort,
+            orderBy: res.data.order_by,
+            search: res.data.search
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status} ${err.response.data.message})`
+            }
+          });
+        }
+      });
   });
 };
 
@@ -38,7 +66,7 @@ export const apiGetDocuments = (
  *
  * @param {object} data
  */
-export const apiAddDocument = data => {
+export const apiAddDocument = data => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'post',
@@ -48,8 +76,43 @@ export const apiAddDocument = data => {
         'Content-Type': 'multipart/form-data'
       }
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        const { result } = res.data;
+        resolve(res);
+        dispatch({
+          type: 'SET_DOCUMENTS',
+          value: {
+            data: result.documents.data,
+            currentPage: result.documents.current_page,
+            perPage: result.documents.per_page,
+            totalData: result.documents.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status} ${err.response.data.message})`
+            }
+          });
+        }
+      });
   });
 };
 
@@ -58,7 +121,7 @@ export const apiAddDocument = data => {
  *
  * @param {object} data
  */
-export const apiUpdateDocument = (id, data) => {
+export const apiUpdateDocument = (id, data) => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'post',
@@ -68,8 +131,43 @@ export const apiUpdateDocument = (id, data) => {
         'Content-Type': 'multipart/form-data'
       }
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        const { result } = res.data;
+        resolve(res);
+        dispatch({
+          type: 'SET_DOCUMENTS',
+          value: {
+            data: result.documents.data,
+            currentPage: result.documents.current_page,
+            perPage: result.documents.per_page,
+            totalData: result.documents.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status} ${err.response.data.message})`
+            }
+          });
+        }
+      });
   });
 };
 
@@ -78,15 +176,50 @@ export const apiUpdateDocument = (id, data) => {
  *
  * @param {object} data
  */
-export const apiDeleteDocument = data => {
+export const apiDeleteDocument = data => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'delete',
       url: `/documents`,
       data: data
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        const { result } = res.data;
+        resolve(res);
+        dispatch({
+          type: 'SET_DOCUMENTS',
+          value: {
+            data: result.documents.data,
+            currentPage: result.documents.current_page,
+            perPage: result.documents.per_page,
+            totalData: result.documents.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status} ${err.response.data.message})`
+            }
+          });
+        }
+      });
   });
 };
 
@@ -95,14 +228,28 @@ export const apiDeleteDocument = data => {
  *
  * @param {string} search
  */
-export const apiDownloadDocument = id => {
+export const apiDownloadDocument = id => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
       url: `/documents/${id}/download`,
       responseType: 'blob' //important
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status} ${err.response.data.message})`
+            }
+          });
+        }
+      });
   });
 };

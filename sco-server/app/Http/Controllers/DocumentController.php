@@ -79,11 +79,23 @@ class DocumentController extends Controller
         // Respose berhasil
         return response()->json([
             "documents" => $data,
-            "page"      => $request->page,
             "sort"      => $sort,
             "order_by"  => $order_by,
             "search"    => $search,
         ], 200);
+    }
+
+    /**
+     * Method untuk mengambil data documents setelah action
+     */
+    private function getDataDocuments()
+    {
+        return [
+            "documents" => Document::orderBy("document_title", "asc")->paginate(25),
+            "sort"        => "document_title",
+            "order_by"    => "asc",
+            "search"      => "",
+        ];
     }
 
     /**
@@ -120,7 +132,8 @@ class DocumentController extends Controller
 
         // Response berhasil
         return response()->json([
-            "message" => "Document added successfully"
+            "message" => "Document added successfully",
+            "result " => $this->getDataDocuments()
         ], 200);
     }
 
@@ -160,7 +173,8 @@ class DocumentController extends Controller
 
         // response berhasil
         return response()->json([
-            "message" => "document updated successfully"
+            "message" => "document updated successfully",
+            "result " => $this->getDataDocuments()
         ], 200);
     }
 
@@ -196,6 +210,7 @@ class DocumentController extends Controller
         // response berhasil
         return response()->json([
             "message" => "{$deleted} Documents deleted successfully",
+            "result " => $this->getDataDocuments()
         ], 200);
     }
 

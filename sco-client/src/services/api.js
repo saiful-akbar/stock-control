@@ -14,7 +14,8 @@ const cache = setupCache({
 const api = Axios.create({
   baseURL: 'http://localhost:8000/api',
   headers: {
-    Authorization: `Bearer ${cookie.get('auth_token')}`
+    Authorization: `Bearer ${cookie.get('auth_token')}`,
+    'Access-Control-Allow-Origin': '*'
   }
 });
 

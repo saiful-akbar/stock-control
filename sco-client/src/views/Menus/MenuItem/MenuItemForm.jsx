@@ -18,7 +18,6 @@ import { Alert } from '@material-ui/lab';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import { useNavigate } from 'react-router';
 
 /**
@@ -225,7 +224,7 @@ function reduxReducer(dispatch) {
   return {
     setReduxToast: (show, type, message) =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: { show: show, type: type, message: message }
       })
   };

@@ -9,8 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import { Box, useMediaQuery } from '@material-ui/core';
-import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
+import { useDispatch } from 'react-redux';
 import { Alert } from '@material-ui/lab';
 import Loader from 'src/components/Loader';
 import { makeStyles, useTheme } from '@material-ui/styles';
@@ -72,29 +71,28 @@ const DialogActions = withStyles(theme => ({
 const useStyles = makeStyles(theme => ({
   image: {
     width: '100%',
-    height: '30vh',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'auto 100%'
+    height: '25vh'
   },
   boxInput: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    border: `3px dashed ${theme.palette.divider}`,
+    borderRadius: 5,
+    padding: 10,
+    textAlign: 'center',
+    '&:hover': {
+      opacity: 0.5
+    }
   }
 }));
 
 // Komponen utama
-function ItemGroupImport({
-  open,
-  onClose,
-  onReloadTable,
-  setReduxToast,
-  ...props
-}) {
+function ItemGroupImport({ open, onClose }) {
   const classes = useStyles();
   const isMounted = React.useRef(true);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   /**
    * State
@@ -164,7 +162,7 @@ function ItemGroupImport({
   };
 
   // Handle submit
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
     setAlert({
@@ -175,43 +173,38 @@ function ItemGroupImport({
     let formData = new FormData();
     formData.set('file', value);
 
-    apiImportItemGroup(formData)
-      .then(res => {
-        if (isMounted.current) {
-          setLoading(false);
-          setReduxToast(true, 'success', res.data.message);
-          onReloadTable();
-          handleClose();
+    try {
+      await dispatch(apiImportItemGroup(formData));
+      if (isMounted.current) {
+        setLoading(false);
+        handleClose();
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
+
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            setLoading(false);
+            setAlert({
+              type: 'error',
+              message:
+                err.status === 422 ? err.data.errors.join('') : err.data.message
+            });
+            break;
         }
-      })
-      .catch(err => {
-        if (isMounted.current) {
-          switch (err.status) {
-            case 401:
-              window.location.href = '/logout';
-              break;
-
-            case 403:
-              navigate('/error/forbidden');
-              break;
-
-            case 404:
-              navigate('/error/notfound');
-              break;
-
-            default:
-              setLoading(false);
-              setAlert({
-                type: 'error',
-                message:
-                  err.status === 422
-                    ? err.data.errors.join('')
-                    : [err.data.message]
-              });
-              break;
-          }
-        }
-      });
+      }
+    }
   };
 
   const handleDrop = event => {
@@ -220,16 +213,8 @@ function ItemGroupImport({
   };
 
   return (
-    <Dialog
-      fullWidth
-      fullScreen={fullScreen}
-      open={open}
-      maxWidth="md"
-      aria-labelledby="dialog-import-title"
-    >
-      <DialogTitle id="dialog-import-title" onClose={handleClose}>
-        {'Import from excel'}
-      </DialogTitle>
+    <Dialog fullWidth fullScreen={fullScreen} open={open} maxWidth="md">
+      <DialogTitle onClose={handleClose}>{'Import from excel'}</DialogTitle>
 
       <Alert severity={alert.type}>{alert.message}</Alert>
 
@@ -238,7 +223,7 @@ function ItemGroupImport({
         onDrop={handleDrop}
         onDragOver={e => e.preventDefault()}
       >
-        <Loader show={loading}>
+        <Loader show={loading} progress={false}>
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <label htmlFor="file">
               <input
@@ -252,9 +237,11 @@ function ItemGroupImport({
 
               <Box
                 display="flex"
-                flexDirection="column"
                 justifyContent="center"
+                alignContent="center"
                 alignItems="center"
+                flexDirection="column"
+                width="100%"
                 height="100%"
                 className={classes.boxInput}
               >
@@ -307,19 +294,4 @@ ItemGroupImport.defaultProps = {
   onReloadTable: e => e.preventDefault()
 };
 
-// Redux reducer
-function reduxReducer(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(null, reduxReducer)(ItemGroupImport);
+export default ItemGroupImport;

@@ -24,12 +24,12 @@ const Toast = ({ open, handleClose, type, message }) => {
     <Snackbar
       open={open}
       onClose={handleCloseToast}
-      autoHideDuration={15000}
+      autoHideDuration={10000}
       TransitionComponent={SlideTransition}
       key={SlideTransition.name}
       anchorOrigin={{
         vertical: 'bottom',
-        horizontal: 'center'
+        horizontal: 'left'
       }}
     >
       <Alert

@@ -1,6 +1,6 @@
 import React from 'react';
-import { withCookies } from 'react-cookie';
 import { logout } from 'src/services/auth';
+import Cookies from 'universal-cookie';
 
 /**
  * Componen utama
@@ -8,6 +8,7 @@ import { logout } from 'src/services/auth';
  */
 function Logout({ cookies, ...props }) {
   const is_mounted = React.useRef(true);
+  const cookie = new Cookies();
 
   React.useEffect(() => {
     handleLogout();
@@ -36,7 +37,7 @@ function Logout({ cookies, ...props }) {
 
   /* remove cookie auth_token */
   const removeToken = () => {
-    cookies.remove('auth_token');
+    cookie.remove('auth_token');
     window.location.href = '/login';
   };
 
@@ -44,4 +45,4 @@ function Logout({ cookies, ...props }) {
   return <div />;
 }
 
-export default withCookies(Logout);
+export default Logout;

@@ -80,12 +80,23 @@ class ItemGroupController extends Controller
         // Respose berhasil
         return response()->json([
             "item_groups" => $data,
-            "page"        => $request->page,
-            "per_page"    => $per_page,
             "sort"        => $sort,
             "order_by"    => $order_by,
             "search"      => $search,
         ], 200);
+    }
+
+    /**
+     * Method untuk mengambil data item groups setelah action
+     */
+    private function getDataItemGroups()
+    {
+        return [
+            "item_groups" => ItemGroup::orderBy("item_g_code", "asc")->paginate(25),
+            "sort"        => "item_g_code",
+            "order_by"    => "asc",
+            "search"      => "",
+        ];
     }
 
 
@@ -115,7 +126,9 @@ class ItemGroupController extends Controller
 
         // response berhasil
         return response()->json([
-            "message" => "Item group added successfully"
+            "message" => "Item group added successfully",
+            "result"  => $this->getDataitemGroups(),
+
         ], 200);
     }
 
@@ -165,7 +178,8 @@ class ItemGroupController extends Controller
 
         // response berhasil
         return response()->json([
-            "message" => "Item group updated successfully"
+            "message" => "Item group updated successfully",
+            "result"  => $this->getDataitemGroups(),
         ], 200);
     }
 
@@ -188,6 +202,7 @@ class ItemGroupController extends Controller
 
         return response()->json([
             "message" => "{$deleted} Item group deleted successfully",
+            "result"  => $this->getDataitemGroups(),
         ], 200);
     }
 
@@ -224,7 +239,8 @@ class ItemGroupController extends Controller
             ->create(["log_desc" => "Import a new item groups"]);
 
         return response()->json([
-            "message" => "Item group successfully imported"
+            "message" => "Item group successfully imported",
+            "result"  => $this->getDataitemGroups(),
         ]);
     }
 }

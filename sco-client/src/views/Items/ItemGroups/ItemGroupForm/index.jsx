@@ -16,8 +16,7 @@ import {
 import Alert from '@material-ui/lab/Alert';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiAddItemGroup, apiUpdateItemGroup } from 'src/services/itemGroups';
-import { connect, useDispatch } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
+import { useDispatch } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -102,21 +101,11 @@ function ItemGroupForm(props) {
     setLoading(true);
 
     try {
-      const res =
-        props.type === 'Add'
-          ? await apiAddItemGroup(values)
-          : await apiUpdateItemGroup(props.data.id, values);
+      props.type.toLowerCase() === 'add'
+        ? await dispatch(apiAddItemGroup(values))
+        : await dispatch(apiUpdateItemGroup(props.data.id, values));
 
       if (is_mounted.current) {
-        dispatch({
-          type: reduxAction.toast,
-          value: {
-            show: true,
-            type: 'success',
-            message: res.data.message
-          }
-        });
-        props.onReloadTable(true);
         setLoading(false);
         handleClose();
       }
@@ -162,11 +151,11 @@ function ItemGroupForm(props) {
         validationSchema={validationSchema}
         initialValues={{
           group_code:
-            props.type === 'Edit' && props.data !== null
+            props.type.toLowerCase() === 'edit' && props.data !== null
               ? props.data.item_g_code
               : '',
           group_name:
-            props.type === 'Edit' && props.data !== null
+            props.type.toLowerCase() === 'edit' && props.data !== null
               ? props.data.item_g_name
               : ''
         }}
@@ -262,22 +251,7 @@ ItemGroupForm.defaultProps = {
   data: null,
   open: false,
   type: 'Add',
-  onReloadTable: e => e.preventDefault(),
-  onClose: e => e.preventDefault()
+  onClose: () => {}
 };
 
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(null, reduxDispatch)(ItemGroupForm);
+export default ItemGroupForm;

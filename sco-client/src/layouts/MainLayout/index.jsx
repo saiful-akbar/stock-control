@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { makeStyles, CircularProgress } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Toast from 'src/components/Toast';
-import { reduxAction } from 'src/config/redux/state';
 import ErrorBoundary from 'src/components/ErrorBoundary';
 
 /* Style untuk komponen lodingSuspense */
@@ -39,8 +38,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const MainLayout = ({ reduxToast, setReduxToast }) => {
+const MainLayout = () => {
   const classes = useStyles();
+  const { toast } = useSelector(state => state.globalReducer);
+  const dispatch = useDispatch();
 
   /**
    * Menghapus preloader
@@ -64,31 +65,22 @@ const MainLayout = ({ reduxToast, setReduxToast }) => {
       </div>
 
       <Toast
-        open={reduxToast.show}
-        type={reduxToast.type}
-        message={reduxToast.message}
+        open={toast.show}
+        type={toast.type}
+        message={toast.message}
         handleClose={() =>
-          setReduxToast(false, reduxToast.type, reduxToast.message)
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: false,
+              type: toast.type,
+              message: toast.message
+            }
+          })
         }
       />
     </div>
   );
 };
 
-const reduxDispatch = dispatch => ({
-  setReduxToast: (show, type, message) =>
-    dispatch({
-      type: reduxAction.toast,
-      value: {
-        show: show,
-        type: type,
-        message: message
-      }
-    })
-});
-
-const reduxState = state => ({
-  reduxToast: state.toast
-});
-
-export default connect(reduxState, reduxDispatch)(MainLayout);
+export default MainLayout;

@@ -1,9 +1,8 @@
 import React from 'react';
 import { Chip } from '@material-ui/core';
-import moment from 'moment';
 
 function Clock(props) {
-  const [date, setDate] = React.useState(moment().format('llll'));
+  const [date, setDate] = React.useState(new Date());
 
   React.useEffect(() => {
     let timerID = setInterval(() => {
@@ -16,10 +15,17 @@ function Clock(props) {
   }, []);
 
   const tick = () => {
-    setDate(moment().format('llll'));
+    setDate(new Date());
   };
 
-  return <Chip color="default" variant="outlined" label={date} {...props} />;
+  return (
+    <Chip
+      color="default"
+      variant="outlined"
+      label={date.toLocaleString()}
+      {...props}
+    />
+  );
 }
 
 export default Clock;

@@ -7,7 +7,6 @@ import DocumentTable from './DocumentTable';
 import DocumentForm from './DocumentForm';
 import DialogDelete from 'src/components/DialogDelete';
 import { apiDeleteDocument } from 'src/services/document';
-import { reduxAction } from 'src/config/redux/state';
 
 /* Komponen utama */
 function Document(props) {
@@ -16,7 +15,6 @@ function Document(props) {
 
   /* State */
   const [userAccess, setUserAccess] = React.useState(null);
-  const [isReloadTable, setReloadTable] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [form, setForm] = React.useState({
     open: false,
@@ -54,7 +52,6 @@ function Document(props) {
     apiDeleteDocument(dialogDelete.data)
       .then(res => {
         if (isMounted.current) {
-          setReloadTable(true);
           setLoading(false);
           setDialogDelete({ open: false, data: [] });
           props.setReduxToast(true, 'success', res.data.message);
@@ -96,9 +93,7 @@ function Document(props) {
           <Grid item xs={12}>
             <DocumentTable
               userAccess={userAccess}
-              reload={isReloadTable}
               selectedRows={dialogDelete.data}
-              onReloadTable={bool => setReloadTable(bool)}
               onAdd={() => {
                 setForm({
                   open: true,
@@ -127,7 +122,6 @@ function Document(props) {
           open={form.open}
           type={form.type}
           data={form.data}
-          onReloadTable={bool => setReloadTable(bool)}
           onClose={() => {
             setForm({
               open: false,
@@ -152,8 +146,8 @@ function Document(props) {
 /* Redux state */
 function reduxState(state) {
   return {
-    reduxTheme: state.theme,
-    reduxUserLogin: state.userLogin
+    reduxTheme: state.globalReducer.theme,
+    reduxUserLogin: state.authReducer.userLogin
   };
 }
 
@@ -162,7 +156,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: (show, type, message) =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

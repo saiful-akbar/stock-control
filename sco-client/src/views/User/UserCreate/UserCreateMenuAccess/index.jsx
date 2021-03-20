@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -312,7 +311,7 @@ function mapDispatchToProps(dispatch) {
   return {
     setReduxToast: (show, type, message) =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: {
           show: show,
           type: type,

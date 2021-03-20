@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Grid,
   Button,
@@ -14,8 +14,7 @@ import clsx from 'clsx';
 import CustomTooltip from 'src/components/CustomTooltip';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SearchIcon from '@material-ui/icons/Search';
-import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
+import { useSelector } from 'react-redux';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
@@ -58,32 +57,33 @@ const useStyles = makeStyles(theme => ({
  * Komponnet utama
  */
 function TheadActions({
+  userAccess,
   selected,
   loading,
-  searchValue,
   onReload,
   onSearch,
   onAdd,
-  onDelete,
-  userAccess,
-  setReduxToast,
-  onImport,
-  ...props
+  onDelete
 }) {
   const classes = useStyles();
-  const isMounted = React.useRef(true);
+  const isMounted = useRef(true);
+  const { documents } = useSelector(state => state.documentsReducer);
 
   /* State */
-  const [search, setSearch] = React.useState('');
+  const [search, setSearch] = useState('');
 
   /* handle jika komponen dilepas saat request api belum selesai. */
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       isMounted.current = false;
     };
-
     // eslint-disable-next-line
   }, []);
+
+  /* Set setch value sesuai data documentsReducer.search */
+  useEffect(() => {
+    setSearch(documents.search);
+  }, [documents.search]);
 
   /* Handle submit form search */
   const handleSubmitSearch = e => {
@@ -93,11 +93,8 @@ function TheadActions({
 
   /* Handle blur form search */
   const handleBlurSearch = e => {
-    if (searchValue !== search) {
-      onSearch(search);
-    } else {
-      e.preventDefault();
-    }
+    e.preventDefault();
+    if (documents.search !== search) onSearch(search);
   };
 
   /* Handle clear form search */
@@ -116,7 +113,7 @@ function TheadActions({
         })}
       >
         {selected.length > 0 ? (
-          <React.Fragment>
+          <>
             <Typography
               className={classes.title}
               color="inherit"
@@ -131,7 +128,7 @@ function TheadActions({
                 <DeleteOutlineOutlinedIcon />
               </IconButton>
             </CustomTooltip>
-          </React.Fragment>
+          </>
         ) : (
           <Grid
             container
@@ -140,18 +137,9 @@ function TheadActions({
             alignItems="center"
             spacing={3}
           >
-            <Grid item lg={4} md={6} xs={12}>
-              <Box
-                display="flex"
-                justifyContent="flex-start"
-                alignItems="center"
-              >
-                <Box
-                  mr={1}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
+            <Grid item md={4} sm={6} xs={12}>
+              <Box display="flex" justifyContent="flex-start">
+                <Box mr={1} display="flex" justifyContent="center">
                   <CustomTooltip title="Reload" placement="bottom">
                     <IconButton onClick={onReload}>
                       <RefreshIcon />
@@ -172,11 +160,11 @@ function TheadActions({
               </Box>
             </Grid>
 
-            <Grid item lg={8} md={6} xs={12}>
+            <Grid item md={8} sm={6} xs={12}>
               <form onSubmit={handleSubmitSearch} autoComplete="off">
                 <TextField
                   fullWidth
-                  placeholder="Search by title or description"
+                  placeholder="Search documents"
                   variant="outlined"
                   margin="dense"
                   name="search"
@@ -191,9 +179,7 @@ function TheadActions({
                         <SearchIcon />
                       </InputAdornment>
                     ),
-                    endAdornment: Boolean(
-                      searchValue !== '' && search !== ''
-                    ) && (
+                    endAdornment: documents.search !== '' && search !== '' && (
                       <InputAdornment position="end">
                         <IconButton size="small" onClick={handleClearSearch}>
                           <CancelOutlinedIcon fontSize="small" />
@@ -216,27 +202,10 @@ TheadActions.defaultProps = {
   selected: [],
   loading: false,
   userAccess: null,
-  searchValue: '',
-  onAdd: e => e.preventDefault(),
-  onReload: e => e.preventDefault(),
-  onSearch: e => e.preventDefault(),
-  onDelete: e => e.preventDefault(),
-  onImport: e => e.preventDefault()
+  onAdd: () => {},
+  onReload: () => {},
+  onSearch: () => {},
+  onDelete: () => {}
 };
 
-/* Redux dispatch */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: reduxAction.toast,
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(null, reduxDispatch)(TheadActions);
+export default TheadActions;

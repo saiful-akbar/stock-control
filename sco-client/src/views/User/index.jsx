@@ -11,7 +11,7 @@ import UserClearLogs from './UserClearLogs';
 // Componen utama
 const User = props => {
   const navigate = useNavigate();
-  const { userLogin } = useSelector(state => state);
+  const { userLogin } = useSelector(state => state.authReducer);
 
   const [userAccess, setUserAccess] = React.useState(null);
   const [reloadTable, setReloadTable] = useState(false);

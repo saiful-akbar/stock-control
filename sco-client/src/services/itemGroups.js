@@ -10,27 +10,53 @@ import { api } from './api';
  * @param {string} search
  */
 export const apiGetItemGroups = (
-  page = 1,
-  per_page = 25,
-  sort = 'item_g_code',
-  order_by = 'asc',
-  search = ''
-) => {
+  data = {
+    page: 1, // halaman pada tabel
+    perPage: 25, // jumah baris perhamalan pada tabel
+    sort: 'item_g_code', // sortir tabel
+    orderBy: 'asc', // urutan pada tabel secara ascending atau descending
+    search: '' // pencarian pada tabel
+  }
+) => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
       url: '/item-groups',
       params: {
-        page,
-        per_page,
-        sort,
-        order_by,
-        search
+        page: data.page,
+        per_page: data.perPage,
+        sort: data.sort,
+        order_by: data.orderBy,
+        search: data.search
       }
     })
-      .then(res => resolve(res))
+      .then(res => {
+        resolve(res);
+        dispatch({
+          type: 'SET_ITEM_GROUPS',
+          value: {
+            data: res.data.item_groups.data,
+            currentPage: res.data.item_groups.current_page,
+            perPage: res.data.item_groups.per_page,
+            totalData: res.data.item_groups.total,
+            sort: res.data.sort,
+            orderBy: res.data.order_by,
+            search: res.data.search
+          }
+        });
+      })
       .catch(err => {
-        reject(err.response);
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status} ${err.response.data.message})`
+            }
+          });
+        }
       });
   });
 };
@@ -40,15 +66,44 @@ export const apiGetItemGroups = (
  *
  * @param {obj} data
  */
-export const apiAddItemGroup = data => {
+export const apiAddItemGroup = data => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
       url: '/item-groups',
       data: data
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        const { result } = res.data;
+        resolve(res);
+        dispatch({
+          type: 'SET_ITEM_GROUPS',
+          value: {
+            data: result.item_groups.data,
+            currentPage: result.item_groups.current_page,
+            perPage: result.item_groups.per_page,
+            totalData: result.item_groups.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+        } else if (err.request) {
+          reject(err.request);
+        }
+      });
   });
 };
 
@@ -57,15 +112,46 @@ export const apiAddItemGroup = data => {
  *
  * @param {obj} data
  */
-export const apiUpdateItemGroup = (id, data) => {
+export const apiUpdateItemGroup = (id, data) => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'PATCH',
       url: `/item-groups/${id}`,
       data: data
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        const { result } = res.data;
+        resolve(res);
+        dispatch({
+          type: 'SET_ITEM_GROUPS',
+          value: {
+            data: result.item_groups.data,
+            currentPage: result.item_groups.current_page,
+            perPage: result.item_groups.per_page,
+            totalData: result.item_groups.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          if (err.response) {
+            reject(err.response);
+          } else if (err.request) {
+            reject(err.request);
+          }
+        }
+      });
   });
 };
 
@@ -74,15 +160,50 @@ export const apiUpdateItemGroup = (id, data) => {
  *
  * @param {obj} data
  */
-export const apiDeleteItemGroup = data => {
+export const apiDeleteItemGroup = selected => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'DELETE',
       url: `/item-groups`,
-      data: data
+      data: selected
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        const { result } = res.data;
+        resolve(res);
+        dispatch({
+          type: 'SET_ITEM_GROUPS',
+          value: {
+            data: result.item_groups.data,
+            currentPage: result.item_groups.current_page,
+            perPage: result.item_groups.per_page,
+            totalData: result.item_groups.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status} ${err.response.data.message})`
+            }
+          });
+        }
+      });
   });
 };
 
@@ -111,7 +232,7 @@ export const apiExportItemGroup = (search = '') => {
  *
  * @param {string} search
  */
-export const apiImportItemGroup = file => {
+export const apiImportItemGroup = file => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
@@ -121,7 +242,36 @@ export const apiImportItemGroup = file => {
         'Content-Type': 'multipart/form-data'
       }
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        const { result } = res.data;
+        resolve(res);
+        dispatch({
+          type: 'SET_ITEM_GROUPS',
+          value: {
+            data: result.item_groups.data,
+            currentPage: result.item_groups.current_page,
+            perPage: result.item_groups.per_page,
+            totalData: result.item_groups.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+        } else if (err.request) {
+          reject(err.request);
+        }
+      });
   });
 };

@@ -22,7 +22,6 @@ import {
 } from 'src/services/user';
 import { Skeleton } from '@material-ui/lab';
 import { connect } from 'react-redux';
-import { reduxAction } from 'src/config/redux/state';
 import BtnSubmit from 'src/components/BtnSubmit';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
@@ -431,7 +430,7 @@ function reduxDispatch(dispatch) {
   return {
     setReduxToast: error =>
       dispatch({
-        type: reduxAction.toast,
+        type: 'SET_TOAST',
         value: error
       })
   };

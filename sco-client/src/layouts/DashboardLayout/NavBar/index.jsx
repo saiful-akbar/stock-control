@@ -15,7 +15,7 @@ import {
   ButtonBase
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import apiUrl from 'src/utils/apiUrl';
 import NavItem from './NavItem';
 import LogoutConfirm from './LogutConfirm';
@@ -52,15 +52,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 // Main component
-const NavBar = ({
-  onMobileToggle,
-  openMobile,
-  openDesktop,
-  reduxUserLogin
-}) => {
+const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
   const classes = useStyles();
   const location = useLocation();
   const navigate = useNavigate();
+  const { userLogin } = useSelector(state => state.authReducer);
   const [collapseIsActive, setCollapseIsActive] = useState(null);
 
   useEffect(() => {
@@ -87,7 +83,7 @@ const NavBar = ({
         className={classes.profile}
       >
         <Grid item>
-          {reduxUserLogin !== null ? (
+          {userLogin !== null ? (
             <ButtonBase
               className={classes.avatar}
               onClick={() => navigate('/account')}
@@ -95,9 +91,9 @@ const NavBar = ({
               <Avatar
                 className={classes.avatar}
                 src={
-                  reduxUserLogin.profile.profile_avatar === null
+                  userLogin.profile.profile_avatar === null
                     ? '/static/images/svg/default_avatar.svg'
-                    : getAvatar(reduxUserLogin.profile.profile_avatar)
+                    : getAvatar(userLogin.profile.profile_avatar)
                 }
               />
             </ButtonBase>
@@ -107,13 +103,13 @@ const NavBar = ({
         </Grid>
 
         <Grid item xs zeroMinWidth>
-          {reduxUserLogin !== null ? (
+          {userLogin !== null ? (
             <>
               <Typography color="textPrimary" variant="h6" noWrap>
-                {reduxUserLogin.profile.profile_name}
+                {userLogin.profile.profile_name}
               </Typography>
               <Typography color="textSecondary" variant="body2" noWrap>
-                {reduxUserLogin.profile.profile_division}
+                {userLogin.profile.profile_division}
               </Typography>
             </>
           ) : (
@@ -133,13 +129,13 @@ const NavBar = ({
       <Box flexGrow={1} />
 
       <Box className={classes.menu}>
-        {reduxUserLogin === null ? (
+        {userLogin === null ? (
           <Skeleton variant="rect" height="100%" />
         ) : (
           <List component="div" disablePadding>
             <NavItemDashboard />
 
-            {reduxUserLogin.menu_items.map((item, key) => (
+            {userLogin.menu_items.map((item, key) => (
               <NavItem
                 key={key}
                 data={item}
@@ -200,8 +196,4 @@ NavBar.defaultProps = {
   openMobile: false
 };
 
-const reduxState = state => ({
-  reduxUserLogin: state.userLogin
-});
-
-export default connect(reduxState, null)(NavBar);
+export default NavBar;
