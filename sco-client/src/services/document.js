@@ -101,17 +101,7 @@ export const apiAddDocument = data => dispatch => {
         });
       })
       .catch(err => {
-        if (err.response) {
-          reject(err.response);
-          dispatch({
-            type: 'SET_TOAST',
-            value: {
-              show: true,
-              type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
-            }
-          });
-        }
+        if (err.response) reject(err.response);
       });
   });
 };
@@ -156,17 +146,7 @@ export const apiUpdateDocument = (id, data) => dispatch => {
         });
       })
       .catch(err => {
-        if (err.response) {
-          reject(err.response);
-          dispatch({
-            type: 'SET_TOAST',
-            value: {
-              show: true,
-              type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
-            }
-          });
-        }
+        if (err.response) reject(err.response);
       });
   });
 };
@@ -228,7 +208,7 @@ export const apiDeleteDocument = data => dispatch => {
  *
  * @param {string} search
  */
-export const apiDownloadDocument = id => dispatch => {
+export const apiDownloadDocument = id => {
   return new Promise((resolve, reject) => {
     api({
       method: 'GET',
@@ -239,17 +219,7 @@ export const apiDownloadDocument = id => dispatch => {
         resolve(res);
       })
       .catch(err => {
-        if (err.response) {
-          reject(err.response);
-          dispatch({
-            type: 'SET_TOAST',
-            value: {
-              show: true,
-              type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
-            }
-          });
-        }
+        if (err.response) reject(err.response);
       });
   });
 };

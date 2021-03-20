@@ -135,29 +135,33 @@ function ItemGroupImport({ open, onClose }) {
 
   // Handle input change
   const handleChange = e => {
-    const file = e.target.files[0];
-    const xls = 'application/vnd.ms-excel';
-    const xlsx =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    if (e.target.files.length >= 1) {
+      const file = e.target.files[0];
+      const xls = 'application/vnd.ms-excel';
+      const xlsx =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-    if (Boolean(file)) {
-      if (file.type !== xlsx && file.type !== xls) {
-        setAlert({
-          type: 'error',
-          message: 'The file must be a file of type xlsx or xls.'
-        });
-      } else if (Math.ceil(file.size / 1000) > 1000) {
-        setAlert({
-          type: 'error',
-          message: 'The file may not be greater than 1000 kilobytes'
-        });
-      } else {
-        setAlert({
-          type: 'success',
-          message: 'File ready to import'
-        });
-        setValue(file);
+      if (Boolean(file)) {
+        if (file.type !== xlsx && file.type !== xls) {
+          setAlert({
+            type: 'error',
+            message: 'The file must be a file of type xlsx or xls.'
+          });
+        } else if (Math.ceil(file.size / 1000) > 1000) {
+          setAlert({
+            type: 'error',
+            message: 'The file may not be greater than 1000 kilobytes'
+          });
+        } else {
+          setAlert({
+            type: 'success',
+            message: 'File ready to import'
+          });
+          setValue(file);
+        }
       }
+    } else {
+      setValue(value);
     }
   };
 
@@ -252,7 +256,9 @@ function ItemGroupImport({ open, onClose }) {
                 />
 
                 <Typography variant="h5" noWrap>
-                  {value === '' ? 'Select or drag files' : value.name}
+                  {Boolean(value === '' || value === undefined)
+                    ? 'Select or drag files'
+                    : value.name}
                 </Typography>
 
                 <Button

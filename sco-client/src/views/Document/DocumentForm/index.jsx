@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import BtnSubmit from 'src/components/BtnSubmit';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { apiAddDocument, apiUpdateDocument } from 'src/services/document';
@@ -75,20 +75,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /* Komponen utama */
-function DocumentForm({
-  open,
-  type,
-  data,
-  onReloadTable,
-  onClose,
-  setReduxToast,
-  ...props
-}) {
+function DocumentForm({ open, type, data, onClose }) {
   const isMounted = React.useRef(true);
   const classes = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   /* State */
   const [loading, setLoading] = React.useState(false);
@@ -150,14 +143,12 @@ function DocumentForm({
     formData.set('document_description', values.document_description);
 
     try {
-      let res = Boolean(type === 'Add')
-        ? await apiAddDocument(formData)
-        : await apiUpdateDocument(data.id, formData);
+      type.toLowerCase() === 'add'
+        ? await dispatch(apiAddDocument(formData))
+        : await dispatch(apiUpdateDocument(data.id, formData));
 
       if (isMounted.current) {
         setLoading(false);
-        setReduxToast(true, 'success', res.data.message);
-        onReloadTable(true);
         handleClose();
       }
     } catch (err) {
@@ -175,16 +166,8 @@ function DocumentForm({
             navigate('/error/notfound');
             break;
 
-          case 422:
-            setLoading(false);
-            setErrors(err.data.errors);
-            setAlert({
-              type: 'error',
-              message: err.data.message
-            });
-            break;
-
           default:
+            if (err.status === 422) setErrors(err.data.errors);
             setLoading(false);
             setAlert({
               type: 'error',
@@ -210,12 +193,14 @@ function DocumentForm({
         validationSchema={validationSchema}
         initialValues={{
           document_file: '',
-          document_title: Boolean(type === 'Edit' && data !== null)
-            ? data.document_title
-            : '',
-          document_description: Boolean(type === 'Edit' && data !== null)
-            ? data.document_description
-            : ''
+          document_title:
+            type.toLowerCase() === 'edit' && data !== null
+              ? data.document_title
+              : '',
+          document_description:
+            type.toLowerCase() === 'edit' && data !== null
+              ? data.document_description
+              : ''
         }}
       >
         {({
@@ -269,10 +254,12 @@ function DocumentForm({
                           name="document_file"
                           accept=".xlsx,.xls,.csv,.pdf,.docx,.doc"
                           disabled={loading}
-                          onChange={event => {
+                          onChange={e => {
                             setFieldValue(
                               'document_file',
-                              event.target.files[0]
+                              e.target.files.length >= 1
+                                ? e.target.files[0]
+                                : values.document_file
                             );
                           }}
                         />
@@ -405,23 +392,7 @@ DocumentForm.defaultProps = {
   data: null,
   open: false,
   type: 'Add',
-  onReloadTable: () => {},
   onClose: () => {}
 };
 
-/* Redux reducer */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: 'SET_TOAST',
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(null, reduxDispatch)(DocumentForm);
+export default DocumentForm;

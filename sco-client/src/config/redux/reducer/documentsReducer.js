@@ -10,21 +10,19 @@ const initialState = {
   }
 };
 
-export const documentsReducer = (state = initialState, actions) => {
-  const { type, value } = actions;
-
-  switch (type) {
+export const documentsReducer = (state = initialState, action) => {
+  switch (action.type) {
     case 'SET_DOCUMENTS':
       return {
         ...state,
         documents: {
-          data: value.data,
-          currentPage: value.currentPage,
-          perPage: value.perPage,
-          sort: value.sort,
-          orderBy: value.orderBy,
-          search: value.search,
-          totalData: value.totalData
+          data: action.value.data,
+          currentPage: action.value.currentPage,
+          perPage: action.value.perPage,
+          sort: action.value.sort,
+          orderBy: action.value.orderBy,
+          search: action.value.search,
+          totalData: action.value.totalData
         }
       };
 

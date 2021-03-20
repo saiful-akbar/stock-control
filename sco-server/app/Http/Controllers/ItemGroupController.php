@@ -88,13 +88,18 @@ class ItemGroupController extends Controller
 
     /**
      * Method untuk mengambil data item groups setelah action
+     *
+     * @param String $sort
+     * @param String $order_by
+     *
+     * @return Array
      */
-    private function getDataItemGroups()
+    private function getDataItemGroups(String $sort = "item_g_code", String $order_by = 'asc')
     {
         return [
-            "item_groups" => ItemGroup::orderBy("item_g_code", "asc")->paginate(25),
-            "sort"        => "item_g_code",
-            "order_by"    => "asc",
+            "item_groups" => ItemGroup::orderBy(strtolower($sort), strtolower($order_by))->paginate(25),
+            "sort"        => strtolower($sort),
+            "order_by"    => strtolower($order_by),
             "search"      => "",
         ];
     }
@@ -127,7 +132,7 @@ class ItemGroupController extends Controller
         // response berhasil
         return response()->json([
             "message" => "Item group added successfully",
-            "result"  => $this->getDataitemGroups(),
+            "result"  => $this->getDataitemGroups("created_at", "desc"),
 
         ], 200);
     }
@@ -179,7 +184,7 @@ class ItemGroupController extends Controller
         // response berhasil
         return response()->json([
             "message" => "Item group updated successfully",
-            "result"  => $this->getDataitemGroups(),
+            "result"  => $this->getDataitemGroups("updated_at", "desc"),
         ], 200);
     }
 
@@ -240,7 +245,7 @@ class ItemGroupController extends Controller
 
         return response()->json([
             "message" => "Item group successfully imported",
-            "result"  => $this->getDataitemGroups(),
+            "result"  => $this->getDataitemGroups("created_at", "desc"),
         ]);
     }
 }

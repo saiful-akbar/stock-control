@@ -154,8 +154,8 @@ Tbody.defaultProps = {
   row: {},
   columns: [],
   userAccess: null,
-  onEdit: e => e.preventDefault(),
-  onSelect: e => e.preventDefault()
+  onEdit: () => {},
+  onSelect: () => {}
 };
 
 /* Redux reducer */

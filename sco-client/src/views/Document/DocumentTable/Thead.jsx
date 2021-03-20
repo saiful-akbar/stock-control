@@ -27,14 +27,12 @@ function Thead({ column, selected, data, onSort, ...props }) {
       <TableSortLabel
         active={Boolean(data.sort === column.field)}
         onClick={() => onSort(column.field)}
-        direction={data.sort === column.field ? data.order_by : 'asc'}
+        direction={data.sort === column.field ? data.orderBy : 'asc'}
       >
         {column.label}
         {data.sort === column.field && (
           <span className={classes.visuallyHidden}>
-            {data.order_by === 'desc'
-              ? 'sorted descending'
-              : 'sorted ascending'}
+            {data.orderBy === 'desc' ? 'sorted descending' : 'sorted ascending'}
           </span>
         )}
       </TableSortLabel>

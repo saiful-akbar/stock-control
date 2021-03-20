@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
+import bugImage from 'src/assets/images/ilustration/bug.svg';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -7,8 +8,8 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false };
   }
 
+  // Perbarui state agar proses render berikutnya akan menampilkan antarmuka darurat.
   static getDerivedStateFromError(error) {
-    // Perbarui state agar proses render berikutnya akan menampilkan antarmuka darurat.
     return { hasError: true };
   }
 
@@ -22,18 +23,30 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      // menampilkan antarmuka darurat Anda di sini
       return (
         <Box
           display="flex"
-          justifyContent="center"
+          justifyContent="flex-start"
+          flexDirection="column"
           alignItems="center"
-          mt={5}
+          p={5}
+          width="100%"
+          style={{
+            height: 'calc(100vh - 48px)',
+            textAlign: 'center'
+          }}
         >
-          <Typography variant="h5" color="textPrimary">Something went wrong.</Typography>
+          <Typography variant="h6" color="textPrimary">
+            Something went wrong.
+          </Typography>
+
           <Typography variant="subtitle1" color="textSecondary">
             {this.state.error && this.state.error.toString()}
           </Typography>
+
+          <Box mt={3}>
+            <img src={bugImage} alt="bug" width="60%" />
+          </Box>
         </Box>
       );
     }

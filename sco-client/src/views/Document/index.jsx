@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid, Container } from '@material-ui/core';
 import Page from 'src/components/Page';
 import DocumentTable from './DocumentTable';
@@ -13,6 +13,9 @@ function Document(props) {
   const isMounted = React.useRef(true);
   const navigate = useNavigate();
 
+  const { userLogin } = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
+
   /* State */
   const [userAccess, setUserAccess] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
@@ -23,7 +26,7 @@ function Document(props) {
   });
   const [dialogDelete, setDialogDelete] = React.useState({
     open: false,
-    data: []
+    selected: []
   });
 
   /* Handle jika komponen dilepas saat request api belum selesai */
@@ -37,52 +40,45 @@ function Document(props) {
 
   /* Ambil data user akses pada reduxUserLogin */
   React.useEffect(() => {
-    if (props.reduxUserLogin !== null) {
-      props.reduxUserLogin.menu_sub_items.map(msi => {
+    if (userLogin !== null) {
+      userLogin.menu_sub_items.map(msi => {
         return msi.menu_s_i_url === '/documents'
           ? setUserAccess(msi.pivot)
           : null;
       });
     }
-  }, [props.reduxUserLogin]);
+  }, [userLogin]);
 
   /* Handle delete document */
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setLoading(true);
-    apiDeleteDocument(dialogDelete.data)
-      .then(res => {
-        if (isMounted.current) {
-          setLoading(false);
-          setDialogDelete({ open: false, data: [] });
-          props.setReduxToast(true, 'success', res.data.message);
+    try {
+      await dispatch(apiDeleteDocument(dialogDelete.selected));
+      if (isMounted.current) {
+        setLoading(false);
+        setDialogDelete({ open: false, selected: [] });
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        switch (err.status) {
+          case 401:
+            window.location.href = '/logout';
+            break;
+
+          case 403:
+            navigate('/error/forbidden');
+            break;
+
+          case 404:
+            navigate('/error/notfound');
+            break;
+
+          default:
+            setLoading(false);
+            break;
         }
-      })
-      .catch(err => {
-        if (isMounted.current) {
-          switch (err.status) {
-            case 401:
-              window.location.href = '/logout';
-              break;
-
-            case 403:
-              navigate('/error/forbidden');
-              break;
-
-            case 404:
-              navigate('/error/notfound');
-              break;
-
-            default:
-              setLoading(false);
-              props.setReduxToast(
-                true,
-                'error',
-                `(#${err.status}) ${err.data.message}`
-              );
-              break;
-          }
-        }
-      });
+      }
+    }
   };
 
   /* Render */
@@ -93,7 +89,7 @@ function Document(props) {
           <Grid item xs={12}>
             <DocumentTable
               userAccess={userAccess}
-              selectedRows={dialogDelete.data}
+              selectedRows={dialogDelete.selected}
               onAdd={() => {
                 setForm({
                   open: true,
@@ -111,7 +107,7 @@ function Document(props) {
               onDelete={selected => {
                 setDialogDelete({
                   open: true,
-                  data: selected
+                  selected: selected
                 });
               }}
             />
@@ -136,34 +132,11 @@ function Document(props) {
           open={dialogDelete.open}
           onDelete={handleDelete}
           loading={loading}
-          onClose={bool => setDialogDelete({ open: bool, data: [] })}
+          onClose={bool => setDialogDelete({ open: bool, selected: [] })}
         />
       </Container>
     </Page>
   );
 }
 
-/* Redux state */
-function reduxState(state) {
-  return {
-    reduxTheme: state.globalReducer.theme,
-    reduxUserLogin: state.authReducer.userLogin
-  };
-}
-
-/* Redux reducer */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: 'SET_TOAST',
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(reduxState, reduxDispatch)(Document);
+export default Document;

@@ -19,7 +19,6 @@ import CustomTooltip from 'src/components/CustomTooltip';
 import Loader from 'src/components/Loader';
 import Thead from './Thead';
 import Tbody from './Tbody';
-import TpaginationActions from './TpaginationActions';
 import TheadActions from './TheadActions';
 
 /* Daftar nama kolom */
@@ -33,6 +32,18 @@ const columns = [
   {
     field: 'document_description',
     label: 'Description',
+    align: 'left',
+    sort: true
+  },
+  {
+    field: 'created_at',
+    label: 'Created At',
+    align: 'left',
+    sort: true
+  },
+  {
+    field: 'updated_at',
+    label: 'Updated At',
     align: 'left',
     sort: true
   }
@@ -347,7 +358,6 @@ function DocumentTable(props) {
             page={documents.currentPage - 1}
             onChangePage={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
-            ActionsComponent={TpaginationActions}
           />
         </Loader>
       </CardContent>
