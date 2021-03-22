@@ -15,6 +15,7 @@ const api = Axios.create({
   baseURL: 'http://localhost:8000/api',
   headers: {
     Authorization: `Bearer ${cookie.get('auth_token')}`,
+    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*'
   }
 });

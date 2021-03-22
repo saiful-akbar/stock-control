@@ -139,7 +139,7 @@ function TheadActions({
           >
             <Grid item md={4} sm={6} xs={12}>
               <Box display="flex" justifyContent="flex-start">
-                <Box mr={1} display="flex" justifyContent="center">
+                <Box mr={2} display="flex" justifyContent="center">
                   <CustomTooltip title="Reload" placement="bottom">
                     <IconButton onClick={onReload}>
                       <RefreshIcon />

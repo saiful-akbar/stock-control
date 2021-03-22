@@ -56,6 +56,15 @@ export const apiGetItemGroups = (
               message: `(#${err.response.status} ${err.response.data.message})`
             }
           });
+        } else {
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `An error occurred upon request`
+            }
+          });
         }
       });
   });
@@ -101,7 +110,7 @@ export const apiAddItemGroup = data => dispatch => {
         if (err.response) {
           reject(err.response);
         } else if (err.request) {
-          reject(err.request);
+          reject({ data: { message: 'An error occurred upon request' } });
         }
       });
   });
@@ -148,7 +157,7 @@ export const apiUpdateItemGroup = (id, data) => dispatch => {
           if (err.response) {
             reject(err.response);
           } else if (err.request) {
-            reject(err.request);
+            reject({ data: { message: 'An error occurred upon request' } });
           }
         }
       });
@@ -203,6 +212,16 @@ export const apiDeleteItemGroup = selected => dispatch => {
             }
           });
         }
+        if (err.response) {
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `An error occurred upon request`
+            }
+          });
+        }
       });
   });
 };
@@ -223,7 +242,13 @@ export const apiExportItemGroup = (search = '') => {
       }
     })
       .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+        } else if (err.request) {
+          reject({ data: { message: 'An error occurred upon request' } });
+        }
+      });
   });
 };
 
@@ -270,7 +295,7 @@ export const apiImportItemGroup = file => dispatch => {
         if (err.response) {
           reject(err.response);
         } else if (err.request) {
-          reject(err.request);
+          reject({ data: { message: 'An error occurred upon request' } });
         }
       });
   });

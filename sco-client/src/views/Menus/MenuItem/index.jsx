@@ -4,9 +4,8 @@ import MenuItemForm from './MenuItemForm';
 import MenuItemDelete from './MenuItemDelete';
 
 const MenuItem = ({ state }) => {
-  const [reload, setReload] = React.useState(false);
   const [dialogDelete, setDialogDelete] = React.useState({
-    show: false,
+    open: false,
     id: null
   });
 
@@ -20,44 +19,34 @@ const MenuItem = ({ state }) => {
     <div>
       <MenuItemTable
         state={state}
-        reload={reload}
-        stopReload={() => setReload(false)}
-        openDialogCreate={() =>
-          setFormDialog({ open: true, type: 'Create', data: null })
-        }
-        openDialogEdit={data =>
-          setFormDialog({ open: true, type: 'Edit', data: data })
-        }
-        openDialogDelete={id => setDialogDelete({ show: true, id: id })}
+        openFormDialog={(open, type, data) => {
+          setFormDialog({ open: open, type: type, data: data });
+        }}
+        openDialogDelete={id => {
+          setDialogDelete({ open: true, id: id });
+        }}
       />
+
       <MenuItemForm
         state={state}
         open={formDialog.open}
         type={formDialog.type}
         data={formDialog.data}
-        onReloadTable={() => setReload(true)}
-        onClose={() =>
-          setFormDialog({ open: false, type: formDialog.type, data: null })
-        }
+        onClose={() => {
+          setFormDialog({ open: false, type: formDialog.type, data: null });
+        }}
       />
+
       <MenuItemDelete
         state={state}
         id={dialogDelete.id}
-        open={dialogDelete.show}
-        closeDialog={() => setDialogDelete({ show: false, id: null })}
-        reloadTable={() => setReload(true)}
+        open={dialogDelete.open}
+        closeDialog={() => {
+          setDialogDelete({ open: false, id: null });
+        }}
       />
     </div>
   );
-};
-
-MenuItem.defaultPros = {
-  state: {
-    create: 0,
-    read: 0,
-    update: 0,
-    delete: 0
-  }
 };
 
 export default MenuItem;

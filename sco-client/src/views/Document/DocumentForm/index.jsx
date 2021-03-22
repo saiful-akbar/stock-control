@@ -99,7 +99,7 @@ function DocumentForm({ open, type, data, onClose }) {
       document_description: Yup.string(
         'The document description field must be a string.'
       )
-        .required('document description name field is required.')
+        .required('document description field is required.')
         .max(
           200,
           'The document description may not be greater than 200 characters.'

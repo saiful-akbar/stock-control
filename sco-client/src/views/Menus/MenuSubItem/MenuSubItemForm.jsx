@@ -21,7 +21,6 @@ import {
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { Alert, Autocomplete } from '@material-ui/lab';
-import Toast from 'src/components/Toast';
 import BtnSubmit from 'src/components/BtnSubmit';
 import materialIcons from 'src/components/MaterialIcons';
 import {
@@ -29,6 +28,7 @@ import {
   apiUpdateMenuSubItem
 } from 'src/services/menuSubItem';
 import { useNavigate } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 
 /**
  * Style
@@ -70,14 +70,15 @@ const MenuSubItemForm = props => {
   const navigate = useNavigate();
 
   /**
+   * Redux
+   */
+  const { menuItems } = useSelector(state => state.menusReducer);
+  const dispatch = useDispatch();
+
+  /**
    * State
    */
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = React.useState({
-    show: false,
-    type: null,
-    message: ''
-  });
   const [alert, setAlert] = React.useState({
     type: 'info',
     message: 'Fields marked with * are required'
@@ -99,16 +100,16 @@ const MenuSubItemForm = props => {
   // validasi form formik
   const getValidationSchema = value => {
     return Yup.object().shape({
-      menus: Yup.string().required('Menus is required'),
+      menus: Yup.string().required(),
       title: Yup.string()
         .max(128)
-        .required('Title is required'),
+        .required(),
       url: Yup.string()
         .max(128)
-        .required('Url is required'),
+        .required(),
       icon: Yup.string()
         .max(128)
-        .required('Icon is required')
+        .required()
     });
   };
 
@@ -120,24 +121,19 @@ const MenuSubItemForm = props => {
       message: `Processing ... don't leave or reload the page`
     });
 
-    let res =
-      props.type.toLowerCase() === 'create'
-        ? await apiCreateMenuSubItem(data).catch(err => err)
-        : await apiUpdateMenuSubItem(props.data.id, data).catch(err => err);
-
-    if (isMounted.current) {
-      if (res.status === 200) {
-        setToast({
-          show: true,
-          type: 'success',
-          message: res.data.message
-        });
-        props.reloadTable();
+    try {
+      if (props.type.toLowerCase() === 'create') {
+        await dispatch(apiCreateMenuSubItem(data));
+      } else {
+        await dispatch(apiUpdateMenuSubItem(props.data.id, data));
+      }
+      if (isMounted.current) {
         setLoading(false);
         handleCloseDialog();
-      } else {
-        setLoading(false);
-        switch (res.status) {
+      }
+    } catch (err) {
+      if (isMounted.current) {
+        switch (err.status) {
           case 401:
             logout();
             break;
@@ -151,17 +147,14 @@ const MenuSubItemForm = props => {
             break;
 
           case 422:
-            setErrors(res.data.errors);
-            setAlert({
-              type: 'error',
-              message: `(#${res.status}) ${res.data.message}`
-            });
             break;
 
           default:
+            if (err.status === 422) setErrors(err.data.errors);
+            setLoading(false);
             setAlert({
               type: 'error',
-              message: `(#${res.status}) ${res.data.message}`
+              message: `(#${err.status}) ${err.data.message}`
             });
             break;
         }
@@ -178,204 +171,173 @@ const MenuSubItemForm = props => {
   };
 
   return (
-    <>
-      <Dialog
-        fullWidth
-        fullScreen={fullScreen}
-        maxWidth="lg"
-        scroll="paper"
-        open={props.open}
+    <Dialog
+      fullWidth
+      fullScreen={fullScreen}
+      maxWidth="lg"
+      scroll="paper"
+      open={props.open}
+    >
+      <Formik
+        initialValues={{
+          menus: props.type === 'Edit' ? props.data.menu_item_id : '',
+          title: props.type === 'Edit' ? props.data.menu_s_i_title : '',
+          url: props.type === 'Edit' ? props.data.menu_s_i_url : '',
+          icon: props.type === 'Edit' ? props.data.menu_s_i_icon : ''
+        }}
+        validationSchema={getValidationSchema}
+        onSubmit={handleSubmitForm}
       >
-        <Formik
-          initialValues={{
-            menus:
-              props.type.toLowerCase() === 'edit'
-                ? props.data.menu_item_id
-                : '',
-            title:
-              props.type.toLowerCase() === 'edit'
-                ? props.data.menu_s_i_title
-                : '',
-            url:
-              props.type.toLowerCase() === 'edit'
-                ? props.data.menu_s_i_url
-                : '',
-            icon:
-              props.type.toLowerCase() === 'edit'
-                ? props.data.menu_s_i_icon
-                : ''
-          }}
-          validationSchema={getValidationSchema}
-          onSubmit={handleSubmitForm}
-        >
-          {({
-            errors,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-            touched,
-            values,
-            setFieldValue
-          }) => (
-            <React.Fragment>
-              <DialogTitle disableTypography className={classes.header}>
-                <Typography variant="h6">
-                  {props.type === 'Create' ? 'Create a new' : 'Update'} sub menu
-                </Typography>
-                <IconButton
-                  disabled={loading}
-                  className={classes.closeButton}
-                  onClick={handleCloseDialog}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </DialogTitle>
+        {({
+          errors,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          touched,
+          values,
+          setFieldValue
+        }) => (
+          <React.Fragment>
+            <DialogTitle disableTypography className={classes.header}>
+              <Typography variant="h6">
+                {props.type === 'Create' ? 'Create a new' : 'Update'} sub menu
+              </Typography>
+              <IconButton
+                disabled={loading}
+                className={classes.closeButton}
+                onClick={handleCloseDialog}
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
 
-              <Alert severity={alert.type}>{alert.message}</Alert>
+            <Alert severity={alert.type}>{alert.message}</Alert>
 
-              <DialogContent className={classes.content}>
-                <form onSubmit={handleSubmit} autoComplete="off">
-                  <Grid container spacing={2} mt={2} mb={2}>
-                    <Grid item md={6} xs={12}>
-                      <FormControl
-                        required
-                        fullWidth
-                        variant="outlined"
-                        disabled={loading}
-                        error={Boolean(touched.menus && errors.menus)}
+            <DialogContent className={classes.content}>
+              <form onSubmit={handleSubmit} autoComplete="off">
+                <Grid container spacing={2} mt={2} mb={2}>
+                  <Grid item md={6} xs={12}>
+                    <FormControl
+                      required
+                      fullWidth
+                      variant="outlined"
+                      disabled={loading}
+                      error={Boolean(touched.menus && errors.menus)}
+                    >
+                      <InputLabel id="menus">{'Menus'}</InputLabel>
+                      <Select
+                        labelId="menus"
+                        name="menus"
+                        label="Menus *"
+                        value={values.menus}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                       >
-                        <InputLabel id="menus">{'Menus'}</InputLabel>
-                        <Select
-                          labelId="menus"
-                          name="menus"
-                          label="Menus *"
-                          value={values.menus}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        >
-                          <MenuItem value="" disabled>
-                            {'None'}
+                        <MenuItem value="" disabled>
+                          {'None'}
+                        </MenuItem>
+                        {menuItems.data.map(data => (
+                          <MenuItem key={data.id} value={data.id}>
+                            {data.menu_i_title}
                           </MenuItem>
-                          {props.menuItems.map(data => (
-                            <MenuItem key={data.id} value={data.id}>
-                              {data.menu_i_title}
-                            </MenuItem>
-                          ))}
-                        </Select>
+                        ))}
+                      </Select>
 
-                        <FormHelperText>
-                          {touched.menus && errors.menus}
-                        </FormHelperText>
-                      </FormControl>
-                    </Grid>
-
-                    <Grid item md={6} xs={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        label="Title"
-                        name="title"
-                        type="text"
-                        variant="outlined"
-                        disabled={loading}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.title}
-                        error={Boolean(touched.title && errors.title)}
-                        helperText={touched.title && errors.title}
-                      />
-                    </Grid>
-
-                    <Grid item md={6} xs={12}>
-                      <TextField
-                        fullWidth
-                        required
-                        label="Url"
-                        name="url"
-                        type="text"
-                        variant="outlined"
-                        disabled={loading}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.url}
-                        error={Boolean(touched.url && errors.url)}
-                        helperText={touched.url && errors.url}
-                      />
-                    </Grid>
-
-                    <Grid item md={6} xs={12}>
-                      <Autocomplete
-                        autoHighlight
-                        classes={{ option: classes.option }}
-                        disabled={loading}
-                        options={materialIcons}
-                        getOptionLabel={option => option.label}
-                        value={
-                          values.icon === '' ? null : { label: values.icon }
-                        }
-                        getOptionSelected={(options, value) =>
-                          Boolean(options.label === value.label)
-                        }
-                        onChange={(event, newValue) => {
-                          if (newValue === null) {
-                            setFieldValue('icon', values.icon);
-                          } else {
-                            setFieldValue('icon', newValue.label);
-                          }
-                        }}
-                        renderOption={option => (
-                          <React.Fragment>
-                            <Icon>{option.class}</Icon>
-                            {option.label}
-                          </React.Fragment>
-                        )}
-                        renderInput={params => (
-                          <TextField
-                            {...params}
-                            fullWidth
-                            label="Icon"
-                            variant="outlined"
-                            error={Boolean(touched.icon && errors.icon)}
-                            helperText={touched.icon && errors.icon}
-                          />
-                        )}
-                      />
-                    </Grid>
+                      <FormHelperText>
+                        {touched.menus && errors.menus}
+                      </FormHelperText>
+                    </FormControl>
                   </Grid>
 
-                  <button type="submit" style={{ display: 'none' }} />
-                </form>
-              </DialogContent>
+                  <Grid item md={6} xs={12}>
+                    <TextField
+                      fullWidth
+                      required
+                      label="Title"
+                      name="title"
+                      type="text"
+                      variant="outlined"
+                      disabled={loading}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.title}
+                      error={Boolean(touched.title && errors.title)}
+                      helperText={touched.title && errors.title}
+                    />
+                  </Grid>
 
-              <DialogActions className={classes.actions}>
-                <BtnSubmit
-                  title={
-                    props.type.toLowerCase() === 'edit' ? 'Update' : 'Create'
-                  }
-                  loading={loading}
-                  handleSubmit={handleSubmit}
-                  handleCancel={handleCloseDialog}
-                  variant="contained"
-                />
-              </DialogActions>
-            </React.Fragment>
-          )}
-        </Formik>
-      </Dialog>
+                  <Grid item md={6} xs={12}>
+                    <TextField
+                      fullWidth
+                      required
+                      label="Url"
+                      name="url"
+                      type="text"
+                      variant="outlined"
+                      disabled={loading}
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.url}
+                      error={Boolean(touched.url && errors.url)}
+                      helperText={touched.url && errors.url}
+                    />
+                  </Grid>
 
-      <Toast
-        open={toast.show}
-        type={toast.type}
-        message={toast.message}
-        handleClose={() => {
-          setToast({
-            show: false,
-            type: toast.type,
-            message: toast.message
-          });
-        }}
-      />
-    </>
+                  <Grid item md={6} xs={12}>
+                    <Autocomplete
+                      autoHighlight
+                      classes={{ option: classes.option }}
+                      disabled={loading}
+                      options={materialIcons}
+                      getOptionLabel={option => option.label}
+                      value={values.icon === '' ? null : { label: values.icon }}
+                      getOptionSelected={(options, value) =>
+                        Boolean(options.label === value.label)
+                      }
+                      onChange={(event, newValue) => {
+                        if (newValue === null) {
+                          setFieldValue('icon', values.icon);
+                        } else {
+                          setFieldValue('icon', newValue.label);
+                        }
+                      }}
+                      renderOption={option => (
+                        <React.Fragment>
+                          <Icon>{option.class}</Icon>
+                          {option.label}
+                        </React.Fragment>
+                      )}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          label="Icon"
+                          variant="outlined"
+                          error={Boolean(touched.icon && errors.icon)}
+                          helperText={touched.icon && errors.icon}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+
+                <button type="submit" style={{ display: 'none' }} />
+              </form>
+            </DialogContent>
+
+            <DialogActions className={classes.actions}>
+              <BtnSubmit
+                title={props.type === 'Edit' ? 'Update' : 'Create'}
+                loading={loading}
+                handleSubmit={handleSubmit}
+                handleCancel={handleCloseDialog}
+                variant="contained"
+              />
+            </DialogActions>
+          </React.Fragment>
+        )}
+      </Formik>
+    </Dialog>
   );
 };
 

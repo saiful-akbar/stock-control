@@ -2,27 +2,38 @@ import React, { useState } from 'react';
 import MenuSubItemTable from './MenuSubItemTable';
 import MenuSubItemForm from './MenuSubItemForm';
 import MenuSubItemDelete from './MenuSubItemDelete';
+import { useDispatch, useSelector } from 'react-redux';
+import { apiGetAllMenuItem } from 'src/services/menuItem';
 
 // Main component
 const MenuSubItem = ({ state }) => {
-  const [reload, setReload] = useState(false);
-  const [menuItems, setMenuItems] = useState([]);
-  const [dialogDelete, setDialogDelete] = useState({ show: false, id: null });
+  const [dialogDelete, setDialogDelete] = useState({ open: false, id: null });
   const [dialogForm, setDialogForm] = useState({
-    type: '',
-    show: false,
+    type: 'Create',
+    open: false,
     data: null
   });
+
+  /**
+   * Redux
+   */
+  const { menuItems } = useSelector(state => state.menusReducer);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (menuItems.data === null) dispatch(apiGetAllMenuItem());
+  }, [menuItems, dispatch]);
 
   return (
     <>
       <MenuSubItemTable
         state={state}
-        reload={reload}
-        setMenuItems={data => setMenuItems(data)}
-        openDialogForm={data => setDialogForm(data)}
-        openDialogDelete={id => setDialogDelete({ show: true, id: id })}
-        stopReload={() => setReload(false)}
+        openDialogForm={(open, type, data) => {
+          setDialogForm({ open, type, data });
+        }}
+        openDialogDelete={id => {
+          setDialogDelete({ open: true, id: id });
+        }}
       />
 
       {state !== null && (
@@ -31,23 +42,22 @@ const MenuSubItem = ({ state }) => {
             state.user_m_s_i_create === 1 || state.user_m_s_i_update === 1
           ) && (
             <MenuSubItemForm
-              open={dialogForm.show}
+              open={dialogForm.open}
               data={dialogForm.data}
               type={dialogForm.type}
-              menuItems={menuItems}
-              reloadTable={() => setReload(true)}
-              closeDialog={() =>
-                setDialogForm({ type: '', show: false, data: null })
-              }
+              closeDialog={() => {
+                setDialogForm({ type: null, open: false, data: null });
+              }}
             />
           )}
 
           {state.user_m_s_i_delete === 1 && (
             <MenuSubItemDelete
               id={dialogDelete.id}
-              open={dialogDelete.show}
-              reloadTable={() => setReload(true)}
-              closeDialog={() => setDialogDelete({ show: false, id: null })}
+              open={dialogDelete.open}
+              closeDialog={() => {
+                setDialogDelete({ open: false, id: null });
+              }}
             />
           )}
         </>

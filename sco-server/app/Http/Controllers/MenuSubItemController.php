@@ -43,6 +43,10 @@ class MenuSubItemController extends Controller
                     $sort = "menu_s_i_title";
                     break;
 
+                case 'menu_s_i_icon':
+                    $sort = "menu_s_i_icon";
+                    break;
+
                 case 'menu_s_i_url':
                     $sort = "menu_s_i_url";
                     break;
@@ -92,11 +96,37 @@ class MenuSubItemController extends Controller
         // response
         return response()->json([
             "menu_sub_items" => $data,
-            "menu_items"     => MenuItem::all(),
-            "search"         => $search,
             "sort"           => $sort,
-            "order_by"       => $order_by
+            "order_by"       => $order_by,
+            "search"         => $search,
         ], 200);
+    }
+
+    /**
+     * Method untuk mengambil data menu sub items setelah action
+     */
+    private function getDataMenuSubItems(String $sort = "menu_i_title", String $order_by = 'asc')
+    {
+        $data = MenuSubItem::leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
+            ->select(
+                "menu_items.menu_i_title",
+                "menu_sub_items.id",
+                "menu_sub_items.menu_item_id",
+                "menu_sub_items.menu_s_i_icon",
+                "menu_sub_items.menu_s_i_title",
+                "menu_sub_items.menu_s_i_url",
+                "menu_sub_items.created_at",
+                "menu_sub_items.updated_at"
+            )
+            ->orderBy(strtolower($sort), strtolower($order_by))
+            ->paginate(25);
+
+        return [
+            "menu_sub_items" => $data,
+            "sort"       => strtolower($sort),
+            "order_by"   => strtolower($order_by),
+            "search"     => "",
+        ];
     }
 
     /**
@@ -135,7 +165,10 @@ class MenuSubItemController extends Controller
             ->create(["log_desc" => "Create a new sub menu ({$menu_sub_item->menu_s_i_title})"]);
 
         // Response berhasil
-        return response()->json(["message" => "Sub menus created successfuly"], 200);
+        return response()->json([
+            "message" => "Sub menus created successfuly",
+            "result" => $this->getDataMenuSubItems("created_at", "desc")
+        ], 200);
     }
 
     /**
@@ -198,7 +231,10 @@ class MenuSubItemController extends Controller
                 "log_desc" => "Update sub menu (" . $menuSubItem->menu_s_i_title . " => " . $this->clearStr($request->title, "proper") . ")"
             ]);
 
-        return response()->json(["message" => "Sub menus updated successfuly"], 200);
+        return response()->json([
+            "message" => "Sub menus updated successfuly",
+            "result" => $this->getDataMenuSubItems("updated_at", "desc")
+        ], 200);
     }
 
     /**
@@ -219,7 +255,8 @@ class MenuSubItemController extends Controller
 
         // Response berhasil
         return response()->json([
-            "message" => "Sub menus deleted successfuly"
+            "message" => "Sub menus deleted successfuly",
+            "result" => $this->getDataMenuSubItems()
         ], 200);
     }
 }

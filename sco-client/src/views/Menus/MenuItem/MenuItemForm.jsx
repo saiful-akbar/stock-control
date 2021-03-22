@@ -17,7 +17,7 @@ import BtnSubmit from 'src/components/BtnSubmit';
 import { Alert } from '@material-ui/lab';
 import { makeStyles, useTheme } from '@material-ui/styles';
 import CloseIcon from '@material-ui/icons/Close';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 /**
@@ -53,6 +53,7 @@ const MenuItemForm = props => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const isMounted = React.useRef(true);
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState({
@@ -89,20 +90,21 @@ const MenuItemForm = props => {
       message: `Processing ... don't leave or reload the page`
     });
 
-    let res =
-      props.type.toLowerCase() === 'create'
-        ? await apiCreateMenuItem(values).catch(err => err)
-        : await apiUpdateMenuItem(props.data.id, values).catch(err => err);
+    try {
+      if (props.type.toLowerCase() === 'create') {
+        await dispatch(apiCreateMenuItem(values));
+      } else {
+        await dispatch(apiUpdateMenuItem(props.data.id, values));
+      }
 
-    if (isMounted.current) {
-      if (res.status === 200) {
-        props.setReduxToast(true, 'success', res.data.message);
-        props.onReloadTable();
+      if (isMounted.current) {
         setLoading(false);
         handleCloseDialog();
-      } else {
+      }
+    } catch (err) {
+      if (isMounted.current) {
         setLoading(false);
-        switch (res.status) {
+        switch (err.status) {
           case 401:
             window.location.href = '/logout';
             break;
@@ -115,18 +117,11 @@ const MenuItemForm = props => {
             navigate('/error/notfound');
             break;
 
-          case 422:
-            setErrors(res.data.errors);
-            setAlert({
-              type: 'error',
-              message: `(#${res.status}) ${res.data.message}`
-            });
-            break;
-
           default:
+            if (err.status === 422) setErrors(err.data.errors);
             setAlert({
               type: 'error',
-              message: `(#${res.status}) ${res.data.message}`
+              message: `(#${err.status}) ${err.data.message}`
             });
             break;
         }
@@ -205,7 +200,9 @@ const MenuItemForm = props => {
 
             <DialogActions className={classes.actions}>
               <BtnSubmit
-                title="Create"
+                title={
+                  props.type.toLowerCase() === 'create' ? 'Create' : 'Update'
+                }
                 loading={loading}
                 handleSubmit={handleSubmit}
                 handleCancel={handleCloseDialog}
@@ -219,15 +216,4 @@ const MenuItemForm = props => {
   );
 };
 
-/* redux reducer */
-function reduxReducer(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: 'SET_TOAST',
-        value: { show: show, type: type, message: message }
-      })
-  };
-}
-
-export default connect(null, reduxReducer)(MenuItemForm);
+export default MenuItemForm;

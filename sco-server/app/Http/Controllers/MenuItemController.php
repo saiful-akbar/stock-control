@@ -81,6 +81,19 @@ class MenuItemController extends Controller
     }
 
     /**
+     * Method untuk mengambil data menu items setelah action
+     */
+    private function getDataMenuItems(String $sort = "menu_i_title", String $order_by = 'asc')
+    {
+        return [
+            "menu_items" => MenuItem::orderBy(strtolower($sort), strtolower($order_by))->paginate(25),
+            "sort"       => strtolower($sort),
+            "order_by"   => strtolower($order_by),
+            "search"     => "",
+        ];
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -105,7 +118,8 @@ class MenuItemController extends Controller
 
         // hasil kembali
         return response()->json([
-            "message" => "Menus created successfully"
+            "message" => "Menus created successfully",
+            "result" => $this->getDataMenuItems("created_at", "desc")
         ], 200);
     }
 
@@ -146,6 +160,7 @@ class MenuItemController extends Controller
         // hasil
         return response()->json([
             "message" => "Menus updated successfully",
+            "result" => $this->getDataMenuItems("updated_at", "desc")
         ], 200);
     }
 
@@ -166,6 +181,7 @@ class MenuItemController extends Controller
 
         return response()->json([
             "message" => "{$delete} Menus deleted successfully",
+            "result" => $this->getDataMenuItems()
         ], 200);
     }
 }

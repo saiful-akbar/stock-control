@@ -311,8 +311,13 @@ function DocumentTable(props) {
                   <TableRow hover>
                     <TableCell
                       align="center"
-                      colSpan={5}
                       className={classes.tableCell}
+                      colSpan={
+                        props.userAccess !== null &&
+                        props.userAccess.user_m_s_i_delete === 1
+                          ? 6
+                          : 5
+                      }
                       padding={
                         props.userAccess !== null &&
                         props.userAccess.user_m_s_i_delete === 1

@@ -217,7 +217,7 @@ function TheadActions({
           >
             <Grid item lg={4} md={6} xs={12}>
               <Box display="flex" justifyContent="space-between">
-                <Box mr={1} display="flex" justifyContent="center">
+                <Box mr={2} display="flex" justifyContent="center">
                   <CustomTooltip title="Export or import" placement="bottom">
                     <IconButton onClick={handleClickMenu}>
                       <ImportExportIcon />

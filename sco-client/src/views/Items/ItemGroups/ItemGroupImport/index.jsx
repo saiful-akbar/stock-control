@@ -177,38 +177,41 @@ function ItemGroupImport({ open, onClose }) {
     let formData = new FormData();
     formData.set('file', value);
 
-    try {
-      await dispatch(apiImportItemGroup(formData));
-      if (isMounted.current) {
-        setLoading(false);
-        handleClose();
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        switch (err.status) {
-          case 401:
-            window.location.href = '/logout';
-            break;
-
-          case 403:
-            navigate('/error/forbidden');
-            break;
-
-          case 404:
-            navigate('/error/notfound');
-            break;
-
-          default:
-            setLoading(false);
-            setAlert({
-              type: 'error',
-              message:
-                err.status === 422 ? err.data.errors.join('') : err.data.message
-            });
-            break;
+    dispatch(apiImportItemGroup(formData))
+      .then(() => {
+        if (isMounted.current) {
+          setLoading(false);
+          handleClose();
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              window.location.href = '/logout';
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              setAlert({
+                type: 'error',
+                message:
+                  err.status === 422
+                    ? err.data.errors.join('')
+                    : err.data.message
+              });
+              break;
+          }
+        }
+      });
   };
 
   const handleDrop = event => {

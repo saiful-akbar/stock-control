@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Toast from 'src/components/Toast';
 import { apiDeleteMenuSubItem } from 'src/services/menuSubItem';
 import DialogDelete from 'src/components/DialogDelete';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
 
 /**
  * Main component utama
@@ -11,6 +11,12 @@ import { useNavigate } from 'react-router';
 const MenuItemDelete = props => {
   const navigate = useNavigate();
   const isMounted = React.useRef(true);
+  const dispatch = useDispatch();
+
+  /**
+   * State
+   */
+  const [loading, setLoading] = useState(false);
 
   /**
    * mengatasi jika komponen dilepas saat request api belum selesai
@@ -21,16 +27,6 @@ const MenuItemDelete = props => {
     };
     // eslint-disable-next-line
   }, []);
-
-  /**
-   * State
-   */
-  const [loading, setLoading] = useState(false);
-  const [toast, setToast] = React.useState({
-    show: false,
-    type: null,
-    message: ''
-  });
 
   /**
    * logout
@@ -44,81 +40,54 @@ const MenuItemDelete = props => {
    */
   const handleSubmit = async () => {
     setLoading(true);
-    try {
-      const res = await apiDeleteMenuSubItem(props.id);
 
-      if (isMounted.current) {
-        setToast({
-          show: true,
-          type: 'success',
-          message: res.data.message
-        });
-        props.reloadTable();
-        handleClose();
-      }
-    } catch (err) {
-      if (isMounted.current) {
-        switch (err.status) {
-          case 401:
-            logout();
-            break;
-
-          case 403:
-            navigate('/error/forbidden');
-            break;
-
-          case 404:
-            navigate('/error/notfound');
-            break;
-
-          default:
-            setToast({
-              show: true,
-              type: 'error',
-              message: `(#${err.status}) ${err.data.message}`
-            });
-            setLoading(false);
-            handleClose();
-            break;
+    dispatch(apiDeleteMenuSubItem(props.id))
+      .then(() => {
+        if (isMounted.current) {
+          setLoading(false);
+          handleClose();
         }
-      }
-    }
+      })
+      .catch(err => {
+        if (isMounted.current) {
+          switch (err.status) {
+            case 401:
+              logout();
+              break;
+
+            case 403:
+              navigate('/error/forbidden');
+              break;
+
+            case 404:
+              navigate('/error/notfound');
+              break;
+
+            default:
+              setLoading(false);
+              break;
+          }
+        }
+      });
   };
 
   /**
    * Handle close dialog
    */
   const handleClose = () => {
-    if (!loading) {
-      props.closeDialog();
-    }
+    if (!loading) props.closeDialog();
   };
 
   /**
    * main render component
    */
   return (
-    <>
-      <DialogDelete
-        open={props.open}
-        onClose={handleClose}
-        loading={loading}
-        onDelete={handleSubmit}
-      />
-
-      <Toast
-        open={toast.show}
-        type={toast.type}
-        message={toast.message}
-        handleClose={() => {
-          setToast({
-            show: false,
-            type: toast.type,
-            message: toast.message
-          });
-        }}
-      />
-    </>
+    <DialogDelete
+      open={props.open}
+      onClose={handleClose}
+      loading={loading}
+      onDelete={handleSubmit}
+    />
   );
 };
 
