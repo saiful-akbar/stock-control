@@ -231,7 +231,7 @@ function TheadActions({
                   </CustomTooltip>
                 </Box>
 
-                {userAccess !== null && userAccess.user_m_s_i_create === 1 && (
+                {userAccess.create === 1 && (
                   <Button
                     fullWidth
                     color="primary"
@@ -290,7 +290,7 @@ function TheadActions({
           <Typography variant="inherit">{'Export to excel'}</Typography>
         </MenuItem>
 
-        {userAccess !== null && userAccess.user_m_s_i_create === 1 && (
+        {userAccess.create === 1 && (
           <MenuItem onClick={handleImportClick}>
             <Typography variant="inherit">{'Import from excel'}</Typography>
           </MenuItem>

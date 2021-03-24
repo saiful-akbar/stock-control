@@ -6,15 +6,18 @@ import reduxStore from 'src/config/redux/store';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 
-// redux
-
-ReactDOM.render(
+const rootElement = document.getElementById('root');
+const RootApp = () => (
   <Provider store={reduxStore}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </Provider>,
-  document.getElementById('root')
+  </Provider>
 );
 
+ReactDOM.render(<RootApp />, rootElement);
+
+/**
+ * Service worker
+ */
 serviceWorker.register();

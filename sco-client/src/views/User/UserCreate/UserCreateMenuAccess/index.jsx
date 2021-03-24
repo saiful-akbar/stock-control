@@ -72,8 +72,7 @@ function UserCreateMenuAccess(props) {
     if (selectedIndex === -1) {
       selected = selected.concat(menuItemValues, {
         user_id: props.userId,
-        menu_item_id: id,
-        read: true
+        menu_item_id: id
       });
     } else if (selectedIndex === 0) {
       selected = selected.concat(menuItemValues.slice(1));

@@ -263,7 +263,7 @@ const MenuSubItemTable = props => {
                 </CustomTooltip>
               </Box>
 
-              {props.state !== null && props.state.user_m_s_i_create === 1 && (
+              {props.state !== null && props.state.create === 1 && (
                 <Button
                   fullWidth
                   color="primary"
@@ -366,8 +366,8 @@ const MenuSubItemTable = props => {
                               className={
                                 props.state !== null &&
                                 Boolean(
-                                  props.state.user_m_s_i_update === 1 ||
-                                    props.state.user_m_s_i_delete === 1
+                                  props.state.update === 1 ||
+                                    props.state.delete === 1
                                 )
                                   ? classes.tableCellDense
                                   : classes.tableCell
@@ -383,22 +383,21 @@ const MenuSubItemTable = props => {
 
                           {props.state !== null &&
                           Boolean(
-                            props.state.user_m_s_i_update === 1 ||
-                              props.state.user_m_s_i_delete === 1
+                            props.state.update === 1 || props.state.delete === 1
                           ) ? (
                             <TableCell
                               align="center"
                               className={
                                 props.state !== null &&
                                 Boolean(
-                                  props.state.user_m_s_i_update === 1 ||
-                                    props.state.user_m_s_i_delete === 1
+                                  props.state.update === 1 ||
+                                    props.state.delete === 1
                                 )
                                   ? classes.tableCellDense
                                   : classes.tableCell
                               }
                             >
-                              {props.state.user_m_s_i_update === 1 && (
+                              {props.state.update === 1 && (
                                 <CustomTooltip title="Edit">
                                   <IconButton
                                     onClick={() =>
@@ -410,7 +409,7 @@ const MenuSubItemTable = props => {
                                 </CustomTooltip>
                               )}
 
-                              {props.state.user_m_s_i_delete === 1 && (
+                              {props.state.delete === 1 && (
                                 <CustomTooltip title="Delete">
                                   <IconButton
                                     onClick={() =>

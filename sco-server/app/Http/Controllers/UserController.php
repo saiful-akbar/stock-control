@@ -216,7 +216,6 @@ class UserController extends Controller
                 "id"              => Str::random(32),
                 "user_id"         => $value["user_id"],
                 "menu_item_id"    => $value["menu_item_id"],
-                "user_m_i_read"   => $value["read"],
                 "created_at"      => now(),
                 "updated_at"      => now(),
             ];
@@ -225,15 +224,15 @@ class UserController extends Controller
         $menu_sub_items = [];
         foreach ($request->user_menu_sub_item as $key_sub_item => $sub_item) {
             $menu_sub_items[$key_sub_item] = [
-                "id"                => Str::random(32),
-                "user_id"           => $sub_item["user_id"],
-                "menu_sub_item_id"  => $sub_item["menu_sub_item_id"],
-                "user_m_s_i_read"   => $sub_item["read"],
-                "user_m_s_i_create" => $sub_item["create"],
-                "user_m_s_i_update" => $sub_item["update"],
-                "user_m_s_i_delete" => $sub_item["delete"],
-                "created_at"        => now(),
-                "updated_at"        => now(),
+                "id"               => Str::random(32),
+                "user_id"          => $sub_item["user_id"],
+                "menu_sub_item_id" => $sub_item["menu_sub_item_id"],
+                "read"             => $sub_item["read"],
+                "create"           => $sub_item["create"],
+                "update"           => $sub_item["update"],
+                "delete"           => $sub_item["delete"],
+                "created_at"       => now(),
+                "updated_at"       => now(),
             ];
         }
 

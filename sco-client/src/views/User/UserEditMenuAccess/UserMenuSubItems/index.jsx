@@ -62,22 +62,22 @@ function UserMenuSubItems(props) {
     },
     {
       label: 'Read',
-      field: 'user_m_s_i_read',
+      field: 'read',
       align: 'center'
     },
     {
       label: 'Create',
-      field: 'user_m_s_i_create',
+      field: 'create',
       align: 'center'
     },
     {
       label: 'Update',
-      field: 'user_m_s_i_update',
+      field: 'update',
       align: 'center'
     },
     {
       label: 'Delete',
-      field: 'user_m_s_i_delete',
+      field: 'delete',
       align: 'center'
     }
   ];
@@ -117,10 +117,10 @@ function UserMenuSubItems(props) {
           id: dt.id,
           menu_i_title: dt.menu_i_title,
           menu_s_i_title: dt.menu_s_i_title,
-          user_m_s_i_read: menuAccess(dt.user_m_s_i_read),
-          user_m_s_i_create: menuAccess(dt.user_m_s_i_create),
-          user_m_s_i_update: menuAccess(dt.user_m_s_i_update),
-          user_m_s_i_delete: menuAccess(dt.user_m_s_i_delete)
+          read: menuAccess(dt.read),
+          create: menuAccess(dt.create),
+          update: menuAccess(dt.update),
+          delete: menuAccess(dt.delete)
         }
       ];
       return result;
@@ -166,10 +166,10 @@ function UserMenuSubItems(props) {
     let newData = {
       user_id: userId,
       menu_sub_item_id: data.menu_sub_item_id,
-      user_m_s_i_read: data.user_m_s_i_read ? 1 : 0,
-      user_m_s_i_create: data.user_m_s_i_create ? 1 : 0,
-      user_m_s_i_update: data.user_m_s_i_update ? 1 : 0,
-      user_m_s_i_delete: data.user_m_s_i_delete ? 1 : 0
+      read: data.read ? 1 : 0,
+      create: data.create ? 1 : 0,
+      update: data.update ? 1 : 0,
+      delete: data.delete ? 1 : 0
     };
 
     try {
@@ -246,10 +246,10 @@ function UserMenuSubItems(props) {
               initialValues={{
                 menu_item_id: '',
                 menu_sub_item_id: '',
-                user_m_s_i_read: true,
-                user_m_s_i_create: false,
-                user_m_s_i_update: false,
-                user_m_s_i_delete: false
+                read: true,
+                create: false,
+                update: false,
+                delete: false
               }}
               validationSchema={Yup.object().shape({
                 menu_item_id: Yup.string().required(
@@ -258,10 +258,10 @@ function UserMenuSubItems(props) {
                 menu_sub_item_id: Yup.string().required(
                   'Menu Sub Item is a required field'
                 ),
-                user_m_s_i_read: Yup.boolean(),
-                user_m_s_i_create: Yup.boolean(),
-                user_m_s_i_update: Yup.boolean(),
-                user_m_s_i_delete: Yup.boolean()
+                read: Yup.boolean(),
+                create: Yup.boolean(),
+                update: Yup.boolean(),
+                delete: Yup.boolean()
               })}
               onSubmit={handleSubmiForm}
             >
@@ -357,9 +357,9 @@ function UserMenuSubItems(props) {
                               label="Read"
                               control={
                                 <Checkbox
-                                  name="user_m_s_i_read"
+                                  name="read"
                                   color="primary"
-                                  checked={values.user_m_s_i_read}
+                                  checked={values.read}
                                   onChange={handleChange}
                                   disabled={Boolean(
                                     values.menu_sub_item_id === '' ||
@@ -372,9 +372,9 @@ function UserMenuSubItems(props) {
                               label="Create"
                               control={
                                 <Checkbox
-                                  name="user_m_s_i_create"
+                                  name="create"
                                   color="primary"
-                                  checked={values.user_m_s_i_create}
+                                  checked={values.create}
                                   onChange={handleChange}
                                   disabled={Boolean(
                                     values.menu_sub_item_id === '' ||
@@ -387,9 +387,9 @@ function UserMenuSubItems(props) {
                               label="Update"
                               control={
                                 <Checkbox
-                                  name="user_m_s_i_update"
+                                  name="update"
                                   color="primary"
-                                  checked={values.user_m_s_i_update}
+                                  checked={values.update}
                                   onChange={handleChange}
                                   disabled={Boolean(
                                     values.menu_sub_item_id === '' ||
@@ -402,9 +402,9 @@ function UserMenuSubItems(props) {
                               label="Delete"
                               control={
                                 <Checkbox
-                                  name="user_m_s_i_delete"
+                                  name="delete"
                                   color="primary"
-                                  checked={values.user_m_s_i_delete}
+                                  checked={values.delete}
                                   onChange={handleChange}
                                   disabled={Boolean(
                                     values.menu_sub_item_id === '' ||

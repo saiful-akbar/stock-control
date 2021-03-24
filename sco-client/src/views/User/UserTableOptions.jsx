@@ -48,7 +48,7 @@ const UserTableOptions = ({
    */
   const handleEditUser = () => {
     handleCloseMenu();
-    navigate(`/users/${userData.id}/edit`);
+    navigate(`/user/${userData.id}/edit`);
   };
 
   /**
@@ -72,7 +72,7 @@ const UserTableOptions = ({
    */
   const handleGoToViewDetails = () => {
     handleCloseMenu();
-    navigate(`/users/${userData.id}`);
+    navigate(`/user/${userData.id}`);
   };
 
   /**
@@ -100,7 +100,7 @@ const UserTableOptions = ({
         open={open}
         onClose={handleCloseMenu}
       >
-        {Boolean(state !== null && state.user_m_s_i_update === 1) && (
+        {Boolean(state !== null && state.update === 1) && (
           <MenuItem onClick={handleChangePassword}>
             <ListItemIcon>
               <LockOutlinedIcon fontSize="small" />
@@ -109,7 +109,7 @@ const UserTableOptions = ({
           </MenuItem>
         )}
 
-        {Boolean(state !== null && state.user_m_s_i_delete === 1) && (
+        {Boolean(state !== null && state.delete === 1) && (
           <MenuItem onClick={handleClearUserLogs}>
             <ListItemIcon>
               <DeleteSweepOutlinedIcon fontSize="small" />
@@ -118,7 +118,7 @@ const UserTableOptions = ({
           </MenuItem>
         )}
 
-        {Boolean(state !== null && state.user_m_s_i_delete === 1) && (
+        {Boolean(state !== null && state.delete === 1) && (
           <MenuItem onClick={handleDeleteUser}>
             <ListItemIcon>
               <DeleteOutlinedIcon fontSize="small" />
@@ -127,7 +127,7 @@ const UserTableOptions = ({
           </MenuItem>
         )}
 
-        {Boolean(state !== null && state.user_m_s_i_update === 1) && (
+        {Boolean(state !== null && state.update === 1) && (
           <MenuItem onClick={handleEditUser}>
             <ListItemIcon>
               <EditOutlinedIcon fontSize="small" />
@@ -136,7 +136,7 @@ const UserTableOptions = ({
           </MenuItem>
         )}
 
-        {Boolean(state !== null && state.user_m_s_i_read === 1) && (
+        {Boolean(state !== null && state.read === 1) && (
           <MenuItem onClick={handleGoToViewDetails}>
             <ListItemIcon>
               <VisibilityOutlinedIcon fontSize="small" />

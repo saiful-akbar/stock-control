@@ -54,8 +54,7 @@ function UserCreate(props) {
       props.reduxUserLogin.menuSubItems.filter(
         value =>
           Boolean(
-            value.menu_s_i_url === '/users' &&
-              value.pivot.user_m_s_i_create !== 1
+            value.menu_s_i_url === '/users' && value.pivot.create !== 1
           ) && navigate('/error/forbidden')
       );
     }

@@ -265,8 +265,7 @@ function DocumentTable(props) {
               <TableHead>
                 <TableRow>
                   {Boolean(
-                    props.userAccess !== null &&
-                      props.userAccess.user_m_s_i_delete === 1
+                    props.userAccess !== null && props.userAccess.delete === 1
                   ) && (
                     <TableCell padding="checkbox">
                       <CustomTooltip placement="bottom" title="Select">
@@ -296,7 +295,7 @@ function DocumentTable(props) {
                       className={classes.tableCell}
                       padding={
                         props.userAccess !== null &&
-                        props.userAccess.user_m_s_i_delete === 1
+                        props.userAccess.delete === 1
                           ? 'checkbox'
                           : 'default'
                       }
@@ -314,13 +313,13 @@ function DocumentTable(props) {
                       className={classes.tableCell}
                       colSpan={
                         props.userAccess !== null &&
-                        props.userAccess.user_m_s_i_delete === 1
+                        props.userAccess.delete === 1
                           ? 6
                           : 5
                       }
                       padding={
                         props.userAccess !== null &&
-                        props.userAccess.user_m_s_i_delete === 1
+                        props.userAccess.delete === 1
                           ? 'checkbox'
                           : 'default'
                       }

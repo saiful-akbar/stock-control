@@ -38,9 +38,7 @@ const MenuSubItem = ({ state }) => {
 
       {state !== null && (
         <>
-          {Boolean(
-            state.user_m_s_i_create === 1 || state.user_m_s_i_update === 1
-          ) && (
+          {Boolean(state.create === 1 || state.update === 1) && (
             <MenuSubItemForm
               open={dialogForm.open}
               data={dialogForm.data}
@@ -51,7 +49,7 @@ const MenuSubItem = ({ state }) => {
             />
           )}
 
-          {state.user_m_s_i_delete === 1 && (
+          {state.delete === 1 && (
             <MenuSubItemDelete
               id={dialogDelete.id}
               open={dialogDelete.open}

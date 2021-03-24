@@ -13,7 +13,7 @@ import {
   Divider
 } from '@material-ui/core';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Style untuk komponen NavSubItem
 const useStyleNavSubItem = makeStyles(theme => ({
@@ -105,26 +105,27 @@ const useStyleNavItem = makeStyles(theme => ({
 }));
 
 // Main component
-const NavItem = ({ data, reduxUserLogin }) => {
+const NavItem = ({ data }) => {
   const classes = useStyleNavItem();
   const location = useLocation();
   const pathname = location.pathname;
+  const { userLogin } = useSelector(state => state.authReducer);
 
   const [open, setOpen] = React.useState(false);
   const [menuSubItems, setMenuSubItems] = React.useState([]);
   const [MenuSecondaryTitle, SetMenuSecondaryTitle] = React.useState([]);
 
   React.useEffect(() => {
-    if (reduxUserLogin.menuSubItems.length > 0) {
-      setMenuSubItems(reduxUserLogin.menuSubItems); // Simpan data menu sub item
+    if (userLogin.menuSubItems.length > 0) {
+      setMenuSubItems(userLogin.menuSubItems); // Simpan data menu sub item
 
       /*
        * Ambil title dari menu sub item
        * Cek menu item yang aktif saat aplikasi pertama kali di muat
        */
       let titles = [];
-      reduxUserLogin.menuSubItems.map(msi => {
-        if (msi.menu_item_id === data.id) {
+      userLogin.menuSubItems.map(msi => {
+        if (msi.menu_item_id === data.id && msi.pivot.read === 1) {
           if (msi.menu_s_i_url === pathname.slice(0, msi.menu_s_i_url.length)) {
             setOpen(true);
           }
@@ -173,7 +174,9 @@ const NavItem = ({ data, reduxUserLogin }) => {
           <List component="div" disablePadding>
             {menuSubItems.map(
               (msi, key) =>
-                Boolean(msi.menu_item_id === data.id) && (
+                Boolean(
+                  msi.menu_item_id === data.id && msi.pivot.read === 1
+                ) && (
                   <NavSubItem
                     url={msi.menu_s_i_url}
                     icon={msi.menu_s_i_icon}
@@ -201,8 +204,4 @@ NavItem.propTypes = {
   data: PropTypes.object
 };
 
-const reduxState = state => ({
-  reduxUserLogin: state.authReducer.userLogin
-});
-
-export default connect(reduxState, null)(NavItem);
+export default NavItem;

@@ -287,9 +287,7 @@ const MenuItemTable = props => {
                 </CustomTooltip>
               </Box>
 
-              {Boolean(
-                props.state !== null && props.state.user_m_s_i_create === 1
-              ) && (
+              {Boolean(props.state !== null && props.state.create === 1) && (
                 <Button
                   fullWidth
                   color="primary"
@@ -393,8 +391,8 @@ const MenuItemTable = props => {
                                 Boolean(
                                   props.state !== null &&
                                     Boolean(
-                                      props.state.user_m_s_i_update === 1 ||
-                                        props.state.user_m_s_i_delete === 1
+                                      props.state.update === 1 ||
+                                        props.state.delete === 1
                                     )
                                 )
                                   ? classes.tableCellDense
@@ -407,8 +405,7 @@ const MenuItemTable = props => {
 
                           {props.state !== null &&
                           Boolean(
-                            props.state.user_m_s_i_update === 1 ||
-                              props.state.user_m_s_i_delete === 1
+                            props.state.update === 1 || props.state.delete === 1
                           ) ? (
                             <TableCell
                               align="center"
@@ -416,15 +413,15 @@ const MenuItemTable = props => {
                                 Boolean(
                                   props.state !== null &&
                                     Boolean(
-                                      props.state.user_m_s_i_update === 1 ||
-                                        props.state.user_m_s_i_delete === 1
+                                      props.state.update === 1 ||
+                                        props.state.delete === 1
                                     )
                                 )
                                   ? classes.tableCellDense
                                   : classes.tableCell
                               }
                             >
-                              {props.state.user_m_s_i_update === 1 && (
+                              {props.state.update === 1 && (
                                 <CustomTooltip title="Edit">
                                   <IconButton
                                     onClick={() => {
@@ -436,7 +433,7 @@ const MenuItemTable = props => {
                                 </CustomTooltip>
                               )}
 
-                              {props.state.user_m_s_i_delete === 1 && (
+                              {props.state.delete === 1 && (
                                 <CustomTooltip title="Delete">
                                   <IconButton
                                     aria-label="delete"

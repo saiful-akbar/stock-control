@@ -14,9 +14,9 @@ class UserMenuSubItem extends Model
     protected $fillable = [
         "user_id",
         "menu_sub_item_id",
-        "user_m_s_i_read",
-        "user_m_s_i_create",
-        "user_m_s_i_update",
-        "user_m_s_i_delete",
+        "read",
+        "create",
+        "update",
+        "delete",
     ];
 }

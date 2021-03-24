@@ -344,9 +344,9 @@ const UserTable = props => {
               >
                 {Boolean(
                   props.state !== null &&
-                    props.state.user_m_s_i_create === 1 &&
-                    props.state.user_m_s_i_update === 1 &&
-                    props.state.user_m_s_i_delete === 1
+                    props.state.create === 1 &&
+                    props.state.update === 1 &&
+                    props.state.delete === 1
                 ) && <UserTruncateToken />}
 
                 <CustomTooltip title="Reload">
@@ -356,14 +356,12 @@ const UserTable = props => {
                 </CustomTooltip>
               </Box>
 
-              {Boolean(
-                props.state !== null && props.state.user_m_s_i_create === 1
-              ) && (
+              {Boolean(props.state !== null && props.state.create === 1) && (
                 <Button
                   fullWidth
                   variant="contained"
                   color="primary"
-                  onClick={() => navigate('/users/create')}
+                  onClick={() => navigate('/user/create')}
                 >
                   {'Create a new user'}
                 </Button>

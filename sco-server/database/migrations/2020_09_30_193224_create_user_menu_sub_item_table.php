@@ -17,10 +17,10 @@ class CreateUserMenuSubItemTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->uuid('menu_sub_item_id');
-            $table->boolean('user_m_s_i_create');
-            $table->boolean('user_m_s_i_read');
-            $table->boolean('user_m_s_i_update');
-            $table->boolean('user_m_s_i_delete');
+            $table->boolean('read');
+            $table->boolean('create');
+            $table->boolean('update');
+            $table->boolean('delete');
             $table->timestamps();
 
             $table->foreign('user_id')

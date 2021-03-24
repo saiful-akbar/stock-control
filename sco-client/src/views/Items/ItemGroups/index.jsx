@@ -9,7 +9,7 @@ import ItemGroupImport from './ItemGroupImport';
  * Komponent utama
  */
 function ItemGroups({ reduxUserLogin }) {
-  const [userAccess, setUserAccess] = React.useState(null);
+  const [userAccess, setUserAccess] = React.useState({});
   const [isOpenDialogImport, setOpenDialogImport] = React.useState(false);
   const [form, setForm] = React.useState({
     open: false,

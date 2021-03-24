@@ -96,12 +96,17 @@ function DashboardLayout() {
       } else {
         navigate('/login');
       }
-    } else {
-      if (Boolean(preloader)) preloader.remove();
     }
 
     // eslint-disable-next-line
   }, [userLogin]);
+
+  /**
+   * Menghilangkan preloader
+   */
+  React.useEffect(() => {
+    if (Boolean(preloader)) preloader.remove();
+  }, [preloader]);
 
   /**
    * Fungsi untuk mengambil data user yang sedang login

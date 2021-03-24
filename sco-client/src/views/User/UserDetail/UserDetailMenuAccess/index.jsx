@@ -33,10 +33,10 @@ const useStyles = makeStyles(theme => ({
  */
 const columns = [
   { field: 'menu_s_i_title', label: 'Title', align: 'left' },
-  { field: 'user_m_s_i_read', label: 'Read', align: 'center' },
-  { field: 'user_m_s_i_create', label: 'Create', align: 'center' },
-  { field: 'user_m_s_i_update', label: 'Update', align: 'center' },
-  { field: 'user_m_s_i_delete', label: 'Delete', align: 'center' }
+  { field: 'read', label: 'Read', align: 'center' },
+  { field: 'create', label: 'Create', align: 'center' },
+  { field: 'update', label: 'Update', align: 'center' },
+  { field: 'delete', label: 'Delete', align: 'center' }
 ];
 
 /**
@@ -83,7 +83,7 @@ function UserDetailMenuAccess({ data }) {
                     </TableCell>
 
                     <TableCell className={classes.tableCell} align="center">
-                      {subMenu.user_m_s_i_read === 1 ? (
+                      {subMenu.read === 1 ? (
                         <CheckIcon className={classes.textGreen} />
                       ) : (
                         <CloseIcon className={classes.textRed} />
@@ -91,7 +91,7 @@ function UserDetailMenuAccess({ data }) {
                     </TableCell>
 
                     <TableCell className={classes.tableCell} align="center">
-                      {subMenu.user_m_s_i_create === 1 ? (
+                      {subMenu.create === 1 ? (
                         <CheckIcon className={classes.textGreen} />
                       ) : (
                         <CloseIcon className={classes.textRed} />
@@ -99,7 +99,7 @@ function UserDetailMenuAccess({ data }) {
                     </TableCell>
 
                     <TableCell className={classes.tableCell} align="center">
-                      {subMenu.user_m_s_i_update === 1 ? (
+                      {subMenu.update === 1 ? (
                         <CheckIcon className={classes.textGreen} />
                       ) : (
                         <CloseIcon className={classes.textRed} />
@@ -107,7 +107,7 @@ function UserDetailMenuAccess({ data }) {
                     </TableCell>
 
                     <TableCell className={classes.tableCell} align="center">
-                      {subMenu.user_m_s_i_delete === 1 ? (
+                      {subMenu.delete === 1 ? (
                         <CheckIcon className={classes.textGreen} />
                       ) : (
                         <CloseIcon className={classes.textRed} />

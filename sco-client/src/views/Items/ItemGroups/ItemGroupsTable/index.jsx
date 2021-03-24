@@ -66,7 +66,15 @@ const useStyles = makeStyles(theme => ({
 /**
  * Komponen utama
  */
-function ItemGroupTable(props) {
+function ItemGroupTable({
+  userAccess,
+  selectedRows,
+  onImport,
+  onAdd,
+  onEdit,
+  onDelete,
+  ...props
+}) {
   const isMounted = React.useRef(true);
   const navigate = useNavigate();
   const classes = useStyles();
@@ -131,14 +139,6 @@ function ItemGroupTable(props) {
 
           default:
             setLoading(false);
-            dispatch({
-              type: 'SET_TOAST',
-              value: {
-                show: true,
-                type: 'error',
-                message: `(#${err.status}) ${err.data.message}`
-              }
-            });
             break;
         }
       }
@@ -200,7 +200,13 @@ function ItemGroupTable(props) {
    * Fungsi untuk reload table
    */
   const handleReloadTable = () => {
-    getDataItemGroups({ ...itemGroups });
+    getDataItemGroups({
+      page: itemGroups.page, // page
+      perPage: itemGroups.currentPage, // perPage
+      sort: itemGroups.sort, // sort
+      orderBy: itemGroups.orderBy, // orderBy
+      search: itemGroups.search // search
+    });
   };
 
   /**
@@ -232,8 +238,8 @@ function ItemGroupTable(props) {
    * Handle slected rows saat dialog delete di tutup
    */
   React.useEffect(() => {
-    setSelected(props.selectedRows);
-  }, [props.selectedRows, setSelected]);
+    setSelected(selectedRows);
+  }, [selectedRows, setSelected]);
 
   /**
    * Fungsi untuk mengecek baris tabel yang terpilih
@@ -277,23 +283,20 @@ function ItemGroupTable(props) {
         <TheadActions
           selected={selected}
           loading={loading}
-          userAccess={props.userAccess}
+          userAccess={userAccess}
           onReload={handleReloadTable}
           onSearch={value => handleSearch(value)}
-          onAdd={() => props.onAdd()}
-          onDelete={() => props.onDelete(selected)}
-          onImport={() => props.onImport()}
+          onAdd={() => onAdd()}
+          onDelete={() => onDelete(selected)}
+          onImport={() => onImport()}
         />
 
-        <Loader show={Boolean(props.userAccess === null || loading)}>
+        <Loader show={Boolean(userAccess.read !== 1 || loading)}>
           <TableContainer className={classes.tableContainer}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
-                  {Boolean(
-                    props.userAccess !== null &&
-                      props.userAccess.user_m_s_i_delete === 1
-                  ) && (
+                  {userAccess.delete === 1 && (
                     <TableCell padding="checkbox">
                       <CustomTooltip placement="bottom" title="Select">
                         <Checkbox
@@ -320,42 +323,26 @@ function ItemGroupTable(props) {
                       data={itemGroups}
                       onSort={field => handleSort(field)}
                       className={classes.tableCell}
-                      padding={
-                        props.userAccess !== null &&
-                        props.userAccess.user_m_s_i_delete === 1
-                          ? 'checkbox'
-                          : 'default'
-                      }
+                      padding={userAccess.delete === 1 ? 'checkbox' : 'default'}
                     />
                   ))}
 
-                  {Boolean(
-                    props.userAccess !== null &&
-                      Boolean(
-                        props.userAccess.user_m_s_i_delete === 1 ||
-                          props.userAccess.user_m_s_i_update === 1
-                      )
-                  ) && <TableCell padding="checkbox" />}
+                  {userAccess.update === 1 && <TableCell padding="checkbox" />}
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {itemGroups.data === null || itemGroups.data.length <= 0 ? (
+                {Boolean(
+                  itemGroups.data === null || itemGroups.data.length <= 0
+                ) ? (
                   <TableRow hover>
                     <TableCell
                       align="center"
                       colSpan={6}
                       className={classes.tableCell}
-                      padding={
-                        props.userAccess !== null &&
-                        props.userAccess.user_m_s_i_delete === 1
-                          ? 'checkbox'
-                          : 'default'
-                      }
+                      padding={userAccess.delete === 1 ? 'checkbox' : 'default'}
                     >
-                      {props.userAccess === null || loading
-                        ? 'Loading...'
-                        : 'No data in table'}
+                      {loading ? 'Loading...' : 'No data in table'}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -369,8 +356,8 @@ function ItemGroupTable(props) {
                         key={key}
                         row={row}
                         columns={columns}
-                        userAccess={props.userAccess}
-                        onEdit={value => props.onEdit(value)}
+                        userAccess={userAccess}
+                        onEdit={value => onEdit(value)}
                         onSelect={(e, id) => handleSelectClick(e, id)}
                         aria-checked={isItemSelected}
                         selected={isItemSelected}

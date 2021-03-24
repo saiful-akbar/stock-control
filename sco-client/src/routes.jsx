@@ -30,9 +30,6 @@ const User = React.lazy(() => import('src/views/User'));
 const UserCreate = React.lazy(() => import('src/views/User/UserCreate'));
 const UserEdit = React.lazy(() => import('src/views/User/UserEdit'));
 const UserDetail = React.lazy(() => import('src/views/User/UserDetail'));
-const UserEditMenuAccess = React.lazy(() =>
-  import('src/views/User/UserEditMenuAccess')
-);
 
 /**
  * Routes
@@ -63,19 +60,15 @@ const routes = [
         element: <User />
       },
       {
-        path: '/users/create',
+        path: '/user/create',
         element: <UserCreate />
       },
       {
-        path: '/users/:id/edit',
+        path: '/user/:id/edit',
         element: <UserEdit />
       },
       {
-        path: '/users/:id/menus',
-        element: <UserEditMenuAccess />
-      },
-      {
-        path: '/users/:id',
+        path: '/user/:id',
         element: <UserDetail />
       },
       {

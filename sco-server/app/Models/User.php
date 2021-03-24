@@ -60,8 +60,7 @@ class User extends Authenticatable
      */
     public function menuItem()
     {
-        return $this->belongsToMany(MenuItem::class, 'user_menu_item', 'user_id', 'menu_item_id')
-            ->withPivot('user_m_i_read');
+        return $this->belongsToMany(MenuItem::class, 'user_menu_item', 'user_id', 'menu_item_id');
     }
 
     /**
@@ -70,7 +69,7 @@ class User extends Authenticatable
     public function menuSubItem()
     {
         return $this->belongsToMany(MenuSubItem::class, 'user_menu_sub_item', 'user_id', 'menu_sub_item_id')
-            ->withPivot('user_m_s_i_create', 'user_m_s_i_read', 'user_m_s_i_update', 'user_m_s_i_delete');
+            ->withPivot('create', 'read', 'update', 'delete');
     }
 
     /**

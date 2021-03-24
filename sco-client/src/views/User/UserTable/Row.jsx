@@ -83,7 +83,7 @@ function Row(props) {
    */
   const goto = e => {
     e.preventDefault();
-    navigate(`/users/${row.id}`);
+    navigate(`/user/${row.id}`);
   };
 
   return (
@@ -128,7 +128,7 @@ function Row(props) {
                 <Link
                   className={classes.link}
                   variant="body2"
-                  href={`/users/${row.id}`}
+                  href={`/user/${row.id}`}
                   onClick={goto}
                 >
                   {row.profile_name}

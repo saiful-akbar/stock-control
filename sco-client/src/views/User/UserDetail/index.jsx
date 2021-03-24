@@ -61,9 +61,8 @@ function UserDetail(props) {
     if (userLogin.menuSubItems !== null) {
       userLogin.menuSubItems.filter(
         value =>
-          Boolean(
-            value.menu_s_i_url === '/users' && value.pivot.user_m_s_i_read !== 1
-          ) && navigate('/error/forbidden')
+          Boolean(value.menu_s_i_url === '/users' && value.pivot.read !== 1) &&
+          navigate('/error/forbidden')
       );
     }
   }, [userLogin, navigate]);

@@ -27,19 +27,19 @@ class UserAccess
 
         if (!empty($user_access)) {
             if ($access == 'read') {
-                if ($user_access->pivot->user_m_s_i_read == 1) {
+                if ($user_access->pivot->read == 1) {
                     return $next($request);
                 }
             } else if ($access == 'create') {
-                if ($user_access->pivot->user_m_s_i_create == 1) {
+                if ($user_access->pivot->create == 1) {
                     return $next($request);
                 }
             } else if ($access == 'update') {
-                if ($user_access->pivot->user_m_s_i_update == 1) {
+                if ($user_access->pivot->update == 1) {
                     return $next($request);
                 }
             } else if ($access == 'delete') {
-                if ($user_access->pivot->user_m_s_i_delete == 1) {
+                if ($user_access->pivot->delete == 1) {
                     return $next($request);
                 }
             }

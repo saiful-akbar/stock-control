@@ -39,7 +39,7 @@ const User = props => {
 
   /* Cek akses read pada user */
   React.useEffect(() => {
-    if (userAccess !== null && userAccess.user_m_s_i_read === 0) {
+    if (userAccess !== null && userAccess.read === 0) {
       navigate('/error/forbidden');
     }
   }, [userAccess, navigate]);
