@@ -16,7 +16,7 @@ class MenuItem extends Model
 
     public function user()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'user_menu_item', 'menu_item_id', 'user_id')->withPivot('user_m_i_read');
+        return $this->belongsToMany(\App\Models\User::class, 'user_menu_item', 'menu_item_id', 'user_id');
     }
 
     public function menuSubItems()

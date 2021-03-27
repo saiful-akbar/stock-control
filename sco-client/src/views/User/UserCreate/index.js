@@ -1,6 +1,6 @@
 import React from 'react';
 import Page from 'src/components/Page';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
@@ -31,10 +31,21 @@ function UserCreate(props) {
   const navigate = useNavigate();
   const classes = useStyles();
   const isMounted = React.useRef(true);
+
+  /**
+   * State
+   */
   const [steps] = React.useState(['Account & Profile', 'Menu Access']);
   const [activeStep, setActiveStep] = React.useState(0);
-  const [dataMenus, setDataMenus] = React.useState(null);
+  const [isSkeletonShow, setSkeletonShow] = React.useState(false);
   const [userId, setUserId] = React.useState(null);
+
+  /**
+   * Redux
+   */
+  const { userLogin } = useSelector(state => state.authReducer);
+  const { menuItems, menuSubItems } = useSelector(state => state.menusReducer);
+  const dispatch = useDispatch();
 
   /* Merubah maunted menjadi false ketika komponen dilepas */
   React.useEffect(() => {
@@ -50,24 +61,23 @@ function UserCreate(props) {
    * Jika user access create === 0 (false) maka alihkan ke halaman forbidden
    */
   React.useEffect(() => {
-    if (props.reduxUserLogin.menuSubItems !== null) {
-      props.reduxUserLogin.menuSubItems.filter(
-        value =>
-          Boolean(
-            value.menu_s_i_url === '/users' && value.pivot.create !== 1
-          ) && navigate('/error/forbidden')
-      );
-    }
-  }, [props.reduxUserLogin, navigate]);
+    userLogin.menuSubItems.filter(value => {
+      if (value.menu_s_i_url === '/users' && value.pivot.create !== 1) {
+        return navigate('/error/forbidden');
+      }
+      return null;
+    });
+  }, [userLogin, navigate]);
 
-  /* Mengambil data menus pada server dari api */
+  /**
+   * Mengambil data menus pada server dari api
+   */
   React.useState(() => {
-    if (dataMenus === null) {
-      apiGetDataUserCreate()
-        .then(res => {
-          if (isMounted.current) {
-            setDataMenus(res.data);
-          }
+    if (menuItems.data === null || menuSubItems.data === null) {
+      setSkeletonShow(true);
+      dispatch(apiGetDataUserCreate())
+        .then(() => {
+          if (isMounted.current) setSkeletonShow(false);
         })
         .catch(err => {
           if (isMounted.current) {
@@ -85,25 +95,21 @@ function UserCreate(props) {
                 break;
 
               default:
-                props.setReduxToast(
-                  true,
-                  'error',
-                  `(#${err.status}) ${err.data.message}`
-                );
+                setSkeletonShow(false);
                 break;
             }
           }
         });
     }
-  }, [dataMenus]);
+  }, [menuItems, menuSubItems, setSkeletonShow, navigate]);
 
   /* Fungsi next step */
-  const handleNext = () => {
+  const handleNextStep = () => {
     setActiveStep(1);
   };
 
-  /* Fungsi back step */
-  const handleBack = () => {
+  /* Fungsi next step */
+  const handleBackStep = () => {
     setActiveStep(0);
   };
 
@@ -111,14 +117,19 @@ function UserCreate(props) {
   const getStepContent = stepIndex => {
     switch (stepIndex) {
       case 1:
-        return <UserCreateMenuAccess dataMenus={dataMenus} userId={userId} />;
+        return (
+          <UserCreateMenuAccess
+            isSkeletonShow={isSkeletonShow}
+            userId={userId}
+            onBackStep={() => handleBackStep()}
+          />
+        );
       default:
         return (
           <UserCreateAccountProfile
-            dataMenus={dataMenus}
+            isSkeletonShow={isSkeletonShow}
             onChangeUserId={id => setUserId(id)}
-            onNextStep={() => handleNext()}
-            onBackStep={() => handleBack()}
+            onNextStep={() => handleNextStep()}
           />
         );
     }
@@ -154,26 +165,4 @@ function UserCreate(props) {
   );
 }
 
-/* Redux State */
-function reduxState(state) {
-  return {
-    reduxUserLogin: state.authReducer.userLogin
-  };
-}
-
-/* redux reducer */
-function reduxReducer(dispatch) {
-  return {
-    setReduxToast: (show, type, message) =>
-      dispatch({
-        type: 'SET_TOAST',
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(reduxState, reduxReducer)(UserCreate);
+export default UserCreate;

@@ -73,7 +73,7 @@ const useRowStyles = makeStyles(theme => ({
 }));
 
 function Row(props) {
-  const { row, onDelete, onClearLogs, state, onChangePassword } = props;
+  const { row, onDelete, onClearLogs, userAccess, onChangePassword } = props;
   const classes = useRowStyles();
   const navigate = useNavigate();
 
@@ -91,8 +91,8 @@ function Row(props) {
       <TableRow hover className={classes.root}>
         <TableCell className={classes.tableCell}>
           <UserTableOptions
-            userData={row}
-            state={state}
+            userId={row.id}
+            userAccess={userAccess}
             onDelete={() => onDelete()}
             onClearLogs={() => onClearLogs()}
             onChangePassword={() => onChangePassword()}

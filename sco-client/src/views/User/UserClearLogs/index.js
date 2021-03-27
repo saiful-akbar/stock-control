@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
  *
  * @param {*} param0
  */
-function UserClearLogs({ userId, open, onReloadTable, onCloseDialog }) {
+function UserClearLogs({ userId, open, onCloseDialog }) {
   const isMounted = React.useRef(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -33,19 +33,10 @@ function UserClearLogs({ userId, open, onReloadTable, onCloseDialog }) {
    */
   const handleClearUserLogs = () => {
     setLoading(true);
-    apiClearUserLogs(userId)
-      .then(res => {
+    dispatch(apiClearUserLogs(userId))
+      .then(() => {
         if (isMounted.current) {
           setLoading(false);
-          onReloadTable();
-          dispatch({
-            type: 'SET_TOAST',
-            value: {
-              show: true,
-              type: 'success',
-              message: res.data.message
-            }
-          });
           onCloseDialog();
         }
       })
@@ -66,14 +57,6 @@ function UserClearLogs({ userId, open, onReloadTable, onCloseDialog }) {
 
             default:
               setLoading(false);
-              dispatch({
-                type: 'SET_TOAST',
-                value: {
-                  show: true,
-                  type: 'error',
-                  message: `(#${err.status}) ${err.data.message}`
-                }
-              });
               break;
           }
         }

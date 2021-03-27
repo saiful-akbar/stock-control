@@ -15,12 +15,20 @@ import {
   CardContent
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import { useSelector } from 'react-redux';
 
 /**
  * Komponen utama
  */
-function UserDetailProfile({ data, ...props }) {
+function UserDetailProfile({ isSkeletonShow }) {
   const isMounted = React.useRef(true);
+
+  /**
+   * Redux
+   */
+  const { account, profile } = useSelector(
+    state => state.usersReducer.userDetail
+  );
 
   /**
    * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
@@ -41,7 +49,7 @@ function UserDetailProfile({ data, ...props }) {
         <List>
           <ListItem>
             <ListItemIcon>
-              {data === null ? (
+              {isSkeletonShow ? (
                 <Skeleton variant="circle" width={40} height={40} />
               ) : (
                 <PersonIcon />
@@ -50,17 +58,17 @@ function UserDetailProfile({ data, ...props }) {
 
             <ListItemText
               primary={
-                data === null ? (
-                  <Skeleton variant="text" width="50%" />
-                ) : data.account.username === null ? (
-                  '...'
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="60%" />
+                ) : account.username === null ? (
+                  '......'
                 ) : (
-                  data.account.username
+                  account.username
                 )
               }
               secondary={
-                data === null ? (
-                  <Skeleton variant="text" width="30%" />
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="40%" />
                 ) : (
                   'Username'
                 )
@@ -71,7 +79,7 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemIcon>
-              {data === null ? (
+              {isSkeletonShow ? (
                 <Skeleton variant="circle" width={40} height={40} />
               ) : (
                 <AccountBoxIcon />
@@ -80,17 +88,17 @@ function UserDetailProfile({ data, ...props }) {
 
             <ListItemText
               primary={
-                data === null ? (
-                  <Skeleton variant="text" width="50%" />
-                ) : data.profile.profile_name === null ? (
-                  '...'
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="60%" />
+                ) : profile.name === null ? (
+                  '......'
                 ) : (
-                  data.profile.profile_name
+                  profile.name
                 )
               }
               secondary={
-                data === null ? (
-                  <Skeleton variant="text" width="30%" />
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="40%" />
                 ) : (
                   'Profile name'
                 )
@@ -101,7 +109,7 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemIcon>
-              {data === null ? (
+              {isSkeletonShow ? (
                 <Skeleton variant="circle" width={40} height={40} />
               ) : (
                 <WorkIcon />
@@ -110,17 +118,17 @@ function UserDetailProfile({ data, ...props }) {
 
             <ListItemText
               primary={
-                data === null ? (
-                  <Skeleton variant="text" width="50%" />
-                ) : data.profile.profile_division === null ? (
-                  '...'
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="60%" />
+                ) : profile.division === null ? (
+                  '......'
                 ) : (
-                  data.profile.profile_division
+                  profile.division
                 )
               }
               secondary={
-                data === null ? (
-                  <Skeleton variant="text" width="30%" />
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="40%" />
                 ) : (
                   'Division'
                 )
@@ -131,7 +139,7 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemIcon>
-              {data === null ? (
+              {isSkeletonShow ? (
                 <Skeleton variant="circle" width={40} height={40} />
               ) : (
                 <MailIcon />
@@ -140,19 +148,19 @@ function UserDetailProfile({ data, ...props }) {
 
             <ListItemText
               primary={
-                data === null ? (
-                  <Skeleton variant="text" width="50%" />
-                ) : data.profile.profile_email === null ? (
-                  '...'
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="60%" />
+                ) : profile.email === null ? (
+                  '......'
                 ) : (
-                  data.profile.profile_email
+                  profile.email
                 )
               }
               secondary={
-                data === null ? (
-                  <Skeleton variant="text" width="30%" />
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="40%" />
                 ) : (
-                  'Email'
+                  'Email Address'
                 )
               }
             />
@@ -161,7 +169,7 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemIcon>
-              {data === null ? (
+              {isSkeletonShow ? (
                 <Skeleton variant="circle" width={40} height={40} />
               ) : (
                 <PhoneAndroidIcon />
@@ -170,17 +178,17 @@ function UserDetailProfile({ data, ...props }) {
 
             <ListItemText
               primary={
-                data === null ? (
-                  <Skeleton variant="text" width="50%" />
-                ) : data.profile.profile_phone === null ? (
-                  '...'
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="60%" />
+                ) : profile.phone === null ? (
+                  '......'
                 ) : (
-                  data.profile.profile_phone
+                  profile.phone
                 )
               }
               secondary={
-                data === null ? (
-                  <Skeleton variant="text" width="30%" />
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="40%" />
                 ) : (
                   'Phone'
                 )
@@ -191,7 +199,7 @@ function UserDetailProfile({ data, ...props }) {
 
           <ListItem>
             <ListItemIcon>
-              {data === null ? (
+              {isSkeletonShow ? (
                 <Skeleton variant="circle" width={40} height={40} />
               ) : (
                 <LocationOnIcon />
@@ -200,17 +208,17 @@ function UserDetailProfile({ data, ...props }) {
 
             <ListItemText
               primary={
-                data === null ? (
-                  <Skeleton variant="text" width="50%" />
-                ) : data.profile.profile_address === null ? (
-                  '...'
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="60%" />
+                ) : profile.address === null ? (
+                  '......'
                 ) : (
-                  data.profile.profile_address
+                  profile.address
                 )
               }
               secondary={
-                data === null ? (
-                  <Skeleton variant="text" width="30%" />
+                isSkeletonShow ? (
+                  <Skeleton variant="text" width="40%" />
                 ) : (
                   'Address'
                 )
@@ -227,7 +235,7 @@ function UserDetailProfile({ data, ...props }) {
  * Properti default untuk komponen UserDetailProfile
  */
 UserDetailProfile.defaultProps = {
-  data: null
+  isSkeletonShow: false
 };
 
 export default UserDetailProfile;

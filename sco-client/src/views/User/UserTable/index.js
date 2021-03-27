@@ -11,17 +11,13 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import IconButton from '@material-ui/core/IconButton';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import CustomTooltip from 'src/components/CustomTooltip';
 import { apiGetAllUser } from 'src/services/user';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import UserTruncateToken from '../UserTruncateToken';
 import Row from './Row';
 import Loader from 'src/components/Loader';
@@ -58,28 +54,22 @@ const useStyles = makeStyles(theme => ({
  * component utama
  * @param {*} props
  */
-const UserTable = props => {
+const UserTable = ({ userAccess, onDelete, onChangePassword, onClearLogs }) => {
   const classes = useStyles();
   const isMounted = useRef(true);
   const navigate = useNavigate();
 
   /**
+   * Redux
+   */
+  const { users } = useSelector(state => state.usersReducer);
+  const dispatch = useDispatch();
+
+  /**
    * state
    */
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [rowData, setRowData] = useState({
-    users: {
-      current_page: 1,
-      data: [],
-      from: 0,
-      per_page: 25,
-      total: 0
-    },
-    search: '',
-    sort: 'profile_name',
-    order_by: 'asc'
-  });
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState(users.search);
 
   /**
    * Daftar kolom untuk tabel
@@ -116,18 +106,14 @@ const UserTable = props => {
    * inisialisasi awal untuk mengambil data dari api
    */
   useEffect(() => {
-    rowData.users.data.length <= 0 && getData();
-    return () => (isMounted.current = false);
+    if (users.data === null) getDataUsers();
+
+    return () => {
+      isMounted.current = false;
+    };
+
     // eslint-disable-next-line
   }, []);
-
-  /**
-   * Reload table dari luar komponen
-   */
-  useEffect(() => {
-    props.reload && getData();
-    // eslint-disable-next-line
-  }, [props.reload]);
 
   /**
    * Fungsi untuk mengambil data dari api
@@ -137,21 +123,19 @@ const UserTable = props => {
    * @param {string} sort
    * @param {string "asc/desc"} orderBy
    */
-  const getData = (
-    page = rowData.users.current_page,
-    perPage = rowData.users.per_page,
-    query = search,
-    sort = rowData.sort,
-    orderBy = rowData.order_by
+  const getDataUsers = (
+    data = {
+      page: 1, // halaman saat ini
+      perPage: 25, // baris per
+      sort: 'profile_name', // sortir
+      orderBy: 'asc', // urutan baris berdasarkan asc||desc
+      search: '' // pencarian
+    }
   ) => {
     setLoading(true);
-    apiGetAllUser(page, perPage, query, sort, orderBy)
+    dispatch(apiGetAllUser(data))
       .then(res => {
-        if (isMounted.current) {
-          setRowData(res.data);
-          setLoading(false);
-          props.setReload(false);
-        }
+        if (isMounted.current) setLoading(false);
       })
       .catch(err => {
         if (isMounted.current) {
@@ -170,12 +154,6 @@ const UserTable = props => {
 
             default:
               setLoading(false);
-              props.setReload(false);
-              props.setReduxToast(
-                true,
-                'error',
-                `(#${err.status}) ${err.data.message}`
-              );
               break;
           }
         }
@@ -186,49 +164,56 @@ const UserTable = props => {
    * fungsi sortir tabel
    * @param {string} sort
    */
-  const handleSortTable = sort => {
+  const handleSortTable = newSort => {
     let orderBy = 'asc';
-    if (rowData.sort === sort) {
-      if (rowData.order_by === 'asc') {
-        orderBy = 'desc';
-      }
+    if (users.sort === newSort && users.orderBy === 'asc') {
+      orderBy = 'desc';
     }
-    getData(
-      rowData.users.current_page,
-      rowData.users.per_page,
-      rowData.search,
-      sort,
-      orderBy
-    );
+    getDataUsers({
+      sort: newSort, // sortir
+      orderBy: orderBy, // urutan baris berdasarkan asc||desc
+      page: users.currentPage, // halaman saat ini
+      perPage: users.perPage, // baris per
+      search: users.search // pencarian
+    });
   };
 
   /**
    * fungsi submit form pencarian
    * @param {*} e
    */
-  const handleSubmitSearch = e => {
+  const handleSubmitFormSearch = e => {
     e.preventDefault();
-    getData(1, rowData.users.per_page, search);
+    getDataUsers({
+      search: search, // pencarian
+      page: 1, // halaman saat ini
+      sort: users.sort, // sortir
+      orderBy: users.orderBy, // urutan baris berdasarkan asc||desc
+      perPage: users.perPage // baris per
+    });
   };
 
   /**
    * fungsi handle blur pada form pencarian
    * @param {obj} e
    */
-  const handleBlur = e => {
-    if (rowData.search === '' && search === '') {
-      e.preventDefault();
-    } else {
-      handleSubmitSearch(e);
-    }
+  const handleBlurFormSearch = e => {
+    e.preventDefault();
+    if (users.search !== search) handleSubmitFormSearch(e);
   };
 
   /**
    * Handle clear form search
    */
-  const handleClearSearch = e => {
+  const handleClearFormSearch = e => {
     setSearch('');
-    getData(rowData.users.current_page, rowData.users.per_page, '');
+    getDataUsers({
+      search: '', // pencarian
+      page: 1, // halaman saat ini
+      sort: users.sort, // sortir
+      orderBy: users.orderBy, // urutan baris berdasarkan asc||desc
+      perPage: users.perPage // baris per
+    });
   };
 
   /**
@@ -236,89 +221,34 @@ const UserTable = props => {
    * @param {obj} event
    */
   const handleChangeRowsPerPage = event => {
-    let newRowData = { ...rowData };
-    newRowData.users['per_page'] = event.target.value;
-    newRowData.users['current_page'] = 1;
-    setRowData(newRowData);
-    getData(1, event.target.value);
+    let newUsers = { ...users };
+    newUsers['perPage'] = event.target.value;
+    newUsers['currentPage'] = 1;
+
+    getDataUsers(newUsers);
   };
 
   /**
-   * fungsi untuk kembali kehalaman pertama pada tabel
-   * @param {obj} event
+   * Fungsi untuk next atau prev halaman tabel
+   * @param {*} e
+   * @param {*} newPage
    */
-  const handleFirstPageButtonClick = event => {
-    getData(1);
+  const handleChangePage = (e, newPage) => {
+    e.preventDefault();
+    getDataUsers({
+      page: newPage + 1, // page
+      perPage: users.perPage, // perPage
+      sort: users.sort, // sort
+      orderBy: users.orderBy, // orderBy
+      search: users.search // search
+    });
   };
 
   /**
-   * fungsi untuk kembali 1 halaman pada tabel
-   * @param {obj} event
+   * Fungsi untuk reload table
    */
-  const handleBackButtonClick = event => {
-    getData(rowData.users.current_page - 1);
-  };
-
-  /**
-   * fungsi untuk maju 1 halamnn pada tabel
-   * @param {obj} event
-   */
-  const handleNextButtonClick = event => {
-    getData(rowData.users.current_page + 1);
-  };
-
-  /**
-   * fungsi untuk maju ke halamn terakhir pada tabel
-   * @param {obj} event
-   */
-  const handleLastPageButtonClick = event => {
-    getData(
-      Math.max(0, Math.ceil(rowData.users.total / rowData.users.per_page))
-    );
-  };
-
-  /**
-   * component custom untuk tabel pagination
-   */
-  const TablePaginationActions = () => {
-    return (
-      <div className={classes.root}>
-        <IconButton
-          aria-label="first page"
-          disabled={rowData.users.current_page <= 1}
-          onClick={handleFirstPageButtonClick}
-        >
-          <FirstPageIcon />
-        </IconButton>
-        <IconButton
-          aria-label="previous page"
-          disabled={rowData.users.current_page <= 1}
-          onClick={handleBackButtonClick}
-        >
-          <KeyboardArrowLeft />
-        </IconButton>
-        <IconButton
-          aria-label="next page"
-          disabled={
-            rowData.users.current_page >=
-            Math.ceil(rowData.users.total / rowData.users.per_page)
-          }
-          onClick={handleNextButtonClick}
-        >
-          <KeyboardArrowRight />
-        </IconButton>
-        <IconButton
-          aria-label="last page"
-          disabled={
-            rowData.users.current_page >=
-            Math.ceil(rowData.users.total / rowData.users.per_page)
-          }
-          onClick={handleLastPageButtonClick}
-        >
-          <LastPageIcon />
-        </IconButton>
-      </div>
-    );
+  const handleReloadTable = () => {
+    getDataUsers({ ...users });
   };
 
   /**
@@ -335,28 +265,18 @@ const UserTable = props => {
           alignItems="center"
         >
           <Grid item lg={4} md={6} xs={12}>
-            <Box display="flex" justifyContent="flex-start" alignItems="center">
-              <Box
-                mr={1}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
-                {Boolean(
-                  props.state !== null &&
-                    props.state.create === 1 &&
-                    props.state.update === 1 &&
-                    props.state.delete === 1
-                ) && <UserTruncateToken />}
+            <Box display="flex" justifyContent="flex-start">
+              <Box mr={2} display="flex" justifyContent="center">
+                {userAccess.delete === 1 && <UserTruncateToken />}
 
                 <CustomTooltip title="Reload">
-                  <IconButton onClick={() => getData()}>
+                  <IconButton onClick={handleReloadTable}>
                     <RefreshIcon />
                   </IconButton>
                 </CustomTooltip>
               </Box>
 
-              {Boolean(props.state !== null && props.state.create === 1) && (
+              {userAccess.create === 1 && (
                 <Button
                   fullWidth
                   variant="contained"
@@ -370,7 +290,7 @@ const UserTable = props => {
           </Grid>
 
           <Grid item lg={8} md={6} xs={12}>
-            <form autoComplete="off" onSubmit={handleSubmitSearch}>
+            <form autoComplete="off" onSubmit={handleSubmitFormSearch}>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -380,7 +300,7 @@ const UserTable = props => {
                 type="text"
                 value={search}
                 disabled={loading}
-                onBlur={handleBlur}
+                onBlur={handleBlurFormSearch}
                 onChange={e => setSearch(e.target.value)}
                 InputProps={{
                   startAdornment: (
@@ -388,11 +308,9 @@ const UserTable = props => {
                       <SearchIcon />
                     </InputAdornment>
                   ),
-                  endAdornment: Boolean(
-                    rowData.search !== '' && search !== ''
-                  ) && (
+                  endAdornment: users.search !== '' && search !== '' && (
                     <InputAdornment position="end">
-                      <IconButton size="small" onClick={handleClearSearch}>
+                      <IconButton size="small" onClick={handleClearFormSearch}>
                         <CancelOutlinedIcon fontSize="small" />
                       </IconButton>
                     </InputAdornment>
@@ -403,7 +321,7 @@ const UserTable = props => {
           </Grid>
 
           <Grid item xs={12}>
-            <Loader show={Boolean(props.state === null || loading)}>
+            <Loader show={Boolean(userAccess.read !== 1 || loading)}>
               <TableContainer className={classes.container}>
                 <Table stickyHeader>
                   <TableHead>
@@ -419,18 +337,16 @@ const UserTable = props => {
                           align={col.align}
                         >
                           <TableSortLabel
-                            active={rowData.sort === col.field}
+                            active={users.sort === col.field}
                             onClick={() => handleSortTable(col.field)}
                             direction={
-                              rowData.sort === col.field
-                                ? rowData.order_by
-                                : 'asc'
+                              users.sort === col.field ? users.orderBy : 'asc'
                             }
                           >
                             {col.label}
-                            {rowData.sort === col.field && (
+                            {users.sort === col.field && (
                               <span className={classes.visuallyHidden}>
-                                {rowData.order_by === 'desc'
+                                {users.orderBy === 'desc'
                                   ? 'sorted descending'
                                   : 'sorted ascending'}
                               </span>
@@ -442,7 +358,7 @@ const UserTable = props => {
                   </TableHead>
 
                   <TableBody>
-                    {rowData.users.data.length <= 0 ? (
+                    {Boolean(users.data === null || users.data.length <= 0) ? (
                       <TableRow hover>
                         <TableCell
                           className={classes.tableCell}
@@ -453,16 +369,14 @@ const UserTable = props => {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      rowData.users.data.map((row, key) => (
+                      users.data.map((row, key) => (
                         <Row
                           key={key}
                           row={row}
-                          state={props.state}
-                          onDelete={() => props.onDelete(row.id)}
-                          onClearLogs={() => props.onClearLogs(row.id)}
-                          onChangePassword={() =>
-                            props.onChangePassword(row.id)
-                          }
+                          userAccess={userAccess}
+                          onDelete={() => onDelete(row.id)}
+                          onClearLogs={() => onClearLogs(row.id)}
+                          onChangePassword={() => onChangePassword(row.id)}
                         />
                       ))
                     )}
@@ -473,12 +387,11 @@ const UserTable = props => {
               <TablePagination
                 component="div"
                 rowsPerPageOptions={[25, 50, 100, 250]}
-                count={rowData.users.total}
-                rowsPerPage={Number(rowData.users.per_page)}
-                page={rowData.users.current_page - 1}
-                onChangePage={e => e.preventDefault()}
+                count={users.totalData}
+                rowsPerPage={users.perPage}
+                page={users.currentPage - 1}
+                onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
               />
             </Loader>
           </Grid>
@@ -488,32 +401,4 @@ const UserTable = props => {
   );
 };
 
-/**
- * Redux state
- * @param {obj} state
- */
-function reduxState(state) {
-  return {
-    reduxUserLogin: state.authReducer.userLogin
-  };
-}
-
-/**
- * Redux dispatch
- * @param {obj} dispatch
- */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: (show = false, type = 'success', message = '') =>
-      dispatch({
-        type: 'SET_TOAST',
-        value: {
-          show: show,
-          type: type,
-          message: message
-        }
-      })
-  };
-}
-
-export default connect(reduxState, reduxDispatch)(UserTable);
+export default UserTable;

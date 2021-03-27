@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { apiDeleteUser } from 'src/services/user';
 import DialogDelete from 'src/components/DialogDelete';
 import { useNavigate } from 'react-router';
@@ -8,6 +8,7 @@ function UserDelete(props) {
   const [loading, setLoading] = React.useState(false);
   const isMounted = React.useRef(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     return () => {
@@ -20,16 +21,10 @@ function UserDelete(props) {
   const handleSubmit = () => {
     setLoading(true);
 
-    apiDeleteUser(props.userId)
-      .then(res => {
+    dispatch(apiDeleteUser(props.userId))
+      .then(() => {
         if (isMounted.current) {
           setLoading(false);
-          props.setReduxToast({
-            show: true,
-            type: 'success',
-            message: res.data.message
-          });
-          props.onReloadTable();
           props.onCloseDialog();
         }
       })
@@ -50,11 +45,6 @@ function UserDelete(props) {
 
             default:
               setLoading(false);
-              props.setReduxToast({
-                show: true,
-                type: 'error',
-                message: `(#${err.status}) ${err.data.message}`
-              });
               break;
           }
         }
@@ -62,7 +52,9 @@ function UserDelete(props) {
   };
 
   /* Fungsi menutup dialog */
-  const handleClose = () => Boolean(!loading) && props.onCloseDialog();
+  const handleClose = () => {
+    if (!loading) props.onCloseDialog();
+  };
 
   return (
     <DialogDelete
@@ -74,14 +66,4 @@ function UserDelete(props) {
   );
 }
 
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: value =>
-      dispatch({
-        type: 'SET_TOAST',
-        value: value
-      })
-  };
-}
-
-export default connect(null, reduxDispatch)(UserDelete);
+export default UserDelete;

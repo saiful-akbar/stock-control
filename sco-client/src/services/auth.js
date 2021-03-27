@@ -16,15 +16,6 @@ export const apiLogin = data => dispatch => {
         })
           .then(res => {
             resolve(res);
-            dispatch({
-              type: 'SET_USER_LOGIN',
-              value: {
-                account: res.data.data,
-                profile: res.data.profile,
-                menuItems: res.data.menu_items,
-                menuSubItems: res.data.menu_sub_items
-              }
-            });
           })
           .catch(err => {
             if (err.response) {

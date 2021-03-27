@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  Grid,
-  Divider,
-  Box
-} from '@material-ui/core';
+import { Card, CardContent, Grid, Divider, Box } from '@material-ui/core';
 import { Alert, Skeleton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import { Formik } from 'formik';
@@ -16,8 +9,11 @@ import BtnSubmit from 'src/components/BtnSubmit';
 import FormCreateProfile from './FormCreateProfile';
 import { apiCreateUserAccountProfile } from 'src/services/user';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-/* Style */
+/**
+ * Style
+ */
 const useStyles = makeStyles(theme => ({
   alert: {
     width: '100%',
@@ -27,20 +23,35 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-/* Komponent utama */
-function UserCreateAccountProfile(props) {
+/**
+ * Komponent utama
+ */
+function UserCreateAccountProfile({
+  isSkeletonShow,
+  onChangeUserId,
+  onNextStep
+}) {
   const classes = useStyles();
   const isMounted = React.useRef(true);
   const navigate = useNavigate();
 
-  /* State */
+  /**
+   * State
+   */
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState({
     type: 'info',
     message: 'Fields marked with * are required'
   });
 
-  /* Mengatasi jika komponen dilapas saat request api belum selesai */
+  /**
+   * Redux
+   */
+  const dispatch = useDispatch();
+
+  /**
+   * Mengatasi jika komponen dilapas saat request api belum selesai
+   */
   React.useEffect(() => {
     return () => {
       isMounted.current = false;
@@ -48,7 +59,9 @@ function UserCreateAccountProfile(props) {
     // eslint-disable-next-line
   }, []);
 
-  /* Fungsi handle submit form */
+  /**
+   * Fungsi handle submit form
+   */
   const handleSubmitForm = (data, { setErrors }) => {
     setLoading(true);
     setAlert({
@@ -67,12 +80,12 @@ function UserCreateAccountProfile(props) {
     newData.set('division', data.division);
     newData.set('address', data.address);
 
-    apiCreateUserAccountProfile(newData)
+    dispatch(apiCreateUserAccountProfile(newData))
       .then(res => {
         if (isMounted.current) {
           setLoading(false);
-          props.onChangeUserId(res.data.user_id);
-          props.onNextStep();
+          onChangeUserId(res.data.user_id);
+          onNextStep();
         }
       })
       .catch(err => {
@@ -91,15 +104,8 @@ function UserCreateAccountProfile(props) {
               navigate('/error/notfound');
               break;
 
-            case 422:
-              setErrors(err.data.errors);
-              setAlert({
-                type: 'error',
-                message: `(#${err.status}) ${err.data.message}`
-              });
-              break;
-
             default:
+              if (err.status === 422) setErrors(err.data.errors);
               setAlert({
                 type: 'error',
                 message: `(#${err.status}) ${err.data.message}`
@@ -110,7 +116,9 @@ function UserCreateAccountProfile(props) {
       });
   };
 
-  /* Render */
+  /**
+   * Render
+   */
   return (
     <Formik
       onSubmit={handleSubmitForm}
@@ -156,10 +164,6 @@ function UserCreateAccountProfile(props) {
       }) => (
         <form onSubmit={handleSubmit} autoComplete="off" noValidate>
           <Card elevation={3}>
-            <CardHeader
-              title="Account & Profile"
-              subheader="Create new user account and profile data"
-            />
             <CardContent>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
@@ -170,7 +174,7 @@ function UserCreateAccountProfile(props) {
 
                 <Grid item xs={12}>
                   <FormCreateAccount
-                    dataMenus={props.dataMenus}
+                    isSkeletonShow={isSkeletonShow}
                     loading={loading}
                     values={values}
                     handleBlur={handleBlur}
@@ -182,7 +186,7 @@ function UserCreateAccountProfile(props) {
 
                 <Grid item xs={12}>
                   <FormCreateProfile
-                    dataMenus={props.dataMenus}
+                    isSkeletonShow={isSkeletonShow}
                     loading={loading}
                     values={values}
                     handleBlur={handleBlur}
@@ -198,7 +202,7 @@ function UserCreateAccountProfile(props) {
             <Divider />
 
             <Box p={2} display="flex" justifyContent="flex-end">
-              {props.dataMenus === null ? (
+              {isSkeletonShow ? (
                 <>
                   <Skeleton
                     variant="rect"

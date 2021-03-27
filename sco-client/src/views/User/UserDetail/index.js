@@ -11,6 +11,7 @@ import apiUrl from 'src/utils/apiUrl';
 import UserDetailProfile from './UserDetailProfile';
 import UserDetailMenuAccess from './UserDetailMenuAccess';
 import UserDetailLogs from './UserDetailLogs';
+import { Skeleton } from '@material-ui/lab';
 
 // Style
 const useStyle = makeStyles(theme => ({
@@ -26,12 +27,8 @@ const useStyle = makeStyles(theme => ({
   },
   avatar: {
     border: `10px solid ${theme.palette.background.paper}`,
-    width: theme.spacing(60),
-    height: theme.spacing(60),
-    [theme.breakpoints.down('sm')]: {
-      width: theme.spacing(50),
-      height: theme.spacing(50)
-    },
+    width: theme.spacing(50),
+    height: theme.spacing(50),
     [theme.breakpoints.down('xs')]: {
       width: theme.spacing(30),
       height: theme.spacing(30)
@@ -44,13 +41,23 @@ const useStyle = makeStyles(theme => ({
  */
 function UserDetail(props) {
   const classes = useStyle();
+  const isMounted = React.useRef(true);
   const navigate = useNavigate();
   const { id } = useParams();
+
+  /**
+   * Redux
+   */
   const { userLogin } = useSelector(state => state.authReducer);
+  const { account, profile } = useSelector(
+    state => state.usersReducer.userDetail
+  );
   const dispatch = useDispatch();
 
-  const isMounted = React.useRef(true);
-  const [userData, setUserData] = React.useState(null);
+  /**
+   * State
+   */
+  const [isSkeletonShow, setSkeletonShow] = React.useState(false);
 
   /**
    * Ambil data userLogin dari redux
@@ -67,28 +74,26 @@ function UserDetail(props) {
     }
   }, [userLogin, navigate]);
 
-  const handleShowToast = (show, type, message) => {
-    dispatch({
-      type: 'SET_TOAST',
-      value: {
-        show: show,
-        type: type,
-        message: message
-      }
-    });
-  };
-
   /**
-   * mengambil data user dari api
    * Fungsi untuk menghendel jika komponent dilepas saat request api belum selesai
    */
   React.useEffect(() => {
-    if (userData === null) {
-      apiGetUserDetail(id)
-        .then(res => {
-          if (isMounted.current) {
-            setUserData(res.data);
-          }
+    return () => {
+      isMounted.current = false;
+    };
+
+    // eslint-disable-next-line
+  }, []);
+
+  /**
+   * mengambil data user dari api jika param id !== redux userDetail.account.id
+   */
+  React.useEffect(() => {
+    if (id !== account.id) {
+      setSkeletonShow(true);
+      dispatch(apiGetUserDetail(id))
+        .then(() => {
+          if (isMounted.current) setSkeletonShow(false);
         })
         .catch(err => {
           if (isMounted.current) {
@@ -106,31 +111,22 @@ function UserDetail(props) {
                 break;
 
               default:
-                handleShowToast(
-                  true,
-                  'error',
-                  `(#${err.status}) ${err.data.message}`
-                );
+                setSkeletonShow(false);
                 break;
             }
           }
         });
     }
-
-    return () => {
-      isMounted.current = false;
-    };
-    // eslint-disable-next-line
-  }, []);
+  }, [dispatch, id, account, setSkeletonShow, navigate]);
 
   /**
    * Render Komponen utama
    */
   return (
     <Page pb title="View user details" pageTitle="View user details">
-      <Container>
+      <Container maxWidth="md">
         <Grid
-          spacing={3}
+          spacing={5}
           container
           direction="row"
           justify="center"
@@ -138,39 +134,36 @@ function UserDetail(props) {
         >
           <Grid item md={7} xs={12}>
             <Box display="flex" justifyContent="center" alignItems="center">
-              <Avatar
-                alt="Avatar"
-                className={classes.avatar}
-                src={
-                  Boolean(
-                    userData !== null &&
-                      userData.profile.profile_avatar !== null
-                  )
-                    ? apiUrl(`/avatar/${userData.profile.profile_avatar}`)
-                    : null
-                }
-              />
+              {isSkeletonShow ? (
+                <Skeleton variant="circle" className={classes.avatar} />
+              ) : (
+                <Avatar
+                  alt="Avatar"
+                  className={classes.avatar}
+                  src={
+                    profile.avatar === null
+                      ? ''
+                      : apiUrl(`/avatar/${profile.avatar}`)
+                  }
+                />
+              )}
             </Box>
           </Grid>
 
           <Grid item md={5} xs={12}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <UserDetailProfile data={userData} />
+                <UserDetailProfile isSkeletonShow={isSkeletonShow} />
               </Grid>
             </Grid>
           </Grid>
 
           <Grid item xs={12}>
-            <UserDetailMenuAccess
-              data={
-                userData !== null ? userData.menu_access.menu_sub_items : null
-              }
-            />
+            <UserDetailMenuAccess isSkeletonShow={isSkeletonShow} />
           </Grid>
 
           <Grid item xs={12}>
-            <UserDetailLogs data={userData !== null ? userData.logs : null} />
+            <UserDetailLogs isSkeletonShow={isSkeletonShow} />
           </Grid>
         </Grid>
       </Container>

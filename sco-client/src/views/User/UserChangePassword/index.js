@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import BtnSubmit from 'src/components/BtnSubmit';
 import * as Yup from 'yup';
@@ -52,16 +52,11 @@ const useStyles = makeStyles(theme => ({
  * Komponen utama
  * @param {*} props
  */
-function UserChangePassword({
-  open,
-  userId,
-  onClose,
-  onReloadTable,
-  ...props
-}) {
+function UserChangePassword({ open, userId, onClose, ...props }) {
   const classes = useStyles();
   const isMounted = useRef(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -84,14 +79,9 @@ function UserChangePassword({
 
   const handleSubmitForm = (data, { setErrors, resetForm }) => {
     setLoading(true);
-    apiUpdateUserPassword(userId, data)
-      .then(res => {
+    dispatch(apiUpdateUserPassword(userId, data))
+      .then(() => {
         if (isMounted.current) {
-          props.setReduxToast({
-            show: true,
-            type: 'success',
-            message: res.data.message
-          });
           setLoading(false);
           resetForm();
           onClose();
@@ -119,11 +109,6 @@ function UserChangePassword({
 
             default:
               setLoading(false);
-              props.setReduxToast({
-                show: true,
-                type: 'error',
-                message: `(#${err.status}) ${err.data.message}`
-              });
               break;
           }
         }
@@ -131,12 +116,7 @@ function UserChangePassword({
   };
 
   return (
-    <Dialog
-      open={open}
-      fullWidth={true}
-      maxWidth="sm"
-      aria-labelledby="form-dialog-title"
-    >
+    <Dialog open={open} fullWidth={true} maxWidth="sm">
       <Formik
         onSubmit={handleSubmitForm}
         initialValues={{
@@ -146,6 +126,7 @@ function UserChangePassword({
           password: Yup.string()
             .required()
             .max(200)
+            .min(6)
         })}
       >
         {({ errors, handleChange, handleSubmit, values }) => (
@@ -168,11 +149,12 @@ function UserChangePassword({
 
               <FormControl
                 fullWidth
-                margin="dense"
+                margin="normal"
                 variant="outlined"
                 error={Boolean(errors.password)}
               >
-                <InputLabel id="label-password">New Password</InputLabel>
+                <InputLabel id="label-password">{'New Password'}</InputLabel>
+
                 <OutlinedInput
                   labelid="label-password"
                   label="New Password"
@@ -191,7 +173,7 @@ function UserChangePassword({
                         >
                           <IconButton
                             color="primary"
-                            size="small"
+                            size="medium"
                             edge="end"
                             disabled={loading}
                             onClick={() => setShowPassword(!showPassword)}
@@ -215,11 +197,10 @@ function UserChangePassword({
               <BtnSubmit
                 title="Update"
                 color="primary"
+                variant="contained"
                 loading={loading}
                 handleSubmit={handleSubmit}
                 handleCancel={handleClose}
-                variant="contained"
-                size="small"
               />
             </DialogActions>
           </form>
@@ -235,8 +216,7 @@ function UserChangePassword({
 UserChangePassword.propTypes = {
   open: PropTypes.bool,
   userId: PropTypes.string,
-  onClose: PropTypes.func,
-  onReloadTable: PropTypes.func
+  onClose: PropTypes.func
 };
 
 /**
@@ -245,22 +225,7 @@ UserChangePassword.propTypes = {
 UserChangePassword.defaultProps = {
   open: false,
   userId: null,
-  onClose: () => false,
-  onReloadTable: () => false
+  onClose: () => false
 };
 
-/**
- * Redux dispatch
- * @param {obj} dispatch
- */
-function reduxDispatch(dispatch) {
-  return {
-    setReduxToast: value =>
-      dispatch({
-        type: 'SET_TOAST',
-        value: value
-      })
-  };
-}
-
-export default connect(null, reduxDispatch)(UserChangePassword);
+export default UserChangePassword;

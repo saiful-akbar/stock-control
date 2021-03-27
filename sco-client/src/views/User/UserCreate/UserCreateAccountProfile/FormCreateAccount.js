@@ -23,7 +23,7 @@ function FormCreateAccount({
   handleChange,
   touched,
   errors,
-  dataMenus,
+  isSkeletonShow,
   ...props
 }) {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -31,14 +31,26 @@ function FormCreateAccount({
   return (
     <Card variant="outlined">
       <CardHeader
-        title="Account Form"
-        subheader="Account data will be used as user authentication"
+        title={
+          isSkeletonShow ? (
+            <Skeleton variant="text" width="30%" />
+          ) : (
+            'Account Form'
+          )
+        }
+        subheader={
+          isSkeletonShow ? (
+            <Skeleton variant="text" width="50%" />
+          ) : (
+            'Account data will be used as user authentication'
+          )
+        }
       />
 
       <CardContent>
         <Grid container spacing={3}>
           <Grid item md={5} xs={12}>
-            {dataMenus === null ? (
+            {isSkeletonShow ? (
               <Skeleton variant="rect" height={54} />
             ) : (
               <TextField
@@ -59,7 +71,7 @@ function FormCreateAccount({
           </Grid>
 
           <Grid item md={5} xs={12}>
-            {dataMenus === null ? (
+            {isSkeletonShow ? (
               <Skeleton variant="rect" height={54} />
             ) : (
               <TextField
@@ -67,8 +79,9 @@ function FormCreateAccount({
                 required
                 label="Password"
                 name="password"
-                type={showPassword ? 'text' : 'password'}
                 variant="outlined"
+                autoComplete="off"
+                type={showPassword ? 'text' : 'password'}
                 disabled={loading}
                 value={values.password}
                 onBlur={handleBlur}
@@ -86,6 +99,7 @@ function FormCreateAccount({
                           }
                         >
                           <IconButton
+                            color="primary"
                             onClick={() => setShowPassword(!showPassword)}
                           >
                             {showPassword ? (
@@ -104,7 +118,7 @@ function FormCreateAccount({
           </Grid>
 
           <Grid item md={2} xs={12}>
-            {dataMenus === null ? (
+            {isSkeletonShow ? (
               <Skeleton variant="rect" height={54} />
             ) : (
               <FormControlLabel

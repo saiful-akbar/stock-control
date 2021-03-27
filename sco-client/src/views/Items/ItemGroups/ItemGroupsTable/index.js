@@ -201,8 +201,8 @@ function ItemGroupTable({
    */
   const handleReloadTable = () => {
     getDataItemGroups({
-      page: itemGroups.page, // page
-      perPage: itemGroups.currentPage, // perPage
+      page: itemGroups.currentPage, // page
+      perPage: itemGroups.perPage, // perPage
       sort: itemGroups.sort, // sort
       orderBy: itemGroups.orderBy, // orderBy
       search: itemGroups.search // search

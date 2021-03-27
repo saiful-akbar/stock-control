@@ -11,9 +11,12 @@ import {
   CardContent,
   Divider,
   Box,
-  Typography
+  Typography,
+  Grid
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import notesImage from 'src/assets/images/ilustration/notes.svg';
 
 /**
  * Style
@@ -24,6 +27,16 @@ const useStyle = makeStyles(theme => ({
   },
   ip: {
     color: theme.palette.info.main
+  },
+  image: {
+    backgroundImage: `url(${notesImage})`,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'auto 100%',
+    height: 150,
+    [theme.breakpoints.down('sm')]: {
+      height: 100
+    }
   }
 }));
 
@@ -32,29 +45,57 @@ const useStyle = makeStyles(theme => ({
  *
  * @param {Object} param0
  */
-function UserDetailLogs({ data }) {
+function UserDetailLogs({ isSkeletonShow }) {
   const classes = useStyle();
+
+  /**
+   * Redux
+   */
+  const { logs } = useSelector(state => state.usersReducer.userDetail);
 
   /**
    * Render
    */
   return (
-    <Card elevation={0} className={classes.root}>
-      <CardHeader title="Recent events" />
+    <Box mt={5}>
+      <Grid
+        container
+        spacing={5}
+        direction="row"
+        justify="space-between"
+        alignItems="flex-start"
+      >
+        <Grid item md={6} xs={8}>
+          <Typography variant="h5" color="textPrimary" noWrap>
+            {'Recent events'}
+          </Typography>
 
-      <Divider />
+          <Typography variant="subtitle2" color="textSecondary">
+            {'A list of the last 50 user activities'}
+          </Typography>
+        </Grid>
 
-      <CardContent>
-        <Box display="flex" justifyContent="center" alignItems="center">
-          {data !== null ? (
-            data.length > 0 ? (
+        <Grid item md={6} xs={4} className={classes.image} />
+
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            {isSkeletonShow ? (
+              <Typography component="span" color="textPrimary">
+                Loading...
+              </Typography>
+            ) : logs.length > 0 ? (
               <Timeline align="alternate">
-                {data.map(log => (
+                {logs.map(log => (
                   <TimelineItem key={log.id}>
                     <TimelineSeparator>
                       <TimelineDot color="primary" />
                       <TimelineConnector />
                     </TimelineSeparator>
+
                     <TimelineContent>
                       <Card elevation={3}>
                         <CardHeader
@@ -64,7 +105,9 @@ function UserDetailLogs({ data }) {
                         <CardContent>
                           <Typography>{log.log_desc}</Typography>
                         </CardContent>
+
                         <Divider />
+
                         <Box p={2}>
                           <Typography component="div">
                             <span className={classes.ip}>{log.ip}</span> |{' '}
@@ -77,16 +120,14 @@ function UserDetailLogs({ data }) {
                 ))}
               </Timeline>
             ) : (
-              <Typography variant="body1">
+              <Typography variant="body1" color="textPrimary">
                 There are no recent events
               </Typography>
-            )
-          ) : (
-            <Typography component="span">Loading...</Typography>
-          )}
-        </Box>
-      </CardContent>
-    </Card>
+            )}
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
 
@@ -94,7 +135,7 @@ function UserDetailLogs({ data }) {
  * Default props
  */
 UserDetailLogs.defaultProps = {
-  data: null
+  isSkeletonShow: false
 };
 
 export default UserDetailLogs;

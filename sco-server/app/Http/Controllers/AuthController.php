@@ -35,18 +35,10 @@ class AuthController extends Controller
                 }
 
                 $auth_token = $user->createToken("auth_token", ['server:auth']); // Buat token baru
-                $profile = $user->profile()->first(); // Ambil data profile user,
-                $menu_items = $user->menuItem()->orderBy("menu_i_title", "asc")->get(); // Ambil data menu items user
-                $menu_sub_items = $user->menuSubItem()->orderBy("menu_s_i_title", "asc")->get(); // Ambil data menu sub items user
-                $user->userLog()->create(["log_desc" => "Login"]); // buat log login user
 
                 // Response login berhasil
-                // Response berhasil
                 return (new UserResource($user))->additional([
-                    "profile"        => $profile,
-                    "menu_items"     => $menu_items,
-                    "menu_sub_items" => $menu_sub_items,
-                    "auth_token"     => $auth_token->plainTextToken
+                    "auth_token" => $auth_token->plainTextToken
                 ]);
             } else {
                 // response jika akun tidak aktif

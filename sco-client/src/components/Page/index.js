@@ -8,7 +8,8 @@ const useStyles = makeStyles(theme => ({
     minHeight: '100%',
     maxWidth: '100%',
     paddingTop: theme.spacing(2),
-    flexGrow: 1
+    flexGrow: 1,
+    overflowX: 'none'
   }
 }));
 

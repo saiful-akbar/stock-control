@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Profile;
 use App\Models\UserLog;
+use App\Models\MenuItem;
+use App\Models\MenuSubItem;
 use Illuminate\Support\Str;
 use App\Models\UserMenuItem;
 use Illuminate\Http\Request;
@@ -17,25 +19,6 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
     use ClearStrTrait;
-
-    // Ambil semua menu
-    public function getMenus()
-    {
-        $menu_items = DB::table("menu_items")
-            ->select("id", "menu_i_title", "menu_i_children")
-            ->orderBy("menu_i_title", "asc")
-            ->get();
-
-        $menu_sub_items =  DB::table("menu_sub_items")
-            ->leftJoin("menu_items", "menu_sub_items.menu_item_id", "=", "menu_items.id")
-            ->orderBy("menu_sub_items.menu_s_i_title", "asc")
-            ->get();
-
-        return response()->json([
-            "menu_items" => $menu_items,
-            "menu_sub_items" => $menu_sub_items,
-        ], 200);
-    }
 
 
     /**
@@ -121,10 +104,81 @@ class UserController extends Controller
         // response berhasil
         return response()->json([
             "users"    => $data,
-            "search"   => $search,
             "sort"     => $sort,
-            "order_by" => $order_by
+            "order_by" => $order_by,
+            "search"   => $search,
         ], 200);
+    }
+
+    /**
+     * Method untuk mengambil data user & profile setelah action
+     */
+    private function getDataUsers(String $sort = "profile_name", String $order_by = 'asc')
+    {
+        // Ambil data user dari database
+        $data = User::leftJoin("profiles", "users.id", "=", "profiles.user_id")
+            ->leftJoin("personal_access_tokens", "users.id", "=", "personal_access_tokens.tokenable_id")
+            ->select(
+                "users.id",
+                "users.username",
+                "users.is_active",
+                "users.created_at",
+                "users.updated_at",
+                "profiles.profile_avatar",
+                "profiles.profile_name",
+                "profiles.profile_division",
+                "personal_access_tokens.token",
+            )
+            ->orderBy($this->clearStr($sort, "lower"), $this->clearStr($order_by, "lower"))
+            ->paginate(25);
+
+        return [
+            "users"    => $data,
+            "sort"     => $this->clearStr($sort, "lower"),
+            "order_by" => $this->clearStr($order_by, "lower"),
+            "search"   => "",
+        ];
+    }
+
+    /**
+     * Method untuk mengambil data menu sub items setelah action
+     */
+    private function getDataMenus()
+    {
+        // Ambil data menu items
+        $menu_items = MenuItem::orderBy("menu_i_title", "asc")->paginate(25);
+
+        // Ambil data menu sib items
+        $menu_sub_items = MenuSubItem::leftJoin(
+            "menu_items",
+            "menu_sub_items.menu_item_id",
+            "=",
+            "menu_items.id"
+        )->select(
+            "menu_items.menu_i_title",
+            "menu_sub_items.id",
+            "menu_sub_items.menu_item_id",
+            "menu_sub_items.menu_s_i_icon",
+            "menu_sub_items.menu_s_i_title",
+            "menu_sub_items.menu_s_i_url",
+            "menu_sub_items.created_at",
+            "menu_sub_items.updated_at"
+        )->orderBy("menu_items.menu_i_title", "asc")->paginate(25);
+
+        return [
+            "menu_items" => [
+                "result" => $menu_items,
+                "sort" => "menu_i_title",
+                "order_by" => "asc",
+                "search" => "",
+            ],
+            "menu_sub_items" => [
+                "result" => $menu_sub_items,
+                "sort" => "menu_i_title",
+                "order_by" => "asc",
+                "search" => "",
+            ]
+        ];
     }
 
 
@@ -134,12 +188,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        $menu_items = DB::table("menu_items")->orderBy("menu_i_title", "asc")->get();
-        $menu_sub_items = DB::table('menu_sub_items')->orderBy("menu_s_i_title", "asc")->get();
-
         return response()->json([
-            "menu_items" => $menu_items,
-            "menu_sub_items" => $menu_sub_items
+            "menus" => $this->getDataMenus()
         ], 200);
     }
 
@@ -197,9 +247,9 @@ class UserController extends Controller
 
         // response berhasil
         return response()->json([
-            "request" => $request->all(),
             "user_id" => $user->id,
             "message" => "User account & profile created successfully",
+            "result" => $this->getDataUsers("created_at", "desc")
         ], 200);
     }
 
@@ -241,6 +291,7 @@ class UserController extends Controller
 
         return response()->json([
             "message" => "1 User created succcessfully",
+            "result" => $this->getDataUsers("created_at", "desc")
         ], 200);
     }
 
@@ -285,7 +336,10 @@ class UserController extends Controller
             ->create(["log_desc" => "Delete user ({$user->username})"]);
 
         // response berhasil
-        return response()->json(["message" => "User deleted successfuly",], 200);
+        return response()->json([
+            "message" => "User deleted successfuly",
+            "result" => $this->getDataUsers()
+        ], 200);
     }
 
     /**
@@ -309,7 +363,8 @@ class UserController extends Controller
 
         // response password berhasil di update
         return response()->json([
-            "message" => "Password {$user->username} updated successfully"
+            "message" => "Password {$user->username} updated successfully",
+            "result" => $this->getDataUsers("updated_at", "desc")
         ], 200);
     }
 
@@ -323,11 +378,6 @@ class UserController extends Controller
     {
         $account = User::findOrFail($user->id); // ambil data user
         $profile = User::findOrFail($user->id)->profile()->first(); // ambil data profile
-        $logs = User::findOrFail($user->id)->userLog()
-            ->offset(0)
-            ->limit(50)
-            ->orderBy("created_at", "desc")
-            ->get(); // ambil data user logs
 
         // ambil data menu item
         $menu_items = DB::table("user_menu_item")
@@ -341,15 +391,20 @@ class UserController extends Controller
             ->where("user_menu_sub_item.user_id", $user->id)
             ->get();
 
+        // ambil data user logs
+        $logs = User::findOrFail($user->id)->userLog()
+            ->offset(0)
+            ->limit(50)
+            ->orderBy("created_at", "desc")
+            ->get();
+
         // response berhasil
         return response()->json([
-            "account" => $account,
-            "profile" => $profile,
-            "logs" => $logs,
-            "menu_access" => [
-                "menu_items" => $menu_items,
-                "menu_sub_items" => $menu_sub_items
-            ]
+            "account"        => $account,
+            "profile"        => $profile,
+            "menu_items"     => $menu_items,
+            "menu_sub_items" => $menu_sub_items,
+            "logs"           => $logs,
         ], 200);
     }
 
@@ -366,7 +421,8 @@ class UserController extends Controller
 
         // response berhasil
         return response()->json([
-            "message" => "All the logs from {$user->username} have been cleared"
+            "message" => "All the logs from {$user->username} have been cleared",
+            "result" => $this->getDataUsers()
         ], 200);
     }
 

@@ -76,7 +76,7 @@ function ViewAvatar({ file = '', ...props }) {
 /* Komponen utama */
 function FormCreateProfile({
   loading,
-  dataMenus,
+  isSkeletonShow,
   values,
   handleBlur,
   handleChange,
@@ -90,15 +90,27 @@ function FormCreateProfile({
   return (
     <Card variant="outlined">
       <CardHeader
-        title="Profile Form"
-        subheader="Profile data will be used as user identity"
+        title={
+          isSkeletonShow ? (
+            <Skeleton variant="text" width="30%" />
+          ) : (
+            'Profile Form'
+          )
+        }
+        subheader={
+          isSkeletonShow ? (
+            <Skeleton variant="text" width="50%" />
+          ) : (
+            'Profile data will be used as user identity'
+          )
+        }
       />
 
       <CardContent>
         <Grid container spacing={3}>
           <Grid item md={6} xs={12}>
             <Box display="flex" justifyContent="center" alignItems="center">
-              {dataMenus === null ? (
+              {isSkeletonShow ? (
                 <Skeleton variant="circle" className={classes.avatar} />
               ) : (
                 <FormControl error={Boolean(touched.avatar && errors.avatar)}>
@@ -135,7 +147,7 @@ function FormCreateProfile({
           <Grid item md={6} xs={12}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                {dataMenus === null ? (
+                {isSkeletonShow ? (
                   <Skeleton variant="rect" height={54} />
                 ) : (
                   <TextField
@@ -156,7 +168,7 @@ function FormCreateProfile({
               </Grid>
 
               <Grid item xs={12}>
-                {dataMenus === null ? (
+                {isSkeletonShow ? (
                   <Skeleton variant="rect" height={54} />
                 ) : (
                   <TextField
@@ -176,7 +188,7 @@ function FormCreateProfile({
               </Grid>
 
               <Grid item xs={12}>
-                {dataMenus === null ? (
+                {isSkeletonShow ? (
                   <Skeleton variant="rect" height={54} />
                 ) : (
                   <TextField
@@ -197,7 +209,7 @@ function FormCreateProfile({
               </Grid>
 
               <Grid item xs={12}>
-                {dataMenus === null ? (
+                {isSkeletonShow ? (
                   <Skeleton variant="rect" height={54} />
                 ) : (
                   <FormControl
@@ -241,7 +253,7 @@ function FormCreateProfile({
           </Grid>
 
           <Grid item xs={12}>
-            {dataMenus === null ? (
+            {isSkeletonShow ? (
               <Skeleton variant="rect" height={111} />
             ) : (
               <TextField

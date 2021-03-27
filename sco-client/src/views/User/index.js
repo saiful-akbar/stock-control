@@ -13,8 +13,7 @@ const User = props => {
   const navigate = useNavigate();
   const { userLogin } = useSelector(state => state.authReducer);
 
-  const [userAccess, setUserAccess] = React.useState(null);
-  const [reloadTable, setReloadTable] = useState(false);
+  const [userAccess, setUserAccess] = React.useState({});
   const [dialogDelete, setDialogDelete] = useState({
     open: false,
     userId: null
@@ -31,17 +30,15 @@ const User = props => {
   /* Ambil data user akses pada reduxUserLogin */
   useEffect(() => {
     if (userLogin.menuSubItems !== null) {
-      userLogin.menuSubItems.map(msi =>
-        msi.menu_s_i_url === '/users' ? setUserAccess(msi.pivot) : null
-      );
+      userLogin.menuSubItems.map(msi => {
+        return msi.menu_s_i_url === '/users' ? setUserAccess(msi.pivot) : {};
+      });
     }
   }, [userLogin]);
 
   /* Cek akses read pada user */
   React.useEffect(() => {
-    if (userAccess !== null && userAccess.read === 0) {
-      navigate('/error/forbidden');
-    }
+    if (userAccess.read === 0) navigate('/error/forbidden');
   }, [userAccess, navigate]);
 
   /* render component utama */
@@ -51,9 +48,7 @@ const User = props => {
         <Grid container spacing={3}>
           <Grid item xs>
             <UserTable
-              state={userAccess}
-              reload={reloadTable}
-              setReload={bool => setReloadTable(bool)}
+              userAccess={userAccess}
               onDelete={userId =>
                 setDialogDelete({ open: true, userId: userId })
               }
@@ -70,14 +65,12 @@ const User = props => {
         <UserDelete
           open={dialogDelete.open}
           userId={dialogDelete.userId}
-          onReloadTable={() => setReloadTable(true)}
           onCloseDialog={() => setDialogDelete({ open: false, userId: null })}
         />
 
         <UserClearLogs
           open={dialogClearLogs.open}
           userId={dialogClearLogs.userId}
-          onReloadTable={() => setReloadTable(true)}
           onCloseDialog={() =>
             setDialogClearLogs({ open: false, userId: null })
           }
@@ -87,7 +80,6 @@ const User = props => {
           open={changePassword.open}
           userId={changePassword.userId}
           onClose={() => setChangePassword({ open: false, userId: null })}
-          onReloadTable={() => setReloadTable(true)}
         />
       </Container>
     </Page>

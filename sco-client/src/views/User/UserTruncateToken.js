@@ -9,7 +9,7 @@ import {
   IconButton,
   Typography
 } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { apiTruncateTokens } from 'src/services/user';
 import CustomTooltip from 'src/components/CustomTooltip';
@@ -47,8 +47,8 @@ function UserTruncateToken(props) {
   const [loading, setLoading] = React.useState(false);
   const [alert, setAlert] = React.useState({
     type: 'error',
-    message: `Delete all user tokens?.
-    After deleting all tokens requires all users to re-login`
+    message:
+      'Delete all user tokens? After deleting all tokens requires all users to re-login'
   });
 
   /* Ubah isMounted mendaji false ketika komponen dilepas */
@@ -65,10 +65,10 @@ function UserTruncateToken(props) {
       .then(res => {
         if (isMounted.current) {
           setLoading(false);
-          setAlert({
-            type: 'success',
-            message: res.data.message
-          });
+          setAlert({ type: 'success', message: res.data.message });
+          setTimeout(() => {
+            window.location.href = '/logout';
+          }, 3000);
         }
       })
       .catch(err => {
@@ -106,11 +106,10 @@ function UserTruncateToken(props) {
     if (!loading && alert.type !== 'success') {
       setAlert({
         type: 'error',
-        message: 'Truncate all user tokens?'
+        message:
+          'Delete all user tokens? After deleting all tokens requires all users to re-login'
       });
       setOpen(false);
-    } else {
-      return;
     }
   };
 
@@ -135,7 +134,12 @@ function UserTruncateToken(props) {
         </DialogTitle>
 
         <DialogContent>
-          <Alert severity={alert.type}>{alert.message}</Alert>
+          <Alert severity={alert.type}>
+            <AlertTitle>
+              {alert.type === 'error' ? 'Danger' : alert.type}
+            </AlertTitle>
+            {alert.message}
+          </Alert>
         </DialogContent>
 
         <DialogActions className={classes.actions}>
@@ -152,7 +156,6 @@ function UserTruncateToken(props) {
               title="Delete"
               color="primary"
               variant="contained"
-              size="small"
               loading={loading}
               handleSubmit={handleSubmit}
               handleCancel={handleClose}
