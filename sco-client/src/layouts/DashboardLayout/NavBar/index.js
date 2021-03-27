@@ -30,14 +30,11 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     transition: 'width .3s cubic-bezier(0.4, 0, 0.2, 1)',
-    [theme.palette.type === 'light']: {
-      border: 'none',
-      backgroundAttachment: 'fixed',
-      backgroundImage: `url(${navbarImage})`,
-      backgroundPosition: 'left 0 bottom 0',
-      backgroundRepeat: 'no-repeat',
-      backgroundZize: '256px 556px'
-    }
+    backgroundAttachment: 'fixed',
+    backgroundImage: `url(${navbarImage})`,
+    backgroundPosition: 'left 0 bottom 0',
+    backgroundRepeat: 'no-repeat',
+    backgroundZize: '256px 556px'
   },
   avatar: {
     borderRadius: '50%',
