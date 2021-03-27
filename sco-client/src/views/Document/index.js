@@ -84,7 +84,7 @@ function Document(props) {
   /* Render */
   return (
     <Page title="Documents" pageTitle="Documents">
-      <Container>
+      <Container maxWidth="md">
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <DocumentTable

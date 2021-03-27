@@ -44,7 +44,7 @@ const User = props => {
   /* render component utama */
   return (
     <Page title="Users" pageTitle="Users">
-      <Container>
+      <Container maxWidth="md">
         <Grid container spacing={3}>
           <Grid item xs>
             <UserTable

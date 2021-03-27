@@ -264,7 +264,7 @@ const UserTable = ({ userAccess, onDelete, onChangePassword, onClearLogs }) => {
           justify="space-between"
           alignItems="center"
         >
-          <Grid item lg={4} md={6} xs={12}>
+          <Grid item lg={5} md={6} xs={12}>
             <Box display="flex" justifyContent="flex-start">
               <Box mr={2} display="flex" justifyContent="center">
                 {userAccess.delete === 1 && <UserTruncateToken />}
@@ -289,7 +289,7 @@ const UserTable = ({ userAccess, onDelete, onChangePassword, onClearLogs }) => {
             </Box>
           </Grid>
 
-          <Grid item lg={8} md={6} xs={12}>
+          <Grid item lg={7} md={6} xs={12}>
             <form autoComplete="off" onSubmit={handleSubmitFormSearch}>
               <TextField
                 fullWidth

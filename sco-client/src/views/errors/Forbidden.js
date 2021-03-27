@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import { useNavigate } from 'react-router-dom';
-import warningImage from 'src/assets/images/ilustration/warning.svg';
+import warningImage from 'src/assets/images/svg/warning.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {

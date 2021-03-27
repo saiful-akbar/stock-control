@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
-import notesImage from 'src/assets/images/ilustration/notes.svg';
+import notesImage from 'src/assets/images/svg/notes.svg';
 
 /**
  * Style

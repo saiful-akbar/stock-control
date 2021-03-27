@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
-import bugImage from 'src/assets/images/ilustration/bug.svg';
+import bugImage from 'src/assets/images/svg/bug.svg';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

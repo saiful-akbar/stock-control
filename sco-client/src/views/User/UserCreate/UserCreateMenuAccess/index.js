@@ -206,7 +206,7 @@ function UserCreateMenuAccess({ isSkeletonShow, userId, onBackStep }) {
               </>
             ) : (
               <>
-                <Typography noWrap variant="h5" color="textPrimary">
+                <Typography noWrap variant="h6" color="textPrimary">
                   Menu Access
                 </Typography>
 

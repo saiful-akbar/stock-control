@@ -24,7 +24,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { apiAddDocument, apiUpdateDocument } from 'src/services/document';
 import Loader from 'src/components/Loader';
 import { useNavigate } from 'react-router';
-import addFileImage from 'src/assets/images/ilustration/add_file.svg';
+import addFileImage from 'src/assets/images/svg/add_file.svg';
 
 /* Style ItemGroupImport */
 const useStyles = makeStyles(theme => ({

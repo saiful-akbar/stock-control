@@ -89,13 +89,15 @@ function Menus(props) {
             <Divider />
           </div>
 
-          <TabPanel value="menus">
-            <MenuItem state={userAccess} />
-          </TabPanel>
+          <Container>
+            <TabPanel value="menus">
+              <MenuItem state={userAccess} />
+            </TabPanel>
 
-          <TabPanel value="subMenus">
-            <MenuSubItem state={userAccess} />
-          </TabPanel>
+            <TabPanel value="subMenus">
+              <MenuSubItem state={userAccess} />
+            </TabPanel>
+          </Container>
         </TabContext>
       </Container>
     </Page>

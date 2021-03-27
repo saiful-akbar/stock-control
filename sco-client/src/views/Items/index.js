@@ -88,15 +88,17 @@ function Items(props) {
             <Divider />
           </div>
 
-          <TabPanel value="itemGroups">
-            <ItemGroups />
-          </TabPanel>
+          <Container>
+            <TabPanel value="itemGroups">
+              <ItemGroups />
+            </TabPanel>
 
-          <TabPanel value="itemSubGroups">
-            <ItemSubGroup />
-          </TabPanel>
+            <TabPanel value="itemSubGroups">
+              <ItemSubGroup />
+            </TabPanel>
 
-          <TabPanel value="itemList">{'Item List'}</TabPanel>
+            <TabPanel value="itemList">{'Item List'}</TabPanel>
+          </Container>
         </TabContext>
       </Container>
     </Page>

@@ -138,29 +138,27 @@ function UserCreate(props) {
   /* Render */
   return (
     <Page title="Create User" pageTitle="Create New User" pb={true}>
-      <Container>
-        <div className={classes.root}>
-          <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
-            {steps.map(label => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-
-          <div id="step-content">
-            <Box mt={3}>{getStepContent(activeStep)}</Box>
-          </div>
-        </div>
-
-        <div className={classes.fab}>
-          <CustomTooltip title="Return to the user page" placement="left">
-            <Fab color="secondary" onClick={() => navigate('/users')}>
-              <RotateLeftIcon />
-            </Fab>
-          </CustomTooltip>
-        </div>
+      <Container className={classes.root}>
+        <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
+          {steps.map(label => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
       </Container>
+
+      <Container maxWidth="md" id="step-content">
+        <Box mt={3}>{getStepContent(activeStep)}</Box>
+      </Container>
+
+      <div className={classes.fab}>
+        <CustomTooltip title="Return to the user page" placement="left">
+          <Fab color="secondary" onClick={() => navigate('/users')}>
+            <RotateLeftIcon />
+          </Fab>
+        </CustomTooltip>
+      </div>
     </Page>
   );
 }

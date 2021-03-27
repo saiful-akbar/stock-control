@@ -32,7 +32,7 @@ const TasksProgress = ({ className, ...rest }) => {
     <Card elevation={3} className={clsx(classes.root, className)} {...rest}>
       <CardContent>
         <Grid container justify="space-between" spacing={3}>
-          <Grid item>
+          <Grid item xs={7}>
             <Typography color="textSecondary" gutterBottom variant="subtitle2">
               TASKS PROGRESS
             </Typography>
@@ -40,7 +40,8 @@ const TasksProgress = ({ className, ...rest }) => {
               75.5%
             </Typography>
           </Grid>
-          <Grid item>
+
+          <Grid item xs={5}>
             <Avatar className={classes.avatar}>
               <InsertChartIcon />
             </Avatar>

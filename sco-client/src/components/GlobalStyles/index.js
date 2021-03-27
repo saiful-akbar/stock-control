@@ -25,6 +25,11 @@ const useStyles = makeStyles(theme =>
       '#root': {
         height: '100%',
         width: '100%'
+      },
+      '.MuiContainer-maxWidthMd': {
+        [theme.breakpoints.up('md')]: {
+          maxWidth: 1010
+        }
       }
     }
   })

@@ -10,7 +10,7 @@ import { Card, CardContent, Grid, Typography } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import { useSelector } from 'react-redux';
-import permissionImage from 'src/assets/images/ilustration/permission.svg';
+import permissionImage from 'src/assets/images/svg/permission.svg';
 
 /**
  * Style

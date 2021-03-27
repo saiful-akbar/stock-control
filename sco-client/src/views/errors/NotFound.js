@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import { useNavigate } from 'react-router-dom';
-import notFoundImage from 'src/assets/images/ilustration/404.svg';
+import notFoundImage from 'src/assets/images/svg/404.svg';
 
 const useStyles = makeStyles(theme => ({
   root: {
