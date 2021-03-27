@@ -138,7 +138,7 @@ function UserCreate(props) {
   /* Render */
   return (
     <Page title="Create User" pageTitle="Create New User" pb={true}>
-      <Container className={classes.root}>
+      <Container maxWidth="md" className={classes.root}>
         <Stepper activeStep={activeStep} alternativeLabel elevation={3}>
           {steps.map(label => (
             <Step key={label}>
@@ -146,10 +146,10 @@ function UserCreate(props) {
             </Step>
           ))}
         </Stepper>
-      </Container>
 
-      <Container maxWidth="md" id="step-content">
-        <Box mt={3}>{getStepContent(activeStep)}</Box>
+        <div id="step-content">
+          <Box mt={3}>{getStepContent(activeStep)}</Box>
+        </div>
       </Container>
 
       <div className={classes.fab}>

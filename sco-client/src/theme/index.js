@@ -7,11 +7,12 @@ const themeLight = createMuiTheme({
     background: {
       default: colors.common.white,
       paper: colors.common.white,
-      dark: '#F2F3F5',
-      topBar: '#E3E5E8'
+      dark: '#F6F7F9',
+      navBar: '#051e34',
+      topBar: '#FFF'
     },
     primary: {
-      main: '#7289DA'
+      main: '#2196f3'
     },
     secondary: {
       main: '#3ea575'
@@ -29,7 +30,7 @@ const themeLight = createMuiTheme({
       main: '#FF9800'
     },
     text: {
-      primary: colors.blueGrey[900],
+      primary: colors.blueGrey[800],
       secondary: colors.blueGrey[600]
     }
   },
@@ -40,13 +41,14 @@ const themeDark = createMuiTheme({
   palette: {
     type: 'dark',
     background: {
-      default: '#282C34',
-      paper: '#282C34',
-      dark: '#1C2025',
-      topBar: '#282C34'
+      default: '#222B36',
+      paper: '#222B36',
+      dark: '#171C24',
+      navBar: '#222B36',
+      topBar: '#1D2535'
     },
     primary: {
-      main: '#8A85FF'
+      main: '#688EFF'
     },
     secondary: {
       main: '#3ea575'

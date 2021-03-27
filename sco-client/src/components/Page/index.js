@@ -29,7 +29,7 @@ const Page = forwardRef(({ children, title, pageTitle, pb }, ref) => {
       {pageTitle !== null && (
         <Container>
           <Box mb={3}>
-            <Typography variant="h5" color="textSecondary" noWrap>
+            <Typography variant="h5" color="textPrimary" noWrap>
               {pageTitle}
             </Typography>
           </Box>

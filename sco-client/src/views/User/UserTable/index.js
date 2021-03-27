@@ -281,7 +281,7 @@ const UserTable = ({ userAccess, onDelete, onChangePassword, onClearLogs }) => {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  onClick={() => navigate('/user/create')}
+                  onClick={() => navigate('/users/create')}
                 >
                   {'Create a new user'}
                 </Button>

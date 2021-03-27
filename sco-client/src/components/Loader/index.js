@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     backgroundColor:
       theme.palette.type === 'dark'
-        ? 'rgba(40, 44, 52, 0.8)'
+        ? 'rgba(34, 43, 53, 0.8)'
         : 'rgba(255, 255, 255, 0.8)'
   }
 }));

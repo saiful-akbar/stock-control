@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -15,14 +14,29 @@ import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import CustomTooltip from 'src/components/CustomTooltip';
 import Clock from 'src/components/Clock';
-import Logo from 'src/components/Logo';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import { useTheme } from '@material-ui/core/styles';
 
+const navBarWidth = 256;
+
 const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    zIndex: theme.zIndex.drawer + 1
+  topBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    })
+  },
+  topBarShift: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    [theme.breakpoints.up('lg')]: {
+      marginLeft: navBarWidth,
+      width: `calc(100% - ${navBarWidth}px)`
+    }
   },
   clock: {
     marginLeft: theme.spacing(1),
@@ -41,10 +55,14 @@ function ElevationScroll(props) {
   });
 
   return React.cloneElement(children, {
-    elevation: trigger ? (Boolean(theme.palette.type === 'light') ? 5 : 4) : 0,
+    elevation: trigger ? 3 : 0,
     style: {
-      backgroundColor: trigger ? theme.palette.background.paper : 'transparent',
-      transition: '0.5s'
+      transition: '0.5s',
+      backgroundColor: trigger
+        ? theme.palette.type === 'dark'
+          ? theme.palette.background.dark
+          : theme.palette.background.paper
+        : 'transparent'
     }
   });
 }
@@ -67,52 +85,50 @@ const TopBar = ({
   const classes = useStyles();
 
   return (
-    <React.Fragment>
-      <ElevationScroll {...rest}>
-        <AppBar className={clsx(classes.root, className)}>
-          <Toolbar variant="dense">
-            <Hidden mdDown>
-              <CustomTooltip
-                title={openDesktopNav ? 'Close menu' : 'Open menu'}
-                placement="bottom"
-              >
-                <IconButton onClick={onDesktopNavOpen} color="default">
-                  {openDesktopNav ? (
-                    <MenuOpenIcon fontSize="small" />
-                  ) : (
-                    <MenuIcon fontSize="small" />
-                  )}
-                </IconButton>
-              </CustomTooltip>
-            </Hidden>
-
-            <Hidden lgUp>
-              <CustomTooltip title="Open menu" placement="bottom">
-                <IconButton onClick={onMobileNavOpen} color="default">
+    <ElevationScroll {...rest}>
+      <AppBar
+        className={clsx(classes.topBar, {
+          [classes.topBarShift]: openDesktopNav
+        })}
+      >
+        <Toolbar variant="dense">
+          <Hidden mdDown>
+            <CustomTooltip
+              title={openDesktopNav ? 'Close menu' : 'Open menu'}
+              placement="bottom"
+            >
+              <IconButton onClick={onDesktopNavOpen} color="default">
+                {openDesktopNav ? (
+                  <MenuOpenIcon fontSize="small" />
+                ) : (
                   <MenuIcon fontSize="small" />
-                </IconButton>
-              </CustomTooltip>
-            </Hidden>
-
-            <RouterLink to="/">
-              <Logo />
-            </RouterLink>
-
-            <Box flexGrow={1} />
-
-            <Hidden xsDown>
-              <Clock className={classes.clock} />
-            </Hidden>
-
-            <CustomTooltip title="Open setting">
-              <IconButton color="default" onClick={onSettingOpen}>
-                <SettingsOutlinedIcon fontSize="small" />
+                )}
               </IconButton>
             </CustomTooltip>
-          </Toolbar>
-        </AppBar>
-      </ElevationScroll>
-    </React.Fragment>
+          </Hidden>
+
+          <Hidden lgUp>
+            <CustomTooltip title="Open menu" placement="bottom">
+              <IconButton onClick={onMobileNavOpen} color="default">
+                <MenuIcon fontSize="small" />
+              </IconButton>
+            </CustomTooltip>
+          </Hidden>
+
+          <Box flexGrow={1} />
+
+          <Hidden xsDown>
+            <Clock className={classes.clock} />
+          </Hidden>
+
+          <CustomTooltip title="Open setting">
+            <IconButton color="default" onClick={onSettingOpen}>
+              <SettingsOutlinedIcon fontSize="small" />
+            </IconButton>
+          </CustomTooltip>
+        </Toolbar>
+      </AppBar>
+    </ElevationScroll>
   );
 };
 

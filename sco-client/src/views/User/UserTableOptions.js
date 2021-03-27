@@ -48,7 +48,7 @@ const UserTableOptions = ({
    */
   const handleEditUser = () => {
     handleCloseMenu();
-    navigate(`/user/${userId}/edit`);
+    navigate(`/users/${userId}/edit`);
   };
 
   /**
@@ -72,7 +72,7 @@ const UserTableOptions = ({
    */
   const handleGoToViewDetails = () => {
     handleCloseMenu();
-    navigate(`/user/${userId}`);
+    navigate(`/users/${userId}`);
   };
 
   /**
