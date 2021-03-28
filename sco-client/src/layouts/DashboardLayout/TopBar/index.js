@@ -17,14 +17,16 @@ import MenuOpenIcon from '@material-ui/icons/MenuOpen';
 import CustomTooltip from 'src/components/CustomTooltip';
 import Clock from 'src/components/Clock';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import { useTheme } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import UserAccount from './UserAccount';
+import { useTheme } from '@material-ui/styles';
 
 const navBarWidth = 256;
 
 const useStyles = makeStyles(theme => ({
   topBar: {
+    backgroundColor: theme.palette.background.topBar,
+    backdropFilter: 'blur(8px)',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -61,11 +63,7 @@ function ElevationScroll(props) {
   });
 
   return React.cloneElement(children, {
-    elevation: trigger ? 3 : 0,
-    style: {
-      transition: '0.5s',
-      backgroundColor: trigger ? theme.palette.background.paper : 'transparent'
-    }
+    elevation: trigger ? (theme.palette.type === 'light' ? 3 : 0) : 0
   });
 }
 

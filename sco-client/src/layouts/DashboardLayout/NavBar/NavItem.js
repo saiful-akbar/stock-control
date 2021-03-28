@@ -40,10 +40,16 @@ const useStyleNavSubItem = makeStyles(theme => ({
   },
   subMenuActive: {
     '& $icon': {
-      color: theme.palette.primary.light
+      color:
+        theme.palette.type === 'dark'
+          ? theme.palette.primary.main
+          : theme.palette.primary.light
     },
     '& $subMenuTitle': {
-      color: theme.palette.primary.light
+      color:
+        theme.palette.type === 'dark'
+          ? theme.palette.primary.main
+          : theme.palette.primary.light
     }
   }
 }));

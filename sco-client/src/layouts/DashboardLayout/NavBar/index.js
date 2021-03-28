@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     backgroundImage: `url(${navbarImage})`,
     backgroundPosition: 'left 0 bottom 0',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: '256px 556px'
+    backgroundSize: '256px auto'
   },
   drawerBgImage: {},
   avatar: {
@@ -65,6 +65,17 @@ const useStyles = makeStyles(theme => ({
   },
   divider: {
     backgroundColor: 'rgba(255, 255, 255, 0.12)'
+  },
+  btnLogout: {
+    background: 'transparent',
+    borderRadius: 3,
+    color: 'white',
+    height: 34,
+    padding: '0 30px',
+    textTransform: 'capitalize',
+    '&:hover': {
+      background: 'rgba(255, 255, 255, 0.08)'
+    }
   }
 }));
 
@@ -151,8 +162,7 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
         ) : (
           <Button
             fullWidth
-            color="primary"
-            variant="outlined"
+            className={classes.btnLogout}
             onClick={e => dispatch({ type: 'SET_LOGOUT', value: true })}
           >
             Log out

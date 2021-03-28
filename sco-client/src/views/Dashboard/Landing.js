@@ -9,8 +9,6 @@ const useStyles = makeStyles(theme => ({
     transform: 'rotateY(180deg)',
     marginBottom: theme.spacing(7),
     [theme.breakpoints.up('md')]: {
-      marginTop: -48,
-      paddingTop: 48,
       height: theme.spacing(60),
       backgroundImage: `url(${landingImage})`,
       backgroundPosition: 'center',
