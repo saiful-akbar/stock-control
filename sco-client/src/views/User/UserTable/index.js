@@ -265,8 +265,18 @@ const UserTable = ({ userAccess, onDelete, onChangePassword, onClearLogs }) => {
           alignItems="center"
         >
           <Grid item lg={5} md={6} xs={12}>
-            <Box display="flex" justifyContent="flex-start">
-              <Box mr={2} display="flex" justifyContent="center">
+            <Box
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+              mt={0.5}
+            >
+              <Box
+                mr={2}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
                 {userAccess.delete === 1 && <UserTruncateToken />}
 
                 <CustomTooltip title="Reload">

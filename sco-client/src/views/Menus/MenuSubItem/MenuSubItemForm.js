@@ -174,7 +174,7 @@ const MenuSubItemForm = props => {
     <Dialog
       fullWidth
       fullScreen={fullScreen}
-      maxWidth="lg"
+      maxWidth="md"
       scroll="paper"
       open={props.open}
     >

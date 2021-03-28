@@ -13,24 +13,12 @@ import MenuSubItem from 'src/views/Menus/MenuSubItem';
 
 import { Divider, Container } from '@material-ui/core';
 import queryString from 'query-string';
-import { makeStyles } from '@material-ui/core/styles';
-
-/* Style untuk komponen Menus */
-const useStyles = makeStyles(theme => ({
-  tabList: {
-    position: 'sticky',
-    top: 48,
-    backgroundColor: theme.palette.background.dark,
-    zIndex: theme.zIndex.appBar + 1
-  }
-}));
 
 /**
  * Main component
  * @param {props} props
  */
 function Menus(props) {
-  const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
@@ -73,29 +61,30 @@ function Menus(props) {
 
   return (
     <Page title="Menu Managemen" pageTitle="Menu Management">
-      <Container maxWidth="md">
+      <Container>
         <TabContext value={value}>
-          <div className={classes.tabList}>
-            <TabList
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="scrollable"
-              scrollButtons="on"
-            >
-              <Tab label="Menus" value="menus" />
-              <Tab label="Sub Menus" value="subMenus" />
-            </TabList>
-            <Divider />
-          </div>
+          <TabList
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="on"
+          >
+            <Tab label="Menus" value="menus" />
+            <Tab label="Sub Menus" value="subMenus" />
+          </TabList>
 
-          <TabPanel value="menus">
-            <MenuItem state={userAccess} />
-          </TabPanel>
+          <Divider />
 
-          <TabPanel value="subMenus">
-            <MenuSubItem state={userAccess} />
-          </TabPanel>
+          <Container maxWidth="md">
+            <TabPanel value="menus">
+              <MenuItem state={userAccess} />
+            </TabPanel>
+
+            <TabPanel value="subMenus">
+              <MenuSubItem state={userAccess} />
+            </TabPanel>
+          </Container>
         </TabContext>
       </Container>
     </Page>

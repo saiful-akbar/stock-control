@@ -138,8 +138,13 @@ function TheadActions({
             spacing={3}
           >
             <Grid item md={4} sm={6} xs={12}>
-              <Box display="flex" justifyContent="flex-start">
-                <Box mr={2} display="flex" justifyContent="center">
+              <Box
+                display="flex"
+                justifyContent="flex-start"
+                alignItems="center"
+                mt={0.5}
+              >
+                <Box mr={2}>
                   <CustomTooltip title="Reload" placement="bottom">
                     <IconButton onClick={onReload}>
                       <RefreshIcon />
