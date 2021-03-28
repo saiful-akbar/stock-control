@@ -6,7 +6,7 @@ import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
 // Style untuk komponen NavItem
 const useStyle = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(1.5, 3),
+    padding: theme.spacing(2.1, 3),
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.08)'
     }
@@ -28,10 +28,10 @@ const useStyle = makeStyles(theme => ({
   },
   subMenuActive: {
     '& $icon': {
-      color: theme.palette.primary.main
+      color: theme.palette.primary.light
     },
     '& $subMenuTitle': {
-      color: theme.palette.primary.main
+      color: theme.palette.primary.light
     }
   },
   divider: {

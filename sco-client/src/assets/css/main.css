@@ -1,0 +1,41 @@
+table thead tr th,
+table tbody tr td {
+  white-space: nowrap !important;
+  font-size: 13px !important;
+}
+
+/* Navbar scrollbar */
+body #navbar-menu::-webkit-scrollbar {
+  background-color: transparent;
+  width: 6px;
+  height: 6px;
+}
+
+body #navbar-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(206, 206, 206, 0.4) !important;
+  border: none;
+  border-radius: 15px;
+  min-height: 24px;
+}
+
+body #navbar-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(206, 206, 206, 0.7) !important;
+}
+
+body.dark #navbar-menu::-webkit-scrollbar {
+  background-color: transparent;
+  width: 6px;
+  height: 6px;
+}
+
+body.dark #navbar-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(206, 206, 206, 0.3);
+  border: none;
+  border-radius: 15px;
+  min-height: 24px;
+}
+
+body.dark #navbar-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(206, 206, 206, 0.6);
+}
+/* End navbar scrollbar */

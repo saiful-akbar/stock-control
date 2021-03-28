@@ -73,7 +73,7 @@ function Menus(props) {
 
   return (
     <Page title="Menu Managemen" pageTitle="Menu Management">
-      <Container>
+      <Container maxWidth="md">
         <TabContext value={value}>
           <div className={classes.tabList}>
             <TabList
@@ -89,15 +89,13 @@ function Menus(props) {
             <Divider />
           </div>
 
-          <Container>
-            <TabPanel value="menus">
-              <MenuItem state={userAccess} />
-            </TabPanel>
+          <TabPanel value="menus">
+            <MenuItem state={userAccess} />
+          </TabPanel>
 
-            <TabPanel value="subMenus">
-              <MenuSubItem state={userAccess} />
-            </TabPanel>
-          </Container>
+          <TabPanel value="subMenus">
+            <MenuSubItem state={userAccess} />
+          </TabPanel>
         </TabContext>
       </Container>
     </Page>

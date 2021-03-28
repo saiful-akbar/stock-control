@@ -17,7 +17,8 @@ const useStyles = makeStyles(theme =>
       body: {
         backgroundColor: theme.palette.background.dark,
         height: '100%',
-        width: '100%'
+        width: '100%',
+        overflowX: 'hidden'
       },
       a: {
         textDecoration: 'none'

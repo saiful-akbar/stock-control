@@ -10,12 +10,12 @@ import {
   Typography,
   makeStyles,
   Grid,
-  SwipeableDrawer
+  SwipeableDrawer,
+  Button
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import NavItem from './NavItem';
-import LogoutConfirm from './LogutConfirm';
 import NavItemDashboard from './NavItemDashboard';
 import Logo from 'src/components/Logo';
 import navbarImage from 'src/assets/images/background/navbar_background.png';
@@ -29,13 +29,13 @@ const useStyles = makeStyles(theme => ({
     width: '256px',
     display: 'flex',
     flexDirection: 'column',
-    transition: 'width .3s cubic-bezier(0.4, 0, 0.2, 1)',
     backgroundAttachment: 'fixed',
     backgroundImage: `url(${navbarImage})`,
     backgroundPosition: 'left 0 bottom 0',
     backgroundRepeat: 'no-repeat',
-    backgroundZize: '256px 556px'
+    backgroundSize: '256px 556px'
   },
+  drawerBgImage: {},
   avatar: {
     borderRadius: '50%',
     width: theme.spacing(5),
@@ -47,7 +47,15 @@ const useStyles = makeStyles(theme => ({
   menu: {
     width: 256, // lebar menu
     height: 'calc(100% - 110px)',
-    overflowY: 'auto'
+    overflowY: 'auto',
+    overflowX: 'hidden'
+  },
+  menuSkeleton: {
+    backgroundColor: 'rgba(238, 238, 238, 0.13)'
+  },
+  logoText: {
+    color: '#fff',
+    fontSize: 18
   },
   textPrimary: {
     color: '#fff'
@@ -65,12 +73,12 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
   const classes = useStyles();
   const location = useLocation();
   const { userLogin } = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
   const [collapseIsActive, setCollapseIsActive] = useState(null);
 
   useEffect(() => {
-    if (openMobile && onMobileToggle) {
-      onMobileToggle(false);
-    }
+    if (openMobile && onMobileToggle) onMobileToggle(false);
+
     // eslint-disable-next-line
   }, [location.pathname]);
 
@@ -92,11 +100,11 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
 
         <Grid item xs zeroMinWidth>
           <Typography
+            noWrap
+            variant="h5"
+            className={classes.logoText}
             component={RouterLink}
             to="/"
-            className={classes.textPrimary}
-            variant="h6"
-            noWrap
           >
             Stock Control
           </Typography>
@@ -106,9 +114,13 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
       <Divider className={classes.divider} />
       <Box flexGrow={1} />
 
-      <Box className={classes.menu}>
+      <Box className={classes.menu} id="navbar-menu">
         {userLogin.menuItems.length <= 0 ? (
-          <Skeleton variant="rect" height="100%" />
+          <Skeleton
+            variant="rect"
+            height="100%"
+            className={classes.menuSkeleton}
+          />
         ) : (
           <List component="div" disablePadding>
             <NavItemDashboard />
@@ -129,22 +141,38 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
       <Divider className={classes.divider} />
 
       <Box p={2} display="flex" justifyContent="center">
-        <LogoutConfirm />
+        {userLogin.account === null ? (
+          <Skeleton
+            variant="rect"
+            height={34}
+            width="100%"
+            className={classes.menuSkeleton}
+          />
+        ) : (
+          <Button
+            fullWidth
+            color="primary"
+            variant="outlined"
+            onClick={e => dispatch({ type: 'SET_LOGOUT', value: true })}
+          >
+            Log out
+          </Button>
+        )}
       </Box>
     </Box>
   );
 
   return (
-    <>
+    <React.Fragment>
       <Hidden lgUp>
         <SwipeableDrawer
-          elevation={3}
           anchor="left"
           variant="temporary"
+          elevation={3}
           open={openMobile}
+          classes={{ paper: classes.drawer }}
           onClose={() => onMobileToggle(false)}
           onOpen={() => onMobileToggle(true)}
-          classes={{ paper: classes.drawer }}
         >
           {content}
         </SwipeableDrawer>
@@ -153,14 +181,14 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
       <Hidden mdDown>
         <Drawer
           anchor="left"
-          classes={{ paper: classes.drawer }}
-          open={openDesktop}
           variant="persistent"
+          open={openDesktop}
+          classes={{ paper: classes.drawer }}
         >
           {content}
         </Drawer>
       </Hidden>
-    </>
+    </React.Fragment>
   );
 };
 

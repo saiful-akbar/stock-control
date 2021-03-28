@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import Appearance from './Appearance';
 import CustomTooltip from 'src/components/CustomTooltip';
+import settingImage from 'src/assets/images/svg/settings.svg';
 
 // Style
 const useStyles = makeStyles(theme => ({
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     zIndex: 1,
     height: 'calc(100% - 80px)',
     width: '100%',
-    backgroundImage: 'url(/static/images/svg/settings.svg)',
+    backgroundImage: `url(${settingImage})`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'auto 250px'

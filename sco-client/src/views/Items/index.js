@@ -71,7 +71,7 @@ function Items(props) {
    */
   return (
     <Page title="Items" pageTitle="Items">
-      <Container>
+      <Container maxWidth="md">
         <TabContext value={value}>
           <div className={classes.tabList}>
             <TabList
@@ -88,17 +88,15 @@ function Items(props) {
             <Divider />
           </div>
 
-          <Container>
-            <TabPanel value="itemGroups">
-              <ItemGroups />
-            </TabPanel>
+          <TabPanel value="itemGroups">
+            <ItemGroups />
+          </TabPanel>
 
-            <TabPanel value="itemSubGroups">
-              <ItemSubGroup />
-            </TabPanel>
+          <TabPanel value="itemSubGroups">
+            <ItemSubGroup />
+          </TabPanel>
 
-            <TabPanel value="itemList">{'Item List'}</TabPanel>
-          </Container>
+          <TabPanel value="itemList">{'Item List'}</TabPanel>
         </TabContext>
       </Container>
     </Page>

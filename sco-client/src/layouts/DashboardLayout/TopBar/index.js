@@ -7,7 +7,9 @@ import {
   Hidden,
   IconButton,
   Toolbar,
-  makeStyles
+  makeStyles,
+  Zoom,
+  Typography
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
@@ -16,6 +18,8 @@ import CustomTooltip from 'src/components/CustomTooltip';
 import Clock from 'src/components/Clock';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import { useTheme } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import UserAccount from './UserAccount';
 
 const navBarWidth = 256;
 
@@ -29,18 +33,20 @@ const useStyles = makeStyles(theme => ({
   },
   topBarShift: {
     zIndex: theme.zIndex.drawer + 1,
+    [theme.breakpoints.up('lg')]: {
+      width: `calc(100% - ${navBarWidth}px)`,
+      marginLeft: navBarWidth
+    },
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
-    }),
-    [theme.breakpoints.up('lg')]: {
-      marginLeft: navBarWidth,
-      width: `calc(100% - ${navBarWidth}px)`
-    }
+    })
   },
   clock: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
+    margin: theme.spacing(0, 0.5)
+  },
+  setting: {
+    margin: theme.spacing(0, 0.5)
   }
 }));
 
@@ -58,11 +64,7 @@ function ElevationScroll(props) {
     elevation: trigger ? 3 : 0,
     style: {
       transition: '0.5s',
-      backgroundColor: trigger
-        ? theme.palette.type === 'dark'
-          ? theme.palette.background.dark
-          : theme.palette.background.paper
-        : 'transparent'
+      backgroundColor: trigger ? theme.palette.background.paper : 'transparent'
     }
   });
 }
@@ -82,7 +84,12 @@ const TopBar = ({
   openDesktopNav,
   ...rest
 }) => {
+  const { pageTitle } = useSelector(state => state.globalReducer);
   const classes = useStyles();
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 40
+  });
 
   return (
     <ElevationScroll {...rest}>
@@ -115,17 +122,35 @@ const TopBar = ({
             </CustomTooltip>
           </Hidden>
 
+          {/* Page title */}
+          <Zoom in={trigger}>
+            <Box ml={1} mr={1}>
+              <Typography variant="subtitle2" color="textPrimary">
+                {pageTitle}
+              </Typography>
+            </Box>
+          </Zoom>
+
           <Box flexGrow={1} />
 
+          {/* Clock */}
           <Hidden xsDown>
             <Clock className={classes.clock} />
           </Hidden>
 
+          {/* Button setting */}
           <CustomTooltip title="Open setting">
-            <IconButton color="default" onClick={onSettingOpen}>
+            <IconButton
+              color="default"
+              onClick={onSettingOpen}
+              className={classes.setting}
+            >
               <SettingsOutlinedIcon fontSize="small" />
             </IconButton>
           </CustomTooltip>
+
+          {/* User account */}
+          <UserAccount />
         </Toolbar>
       </AppBar>
     </ElevationScroll>

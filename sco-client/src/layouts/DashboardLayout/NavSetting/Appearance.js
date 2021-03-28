@@ -90,7 +90,7 @@ const Appearance = ({ setReduxTheme, reduxTheme, ...props }) => {
 
       <ToggleButtonGroup
         exclusive
-        size="medium"
+        size="small"
         value={themeValue}
         onChange={handleChangeTheme}
         className={classes.toggleGroup}

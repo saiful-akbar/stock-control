@@ -36,6 +36,11 @@ class AuthController extends Controller
 
                 $auth_token = $user->createToken("auth_token", ['server:auth']); // Buat token baru
 
+                // Buat user log
+                User::find(Auth::user()->id)
+                    ->userLog()
+                    ->create(["log_desc" => "Logged In"]);
+
                 // Response login berhasil
                 return (new UserResource($user))->additional([
                     "auth_token" => $auth_token->plainTextToken

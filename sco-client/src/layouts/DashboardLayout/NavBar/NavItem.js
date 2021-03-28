@@ -40,10 +40,10 @@ const useStyleNavSubItem = makeStyles(theme => ({
   },
   subMenuActive: {
     '& $icon': {
-      color: theme.palette.primary.main
+      color: theme.palette.primary.light
     },
     '& $subMenuTitle': {
-      color: theme.palette.primary.main
+      color: theme.palette.primary.light
     }
   }
 }));
@@ -79,16 +79,13 @@ const useStyleNavItem = makeStyles(theme => ({
     paddingBottom: 20
   },
   menu: {
-    padding: theme.spacing(1.5, 3),
-    minHeight: 57,
+    padding: theme.spacing(1.7, 3),
     '&:hover': {
       backgroundColor: 'rgba(255, 255, 255, 0.08)',
       '& $minimizedIcon': {
-        transition: 'transform 0.4s',
         display: 'inline-block'
       },
       '& $expandedIcon': {
-        transition: 'transform 0.4s',
         display: 'inline-block'
       }
     }
@@ -109,14 +106,14 @@ const useStyleNavItem = makeStyles(theme => ({
   },
   expandedIcon: {
     color: '#fff',
+    display: 'none',
     transform: 'rotate(180deg)',
-    transition: 'transform 0.4s',
-    display: 'none'
+    transition: 'opacity .4s, transform .4s'
   },
   minimizedIcon: {
     color: '#fff',
-    transition: 'transform 0.4s',
-    display: 'none'
+    display: 'none',
+    transition: 'opacity .4s, transform .4s'
   },
   divider: {
     backgroundColor: 'rgba(255, 255, 255, 0.12)'

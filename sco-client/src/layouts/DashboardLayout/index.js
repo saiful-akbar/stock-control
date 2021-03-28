@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import ErrorBoundary from 'src/components/ErrorBoundary';
 import NavSetting from './NavSetting';
 import Cookies from 'universal-cookie';
+import LogoutConfirm from 'src/components/LogoutConfirm';
 
 /* Style untuk komponen lodingSuspense */
 const fallbackStyle = makeStyles(theme => ({
@@ -158,6 +159,10 @@ function DashboardLayout() {
         </div>
       </div>
 
+      {/* Logout Confirm */}
+      <LogoutConfirm />
+
+      {/* Toast */}
       <Toast
         open={toast.show}
         type={toast.type}

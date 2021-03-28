@@ -12,7 +12,7 @@ const themeLight = createMuiTheme({
       topBar: '#FFF'
     },
     primary: {
-      main: '#2196f3'
+      main: '#2979ff'
     },
     secondary: {
       main: '#3ea575'
@@ -30,7 +30,7 @@ const themeLight = createMuiTheme({
       main: '#FF9800'
     },
     text: {
-      primary: colors.blueGrey[800],
+      primary: colors.blueGrey[900],
       secondary: colors.blueGrey[600]
     }
   },

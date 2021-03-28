@@ -5,6 +5,8 @@ const cookie = new Cookies();
 const inittialGlobalState = {
   loading: true,
   theme: cookie.get('theme') === 'dark' ? 'dark' : 'light',
+  pageTitel: 'Dashboard',
+  logout: false,
   toast: {
     show: false,
     type: 'info',
@@ -24,6 +26,18 @@ export const globalReducer = (state = inittialGlobalState, action) => {
       return {
         ...state,
         theme: action.value
+      };
+
+    case 'SET_PAGE_TITLE':
+      return {
+        ...state,
+        pageTitle: action.value
+      };
+
+    case 'SET_LOGOUT':
+      return {
+        ...state,
+        logout: action.value
       };
 
     case 'SET_TOAST':

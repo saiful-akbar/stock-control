@@ -208,7 +208,7 @@ class UserController extends Controller
             "is_active" => "required|boolean",
             "name"      => "required|string|max:100",
             "avatar"    => "nullable|image|mimes:jpeg,jpg,png|max:1000",
-            "division"  => "nullable|string|max:100",
+            "division"  => "required|string|max:100",
             "email"     => "nullable|email:filter|unique:profiles,profile_email|max:200",
             "phone"     => "nullable|string|max:16",
             "address"   => "nullable|string|max:400",

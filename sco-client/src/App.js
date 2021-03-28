@@ -1,3 +1,5 @@
+import 'src/assets/css/main.css';
+
 import React from 'react';
 import GlobalStyles from './components/GlobalStyles';
 import routes from './routes';

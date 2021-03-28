@@ -7,7 +7,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
     transform: 'rotateY(180deg)',
-    marginBottom: theme.spacing(5),
+    marginBottom: theme.spacing(7),
     [theme.breakpoints.up('md')]: {
       marginTop: -48,
       paddingTop: 48,
@@ -35,7 +35,7 @@ const Landing = props => {
 
   return (
     <div className={classes.root} {...props}>
-      <Container>
+      <Container maxWidth="md">
         <Box className={classes.landingBox}>
           <Typography className={classes.text} variant="h4" color="textPrimary">
             <strong>Dashboard</strong>.
