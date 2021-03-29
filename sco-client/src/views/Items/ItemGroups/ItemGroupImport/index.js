@@ -16,7 +16,7 @@ import { makeStyles, useTheme } from '@material-ui/styles';
 import { apiImportItemGroup } from 'src/services/itemGroups';
 import BtnSubmit from 'src/components/BtnSubmit';
 import { useNavigate } from 'react-router';
-import addFileImage from 'src/assets/images/svg/add_file.svg';
+import addFileImage from 'src/assets/images/svg/upload.svg';
 
 // Style DialogTitle
 const styles = theme => ({
@@ -71,13 +71,16 @@ const DialogActions = withStyles(theme => ({
 const useStyles = makeStyles(theme => ({
   image: {
     width: '100%',
-    height: '25vh'
+    height: '25vh',
+    marginBottom: theme.spacing(1)
   },
   boxInput: {
     cursor: 'pointer',
     border: `3px dashed ${theme.palette.divider}`,
     borderRadius: 5,
     padding: 10,
+    width: '100%',
+    height: '100%',
     textAlign: 'center',
     '&:hover': {
       opacity: 0.5

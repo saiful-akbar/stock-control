@@ -31,6 +31,9 @@ const useStyles = makeStyles(theme =>
         [theme.breakpoints.up('md')]: {
           maxWidth: 1010
         }
+      },
+      '.MuiButton-root': {
+        borderRadius: 5
       }
     }
   })

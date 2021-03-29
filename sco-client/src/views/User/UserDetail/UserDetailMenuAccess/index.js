@@ -10,7 +10,7 @@ import { Card, CardContent, Grid, Typography } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import { useSelector } from 'react-redux';
-import permissionImage from 'src/assets/images/svg/permission.svg';
+import permissionImage from 'src/assets/images/svg/personal_settings.svg';
 
 /**
  * Style
@@ -33,11 +33,13 @@ const useStyles = makeStyles(theme => ({
   },
   image: {
     backgroundImage: `url(${permissionImage})`,
-    backgroundPosition: 'center',
+    backgroundPosition: 'top 0 right 20px',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'auto 100%',
     height: 150,
     [theme.breakpoints.down('sm')]: {
+      backgroundPosition: 'center',
+      backgroundSize: '100% auto ',
       height: 100
     }
   }

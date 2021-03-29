@@ -8,9 +8,14 @@ const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '100%',
     maxWidth: '100%',
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     flexGrow: 1,
     overflowX: 'none'
+  },
+  pageTitle: {
+    fontSize: 25,
+    fontWeight: 500,
+    color: theme.palette.text.primary
   }
 }));
 
@@ -33,9 +38,9 @@ const Page = forwardRef(({ children, title, pageTitle, pb }, ref) => {
       style={{ paddingBottom: pb ? 90 : 30 }}
     >
       {pageTitle !== null && (
-        <Container maxWidth="md">
-          <Box mb={3}>
-            <Typography variant="h5" color="textPrimary" noWrap>
+        <Container maxWidth="lg">
+          <Box mb={5}>
+            <Typography variant="h5" noWrap className={classes.pageTitle}>
               {pageTitle}
             </Typography>
           </Box>

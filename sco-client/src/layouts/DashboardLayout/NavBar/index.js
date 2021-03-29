@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
     width: '256px',
     display: 'flex',
     flexDirection: 'column',
+    border: 'none',
     backgroundAttachment: 'fixed',
     backgroundImage: `url(${navbarImage})`,
     backgroundPosition: 'left 0 bottom 0',
@@ -68,7 +69,7 @@ const useStyles = makeStyles(theme => ({
   },
   btnLogout: {
     background: 'transparent',
-    borderRadius: 3,
+    borderRadius: 5,
     color: 'white',
     height: 34,
     padding: '0 30px',

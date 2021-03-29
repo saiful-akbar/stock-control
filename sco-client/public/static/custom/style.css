@@ -3,7 +3,7 @@ body {
 }
 
 body.dark {
-  background-color: #171C24;
+  background-color: #222b36;
 }
 
 /* Preloader */
@@ -30,12 +30,12 @@ body.dark {
   margin: 8px;
   border-radius: 50%;
   animation: preloader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border: 6px solid #2979ff;
-  border-color: #2979ff transparent transparent transparent;
+  border: 6px solid #1976d2;
+  border-color: #1976d2 transparent transparent transparent;
 }
 
 body.dark #preloader {
-  background-color: #171c24;
+  background-color: #222b36;
 }
 
 body.dark #preloader div {

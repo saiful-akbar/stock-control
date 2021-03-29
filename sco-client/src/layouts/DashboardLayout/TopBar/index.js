@@ -86,7 +86,7 @@ const TopBar = ({
   const classes = useStyles();
   const trigger = useScrollTrigger({
     disableHysteresis: true,
-    threshold: 40
+    threshold: 35
   });
 
   return (

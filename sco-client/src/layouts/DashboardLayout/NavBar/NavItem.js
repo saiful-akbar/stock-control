@@ -122,7 +122,10 @@ const useStyleNavItem = makeStyles(theme => ({
     transition: 'opacity .4s, transform .4s'
   },
   divider: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)'
+    backgroundColor:
+      theme.palette.type === 'light'
+        ? 'rgba(255, 255, 255, 0.12)'
+        : 'transparent'
   }
 }));
 
@@ -163,7 +166,7 @@ const NavItem = ({ data }) => {
 
   /* Render */
   return (
-    <>
+    <React.Fragment>
       <div className={clsx({ [classes.menuActive]: open })}>
         <ListItem
           button
@@ -216,9 +219,8 @@ const NavItem = ({ data }) => {
           </List>
         </Collapse>
       </div>
-
       <Divider className={classes.divider} />
-    </>
+    </React.Fragment>
   );
 };
 

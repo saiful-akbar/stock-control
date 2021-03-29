@@ -7,12 +7,12 @@ const themeLight = createMuiTheme({
     background: {
       default: colors.common.white,
       paper: colors.common.white,
-      dark: '#F6F7F9',
+      dark: '#F2F3F5',
       navBar: '#051e34',
-      topBar: 'rgba(246, 247, 249, 0.7)'
+      topBar: 'rgba(242, 243, 245, 0.7)'
     },
     primary: {
-      main: '#2979ff'
+      main: '#1976D2'
     },
     secondary: {
       main: '#3ea575'
@@ -30,7 +30,7 @@ const themeLight = createMuiTheme({
       main: '#FF9800'
     },
     text: {
-      primary: colors.blueGrey[900],
+      primary: colors.blueGrey[800],
       secondary: colors.blueGrey[600]
     }
   },
