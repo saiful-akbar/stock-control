@@ -215,9 +215,19 @@ function TheadActions({
             alignItems="center"
             spacing={3}
           >
-            <Grid item lg={4} md={6} xs={12}>
-              <Box display="flex" justifyContent="space-between">
-                <Box mr={2} display="flex" justifyContent="center">
+            <Grid item lg={5} md={6} xs={12}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mt={0.5}
+              >
+                <Box
+                  mr={2}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
                   <CustomTooltip title="Export or import" placement="bottom">
                     <IconButton onClick={handleClickMenu}>
                       <ImportExportIcon />
@@ -244,7 +254,7 @@ function TheadActions({
               </Box>
             </Grid>
 
-            <Grid item lg={8} md={6} xs={12}>
+            <Grid item lg={7} md={6} xs={12}>
               <form onSubmit={handleSubmitSearch} autoComplete="off">
                 <TextField
                   fullWidth

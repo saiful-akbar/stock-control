@@ -2,23 +2,34 @@ import React, { forwardRef } from 'react';
 import { Container, Typography, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
     minHeight: '100%',
     maxWidth: '100%',
-    paddingTop: theme.spacing(2),
+    paddingTop: theme.spacing(1),
     flexGrow: 1,
     overflowX: 'none'
+  },
+  pageTitle: {
+    fontSize: 25,
+    fontWeight: 500,
+    color: theme.palette.text.primary
   }
 }));
 
 const Page = forwardRef(({ children, title, pageTitle, pb }, ref) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     document.title = title === null ? 'Stock Control' : `SCO - ${title}`;
-  }, [title]);
+    dispatch({
+      type: 'SET_PAGE_TITLE',
+      value: Boolean(pageTitle) ? pageTitle : 'Dashboard'
+    });
+  }, [title, pageTitle, dispatch]);
 
   return (
     <div
@@ -27,9 +38,9 @@ const Page = forwardRef(({ children, title, pageTitle, pb }, ref) => {
       style={{ paddingBottom: pb ? 90 : 30 }}
     >
       {pageTitle !== null && (
-        <Container>
-          <Box mb={3}>
-            <Typography variant="h5" color="textSecondary" noWrap>
+        <Container maxWidth="lg">
+          <Box mb={5}>
+            <Typography variant="h5" noWrap className={classes.pageTitle}>
               {pageTitle}
             </Typography>
           </Box>

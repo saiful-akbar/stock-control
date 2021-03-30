@@ -7,9 +7,8 @@ import logoLight from 'src/assets/images/logo/logo-light.png';
 
 const useStyle = makeStyles(theme => ({
   root: {
-    margin: theme.spacing(0, 1),
-    width: theme.spacing(5),
-    height: theme.spacing(5)
+    width: theme.spacing(4),
+    height: theme.spacing(4)
   }
 }));
 

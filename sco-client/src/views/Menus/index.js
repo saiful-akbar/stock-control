@@ -13,24 +13,12 @@ import MenuSubItem from 'src/views/Menus/MenuSubItem';
 
 import { Divider, Container } from '@material-ui/core';
 import queryString from 'query-string';
-import { makeStyles } from '@material-ui/core/styles';
-
-/* Style untuk komponen Menus */
-const useStyles = makeStyles(theme => ({
-  tabList: {
-    position: 'sticky',
-    top: 48,
-    backgroundColor: theme.palette.background.dark,
-    zIndex: theme.zIndex.appBar + 1
-  }
-}));
 
 /**
  * Main component
  * @param {props} props
  */
 function Menus(props) {
-  const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
@@ -75,29 +63,30 @@ function Menus(props) {
     <Page title="Menu Managemen" pageTitle="Menu Management">
       <Container>
         <TabContext value={value}>
-          <div className={classes.tabList}>
-            <TabList
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="scrollable"
-              scrollButtons="on"
-            >
-              <Tab label="Menus" value="menus" />
-              <Tab label="Sub Menus" value="subMenus" />
-            </TabList>
-            <Divider />
-          </div>
+          <TabList
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="on"
+          >
+            <Tab label="Menus" value="menus" />
+            <Tab label="Sub Menus" value="subMenus" />
+          </TabList>
 
-          <Container>
-            <TabPanel value="menus">
+          <Divider />
+
+          <TabPanel value="menus">
+            <Container maxWidth="md">
               <MenuItem state={userAccess} />
-            </TabPanel>
+            </Container>
+          </TabPanel>
 
-            <TabPanel value="subMenus">
+          <TabPanel value="subMenus">
+            <Container maxWidth="md">
               <MenuSubItem state={userAccess} />
-            </TabPanel>
-          </Container>
+            </Container>
+          </TabPanel>
         </TabContext>
       </Container>
     </Page>

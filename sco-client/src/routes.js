@@ -60,15 +60,15 @@ const routes = [
         element: <User />
       },
       {
-        path: '/user/create',
+        path: '/users/create',
         element: <UserCreate />
       },
       {
-        path: '/user/:id/edit',
+        path: '/users/:id/edit',
         element: <UserEdit />
       },
       {
-        path: '/user/:id',
+        path: '/users/:id',
         element: <UserDetail />
       },
       {

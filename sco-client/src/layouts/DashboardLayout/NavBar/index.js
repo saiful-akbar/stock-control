@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
   Box,
   Divider,
   Drawer,
@@ -12,42 +11,72 @@ import {
   makeStyles,
   Grid,
   SwipeableDrawer,
-  ButtonBase
+  Button
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { useSelector } from 'react-redux';
-import apiUrl from 'src/utils/apiUrl';
+import { useSelector, useDispatch } from 'react-redux';
 import NavItem from './NavItem';
-import LogoutConfirm from './LogutConfirm';
 import NavItemDashboard from './NavItemDashboard';
+import Logo from 'src/components/Logo';
+import navbarImage from 'src/assets/images/background/navbar_background.png';
 
 // Style
 const useStyles = makeStyles(theme => ({
-  mobileDrawer: {
-    backgroundColor: theme.palette.background.paper,
-    width: 256,
-    overflow: 'hidden'
-  },
-  desktopDrawer: {
-    width: 256,
-    top: 48,
-    height: 'calc(100% - 48px)',
-    backgroundColor: theme.palette.background.dark,
+  drawer: {
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.navBar,
+    height: '100vh',
+    width: '256px',
+    display: 'flex',
+    flexDirection: 'column',
     border: 'none',
-    overflow: 'hidden'
+    backgroundAttachment: 'fixed',
+    backgroundImage: `url(${navbarImage})`,
+    backgroundPosition: 'left 0 bottom 0',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '256px auto'
   },
+  drawerBgImage: {},
   avatar: {
     borderRadius: '50%',
-    width: theme.spacing(7),
-    height: theme.spacing(7)
+    width: theme.spacing(5),
+    height: theme.spacing(5)
   },
   profile: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(1, 3)
   },
   menu: {
     width: 256, // lebar menu
-    height: 'calc(100% - 150px)',
-    overflowY: 'auto'
+    height: 'calc(100% - 110px)',
+    overflowY: 'auto',
+    overflowX: 'hidden'
+  },
+  menuSkeleton: {
+    backgroundColor: 'rgba(238, 238, 238, 0.13)'
+  },
+  logoText: {
+    color: '#fff',
+    fontSize: 18
+  },
+  textPrimary: {
+    color: '#fff'
+  },
+  textSecondary: {
+    color: 'rgba(255, 255, 255, 0.7)'
+  },
+  divider: {
+    backgroundColor: 'rgba(255, 255, 255, 0.12)'
+  },
+  btnLogout: {
+    background: 'transparent',
+    borderRadius: 5,
+    color: 'white',
+    height: 34,
+    padding: '0 30px',
+    textTransform: 'capitalize',
+    '&:hover': {
+      background: 'rgba(255, 255, 255, 0.08)'
+    }
   }
 }));
 
@@ -55,21 +84,15 @@ const useStyles = makeStyles(theme => ({
 const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
   const classes = useStyles();
   const location = useLocation();
-  const navigate = useNavigate();
   const { userLogin } = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
   const [collapseIsActive, setCollapseIsActive] = useState(null);
 
   useEffect(() => {
-    if (openMobile && onMobileToggle) {
-      onMobileToggle(false);
-    }
+    if (openMobile && onMobileToggle) onMobileToggle(false);
+
     // eslint-disable-next-line
   }, [location.pathname]);
-
-  /* Fungsi untuk mengambil avatar dari api url */
-  const getAvatar = avatarUrl => {
-    return avatarUrl !== null ? apiUrl(`/avatar/${avatarUrl}`) : '';
-  };
 
   const content = (
     <Box height="100%" display="flex" flexDirection="column">
@@ -78,59 +101,38 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
         direction="row"
         justify="center"
         alignItems="center"
-        wrap="nowrap"
         spacing={2}
         className={classes.profile}
       >
         <Grid item>
-          {userLogin.profile !== null ? (
-            <ButtonBase
-              className={classes.avatar}
-              onClick={() => navigate('/account')}
-            >
-              <Avatar
-                className={classes.avatar}
-                src={
-                  userLogin.profile.profile_avatar === null
-                    ? '/static/images/svg/default_avatar.svg'
-                    : getAvatar(userLogin.profile.profile_avatar)
-                }
-              />
-            </ButtonBase>
-          ) : (
-            <Skeleton variant="circle" className={classes.avatar} />
-          )}
+          <RouterLink to="/">
+            <Logo />
+          </RouterLink>
         </Grid>
 
         <Grid item xs zeroMinWidth>
-          {userLogin.profile !== null ? (
-            <>
-              <Typography color="textPrimary" variant="h6" noWrap>
-                {userLogin.profile.profile_name}
-              </Typography>
-              <Typography color="textSecondary" variant="body2" noWrap>
-                {userLogin.profile.profile_division}
-              </Typography>
-            </>
-          ) : (
-            <>
-              <Skeleton variant="text" width="100%">
-                <Typography variant="h6">{'...'}</Typography>
-              </Skeleton>
-              <Skeleton variant="text" width="90%">
-                <Typography variant="body2">{'...'}</Typography>
-              </Skeleton>
-            </>
-          )}
+          <Typography
+            noWrap
+            variant="h5"
+            className={classes.logoText}
+            component={RouterLink}
+            to="/"
+          >
+            Stock Control
+          </Typography>
         </Grid>
       </Grid>
 
-      <Divider />
+      <Divider className={classes.divider} />
       <Box flexGrow={1} />
 
-      <Box className={classes.menu}>
+      <Box className={classes.menu} id="navbar-menu">
         {userLogin.menuItems.length <= 0 ? (
-          <Skeleton variant="rect" height="100%" />
+          <Skeleton
+            variant="rect"
+            height="100%"
+            className={classes.menuSkeleton}
+          />
         ) : (
           <List component="div" disablePadding>
             <NavItemDashboard />
@@ -148,24 +150,40 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
       </Box>
 
       <Box flexGrow={1} />
-      <Divider />
+      <Divider className={classes.divider} />
 
       <Box p={2} display="flex" justifyContent="center">
-        <LogoutConfirm />
+        {userLogin.account === null ? (
+          <Skeleton
+            variant="rect"
+            height={34}
+            width="100%"
+            className={classes.menuSkeleton}
+          />
+        ) : (
+          <Button
+            fullWidth
+            className={classes.btnLogout}
+            onClick={e => dispatch({ type: 'SET_LOGOUT', value: true })}
+          >
+            Log out
+          </Button>
+        )}
       </Box>
     </Box>
   );
 
   return (
-    <>
+    <React.Fragment>
       <Hidden lgUp>
         <SwipeableDrawer
           anchor="left"
           variant="temporary"
+          elevation={3}
           open={openMobile}
+          classes={{ paper: classes.drawer }}
           onClose={() => onMobileToggle(false)}
           onOpen={() => onMobileToggle(true)}
-          classes={{ paper: classes.mobileDrawer }}
         >
           {content}
         </SwipeableDrawer>
@@ -174,14 +192,14 @@ const NavBar = ({ onMobileToggle, openMobile, openDesktop }) => {
       <Hidden mdDown>
         <Drawer
           anchor="left"
-          classes={{ paper: classes.desktopDrawer }}
-          open={openDesktop}
           variant="persistent"
+          open={openDesktop}
+          classes={{ paper: classes.drawer }}
         >
           {content}
         </Drawer>
       </Hidden>
-    </>
+    </React.Fragment>
   );
 };
 

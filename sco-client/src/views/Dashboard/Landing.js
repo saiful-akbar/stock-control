@@ -6,20 +6,17 @@ import landingImage from 'src/assets/images/svg/work_tim.svg';
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    transform: 'rotateY(180deg)',
     marginBottom: theme.spacing(5),
     [theme.breakpoints.up('md')]: {
-      marginTop: -48,
-      paddingTop: 48,
-      height: theme.spacing(60),
+      paddingTop: theme.spacing(5),
+      height: theme.spacing(50),
       backgroundImage: `url(${landingImage})`,
-      backgroundPosition: 'center',
+      backgroundPosition: 'right 0 top 0',
       backgroundRepeat: 'no-repeat',
-      backgroundSize: 'auto 100%'
+      backgroundSize: 'auto 80%'
     }
   },
   landingBox: {
-    transform: 'rotateY(180deg)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
@@ -35,7 +32,7 @@ const Landing = props => {
 
   return (
     <div className={classes.root} {...props}>
-      <Container>
+      <Container maxWidth="md">
         <Box className={classes.landingBox}>
           <Typography className={classes.text} variant="h4" color="textPrimary">
             <strong>Dashboard</strong>.

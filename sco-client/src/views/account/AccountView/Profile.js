@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import moment from 'moment';
 import {
   Avatar,
   Box,
@@ -11,16 +10,16 @@ import {
   CardContent,
   Divider,
   Typography,
-  makeStyles,
+  makeStyles
 } from '@material-ui/core';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith',
+  avatar: '',
+  city: 'Kota Tangerang Selatan',
+  country: 'Indonesia',
+  jobTitle: 'Web Developer',
+  name: 'Saiful Akbar',
   timezone: 'GTM-7'
 };
 
@@ -43,56 +42,45 @@ const Profile = ({ className, ...rest }) => {
   });
 
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <Card className={clsx(classes.root, className)} {...rest}>
       <CardContent>
-        <Box
-          alignItems="center"
-          display="flex"
-          flexDirection="column"
-        >
+        <Box alignItems="center" display="flex" flexDirection="column">
           <Avatar
             className={classes.avatar}
             src={loading ? null : user.avatar}
           />
           {loading ? (
-            <>
-              <Skeleton width="70%">
-                <Typography variant="h3">.</Typography>
-              </Skeleton>
-              <Skeleton width="50%">
-                <Typography variant="body1">.</Typography>
-              </Skeleton>
-              <Skeleton width="50%">
-                <Typography variant="body1">.</Typography>
-              </Skeleton>
-            </>
+            <React.Fragment>
+              <Skeleton width="70%" variant="text" />
+              <Skeleton width="50%" variant="text" />
+              <Skeleton width="50%" variant="text" />
+            </React.Fragment>
           ) : (
-            <>
-              <Typography color="textPrimary" gutterBottom variant="h3">
+            <React.Fragment>
+              <Typography color="textPrimary" gutterBottom variant="h6">
                 {user.name}
               </Typography>
+
               <Typography color="textSecondary" variant="body1">
                 {`${user.city} ${user.country}`}
               </Typography>
 
-              <Typography className={classes.dateText} color="textSecondary" variant="body1">
-                {`${moment().format('hh:mm A')} ${user.timezone}`}
+              <Typography
+                className={classes.dateText}
+                color="textSecondary"
+                variant="body1"
+              >
+                {user.timezone}
               </Typography>
-            </>
+            </React.Fragment>
           )}
-
         </Box>
       </CardContent>
+
       <Divider />
+
       <CardActions>
-        <Button
-          color="primary"
-          fullWidth
-          variant="text"
-        >
+        <Button color="primary" fullWidth variant="text">
           Upload picture
         </Button>
       </CardActions>

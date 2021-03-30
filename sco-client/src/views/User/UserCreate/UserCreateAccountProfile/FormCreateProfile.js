@@ -214,6 +214,7 @@ function FormCreateProfile({
                 ) : (
                   <FormControl
                     fullWidth
+                    required
                     variant="outlined"
                     error={Boolean(touched.division && errors.division)}
                   >
@@ -221,25 +222,22 @@ function FormCreateProfile({
 
                     <Select
                       id="divivsion"
-                      label="Division"
+                      label="Division *"
                       name="division"
                       disabled={loading}
                       value={values.division}
                       onChange={handleChange}
                     >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
                       <ListSubheader>Warehouse</ListSubheader>
-                      <MenuItem value="Stock Control">
-                        Stock Control (SCO)
-                      </MenuItem>
-                      <MenuItem value="Audit Stock">Audit Stock</MenuItem>
                       <MenuItem value="Admin Warehouse">
                         Admin Warehouse
                       </MenuItem>
+                      <MenuItem value="Audit Stock">Audit Stock</MenuItem>
                       <MenuItem value="Operational Warehouse">
                         Operational Warehouse
+                      </MenuItem>
+                      <MenuItem value="Stock Control">
+                        Stock Control (SCO)
                       </MenuItem>
                     </Select>
 

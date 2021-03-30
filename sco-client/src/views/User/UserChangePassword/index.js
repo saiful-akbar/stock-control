@@ -149,7 +149,7 @@ function UserChangePassword({ open, userId, onClose, ...props }) {
 
               <FormControl
                 fullWidth
-                margin="normal"
+                margin="dense"
                 variant="outlined"
                 error={Boolean(errors.password)}
               >

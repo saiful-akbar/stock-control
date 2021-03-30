@@ -6,8 +6,10 @@ import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
 // Style untuk komponen NavItem
 const useStyle = makeStyles(theme => ({
   root: {
-    paddingTop: 17,
-    paddingBottom: 17
+    padding: theme.spacing(2.1, 3),
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.08)'
+    }
   },
   subMenuIcon: {
     display: 'inline-flex',
@@ -17,20 +19,29 @@ const useStyle = makeStyles(theme => ({
   },
   icon: {
     fontSize: 20,
-    color: theme.palette.text.secondary
+    color: 'rgba(255, 255, 255, 0.7)'
   },
   subMenuTitle: {
     fontSize: 14,
-    color: theme.palette.text.secondary,
+    color: 'rgba(255, 255, 255, 0.7)',
     fontWeight: theme.typography.fontWeightMedium
   },
   subMenuActive: {
     '& $icon': {
-      color: theme.palette.primary.main
+      color:
+        theme.palette.type === 'dark'
+          ? theme.palette.primary.main
+          : theme.palette.primary.light
     },
     '& $subMenuTitle': {
-      color: theme.palette.primary.main
+      color:
+        theme.palette.type === 'dark'
+          ? theme.palette.primary.main
+          : theme.palette.primary.light
     }
+  },
+  divider: {
+    backgroundColor: 'rgba(255, 255, 255, 0.12)'
   }
 }));
 
@@ -57,7 +68,7 @@ const NavItemDashboard = () => {
         </Typography>
       </ListItem>
 
-      <Divider />
+      <Divider className={classes.divider} />
     </div>
   );
 };

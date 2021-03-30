@@ -146,7 +146,9 @@ function UserCreateAccountProfile({
           .required()
           .max(100),
         avatar: Yup.mixed(),
-        division: Yup.string().max(100),
+        division: Yup.string()
+          .required()
+          .max(100),
         email: Yup.string().max(200),
         phone: Yup.number(),
         address: Yup.string().max(400)

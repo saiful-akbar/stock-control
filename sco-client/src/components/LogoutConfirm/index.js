@@ -8,8 +8,11 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
+import { useSelector, useDispatch } from 'react-redux';
 
-/* Style */
+/**
+ * Style
+ */
 const styles = theme => ({
   root: {
     margin: 0,
@@ -23,7 +26,9 @@ const styles = theme => ({
   }
 });
 
-/* Custom dialog title */
+/**
+ * Custom dialog title
+ */
 const DialogTitle = withStyles(styles)(props => {
   const { children, classes, onClose, ...other } = props;
   return (
@@ -42,14 +47,18 @@ const DialogTitle = withStyles(styles)(props => {
   );
 });
 
-/* Custom dialog content */
+/**
+ * Custom dialog content
+ */
 const DialogContent = withStyles(theme => ({
   root: {
     padding: theme.spacing(2)
   }
 }))(MuiDialogContent);
 
-/* Custom dialog actions */
+/**
+ * Custom dialog actions
+ */
 const DialogActions = withStyles(theme => ({
   root: {
     margin: 0,
@@ -58,31 +67,28 @@ const DialogActions = withStyles(theme => ({
   }
 }))(MuiDialogActions);
 
-/* Komponen utama */
-function LogoutConfirm(props) {
-  const [open, setOpen] = React.useState(false);
+/**
+ * Komponen utama
+ */
+function LogoutConfirm() {
+  const { logout } = useSelector(state => state.globalReducer);
+  const dispatch = useDispatch();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
   const handleClose = () => {
-    setOpen(false);
+    dispatch({ type: 'SET_LOGOUT', value: false });
   };
 
-  /* Render */
+  /**
+   * Render
+   */
   return (
     <React.Fragment>
-      <Button
-        fullWidth
-        color="primary"
-        size="small"
-        variant="outlined"
-        onClick={handleClickOpen}
+      <Dialog
+        maxWidth="xs"
+        fullWidth={true}
+        onClose={handleClose}
+        open={logout}
       >
-        {'Log Out'}
-      </Button>
-
-      <Dialog onClose={handleClose} maxWidth="xs" fullWidth={true} open={open}>
         <DialogTitle onClose={handleClose}>Log Out</DialogTitle>
 
         <DialogContent>

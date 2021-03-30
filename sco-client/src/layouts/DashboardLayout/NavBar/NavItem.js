@@ -18,8 +18,10 @@ import { useSelector } from 'react-redux';
 // Style untuk komponen NavSubItem
 const useStyleNavSubItem = makeStyles(theme => ({
   subMenu: {
-    paddingTop: 5.5,
-    paddingBottom: 5.5
+    padding: theme.spacing(0.7, 3),
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.08)'
+    }
   },
   subMenuIcon: {
     display: 'inline-flex',
@@ -29,19 +31,25 @@ const useStyleNavSubItem = makeStyles(theme => ({
   },
   icon: {
     fontSize: 20,
-    color: theme.palette.text.secondary
+    color: 'rgba(255, 255, 255, 0.7)'
   },
   subMenuTitle: {
     fontSize: 14,
-    color: theme.palette.text.secondary,
+    color: 'rgba(255, 255, 255, 0.7)',
     fontWeight: theme.typography.fontWeightMedium
   },
   subMenuActive: {
     '& $icon': {
-      color: theme.palette.primary.main
+      color:
+        theme.palette.type === 'dark'
+          ? theme.palette.primary.main
+          : theme.palette.primary.light
     },
     '& $subMenuTitle': {
-      color: theme.palette.primary.main
+      color:
+        theme.palette.type === 'dark'
+          ? theme.palette.primary.main
+          : theme.palette.primary.light
     }
   }
 }));
@@ -72,35 +80,52 @@ function NavSubItem({ url, icon, title, handleActiveParent, ...rest }) {
 
 // Style untuk komponen NavItem
 const useStyleNavItem = makeStyles(theme => ({
+  menuActive: {
+    background: 'rgba(255, 255, 255, 0.06)',
+    paddingBottom: 20
+  },
   menu: {
-    paddingTop: 8,
-    paddingBottom: 8,
-    minHeight: 57
+    padding: theme.spacing(1.7, 3),
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+      '& $minimizedIcon': {
+        display: 'inline-block'
+      },
+      '& $expandedIcon': {
+        display: 'inline-block'
+      }
+    }
   },
   menuTitle: {
     '& span': {
-      color: theme.palette.text.primary,
+      color: '#fff',
       fontWeight: theme.typography.fontWeightMedium,
       fontSize: 15
     }
   },
   menuDescTitle: {
     fontSize: 12,
-    color: theme.palette.text.secondary
-  },
-  menuActive: {
-    background:
-      theme.palette.type === 'dark'
-        ? 'rgba(255, 255, 255, 0.03)'
-        : 'rgba(0, 0, 0, 0.03)',
-    paddingBottom: 20
+    color: 'rgba(255,255,255,.5)',
+    transition: 'opacity .15s cubic-bezier(0.4, 0, 0.2, 1)',
+    lineHeight: '16px',
+    fontWeight: 400
   },
   expandedIcon: {
+    color: '#fff',
+    display: 'none',
     transform: 'rotate(180deg)',
-    transition: 'transform 0.5s'
+    transition: 'opacity .4s, transform .4s'
   },
-  minimized: {
-    transition: 'transform 0.5s'
+  minimizedIcon: {
+    color: '#fff',
+    display: 'none',
+    transition: 'opacity .4s, transform .4s'
+  },
+  divider: {
+    backgroundColor:
+      theme.palette.type === 'light'
+        ? 'rgba(255, 255, 255, 0.12)'
+        : 'transparent'
   }
 }));
 
@@ -141,7 +166,7 @@ const NavItem = ({ data }) => {
 
   /* Render */
   return (
-    <>
+    <React.Fragment>
       <div className={clsx({ [classes.menuActive]: open })}>
         <ListItem
           button
@@ -164,7 +189,7 @@ const NavItem = ({ data }) => {
             }
           />
           <ExpandMore
-            className={clsx(classes.minimized, {
+            className={clsx(classes.minimizedIcon, {
               [classes.expandedIcon]: open
             })}
           />
@@ -194,8 +219,8 @@ const NavItem = ({ data }) => {
           </List>
         </Collapse>
       </div>
-      <Divider />
-    </>
+      <Divider className={classes.divider} />
+    </React.Fragment>
   );
 };
 

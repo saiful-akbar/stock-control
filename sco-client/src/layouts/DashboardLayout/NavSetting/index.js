@@ -3,13 +3,15 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Box,
-  Divider,
   IconButton,
   Typography,
-  Drawer
+  Drawer,
+  AppBar,
+  Toolbar
 } from '@material-ui/core';
 import Appearance from './Appearance';
 import CustomTooltip from 'src/components/CustomTooltip';
+import settingImage from 'src/assets/images/svg/features.svg';
 
 // Style
 const useStyles = makeStyles(theme => ({
@@ -17,32 +19,26 @@ const useStyles = makeStyles(theme => ({
     width: 450,
     overflow: 'hidden',
     fontWeight: 500,
+    backgroundImage: `url(${settingImage})`,
+    backgroundPosition: 'right 0 bottom 0',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '100% auto',
     [theme.breakpoints.down('xs')]: {
       width: '100vw'
     }
   },
-  header: {
-    padding: theme.spacing(1)
-  },
-  img: {
-    position: 'relative',
-    zIndex: 1,
-    height: 'calc(100% - 80px)',
-    width: '100%',
-    backgroundImage: 'url(/static/images/svg/settings.svg)',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'auto 250px'
-    // opacity: '50%'
+  appBar: {
+    backgroundColor: theme.palette.primary.dark
   },
   list: {
     width: '100%',
-    height: 'calc(100% - 64px)',
+    height: 'calc(100% - 48px)',
     position: 'absolute',
-    top: 64,
-    zIndex: 2,
+    top: 48,
     overflowX: 'hidden',
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
+    paddingTop: theme.spacing(2),
+    zIndex: theme.zIndex.drawer + 1
   }
 }));
 
@@ -58,26 +54,23 @@ function NavSetting({ onToggle, open, setReduxTheme, reduxTheme, ...props }) {
       onClose={() => onToggle(false)}
       classes={{ paper: classes.root }}
     >
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        className={classes.header}
-      >
-        <Typography variant="h5" color="textPrimary">
-          Setting
-        </Typography>
+      <AppBar position="static" elevation={3} className={classes.appBar}>
+        <Toolbar variant="dense">
+          <Typography variant="h6">Setting</Typography>
 
-        <CustomTooltip title="Close setting">
-          <IconButton color="default" onClick={() => onToggle(false)}>
-            <CancelOutlinedIcon />
-          </IconButton>
-        </CustomTooltip>
-      </Box>
+          <Box flexGrow={1} />
 
-      <Divider />
-
-      <div className={classes.img} />
+          <CustomTooltip title="Close setting">
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => onToggle(false)}
+            >
+              <CancelOutlinedIcon fontSize="small" />
+            </IconButton>
+          </CustomTooltip>
+        </Toolbar>
+      </AppBar>
 
       <Box className={classes.list}>
         <Appearance />
