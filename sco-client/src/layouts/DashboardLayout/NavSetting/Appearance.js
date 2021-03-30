@@ -53,11 +53,9 @@ const Appearance = ({ setReduxTheme, reduxTheme, ...props }) => {
     setThemeValue(newTheme);
 
     // set Redux
-    if (newTheme === 'system') {
-      setReduxTheme(prefersDarkMode ? 'dark' : 'light');
-    } else {
-      setReduxTheme(newTheme);
-    }
+    newTheme === 'system'
+      ? setReduxTheme(prefersDarkMode ? 'dark' : 'light')
+      : setReduxTheme(newTheme);
 
     // Set cookie theme
     const date = new Date();
@@ -69,11 +67,9 @@ const Appearance = ({ setReduxTheme, reduxTheme, ...props }) => {
     if (newTheme === 'dark') {
       body.classList.add('dark');
     } else {
-      if (newTheme === 'system' && prefersDarkMode) {
-        body.classList.add('dark');
-      } else {
-        body.classList.remove('dark');
-      }
+      Boolean(newTheme === 'system' && prefersDarkMode)
+        ? body.classList.add('dark')
+        : body.classList.remove('dark');
     }
   };
   return (
@@ -98,9 +94,11 @@ const Appearance = ({ setReduxTheme, reduxTheme, ...props }) => {
         <ToggleButton className={classes.toggleTheme} value="light">
           Light
         </ToggleButton>
+
         <ToggleButton className={classes.toggleTheme} value="system">
           System
         </ToggleButton>
+
         <ToggleButton className={classes.toggleTheme} value="dark">
           Dark
         </ToggleButton>

@@ -76,15 +76,15 @@ function Items(props) {
 
           <Divider />
 
-          <Container maxWidth="md">
-            <TabPanel value="itemGroups">
+          <TabPanel value="itemGroups">
+            <Container maxWidth="md">
               <ItemGroups />
-            </TabPanel>
+            </Container>
+          </TabPanel>
 
-            <TabPanel value="itemSubGroups">
-              <ItemSubGroup />
-            </TabPanel>
-          </Container>
+          <TabPanel value="itemSubGroups">
+            <ItemSubGroup />
+          </TabPanel>
 
           <TabPanel value="itemList">{'Item List'}</TabPanel>
         </TabContext>

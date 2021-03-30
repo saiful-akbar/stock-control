@@ -1,14 +1,21 @@
+:root {
+  --bg-light: #f2f3f5;
+  --bg-dark: #222b36;
+  --color-light: #1976d2;
+  --color-dark: #688eff;
+}
+
 body {
-  background-color: #f2f3f5;
+  background-color: var(--bg-light);
 }
 
 body.dark {
-  background-color: #222b36;
+  background-color: var(--bg-dark);
 }
 
 /* Preloader */
 #preloader {
-  background-color: #f2f3f5;
+  background-color: var(--bg-light);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,7 +28,7 @@ body.dark {
   overflow: hidden;
 }
 
-#preloader div {
+#preloader > div {
   box-sizing: border-box;
   display: block;
   position: absolute;
@@ -30,28 +37,28 @@ body.dark {
   margin: 8px;
   border-radius: 50%;
   animation: preloader 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border: 6px solid #1976d2;
-  border-color: #1976d2 transparent transparent transparent;
+  border: 6px solid var(--color-light);
+  border-color: var(--color-light) transparent transparent transparent;
 }
 
-body.dark #preloader {
-  background-color: #222b36;
+body.dark > #preloader {
+  background-color: var(--bg-dark);
 }
 
-body.dark #preloader div {
-  border: 6px solid #688eff;
-  border-color: #688eff transparent transparent transparent;
+body.dark > #preloader > div {
+  border: 6px solid var(--color-dark);
+  border-color: var(--color-dark) transparent transparent transparent;
 }
 
-#preloader div:nth-child(1) {
+#preloader > div:nth-child(1) {
   animation-delay: -0.45s;
 }
 
-#preloader div:nth-child(2) {
+#preloader > div:nth-child(2) {
   animation-delay: -0.3s;
 }
 
-#preloader div:nth-child(3) {
+#preloader > div:nth-child(3) {
   animation-delay: -0.15s;
 }
 

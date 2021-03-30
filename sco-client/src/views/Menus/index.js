@@ -76,15 +76,17 @@ function Menus(props) {
 
           <Divider />
 
-          <Container maxWidth="md">
-            <TabPanel value="menus">
+          <TabPanel value="menus">
+            <Container maxWidth="md">
               <MenuItem state={userAccess} />
-            </TabPanel>
+            </Container>
+          </TabPanel>
 
-            <TabPanel value="subMenus">
+          <TabPanel value="subMenus">
+            <Container maxWidth="md">
               <MenuSubItem state={userAccess} />
-            </TabPanel>
-          </Container>
+            </Container>
+          </TabPanel>
         </TabContext>
       </Container>
     </Page>
