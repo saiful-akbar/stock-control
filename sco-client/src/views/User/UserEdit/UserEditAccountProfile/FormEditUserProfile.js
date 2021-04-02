@@ -243,6 +243,7 @@ function FormEditProfile({
                       value={values.division}
                       onChange={handleChange}
                     >
+                      <ListSubheader>{'Administrator'}</ListSubheader>
                       <MenuItem value="Administrator">
                         {'Administrator'}
                       </MenuItem>

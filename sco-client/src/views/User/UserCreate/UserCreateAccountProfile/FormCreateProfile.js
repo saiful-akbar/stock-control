@@ -236,6 +236,11 @@ function FormCreateProfile({
                       value={values.division}
                       onChange={handleChange}
                     >
+                      <ListSubheader>{'Administrator'}</ListSubheader>
+                      <MenuItem value="Administrator">
+                        {'Administrator'}
+                      </MenuItem>
+
                       <ListSubheader>Warehouse</ListSubheader>
                       <MenuItem value="Admin Warehouse">
                         Admin Warehouse

@@ -44,9 +44,9 @@ const useStyles = makeStyles(theme => ({
   },
   paperAvatar: {
     marginBottom: theme.spacing(1),
-    width: theme.spacing(12),
-    height: theme.spacing(12),
-    border: `5px solid ${theme.palette.background.dark}`,
+    width: theme.spacing(15),
+    height: theme.spacing(15),
+    border: `5px solid ${theme.palette.divider}`,
     borderRadius: '50%'
   }
 }));
