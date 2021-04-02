@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, withStyles } from '@material-ui/styles';
+import apiUrl from 'src/utils/apiUrl';
 
 /**
  * Style
@@ -60,6 +61,8 @@ function ViewAvatar({ file = '', ...props }) {
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = e => setThumb(e.target.result);
+    } else if (typeof file === 'string' && file !== '') {
+      setThumb(apiUrl(`/avatar/${file}`));
     } else {
       setThumb(file);
     }
@@ -82,7 +85,7 @@ function ViewAvatar({ file = '', ...props }) {
 /**
  * Komponen utama
  */
-function FormCreateProfile({
+function FormEditProfile({
   loading,
   isSkeletonShow,
   values,
@@ -90,13 +93,12 @@ function FormCreateProfile({
   handleChange,
   setFieldValue,
   touched,
-  errors,
-  ...props
+  errors
 }) {
   const classes = useStyles();
 
   return (
-    <Card variant="outlined">
+    <Card elevation={3}>
       <CardHeader
         title={
           isSkeletonShow ? (
@@ -117,7 +119,12 @@ function FormCreateProfile({
       <CardContent>
         <Grid container spacing={3}>
           <Grid item md={6} xs={12}>
-            <Box display="flex" justifyContent="center" alignItems="center">
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              style={{ textAlign: 'center' }}
+            >
               {isSkeletonShow ? (
                 <Skeleton variant="circle" className={classes.avatar} />
               ) : (
@@ -236,16 +243,20 @@ function FormCreateProfile({
                       value={values.division}
                       onChange={handleChange}
                     >
-                      <ListSubheader>Warehouse</ListSubheader>
-                      <MenuItem value="Admin Warehouse">
-                        Admin Warehouse
+                      <MenuItem value="Administrator">
+                        {'Administrator'}
                       </MenuItem>
-                      <MenuItem value="Audit Stock">Audit Stock</MenuItem>
+
+                      <ListSubheader>{'Warehouse'}</ListSubheader>
+                      <MenuItem value="Admin Warehouse">
+                        {'Admin Warehouse'}
+                      </MenuItem>
+                      <MenuItem value="Audit Stock">{'Audit Stock'}</MenuItem>
                       <MenuItem value="Operational Warehouse">
-                        Operational Warehouse
+                        {'Operational Warehouse'}
                       </MenuItem>
                       <MenuItem value="Stock Control">
-                        Stock Control (SCO)
+                        {'Stock Control (SCO)'}
                       </MenuItem>
                     </Select>
 
@@ -285,4 +296,4 @@ function FormCreateProfile({
   );
 }
 
-export default FormCreateProfile;
+export default FormEditProfile;

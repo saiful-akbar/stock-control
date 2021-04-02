@@ -54,7 +54,7 @@ export const apiGetAllUser = (
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         } else {
@@ -122,7 +122,7 @@ export const apiGetDataUserCreate = () => dispatch => {
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         }
@@ -180,7 +180,7 @@ export const apiCreateUserAccountProfile = formData => dispatch => {
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         }
@@ -242,7 +242,7 @@ export const apiCreateUserMenuAccess = (
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         }
@@ -310,7 +310,7 @@ export const apiDeleteUser = id => dispatch => {
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         }
@@ -356,7 +356,7 @@ export const apiUpdateUserPassword = (id, data) => dispatch => {
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         }
@@ -413,7 +413,7 @@ export const apiGetUserDetail = id => dispatch => {
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         }
@@ -467,7 +467,7 @@ export const apiClearUserLogs = id => dispatch => {
             value: {
               show: true,
               type: 'error',
-              message: `(#${err.response.status} ${err.response.data.message})`
+              message: `(#${err.response.status}) ${err.response.data.message}`
             }
           });
         }
@@ -476,174 +476,182 @@ export const apiClearUserLogs = id => dispatch => {
 };
 
 /**
- * -----------------------------------------------
- * -----------------------------------------------
+ * Fungsi api untuk mengambil data edit user
+ * @param {string} id
+ */
+export const apiGetUserEdit = id => dispatch => {
+  return new Promise((resolve, reject) => {
+    api({
+      method: 'GET',
+      url: `/users/${id}`
+    })
+      .then(res => {
+        resolve(res);
+
+        // Set redux user detail
+        const { account, profile, menu_items, menu_sub_items, logs } = res.data;
+        dispatch({
+          type: 'SET_USER_EDIT',
+          value: {
+            account: {
+              id: account.id,
+              username: account.username,
+              isActive: account.is_active,
+              createdAt: account.created_at,
+              updatedAt: account.updated_at
+            },
+            profile: {
+              avatar: profile.profile_avatar,
+              name: profile.profile_name,
+              division: profile.profile_division,
+              email: profile.profile_email,
+              phone: profile.profile_phone,
+              address: profile.profile_address,
+              createdAt: profile.created_at,
+              updatedAt: profile.updated_at
+            },
+            menuItems: menu_items,
+            menuSubItems: menu_sub_items,
+            logs: logs
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status}) ${err.response.data.message}`
+            }
+          });
+        }
+      });
+  });
+};
+
+/**
+ * Fungsi api untuk merubah data account & profile user
  *
- * Fungsi yang belum di cek
- *
- * -----------------------------------------------
- * -----------------------------------------------
- */
-
-/**
- * Fungsi api untuk mengambil semua data akses menu item pada user yang dipilih
  * @param {string} id
+ * @param {obj} data
  */
-export const apiGetUserMenuItems = id => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'GET',
-      url: `/users/menu/${id}`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk menambahkan akses menu item pada user
- * @param {String} id
- * @param {Array} data
- */
-export const apiAddUserMenuItem = (id, data) => {
+export const apiUpdateUserAccountProfile = (id, data) => dispatch => {
   return new Promise((resolve, reject) => {
     api({
       method: 'POST',
       data: data,
-      url: `/users/menu/${id}`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk menghapus user menu item
- * @param {string} id
- */
-export const apiDeleteUserMenuItem = (id, data) => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'DELETE',
-      data: data,
-      url: `/users/menu/${id}`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk mengambil semua data akses menu sub item pada user yang dipilih
- * @param {string} id
- */
-export const apiGetUserMenuSubItems = id => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'GET',
-      url: `/users/submenu/${id}`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk menambahkan akses menu sub item pada user
- * @param {String} id
- * @param {Array} data
- */
-export const apiAddUserMenuSubItem = (id, data) => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'POST',
-      data: data,
-      url: `/users/submenu/${id}`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk menghapus user menu item
- * @param {string} id
- */
-export const apiDeleteUserMenuSubItems = (id, data) => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'DELETE',
-      data: data,
-      url: `/users/submenu/${id}`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk mengambil data profile user yang akan diedit
- * @param {string} id
- */
-export const apiEditUserProfile = id => {
-  return new Promise((resolve, reject) => {
-    api({
-      method: 'GET',
-      url: `/users/${id}/edit`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk update user profile
- * @param {string|id} id
- * @param {obj|request form} data
- */
-export const apiUpdateUserProfile = (id, data) => {
-  return new Promise((resolve, reject) => {
-    api({
-      data: data,
-      method: 'POST',
       url: `/users/${id}`,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'multipart/form-data'
       }
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        resolve(res);
+
+        // Tampilkan toast
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+
+        // Set redux users
+        const { result } = res.data;
+        dispatch({
+          type: 'SET_USERS',
+          value: {
+            data: result.users.data,
+            currentPage: result.users.current_page,
+            perPage: result.users.per_page,
+            totalData: result.users.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status}) ${err.response.data.message}`
+            }
+          });
+        }
+      });
   });
 };
 
 /**
- * Fungsi api untuk mengambil data account user yang akan diedit
+ * Fungsi api untuk merubah menu access pada user
+ *
  * @param {string} id
+ * @param {obj} data
  */
-export const apiEditUserAccount = id => {
+export const apiUpdateUserMenuAccess = (
+  id,
+  menuItems,
+  menuSubItems
+) => dispatch => {
   return new Promise((resolve, reject) => {
     api({
-      method: 'GET',
-      url: `/users/${id}/account`
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
-  });
-};
-
-/**
- * Fungsi api untuk update user account
- * @param {string|id} id
- * @param {obj|request form} data
- */
-export const apiUpdateUserAccount = (id, data) => {
-  return new Promise((resolve, reject) => {
-    api({
-      data: data,
       method: 'PATCH',
-      url: `/users/${id}/account`
+      url: `/users/${id}/menu-access`,
+      data: {
+        user_menu_item: menuItems,
+        user_menu_sub_item: menuSubItems
+      }
     })
-      .then(res => resolve(res))
-      .catch(err => reject(err.response));
+      .then(res => {
+        resolve(res);
+
+        // Tampilkan toast
+        dispatch({
+          type: 'SET_TOAST',
+          value: {
+            show: true,
+            type: 'success',
+            message: res.data.message
+          }
+        });
+
+        // Set redux users
+        const { result } = res.data;
+        dispatch({
+          type: 'SET_USERS',
+          value: {
+            data: result.users.data,
+            currentPage: result.users.current_page,
+            perPage: result.users.per_page,
+            totalData: result.users.total,
+            sort: result.sort,
+            orderBy: result.order_by,
+            search: result.search
+          }
+        });
+      })
+      .catch(err => {
+        if (err.response) {
+          reject(err.response);
+          dispatch({
+            type: 'SET_TOAST',
+            value: {
+              show: true,
+              type: 'error',
+              message: `(#${err.response.status}) ${err.response.data.message}`
+            }
+          });
+        }
+      });
   });
 };

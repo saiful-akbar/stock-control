@@ -9,8 +9,7 @@ import {
   Typography,
   ListItemText,
   Icon,
-  List,
-  Divider
+  List
 } from '@material-ui/core';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
@@ -219,7 +218,6 @@ const NavItem = ({ data }) => {
           </List>
         </Collapse>
       </div>
-      <Divider className={classes.divider} />
     </React.Fragment>
   );
 };

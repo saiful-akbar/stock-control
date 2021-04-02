@@ -18,7 +18,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import NavItem from './NavItem';
 import NavItemDashboard from './NavItemDashboard';
 import Logo from 'src/components/Logo';
-import navbarImage from 'src/assets/images/background/navbar_background.png';
 
 // Style
 const useStyles = makeStyles(theme => ({
@@ -29,12 +28,7 @@ const useStyles = makeStyles(theme => ({
     width: '256px',
     display: 'flex',
     flexDirection: 'column',
-    border: 'none',
-    backgroundAttachment: 'fixed',
-    backgroundImage: `url(${navbarImage})`,
-    backgroundPosition: 'left 0 bottom 0',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: '256px auto'
+    border: 'none'
   },
   drawerBgImage: {},
   avatar: {

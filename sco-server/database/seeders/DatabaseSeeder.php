@@ -37,10 +37,10 @@ class DatabaseSeeder extends Seeder
         $user->Profile()->create([
             'profile_avatar'   => null,
             'profile_name'     => 'Super Administrator',
-            'profile_email'    => 'admin@mail.com',
-            'profile_division' => 'Administrator',
-            'profile_phone'    => 'xxxx-xxxx-xxxx',
-            'profile_address'  => 'Indonesia',
+            'profile_email'    => null,
+            'profile_division' => null,
+            'profile_phone'    => null,
+            'profile_address'  => null,
             'created_at'       => now(),
             'updated_at'       => now()
         ]);

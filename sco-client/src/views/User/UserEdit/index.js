@@ -6,13 +6,14 @@ import TabList from '@material-ui/lab/TabList';
 import TabPanel from '@material-ui/lab/TabPanel';
 import { Divider, Container } from '@material-ui/core';
 import queryString from 'query-string';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiGetAllMenuItem } from 'src/services/menuItem';
 import { apiGetAllMenuSubItem } from 'src/services/menuSubItem';
 import UserEditAccountProfile from './UserEditAccountProfile';
 import UserEditMenuAccess from './UserEditMenuAccess';
 import FabReturn from 'src/components/FabReturn';
+import { apiGetUserEdit } from 'src/services/user';
 
 /**
  * Komponen utama
@@ -25,6 +26,7 @@ function UserEdit() {
   const navigate = useNavigate();
   const location = useLocation();
   const isMounted = React.useRef(true);
+  const { id } = useParams();
 
   /**
    * Redux
@@ -36,7 +38,7 @@ function UserEdit() {
    * State
    */
   const [value, setValue] = React.useState('accountProfile');
-  const [isSkeletonShow, setSkeletonShow] = React.useState(false);
+  const [isSkeletonShow, setSkeletonShow] = React.useState(true);
 
   /**
    * Handle jika komponent dilepas saat request api belum selesai
@@ -47,6 +49,11 @@ function UserEdit() {
     };
     // eslint-disable-next-line
   }, []);
+
+  /**
+   * Non
+   * @param {*} status
+   */
 
   /**
    * Fungsi handle error request api
@@ -78,29 +85,34 @@ function UserEdit() {
    */
   React.useEffect(() => {
     if (menuItems.data === null) {
-      setSkeletonShow(true);
-      dispatch(apiGetAllMenuItem())
-        .then(() => {
-          if (isMounted.current) setSkeletonShow(false);
-        })
-        .catch(err => {
-          if (isMounted.current) handleErrorApiRequest(err.status);
-        });
+      dispatch(apiGetAllMenuItem()).catch(err => {
+        if (isMounted.current) handleErrorApiRequest(err.status);
+      });
     }
 
     if (menuSubItems.data === null) {
-      setSkeletonShow(true);
-      dispatch(apiGetAllMenuSubItem())
-        .then(() => {
-          if (isMounted.current) setSkeletonShow(false);
-        })
-        .catch(err => {
-          if (isMounted.current) handleErrorApiRequest(err.status);
-        });
+      dispatch(apiGetAllMenuSubItem()).catch(err => {
+        if (isMounted.current) handleErrorApiRequest(err.status);
+      });
     }
 
     // eslint-disable-next-line
   }, [menuItems, menuSubItems, dispatch]);
+
+  /**
+   * Ambil data user yang akan di edit dari api
+   */
+  React.useEffect(() => {
+    dispatch(apiGetUserEdit(id))
+      .then(() => {
+        if (isMounted.current) setSkeletonShow(false);
+      })
+      .catch(err => {
+        if (isMounted.current) handleErrorApiRequest(err.status);
+      });
+
+    // eslint-disable-next-line
+  }, [dispatch]);
 
   /**
    * Cek dan ambil query string
@@ -127,7 +139,7 @@ function UserEdit() {
    * Render komponen utama
    */
   return (
-    <Page title="Edit User" pageTitle="Edit User">
+    <Page pb title="Edit User" pageTitle="Edit User">
       <Container>
         <TabContext value={value}>
           <TabList

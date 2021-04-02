@@ -49,6 +49,9 @@ const useStyles = makeStyles(theme => ({
   },
   setting: {
     margin: theme.spacing(0, 0.5)
+  },
+  pageTitle: {
+    cursor: 'pointer'
   }
 }));
 
@@ -84,74 +87,97 @@ const TopBar = ({
 }) => {
   const { pageTitle } = useSelector(state => state.globalReducer);
   const classes = useStyles();
+
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 35
   });
 
+  /**
+   * Fungsi back to top
+   *
+   * @param {Object element} event
+   */
+  const handleClickBackToTop = event => {
+    const anchor = (event.target.ownerDocument || document).querySelector(
+      '#back-to-top'
+    );
+
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
   return (
-    <ElevationScroll {...rest}>
-      <AppBar
-        className={clsx(classes.topBar, {
-          [classes.topBarShift]: openDesktopNav
-        })}
-      >
-        <Toolbar variant="dense">
-          <Hidden mdDown>
-            <CustomTooltip
-              title={openDesktopNav ? 'Close menu' : 'Open menu'}
-              placement="bottom"
-            >
-              <IconButton onClick={onDesktopNavOpen} color="default">
-                {openDesktopNav ? (
-                  <MenuOpenIcon fontSize="small" />
-                ) : (
+    <React.Fragment>
+      <ElevationScroll {...rest}>
+        <AppBar
+          className={clsx(classes.topBar, {
+            [classes.topBarShift]: openDesktopNav
+          })}
+        >
+          <Toolbar variant="dense">
+            <Hidden mdDown>
+              <CustomTooltip
+                title={openDesktopNav ? 'Close menu' : 'Open menu'}
+                placement="bottom"
+              >
+                <IconButton onClick={onDesktopNavOpen} color="default">
+                  {openDesktopNav ? (
+                    <MenuOpenIcon fontSize="small" />
+                  ) : (
+                    <MenuIcon fontSize="small" />
+                  )}
+                </IconButton>
+              </CustomTooltip>
+            </Hidden>
+
+            <Hidden lgUp>
+              <CustomTooltip title="Open menu" placement="bottom">
+                <IconButton onClick={onMobileNavOpen} color="default">
                   <MenuIcon fontSize="small" />
-                )}
+                </IconButton>
+              </CustomTooltip>
+            </Hidden>
+
+            {/* Page title */}
+            <Zoom in={trigger}>
+              <Box
+                ml={1}
+                mr={1}
+                className={classes.pageTitle}
+                onClick={handleClickBackToTop}
+              >
+                <Typography variant="subtitle2" color="textPrimary">
+                  {pageTitle}
+                </Typography>
+              </Box>
+            </Zoom>
+
+            <Box flexGrow={1} />
+
+            {/* Clock */}
+            <Hidden xsDown>
+              <Clock className={classes.clock} />
+            </Hidden>
+
+            {/* Button setting */}
+            <CustomTooltip title="Open setting">
+              <IconButton
+                color="default"
+                onClick={onSettingOpen}
+                className={classes.setting}
+              >
+                <SettingsOutlinedIcon fontSize="small" />
               </IconButton>
             </CustomTooltip>
-          </Hidden>
 
-          <Hidden lgUp>
-            <CustomTooltip title="Open menu" placement="bottom">
-              <IconButton onClick={onMobileNavOpen} color="default">
-                <MenuIcon fontSize="small" />
-              </IconButton>
-            </CustomTooltip>
-          </Hidden>
+            {/* User account */}
+            <UserAccount />
+          </Toolbar>
+        </AppBar>
+      </ElevationScroll>
 
-          {/* Page title */}
-          <Zoom in={trigger}>
-            <Box ml={1} mr={1}>
-              <Typography variant="subtitle2" color="textPrimary">
-                {pageTitle}
-              </Typography>
-            </Box>
-          </Zoom>
-
-          <Box flexGrow={1} />
-
-          {/* Clock */}
-          <Hidden xsDown>
-            <Clock className={classes.clock} />
-          </Hidden>
-
-          {/* Button setting */}
-          <CustomTooltip title="Open setting">
-            <IconButton
-              color="default"
-              onClick={onSettingOpen}
-              className={classes.setting}
-            >
-              <SettingsOutlinedIcon fontSize="small" />
-            </IconButton>
-          </CustomTooltip>
-
-          {/* User account */}
-          <UserAccount />
-        </Toolbar>
-      </AppBar>
-    </ElevationScroll>
+      <Toolbar variant="dense" id="back-to-top" />
+    </React.Fragment>
   );
 };
 

@@ -133,14 +133,6 @@ function UserDetail(props) {
           alignItems="center"
         >
           <Grid item md={6} xs={12}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <UserDetailProfile isSkeletonShow={isSkeletonShow} />
-              </Grid>
-            </Grid>
-          </Grid>
-
-          <Grid item md={6} xs={12}>
             <Box display="flex" justifyContent="center" alignItems="center">
               {isSkeletonShow ? (
                 <Skeleton variant="circle" className={classes.avatar} />
@@ -156,6 +148,14 @@ function UserDetail(props) {
                 />
               )}
             </Box>
+          </Grid>
+
+          <Grid item md={6} xs={12}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <UserDetailProfile isSkeletonShow={isSkeletonShow} />
+              </Grid>
+            </Grid>
           </Grid>
 
           <Grid item xs={12}>

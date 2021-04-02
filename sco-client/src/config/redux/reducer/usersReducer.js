@@ -29,6 +29,28 @@ const initialState = {
     menuItems: [],
     menuSubItems: [],
     logs: []
+  },
+  userEdit: {
+    account: {
+      id: '',
+      username: '',
+      isActive: false,
+      createdAt: '',
+      updatedAt: ''
+    },
+    profile: {
+      avatar: '',
+      name: '',
+      division: '',
+      email: '',
+      phone: '',
+      address: '',
+      createdAt: '',
+      updatedAt: ''
+    },
+    menuItems: [],
+    menuSubItems: [],
+    logs: []
   }
 };
 
@@ -74,6 +96,33 @@ export const usersReducer = (state = initialState, action) => {
           menuItems: menuItems,
           menuSubItems: menuSubItems,
           logs: logs
+        }
+      };
+
+    case 'SET_USER_EDIT':
+      return {
+        ...state,
+        userEdit: {
+          account: {
+            id: action.value.account.id,
+            username: action.value.account.username,
+            isActive: action.value.account.isActive,
+            createdAt: action.value.account.createdAt,
+            updatedAt: action.value.account.updatedAt
+          },
+          profile: {
+            avatar: action.value.profile.avatar,
+            name: action.value.profile.name,
+            division: action.value.profile.division,
+            email: action.value.profile.email,
+            phone: action.value.profile.phone,
+            address: action.value.profile.address,
+            createdAt: action.value.profile.createdAt,
+            updatedAt: action.value.profile.updatedAt
+          },
+          menuItems: action.value.menuItems,
+          menuSubItems: action.value.menuSubItems,
+          logs: action.value.logs
         }
       };
 
